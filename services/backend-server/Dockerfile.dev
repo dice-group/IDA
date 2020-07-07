@@ -1,0 +1,9 @@
+FROM maven:3.6.3-jdk-11 AS MAVEN_BUILD
+WORKDIR /build
+COPY backend-server/pom.xml backend-server/pom.xml
+COPY backend-server/src backend-server/src
+
+WORKDIR /build/backend-server
+EXPOSE 8090
+CMD mvn package
+CMD mvn spring-boot:run
