@@ -5,5 +5,5 @@ COPY backend-server/src backend-server/src
 
 WORKDIR /build/backend-server
 EXPOSE 8090
-CMD mvn package
+RUN mvn package
 CMD mvn spring-boot:run
