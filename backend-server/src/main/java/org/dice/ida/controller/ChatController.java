@@ -14,8 +14,6 @@ public class ChatController {
 	@MessageMapping("/msg")
 	@SendTo("/topic/msgs")
 	public ChatMessageResponse handleMessaging(ChatUserMessage message) throws Exception {
-		Thread.sleep(1000); // simulate delay
-
 		return new ChatMessageResponse(message.getMessage());
 	}
 

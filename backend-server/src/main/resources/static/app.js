@@ -24,7 +24,6 @@ function connect() {
     // implement the behavior we want whenever the client connects to the server (-or- user connects to chat app client by joining a group)
     stompClient.connect({}, function (frame) {
         setConnected(true);
-        console.log('Connected: ' + frame);
 
         stompClient.subscribe("/topic/msgs", function (greeting) {
             showMessage(JSON.parse(greeting.body).content);
@@ -44,7 +43,6 @@ function disconnect() {
         stompClient.disconnect();
     }
     setConnected(false);
-    console.log("Disconnected");
 }
 
 
