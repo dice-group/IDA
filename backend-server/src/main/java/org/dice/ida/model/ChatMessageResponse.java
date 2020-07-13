@@ -6,6 +6,10 @@ public class ChatMessageResponse {
 	private String content;
 	private Date timestamp;
 
+	public ChatMessageResponse(String content) {
+		this.content = content;
+	}
+
 	public String getContent() {
 		return content;
 	}
