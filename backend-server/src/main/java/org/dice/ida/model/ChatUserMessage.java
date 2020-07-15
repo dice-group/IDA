@@ -9,6 +9,13 @@ public class ChatUserMessage {
 	private String message;
 	private Date timestamp;
 
+	public ChatUserMessage() {
+	}
+
+	public ChatUserMessage(String message) {
+		this.message = message;
+	}
+
 	public String getSenderId() {
 		return senderId;
 	}

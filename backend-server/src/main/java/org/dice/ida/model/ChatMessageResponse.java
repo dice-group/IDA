@@ -6,6 +6,9 @@ public class ChatMessageResponse {
 	private String content;
 	private Date timestamp;
 
+	public ChatMessageResponse() {
+	}
+
 	public ChatMessageResponse(String content) {
 		this.content = content;
 	}
