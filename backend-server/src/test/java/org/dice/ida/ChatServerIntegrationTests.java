@@ -40,9 +40,7 @@ public class ChatServerIntegrationTests {
     @LocalServerPort
     private int port;
 
-    private SockJsClient sockJsClient;
-
-    private WebSocketStompClient stompClient;
+	private WebSocketStompClient stompClient;
 
     private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
 
@@ -50,7 +48,7 @@ public class ChatServerIntegrationTests {
     public void setup() {
         List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
-        this.sockJsClient = new SockJsClient(transports);
+		SockJsClient sockJsClient = new SockJsClient(transports);
 
         this.stompClient = new WebSocketStompClient(sockJsClient);
         this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
