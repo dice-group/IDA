@@ -25,4 +25,4 @@ jobs:
     - name: Test
       run: mvn test
     - name: Build with Maven
-      run: mvn clean install --file backend-server/pom.xml && mvn package
+      run: mvn clean install --file backend-server/pom.xml && mvn package --file backend-server/pom.xml
