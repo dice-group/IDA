@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  ida-backend:
+    image: $REGISTRY/ida/backend-server:$VERSION
+    volumes:
+      - "../backend-server/src:/build/backend-server/src"
+      - "../backend-server/target:/build/backend-server/target"
+    ports:
+      - 8090:8090
