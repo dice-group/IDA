@@ -15,6 +15,7 @@ function setConnected(connected) {
 }
 
 function connect() {
+    console.log("connect")
     // create the SockJS WebSocket-like object
 	socket = new SockJS('/ida-fb-ws');
 
