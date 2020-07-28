@@ -1,5 +1,5 @@
 package org.dice.ida.controller;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.dice.ida.chatbot.StaticChatbot;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
@@ -32,6 +32,7 @@ public class MessageController {
 	 * @return Response to the chat message
 	 * @throws Exception
 	 */
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value= "/chatmessage", method = RequestMethod.POST)
 	public ChatMessageResponse handleMessage(@RequestBody ChatUserMessage message) throws Exception {
 		System.out.println(message.getMessage());

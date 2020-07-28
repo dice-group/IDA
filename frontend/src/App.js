@@ -2,7 +2,7 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 // import ChatBot from './Components/ChatBot';
-import Chat from './Components/Chat';
+import Demo from './Components/ChatBot';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -88,7 +88,7 @@ export default function App(){
           </React.Fragment>
           </div>      
          <div>
-          <Chat/>
+          <Demo/>
         </div>
       </Box>
     </div>

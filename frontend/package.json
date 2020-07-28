@@ -14,6 +14,7 @@
     "material-ui-icons": "^1.0.0-beta.36",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
+    "react-chat-window": "^1.2.1",
     "react-dom": "^16.13.1",
     "react-dropzone-component": "^3.2.0",
     "react-modal": "^3.11.2",
