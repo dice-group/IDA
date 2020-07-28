@@ -1,5 +1,9 @@
 package org.dice.ida.constant;
-
+/**
+ * This interface consists of all the constant values across IDA
+ * @author Nikit
+ *
+ */
 public interface IDAConst {
 	
 	/**

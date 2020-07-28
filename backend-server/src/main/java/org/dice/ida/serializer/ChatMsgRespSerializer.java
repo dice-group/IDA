@@ -7,7 +7,11 @@ import org.dice.ida.model.ChatMessageResponse;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-
+/**
+ * Class to help serialize {@link ChatMessageResponse} into JSON
+ * @author Nikit
+ *
+ */
 public class ChatMsgRespSerializer extends StdSerializer<ChatMessageResponse>{
 	protected ChatMsgRespSerializer() {
 		this(null);

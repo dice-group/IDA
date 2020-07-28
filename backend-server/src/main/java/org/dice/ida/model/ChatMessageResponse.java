@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
+/**
+ * Class to model the message response to chat messages from a client
+ * @author Nikit
+ *
+ */
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @JsonSerialize(using = ChatMsgRespSerializer.class)
