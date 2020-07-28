@@ -77,7 +77,7 @@ public class ChatServerIntegrationTests {
                     	ChatMessageResponse greeting = (ChatMessageResponse) payload;
                         try {
                         	// Step 4:  Validate that the broadcast server response is correct
-                            assertEquals("Hello Spring", greeting.getContent());
+                            assertEquals("Hello Spring", greeting.getMessage());
                         } catch (Throwable t) {
                             failure.set(t);
                         } finally {
