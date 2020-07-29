@@ -12,9 +12,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		String ui_url = "http://localhost:3000"; // it should come from application properties
 		// This end point will be used if sockets are not available
-		registry.addEndpoint("/ida-fb-ws").setAllowedOrigins(ui_url).withSockJS();
+		registry.addEndpoint("/ida-fb-ws").setAllowedOrigins("*").withSockJS();
 	}
 
 	@Override
