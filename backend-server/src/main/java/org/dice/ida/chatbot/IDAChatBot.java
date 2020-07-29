@@ -9,6 +9,7 @@ import com.google.cloud.dialogflow.v2.QueryResult;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.model.Intent;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -56,9 +57,11 @@ public class IDAChatBot {
             DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
             QueryResult queryResult = response.getQueryResult();
             messageResponse.setMessage(queryResult.getFulfillmentText());
+            messageResponse.setUiAction(Intent.getForKey(queryResult.getIntent().getDisplayName()).getAction());
         }catch (Exception ex){
             System.out.println(ex.getMessage());
             messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
+            messageResponse.setUiAction(IDAConst.UAC_NrmlMsg);
         }
         return messageResponse;
     }
