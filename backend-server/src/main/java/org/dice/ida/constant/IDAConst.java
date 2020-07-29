@@ -23,4 +23,10 @@ public interface IDAConst {
 	public static final int PDAC_UpldDt = 2002;
 	// View existing datasets button
 	public static final int PDAC_VwDts = 2003;
+
+	/**
+	 *  Chatbot constants
+	 */
+	public static final String BOT_UNAVAILABLE = "IDA is currently unavailable";
+	public static final String BOT_LANGUAGE = "en-US";
 }

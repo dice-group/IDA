@@ -1,6 +1,6 @@
 package org.dice.ida.controller;
+import org.dice.ida.chatbot.IDAChatBot;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.dice.ida.chatbot.StaticChatbot;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessageController {
 	
 	@Autowired
-	StaticChatbot chatbot;
+	IDAChatBot idaChatBot;
 	/**
 	 * Method to check the availability of the rest service
 	 * @return String literal stating the availability
@@ -36,6 +36,6 @@ public class MessageController {
 	@RequestMapping(value= "/chatmessage", method = RequestMethod.POST)
 	public ChatMessageResponse handleMessage(@RequestBody ChatUserMessage message) throws Exception {
 		System.out.println(message.getMessage());
-		return chatbot.processMessage(message);
+		return idaChatBot.processMessage(message);
 	}
 }
