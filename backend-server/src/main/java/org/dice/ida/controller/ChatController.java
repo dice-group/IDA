@@ -10,6 +10,10 @@ import org.dice.ida.model.ChatMessageResponse;
 
 @Controller
 public class ChatController {
+	/**
+	 * A controller to manage messages from web socket
+	 * @param message
+	 */
 
 	@MessageMapping("/msg")
 	@SendTo("/topic/msgs")

@@ -9,6 +9,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+	/**
+	 * A websocket configurer class!
+	 * manages topic subscription and app url
+	 * prefix for end points
+	 */
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -19,6 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		config.enableSimpleBroker("/topic");
+		// Setting prefix for all socket end points
 		config.setApplicationDestinationPrefixes("/ida");
 	}
 
