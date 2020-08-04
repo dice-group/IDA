@@ -1,13 +1,13 @@
-import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
-import TreeView from '@material-ui/lab/TreeView';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import TreeItem from '@material-ui/lab/TreeItem';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+import Box from "@material-ui/core/Box";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
+import TreeView from "@material-ui/lab/TreeView";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import TreeItem from "@material-ui/lab/TreeItem";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   Box: {
     height: 1000,
     width: 450,
-    backgroundcolor: 'lavender',
+    backgroundcolor: "lavender",
   },
   control: {
     padding: theme.spacing(0),
@@ -44,7 +44,7 @@ export default function Treeview(){
   };
 
   return(
-    <div  style={{ width: '100%', }}>
+    <div  style={{ width: "100%", }}>
        <Box display="flex"   p={1} m={1} bgcolor="background.paper">   
        <Box p={1} height="auto" bgcolor="grey.300">
         <TreeView
@@ -75,7 +75,7 @@ export default function Treeview(){
           <React.Fragment>
             <CssBaseline />
             <Container maxWidth="sm">
-              <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }} />
+              <Typography component="div" style={{ backgroundColor: "#cfe8fc", height: "100vh" }} />
             </Container>
           </React.Fragment>
           </div>      

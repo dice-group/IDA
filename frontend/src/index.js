@@ -1,18 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
 
-// import React from 'react';
-// import SockJsClient from 'react-stomp';
+// import React from "react";
+// import SockJsClient from "react-stomp";
 
 ReactDOM.render(
 
   <React.StrictMode>
     <App/>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
@@ -26,7 +26,7 @@ serviceWorker.unregister();
 //   }
 
 //   sendMessage = (msg) => {
-//     this.clientRef.sendMessage('/topics/all', msg);
+//     this.clientRef.sendMessage("/topics/all", msg);
 //   }
 
 //   render() {
@@ -34,9 +34,9 @@ serviceWorker.unregister();
 //       <React.StrictMode>
 //       <App/>
 //       </React.StrictMode>,
-//       document.getElementById('root'),
+//       document.getElementById("root"),
 //       <div>
-//         <SockJsClient url='http://localhost:8080/ws' topics={['/topics/all']}
+//         <SockJsClient url="http://localhost:8080/ws" topics={["/topics/all"]}
 //             onMessage={(msg) => { console.log(msg); }}
 //             ref={ (client) => { this.clientRef = client }} />
 //       </div>

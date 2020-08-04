@@ -1,12 +1,12 @@
-// import React from 'react';
-// import PropTypes from 'prop-types';
+// import React from "react";
+// import PropTypes from "prop-types";
 
 // const Progress = ({ percentage }) => {
 //   return (
-//     <div className='progress'>
+//     <div className="progress">
 //       <div
-//         className='progress-bar progress-bar-striped bg-success'
-//         role='progressbar'
+//         className="progress-bar progress-bar-striped bg-success"
+//         role="progressbar"
 //         style={{ width: `${percentage}%` }}
 //       >
 //         {percentage}%
@@ -20,12 +20,12 @@
 // };
 
 // export default Progress;
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import React from "react";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
 function LinearProgressWithLabel(props) {
   return (
@@ -52,7 +52,7 @@ LinearProgressWithLabel.propTypes = {
 
 const useStyles = makeStyles({
   root: {
-    width: '100%',
+    width: "100%",
   },
 });
 
