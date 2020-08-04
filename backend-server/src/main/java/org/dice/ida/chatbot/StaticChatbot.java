@@ -7,7 +7,7 @@ import org.dice.ida.model.ChatUserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 /**
- * Dummy class mimicking the functionality of a chatbot. 
+ * Dummy class mimicking the functionality of a chatbot 
  * @author Nikit
  *
  */
