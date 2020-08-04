@@ -13,17 +13,15 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  *
  */
 public class ChatMsgRespSerializer extends StdSerializer<ChatMessageResponse>{
+
+	private static final long serialVersionUID = 1L;
+	
 	protected ChatMsgRespSerializer() {
 		this(null);
 	}
 	protected ChatMsgRespSerializer(Class<ChatMessageResponse> t) {
 		super(t);
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void serialize(ChatMessageResponse value, JsonGenerator gen, SerializerProvider provider)

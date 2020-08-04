@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessageController {
 	
 	@Autowired
-	IDAChatBot idaChatBot;
+	private IDAChatBot idaChatBot;
 	/**
 	 * Method to check the availability of the rest service
 	 * @return String literal stating the availability

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StaticChatbot {
 	@Autowired
-	ChatMessageResponse messageResponse;
+	private ChatMessageResponse messageResponse;
 	/**
 	 * Method to process the user chat message and return a valid response
 	 * @param userMessage . Chat message from the user
