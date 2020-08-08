@@ -16,6 +16,7 @@ function build_container() {
     fi
 }
 
+build_container frontend .. -f frontend/Dockerfile.dev
 build_container backend-server .. -f backend-server/Dockerfile.dev
 
 export REGISTRY=$registry

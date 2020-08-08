@@ -8,3 +8,17 @@ services:
       - "../backend-server/target:/build/backend-server/target"
     ports:
       - 8090:8090
+    networks:
+      - ida-net
+  ida-frontend:
+    image: $REGISTRY/ida/frontend:$VERSION
+    volumes:
+      - "../frontend/src:/app/src"
+      - "../frontend/public:/app/public"
+    ports:
+      - 3200:3200
+    stdin_open: true
+    networks:
+      - ida-net
+networks:
+  ida-net:

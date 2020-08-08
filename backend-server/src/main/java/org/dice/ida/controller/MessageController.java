@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class MessageController {
-	
+
 	@Autowired
 	private IDAChatBot idaChatBot;
 	/**
@@ -32,7 +32,7 @@ public class MessageController {
 	 * @return Response to the chat message
 	 * @throws Exception
 	 */
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "http://localhost:3200")
 	@RequestMapping(value= "/chatmessage", method = RequestMethod.POST)
 	public ChatMessageResponse handleMessage(@RequestBody ChatUserMessage message) throws Exception {
 		System.out.println(message.getMessage());
