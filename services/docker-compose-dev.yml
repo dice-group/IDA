@@ -8,6 +8,8 @@ services:
       - "../backend-server/target:/build/backend-server/target"
     ports:
       - 8090:8090
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/build/backend-server/src/main/resources/ida-chatbot-dialogflow.json
     networks:
       - ida-net
   ida-frontend:

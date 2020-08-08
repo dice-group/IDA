@@ -31,3 +31,5 @@ build/
 
 ### Mac file
 .DS_STORE
+
+ida-chatbot-dialogflow.json
