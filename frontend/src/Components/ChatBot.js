@@ -4,9 +4,10 @@ import {Launcher} from "react-chat-window"
 import "./chatbot.css";
 import CustomizedTables from "./Datatable"
 import Treeview from "./Treeview"
+import { API_URL } from "../env.json"
 
 export default class Demo extends Component {
- 
+
   constructor() {
     super();
     this.state = {
@@ -14,7 +15,7 @@ export default class Demo extends Component {
       changeCSS:{}
     }
   }
- 
+
   _onMessageWasSent(message) {
     this.setState({
       messageList: [...this.state.messageList, message]
@@ -31,23 +32,23 @@ export default class Demo extends Component {
         };
         console.log(obj,message.data.text);
         if(message.data.text === "upload dataset") {
-        
+
         }
-        const res = axios.post("http://localhost:8090/chatmessage", obj, {}
+        const res = axios.post(API_URL + "/chatmessage", obj, {}
         ).then(response => {
             console.log("success");
             console.log(response);
             console.log("this is testing");
             //changeCSS = {top:"50%" , right: 0, transform: "translate(-10%, -60%) !important"};
             outerscope._sendMessage(response.data.message)
-            
+
       }, function (err) {
             console.log("error");
             console.log(err.status);
       });
     }
   }
- 
+
   _sendMessage(text) {
       this.setState({
         messageList: [...this.state.messageList, {
@@ -57,7 +58,7 @@ export default class Demo extends Component {
         }]
       })
   }
- 
+
   render() {
     let changeCSS = {top:"50%" , transform: "translate(-50%, -50%)"}
 
@@ -68,18 +69,18 @@ export default class Demo extends Component {
           teamName: "IDA-ChatBot",
           imageUrl: "",
           className:{changeCSS}
-          
+
         }}
         onMessageWasSent={this._onMessageWasSent.bind(this)}
         messageList={this.state.messageList}
       />
-    
+
     <div>
         {/* <Treeview/>
         <CustomizedTables/>  */}
     </div>
     </div>
     )
-   
+
   }
 }

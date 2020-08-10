@@ -24,7 +24,8 @@
     "styled-components": "^5.1.1"
   },
   "scripts": {
-    "start": "PORT=3200 react-scripts start",
+    "start:dev": "node scripts/set-environment.js dev && PORT=3200 react-scripts start",
+    "start:prod": "node scripts/set-environment.js prod && PORT=3200 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

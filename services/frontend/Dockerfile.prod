@@ -11,4 +11,4 @@ COPY frontend/scripts scripts
 COPY frontend/envs envs
 
 EXPOSE 3200
-CMD npm run start:dev
+CMD npm run start:prod
