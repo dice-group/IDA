@@ -8,6 +8,7 @@ import weka.filters.unsupervised.attribute.Remove;
 import java.io.File;
 
 import weka.filters.Filter;
+import weka.associations.Apriori;
 import weka.classifiers.meta.AutoWEKAClassifier;
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.EM;
@@ -44,6 +45,9 @@ public class ClusterTest  {
             ClusterEvaluation eval = new ClusterEvaluation();
             eval.setClusterer(clusterer);
             eval.evaluateClusterer(data);
+            
+           
+            
 
             // print results
             System.out.println(eval.clusterResultsToString());

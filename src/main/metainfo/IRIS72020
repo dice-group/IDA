@@ -1,0 +1,10 @@
+Relation Name:  IRIS
+Num Instances:  150
+Num Attributes: 5
+
+     Name                      Type  Nom  Int Real     Missing      Unique  Dist
+1 sepal_length               Num   0%  11%  89%     0 /  0%     9 /  6%    35 
+2 sepal_width                Num   0%  19%  81%     0 /  0%     5 /  3%    23 
+3 petal_length               Num   0%   9%  91%     0 /  0%    10 /  7%    43 
+4 petal_width                Num   0%   9%  91%     0 /  0%     2 /  1%    22 
+5 species                    Nom 100%   0%   0%     0 /  0%     0 /  0%     3 
