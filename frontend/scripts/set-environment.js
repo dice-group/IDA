@@ -5,7 +5,7 @@ const environment = process.argv[2] || "dev";
 let envFileContent = "";
 
 //read the content of the json file
-if (environment === 'dev') {
+if (environment === "dev") {
 	envFileContent = require("../envs/dev.json");
 } else {
 	envFileContent = require("../envs/prod.json");

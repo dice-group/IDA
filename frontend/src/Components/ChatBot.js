@@ -3,7 +3,7 @@ import axios from "axios";
 import {Launcher} from "react-chat-window"
 import "./chatbot.css";
 import CustomizedTables from "./Datatable"
-import Treeview from "./Treeview"
+import Treeview from "./Treeview";
 import {API_URL} from "../env.json";
 
 export default class Demo extends Component {
