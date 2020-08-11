@@ -27,3 +27,5 @@ node_modules
 
 ### MAC files
 .DS_STORE
+
+env.json
