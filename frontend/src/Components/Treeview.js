@@ -12,7 +12,7 @@ import Container from "@material-ui/core/Container";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 3,
-    
+
   },
   Box: {
     height: 1000,
@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => ({
   control: {
     padding: theme.spacing(0),
   },
-  root_tree: {
+  rootTree: {
     height: 216,
     flexGrow: 1,
-   
+
     maxWidth: 400,
   },
 }));
@@ -45,10 +45,10 @@ export default function Treeview(){
 
   return(
     <div  style={{ width: "100%", }}>
-       <Box display="flex"   p={1} m={1} bgcolor="background.paper">   
+       <Box display="flex"   p={1} m={1} bgcolor="background.paper">
        <Box p={1} height="auto" bgcolor="grey.300">
         <TreeView
-              className={classes.root_tree}
+              className={classes.rootTree}
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               expanded={expanded}
@@ -70,7 +70,7 @@ export default function Treeview(){
                 </TreeItem>
               </TreeItem>
             </TreeView>
-          </Box>  
+          </Box>
           <div>
           <React.Fragment>
             <CssBaseline />
@@ -78,8 +78,8 @@ export default function Treeview(){
               <Typography component="div" style={{ backgroundColor: "#cfe8fc", height: "100vh" }} />
             </Container>
           </React.Fragment>
-          </div>      
+          </div>
       </Box>
     </div>
-  )
-};
+  );
+}

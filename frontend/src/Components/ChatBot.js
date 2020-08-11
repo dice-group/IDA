@@ -1,8 +1,8 @@
 import React, {Component} from "react"
 import axios from "axios";
-import {Launcher} from "react-chat-window"
+import {Launcher} from "react-chat-window";
 import "./chatbot.css";
-import CustomizedTables from "./Datatable"
+import CustomizedTables from "./Datatable";
 import Treeview from "./Treeview";
 import {API_URL} from "../env.json";
 
@@ -13,7 +13,7 @@ export default class Demo extends Component {
     this.state = {
       messageList: [],
       changeCSS:{}
-    }
+    };
   }
 
   _onMessageWasSent(message) {
@@ -30,21 +30,13 @@ export default class Demo extends Component {
             "timestamp" : "",
             "senderName" : "spoorthi"
         };
-        console.log(obj,message.data.text);
-        if(message.data.text === "upload dataset") {
-
-        }
         const res = axios.post(API_URL + "/chatmessage", obj, {}
-        ).then(response => {
-            console.log("success");
-            console.log(response);
-            console.log("this is testing");
+        ).then((response) => {
+            // console.log(response); proper success msg
             //changeCSS = {top:"50%" , right: 0, transform: "translate(-10%, -60%) !important"};
             outerscope._sendMessage(response.data.message)
-
       }, function (err) {
-            console.log("error");
-            console.log(err.status);
+            // console.log(err.status); app should show proper error message
       });
     }
   }
@@ -60,7 +52,7 @@ export default class Demo extends Component {
   }
 
   render() {
-    let changeCSS = {top:"50%" , transform: "translate(-50%, -50%)"}
+    let changeCSS = {top:"50%" , transform: "translate(-50%, -50%)"};
 
     return (
     <div style={{changeCSS}} >
