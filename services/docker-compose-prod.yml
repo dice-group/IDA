@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  ida-backend:
+    image: $REGISTRY/ida/backend-server:$VERSION
+    ports:
+      - 8080:8080
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/build/backend-server/src/main/resources/ida-chatbot-dialogflow.json
+    networks:
+      - ida-net
+  ida-frontend:
+    image: $REGISTRY/ida/frontend:$VERSION
+    ports:
+      - 4200:4200
+    stdin_open: true
+    networks:
+      - ida-net
+networks:
+  ida-net:

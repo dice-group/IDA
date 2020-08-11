@@ -22,4 +22,4 @@ build_container backend-server .. -f backend-server/Dockerfile.dev
 export REGISTRY=$registry
 export VERSION=$version
 
-docker stack deploy --compose-file docker-compose-dev.yml ida-stack-dev
+docker stack deploy --compose-file docker-compose-prod.yml ida-stack-prod
