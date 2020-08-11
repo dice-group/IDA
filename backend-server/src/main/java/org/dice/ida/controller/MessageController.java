@@ -32,7 +32,7 @@ public class MessageController {
 	 * @return Response to the chat message
 	 * @throws Exception
 	 */
-	@CrossOrigin(origins = {"http://localhost:4200", "http://ida.cs.upb.de:4200"})
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value= "/chatmessage", method = RequestMethod.POST)
 	public ChatMessageResponse handleMessage(@RequestBody ChatUserMessage message) throws Exception {
 		System.out.println(message.getMessage());
