@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Component} from "react";
 import axios from "axios";
 import {Launcher} from "react-chat-window";
 import "./chatbot.css";
@@ -19,7 +19,7 @@ export default class Demo extends Component {
   _onMessageWasSent(message) {
     this.setState({
       messageList: [...this.state.messageList, message]
-    })
+    });
     // let changeCSS = {top:"50%" , transform: "translate(-50%, -50%)"}
 
     var outerscope = this;
@@ -34,7 +34,7 @@ export default class Demo extends Component {
         ).then((response) => {
             // console.log(response); proper success msg
             //changeCSS = {top:"50%" , right: 0, transform: "translate(-10%, -60%) !important"};
-            outerscope._sendMessage(response.data.message)
+            outerscope._sendMessage(response.data.message);
       }, function (err) {
             // console.log(err.status); app should show proper error message
       });
@@ -72,7 +72,7 @@ export default class Demo extends Component {
         <CustomizedTables/>  */}
     </div>
     </div>
-    )
+    );
 
   }
 }
