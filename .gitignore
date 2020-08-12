@@ -1,0 +1,31 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+
+
+# Eclipse
+.classpath
+.project
+.settings/
+.attach_pid*
+
+# npm
+node_modules
+
+### MAC files
+.DS_STORE
+
+env.json
