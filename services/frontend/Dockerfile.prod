@@ -11,4 +11,6 @@ COPY frontend/scripts scripts
 COPY frontend/envs envs
 
 EXPOSE 4200
-CMD npm run start:prod
+RUN npm i -g serve
+RUN npm run start:prod
+CMD serve -s build -l 4200

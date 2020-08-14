@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start:dev": "node scripts/set-environment.js dev && PORT=4200 react-scripts start",
-    "start:prod": "node scripts/set-environment.js prod && PORT=4200 react-scripts start",
+    "start:prod": "node scripts/set-environment.js prod && npm run build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
