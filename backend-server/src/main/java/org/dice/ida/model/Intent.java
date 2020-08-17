@@ -6,6 +6,7 @@ public enum Intent {
     GREETING("greeting", IDAConst.UAC_NrmlMsg),
     HELP("help", IDAConst.UAC_NrmlMsg),
     UPLOAD_DATASET("upload-dataset", IDAConst.UAC_UpldDtMsg),
+    SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NrmlMsg),
     UNKNOWN("unknown", IDAConst.UAC_NrmlMsg);
 
     private final String key;
