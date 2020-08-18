@@ -25,9 +25,10 @@ public class DatasetReader {
         for(int i=0;i<data.numAttributes();i++)
            	attributes.add(data.attribute(i));
         StringBuilder str = new StringBuilder();
+        str.append("Number of Dataset\t"+data.relationName()+"\n");
         str.append("Number of records\t"+data.numInstances()+"\n");
         str.append("Number of Attributes\t"+ data.numAttributes()+"\n");
-        str.append("Name\t\tType\tNom\tInt\tReal\tMissing\tUnique\tDist"+"\n");
+        str.append("Name\t\tType\tNom\tInt\tReal\tMissingCount\tMissingPercentage\tUniqueCount\tUniquePercentage\tDist"+"\n");
         int k=0;
         for (Attribute s:attributes)
         	{
@@ -37,16 +38,16 @@ public class DatasetReader {
         		if(fields[6].length()<=1)
         		{
         			if(fields[9].length()<=1)
-        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+"/"+fields[7]+"\t"+fields[8]+"/"+fields[10]+"\t"+fields[11]+"\n");
+        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+"\t"+fields[7]+"\t"+fields[8]+"\t"+fields[10]+"\t"+fields[11]+"\n");
         			if(fields[9].length()>1)
-        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+"/"+fields[7]+"\t"+fields[8]+fields[9]+"\t"+fields[10]+"\n");
+        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+"\t"+fields[7]+"\t"+fields[8]+"\t"+fields[9].substring(1)+"\t"+fields[10]+"\n");
         		}
         		if(fields[6].length()>1)
         		{
         			if (fields[8].length()<=1)
-        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+fields[6]+"\t"+fields[7]+"/"+fields[9]+"\t"+fields[10]+"\n");
+        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+"\t"+fields[6].substring(1)+"\t"+fields[7]+"\t"+fields[9]+"\t"+fields[10]+"\n");
         			if (fields[8].length()>1)
-        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+fields[6]+"\t"+fields[7]+fields[8]+"\t"+fields[9]+"\n");
+        				str.append(s.name()+"\t\t"+fields[1]+"\t"+fields[2]+"\t"+fields[3]+"\t"+fields[4]+"\t"+fields[5]+"\t"+fields[6].substring(1)+"\t"+fields[7]+"\t"+fields[8].substring(1)+"\t"+fields[9]+"\n");
         		}
         		k++;
         	}
