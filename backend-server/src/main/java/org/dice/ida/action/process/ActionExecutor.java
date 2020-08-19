@@ -11,14 +11,14 @@ import org.dice.ida.model.Intent;
 import com.google.cloud.dialogflow.v2.QueryResult;
 public class ActionExecutor {
 	
-	Action action;
-	Map<String, String> paramMap;
+	private Action action;
+	private Map<String, String> paramMap;
 	
 	public ActionExecutor(QueryResult queryResult) {
 		// Initiate the instance for the action
 		Intent intent = Intent.getForKey(queryResult.getIntent().getDisplayName());
 		this.paramMap = createParamMap(queryResult);
-		this.action = ActionMapper.fetchActionInstance(intent.getKey(), paramMap);
+		this.action = ActionMappingHelper.fetchActionInstance(intent.getKey(), paramMap);
 	}
 	
 	private Map<String, String> createParamMap(QueryResult queryResult){
