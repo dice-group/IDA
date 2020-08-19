@@ -24,12 +24,12 @@ public class StaticChatbot {
 		String msgText = userMessage.getMessage();
 		String respMsg = "I am sorry! I did not understand that, please try rephrasing that.";
 		messageResponse.setMessage(respMsg);
-		messageResponse.setUiAction(IDAConst.UAC_NrmlMsg);
+		messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		//process the user message
 		//upload dataset
 		if(msgText.matches(".*[uU]pload.*[dD]ataset.*")) {
 			messageResponse.setMessage("");
-			messageResponse.setUiAction(IDAConst.UAC_UpldDtMsg);
+			messageResponse.setUiAction(IDAConst.UAC_UPLDDTMSG);
 		}
 		//respond if hello
 		else if(msgText.matches(".*(([hH]i)|([hH]ello)).*")) {
