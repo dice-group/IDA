@@ -11,11 +11,12 @@ public interface IDAConst {
 	 */
 	// Load message normally
 	public static final int UAC_NRMLMSG = 1001;
+	// Load dataset
+	public static final int UIA_LOADDS = 1004;
 	// Open Upload dataset modal window
 	public static final int UAC_UPLDDTMSG = 1002;
 	// Load the provided dataset into a table
 	public static final int UAC_LOADDATAMSG = 1002;
-
 	/**
 	 *  Pre-defined action codes
 	 */
@@ -41,7 +42,7 @@ public interface IDAConst {
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
 
 	// Metadata File name Pattern
-	public static final String DSMD_FILE_PATTERN = ".*_dsmd\\.[jJ][sS][oO][nN]$";
+	public static final String DSMD_FILE_PATTERN = "dsmd\\.[jJ][sS][oO][nN]$";
 	// File path for dataset map properties
 	public static final String DSMAP_PROP_FILEPATH = "datasetmap.properties";
 	// CSV File name Pattern
