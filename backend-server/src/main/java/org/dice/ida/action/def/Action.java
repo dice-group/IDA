@@ -5,5 +5,5 @@ import java.util.Map;
 import org.dice.ida.model.ChatMessageResponse;
 
 public interface Action {
-	public void performAction(Map<String, String> paramMap, ChatMessageResponse resp);
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp);
 }

@@ -5,7 +5,7 @@ package org.dice.ida.constant;
  *
  */
 public interface IDAConst {
-	
+
 	/**
 	 *  UI action codes
 	 */
@@ -15,7 +15,7 @@ public interface IDAConst {
 	public static final int UAC_UPLDDTMSG = 1002;
 	// Load the provided dataset into a table
 	public static final int UAC_LOADDATAMSG = 1002;
-	
+
 	/**
 	 *  Pre-defined action codes
 	 */
@@ -32,10 +32,18 @@ public interface IDAConst {
 	public static final String BOT_UNAVAILABLE = "IDA is currently unavailable";
 	public static final String BOT_LANGUAGE = "en-US";
 	public static final String BOT_SOMETHING_WRONG = "Something went wrong with that request. Please try again later.";
-	
+
 	/**
 	 * Param Map Keys
 	 */
 	public static final String PARAM_TEXT_MSG = "TEXT_MSG";
 	public static final String PARAM_DATASET_NAME = "DATASET_NAME";
+	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
+
+	// Metadata File name Pattern
+	public static final String DSMD_FILE_PATTERN = ".*_dsmd\\.[jJ][sS][oO][nN]$";
+	// File path for dataset map properties
+	public static final String DSMAP_PROP_FILEPATH = "datasetmap.properties";
+	// CSV File name Pattern
+	public static final String CSV_FILE_PATTERN = ".*[cC][sS][vV]$";
 }

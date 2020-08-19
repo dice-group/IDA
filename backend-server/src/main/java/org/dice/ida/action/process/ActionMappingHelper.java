@@ -4,17 +4,19 @@ import java.util.Map;
 
 import org.dice.ida.action.def.Action;
 import org.dice.ida.action.def.DefaultAction;
-import org.dice.ida.action.def.LoadDataAction;
+import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.model.Intent;
 public class ActionMappingHelper {
-	
-	public static Action fetchActionInstance(String intentText, Map<String, String> paramData) {
+
+	public static Action fetchActionInstance(String intentText) {
 		Action action = null;
 		// return the instance for requested action
 		Intent intent = Intent.getForKey(intentText);
 		switch(intent) {
 			case GREETING:
+			case UNKNOWN:
+				// do something
 				action = new SimpleTextAction();
 				break;
 //			case HELP:
@@ -24,11 +26,7 @@ public class ActionMappingHelper {
 //				// TODO: do something
 //				break;
 			case LOAD_DATASET:
-				action = new LoadDataAction();
-				break;
-			case UNKNOWN:
-				// do something
-				action = new SimpleTextAction();
+				action = new LoadDataSetAction();
 				break;
 			default:
 				action = new DefaultAction();
@@ -36,7 +34,7 @@ public class ActionMappingHelper {
 		}
 		return action;
 	}
-	
-	
+
+
 
 }

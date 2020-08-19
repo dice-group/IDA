@@ -8,13 +8,13 @@ import org.dice.ida.model.ChatMessageResponse;
 public class SimpleTextAction implements Action {
 
 	@Override
-	public void performAction(Map<String, String> paramMap, ChatMessageResponse resp) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp) {
 		setSimpleTextResponse(paramMap, resp);
 	}
 
-	public static void setSimpleTextResponse(Map<String, String> paramMap, ChatMessageResponse resp) {
+	public static void setSimpleTextResponse(Map<String, Object> paramMap, ChatMessageResponse resp) {
 		// Set text message for a normal text response
-		String textMsg = paramMap.get(IDAConst.PARAM_TEXT_MSG);
+		String textMsg = paramMap.get(IDAConst.PARAM_TEXT_MSG).toString();
 		resp.setMessage(textMsg);
 		resp.setUiAction(IDAConst.UAC_NRMLMSG);
 	}

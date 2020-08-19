@@ -8,7 +8,7 @@ import org.dice.ida.model.ChatMessageResponse;
 public class DefaultAction implements Action {
 
 	@Override
-	public void performAction(Map<String, String> paramMap, ChatMessageResponse resp) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp) {
 		resp.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 		resp.setUiAction(IDAConst.UAC_NRMLMSG);
 	}

@@ -61,7 +61,6 @@ public class IDAChatBot {
             ActionExecutor actionExecutor = new ActionExecutor(queryResult);
             actionExecutor.processAction(messageResponse);
         }catch (Exception ex){
-            System.out.println(ex.getMessage());
             messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
             messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
         }
