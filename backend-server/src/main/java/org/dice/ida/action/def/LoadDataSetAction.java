@@ -22,6 +22,7 @@ public class LoadDataSetAction implements Action {
 					dataMap.put("label", datasetName);
 					dataMap.put("dsName", datasetName);
 					dataMap.put("dsMd", fileUtil.getDatasetMetaData(datasetName));
+					dataMap.put("dsData", fileUtil.getDatasetContent(datasetName));
 					resp.setPayload(dataMap);
 					resp.setUiAction(IDAConst.UIA_LOADDS);
 				}
