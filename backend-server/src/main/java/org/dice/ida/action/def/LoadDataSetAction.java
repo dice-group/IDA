@@ -25,7 +25,7 @@ public class LoadDataSetAction implements Action {
 					resp.setPayload(dataMap);
 					resp.setUiAction(IDAConst.UIA_LOADDS);
 				}
-				SimpleTextAction.setSimpleTextResponse(paramMap, resp);
+				setLoadDatasetResponse(paramMap, resp);
 			} else {
 				// Forward the message from the chatbot to the user
 				SimpleTextAction.setSimpleTextResponse(paramMap, resp);
@@ -33,6 +33,12 @@ public class LoadDataSetAction implements Action {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setLoadDatasetResponse(Map<String, Object> paramMap, ChatMessageResponse resp) {
+		String textMsg = paramMap.get(IDAConst.PARAM_TEXT_MSG).toString();
+		resp.setMessage(textMsg);
+		resp.setUiAction(IDAConst.UIA_LOADDS);
 	}
 
 }
