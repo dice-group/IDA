@@ -1,7 +1,5 @@
 package org.dice.ida.action.process;
 
-import java.util.Map;
-
 import org.dice.ida.action.def.Action;
 import org.dice.ida.action.def.DefaultAction;
 import org.dice.ida.action.def.LoadDataSetAction;
