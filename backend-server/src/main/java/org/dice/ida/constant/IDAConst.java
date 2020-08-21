@@ -38,7 +38,7 @@ public interface IDAConst {
 	 * Param Map Keys
 	 */
 	public static final String PARAM_TEXT_MSG = "TEXT_MSG";
-	public static final String PARAM_DATASET_NAME = "DATASET_NAME";
+	public static final String PARAM_DATASET_NAME = "datasetname";
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
 
 	// Metadata File name Pattern

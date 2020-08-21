@@ -3,6 +3,7 @@ package org.dice.ida.action.process;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.protobuf.Value;
 import org.dice.ida.action.def.Action;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
@@ -30,9 +31,11 @@ public class ActionExecutor {
 		paramMap.put(IDAConst.PARAM_ALL_REQUIRED_PARAMS_PRESENT, queryResult.getAllRequiredParamsPresent());
 
 		if (queryResult.getParameters().getFieldsCount() > 0) {
-			paramMap.put(IDAConst.PARAM_DATASET_NAME, queryResult.getParameters().getFieldsMap().get("datasetname").getStringValue());
+			for (Map.Entry<String, Value> entry : queryResult.getParameters().getFieldsMap().entrySet()) {
+				paramMap.put(entry.getKey(), entry.getValue().getStringValue());
+			}
 		}
-		// TODO: Extract more params
+
 		return paramMap;
 	}
 
