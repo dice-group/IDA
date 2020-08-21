@@ -1,11 +1,11 @@
 import React from "react";
-import Demo from "./Components/ChatBot";
+import CenteredGrid from "./Components/Grid";
 
 export default function App(){
   return(
     <div  style={{ width: "100%", }}>
          <div>
-          <Demo/>
+          <CenteredGrid/>
         </div>
     </div>
   );

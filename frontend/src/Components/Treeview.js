@@ -1,85 +1,85 @@
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import TreeView from '@material-ui/lab/TreeView';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import TreeItem from '@material-ui/lab/TreeItem';
 import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
-import TreeView from "@material-ui/lab/TreeView";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import TreeItem from "@material-ui/lab/TreeItem";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 3,
 
-  },
+const data = {
+  id: 'root',
+  name: 'Test_Directory',
+  type : 'folder',
+  path:'../Test_Directory',
+  children: [
+    {
+      id: '0',
+      name: 'testfile1.txt',
+      type : 'file',
+      path : '../Test_Directory/testfile1.pdf'
+    },
+    {
+      id: '1',
+      name: 'testfile2.txt',
+      type : 'file',
+      path : '../Test_Directory/testfile2.pdf'
+    },
+    {
+      id: '2',
+      name: 'test.json',
+      type : 'file',
+      path : '../Test_Directory/test.json'
+    },
+  ],
+};
+
+const useStyles = makeStyles({
   Box: {
     height: 1000,
     width: 450,
     backgroundcolor: "lavender",
   },
-  control: {
-    padding: theme.spacing(0),
-  },
-  rootTree: {
+ 
+  root: {
     height: 216,
     flexGrow: 1,
-
     maxWidth: 400,
   },
-}));
+});
 
-export default function Treeview(){
+export default function RecursiveTreeView(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState([]);
-  const [selected, setSelected] = React.useState([]);
+  props.setItem(data);
+  const checkItem = (nodes) => {
+    // array iteration 
+    props.setSelectedTab(nodes);
+    console.log( "tyep", nodes.context_type);
+    // let extension = nodes.name.substr(nodes.name.lastIndexOf('.') + 1).toLowerCase();
+    // console.log(extension);
+    // extension === "json" ? props.setSelectedTab(0) : props.setSelectedTab(1);
+    // console.log(props);
+  }
+    
+  
+  const renderTree = (nodes) => (
+    <TreeItem key= {Math.random()} nodeId={nodes.id} label={nodes.name}  onClick={(e) => checkItem(nodes)} >
+      {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
+    </TreeItem>
+  );
 
-  const handleToggle = (event, nodeIds) => {
-    setExpanded(nodeIds);
-  };
-
-  const handleSelect = (event, nodeIds) => {
-    setSelected(nodeIds);
-  };
-
-  return(
+  return (
     <div  style={{ width: "100%", }}>
-       <Box display="flex"   p={1} m={1} bgcolor="background.paper">
-       <Box p={1} height="auto" bgcolor="grey.300">
-        <TreeView
-              className={classes.rootTree}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              expanded={expanded}
-              selected={selected}
-              onNodeToggle={handleToggle}
-              onNodeSelect={handleSelect}
-            >
-            <TreeItem nodeId="1" label="Applications">
-              <TreeItem nodeId="2" label="Calendar" />
-              <TreeItem nodeId="3" label="Chrome" />
-              <TreeItem nodeId="4" label="Webstorm" />
-            </TreeItem>
-              <TreeItem nodeId="5" label="Documents">
-                <TreeItem nodeId="6" label="Material-UI">
-                  <TreeItem nodeId="7" label="src">
-                    <TreeItem nodeId="8" label="index.js" />
-                    <TreeItem nodeId="9" label="tree-view.js" />
-                  </TreeItem>
-                </TreeItem>
-              </TreeItem>
-            </TreeView>
-          </Box>
-          <div>
-          <React.Fragment>
-            <CssBaseline />
-            <Container maxWidth="sm">
-              <Typography component="div" style={{ backgroundColor: "#cfe8fc", height: "100vh" }} />
-            </Container>
-          </React.Fragment>
-          </div>
-      </Box>
+    <Box p={1} height="auto" >
+    <TreeView
+      className={classes.root}
+      defaultCollapseIcon={<ExpandMoreIcon />}
+      defaultExpanded={['root']}
+      defaultExpandIcon={<ChevronRightIcon />}
+    >
+      {renderTree(data)}
+    </TreeView>
+    </Box>
     </div>
   );
 }

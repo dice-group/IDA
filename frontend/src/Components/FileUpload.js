@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
         padding: "0 30px",
         alignItems: "center",
         width:"-webkit-fill-available",
-
+        
       },
   }));
 const FileUpload = () => {
@@ -54,24 +54,24 @@ const FileUpload = () => {
       setFile(e.target.files[0]);
       setFilename(e.target.files[0].name);
     };
-
-    const onSubmit = (async e) => {
+  
+    const onSubmit = async (e) => {
       e.preventDefault();
       const formData = new FormData();
       formData.append("file", file);
-
+  
       try {
         const res = await axios.post("", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           },
-          onUploadProgress: (progressEvent) => {
+          onUploadProgress: progressEvent =>{
             setUploadPercentage(
               parseInt(
                 Math.round((progressEvent.loaded * 100) / progressEvent.total)
               )
             );
-
+  
             // Clear percentage
             setTimeout(() => setUploadPercentage(0), 10000);
           }
@@ -87,7 +87,7 @@ const FileUpload = () => {
       }
     };
 
-  return (
+  return ( 
         <div>
       <Button type="button" onClick={handleOpen}>
        Click  to Upload
@@ -112,11 +112,11 @@ const FileUpload = () => {
             <form onSubmit={onSubmit}>
                 <div className="custom-file mb-4">
                 {/* <Button>     */}
-                <Button className={classes.root}
+                <Button className={classes.root} 
                     type="file"
                     // className="custom-file-input"
                     id="customFile"
-                    onChange={onChange}
+                    onChange={onChange}     
                >Choose / Drag and Drop</Button>
                 </div>
                 <br/>
@@ -142,7 +142,7 @@ const FileUpload = () => {
         </div>
         </Fade>
       </Modal>
-
+ 
     </div>
   );
 };
