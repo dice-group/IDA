@@ -21,6 +21,7 @@ public class LoadDataSetAction implements Action {
 					Map<String, Object> dataMap = resp.getPayload();
 					dataMap.put("label", datasetName);
 					dataMap.put("dsName", datasetName);
+					dataMap.put("activeTable", ""); // its required for visualization suggestions
 					dataMap.put("dsMd", fileUtil.getDatasetMetaData(datasetName));
 					dataMap.put("dsData", fileUtil.getDatasetContent(datasetName));
 					resp.setPayload(dataMap);
