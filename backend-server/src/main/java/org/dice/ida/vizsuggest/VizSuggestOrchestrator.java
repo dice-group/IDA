@@ -13,6 +13,7 @@ import java.util.Objects;
 
 /**
  * Class to orchestrate the visualization suggestion based on the dataset
+ *
  * @author Nandeesh & Sourabh
  */
 public class VizSuggestOrchestrator {
@@ -24,6 +25,7 @@ public class VizSuggestOrchestrator {
 
     /**
      * Function accessible from outside to get the visualization suggestion for a dataset
+     *
      * @return Message to the user containing suggested visualization details
      * @throws Exception
      */
@@ -32,13 +34,12 @@ public class VizSuggestOrchestrator {
         DataSummary dataSummary = createDataSummary(this.datasetName);
         VisualizationSuggestion visualizationSuggestion = vizSuggestionFactory.suggestVisualization(dataSummary).getParams(dataSummary);
         StringBuilder responseMsg = new StringBuilder(visualizationSuggestion.getName() + " suits better for this dataset with following parameters\n");
-        Map<String, List<String>> paramsMap = visualizationSuggestion.getParamMap();
-        for (String xParam : paramsMap.keySet()) {
-            responseMsg.append("X-axis: ").append(xParam).append("; ");
-            responseMsg.append("Y-axis: ");
-            for (String yParam : paramsMap.get(xParam)
-            ) {
-                responseMsg.append(yParam).append("; ");
+        List<Map<String, String>> paramsMapLst = visualizationSuggestion.getParamMap();
+        for (Map<String, String> paramsMap :
+                paramsMapLst) {
+            for (String paramName : paramsMap.keySet()) {
+                responseMsg.append(paramName).append(": ");
+                responseMsg.append(paramsMap.get(paramName)).append("\n");
             }
         }
         return responseMsg.toString();
@@ -46,6 +47,7 @@ public class VizSuggestOrchestrator {
 
     /**
      * Function to read summary of a dataset from file and create summary model
+     *
      * @param datasetName data summary object of the given dataset
      * @return Data summary model of the dataset
      * @throws Exception

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class VisualizationSuggestion {
     private String name;
-    private Map<String, List<String>> paramMap;
+    private List<Map<String, String>> paramMap;
 
     public String getName() {
         return name;
@@ -15,11 +15,11 @@ public class VisualizationSuggestion {
         this.name = name;
     }
 
-    public Map<String, List<String>> getParamMap() {
+    public List<Map<String, String>> getParamMap() {
         return paramMap;
     }
 
-    public void setParamMap(Map<String, List<String>> paramMap) {
+    public void setParamMap(List<Map<String, String>> paramMap) {
         this.paramMap = paramMap;
     }
 }

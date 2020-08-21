@@ -4,10 +4,7 @@ import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.VisualizationSuggestion;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,12 +39,19 @@ public class BarGraph implements IVisualizationParent{
             }
         }
         visualizationSuggestion.setName("Bar graph");
-        Map<String, List<String>> paramsMap = new HashMap<>();
+        List<Map<String, String>> paramsLst = new ArrayList<>();
+        Map<String, String> xAxisMap;
+        Map<String, String> yAxisMap;
         for (AttributeSummary x :
                 paramMap.keySet()) {
-            paramsMap.put(x.getName(), paramMap.get(x));
+            xAxisMap = new HashMap<>();
+            yAxisMap = new HashMap<>();
+            xAxisMap.put("X-Axis", x.getName());
+            yAxisMap.put("Y-Axis", String.join(", ", paramMap.get(x)));
+            paramsLst.add(xAxisMap);
+            paramsLst.add(yAxisMap);
         }
-        visualizationSuggestion.setParamMap(paramsMap);
+        visualizationSuggestion.setParamMap(paramsLst);
         return visualizationSuggestion;
     }
 }
