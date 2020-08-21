@@ -15,8 +15,7 @@ public interface IDAConst {
 	public static final int UIA_LOADDS = 1004;
 	// Open Upload dataset modal window
 	public static final int UAC_UPLDDTMSG = 1002;
-	// Load the provided dataset into a table
-	public static final int UAC_LOADDATAMSG = 1002;
+
 	/**
 	 *  Pre-defined action codes
 	 */
