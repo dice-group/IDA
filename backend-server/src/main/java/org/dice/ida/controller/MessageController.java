@@ -1,7 +1,6 @@
 package org.dice.ida.controller;
 
 import org.dice.ida.chatbot.IDAChatBot;
-import org.dice.ida.vizsuggest.VizSuggestOrchestrator;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;

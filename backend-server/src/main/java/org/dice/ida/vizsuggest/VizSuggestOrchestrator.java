@@ -4,15 +4,7 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.VisualizationSuggestion;
-import weka.core.Attribute;
-import weka.core.AttributeStats;
-import weka.core.Instances;
-import weka.core.converters.CSVLoader;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
