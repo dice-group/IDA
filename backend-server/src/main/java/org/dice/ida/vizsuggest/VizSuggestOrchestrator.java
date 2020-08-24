@@ -96,7 +96,10 @@ public class VizSuggestOrchestrator {
         return dataSummary;
     }
 
-    public void createMetainfo(String fileName, Instances data) throws IOException {
+    /**
+     * TODO Use below functions with upload dataset to create metadata as soon as user uploads new dataset
+     */
+    /*public void createMetainfo(String fileName, Instances data) throws IOException {
         int index = fileName.lastIndexOf(".");
         fileName = fileName.substring(0, index);
         List<Attribute> attributes = new ArrayList<Attribute>();
@@ -148,5 +151,5 @@ public class VizSuggestOrchestrator {
                 }
             }
         }
-    }
+    }*/
 }
