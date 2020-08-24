@@ -7,23 +7,23 @@ import org.dice.ida.vizsuggest.VizSuggestOrchestrator;
 import java.util.Map;
 
 public class SuggestVisualization implements Action {
-    @Override
-    public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
-        try {
-            Map<String, Object> payload = chatMessageResponse.getPayload();
-            if(payload.get("activeDS") == null || payload.get("activeTable") == null){
-                chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-                chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-                return;
-            }
-            String datasetName = payload.get("activeDS").toString();
-            String tableName = payload.get("activeTable").toString();
-            VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator(tableName, datasetName);
-            chatMessageResponse.setMessage(vizSuggestOrchestrator.getSuggestion());
-            chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-        } catch (Exception e) {
-            chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-            chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-        }
-    }
+	@Override
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
+		try {
+			Map<String, Object> payload = chatMessageResponse.getPayload();
+			if (payload.get("activeDS") == null || payload.get("activeTable") == null) {
+				chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+				return;
+			}
+			String datasetName = payload.get("activeDS").toString();
+			String tableName = payload.get("activeTable").toString();
+			VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator(tableName, datasetName);
+			chatMessageResponse.setMessage(vizSuggestOrchestrator.getSuggestion());
+			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+		} catch (Exception e) {
+			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+		}
+	}
 }

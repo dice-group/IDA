@@ -26,79 +26,80 @@ import java.util.Objects;
  * @author Nandeesh & Sourabh
  */
 public class VizSuggestOrchestrator {
-    private final String tableName;
-    private final String datasetName;
-    public VizSuggestOrchestrator(String tableName, String datasetName) {
-        this.tableName = tableName;
-        this.datasetName = datasetName;
-    }
+	private final String tableName;
+	private final String datasetName;
 
-    /**
-     * Function accessible from outside to get the visualization suggestion for a dataset
-     *
-     * @return Message to the user containing suggested visualization details
-     * @throws Exception
-     */
-    public String getSuggestion() throws Exception {
-        VizSuggestionFactory vizSuggestionFactory = new VizSuggestionFactory();
-        DataSummary dataSummary = createDataSummary(datasetName, tableName);
-        VisualizationSuggestion visualizationSuggestion = vizSuggestionFactory.suggestVisualization(dataSummary).getParams(dataSummary);
-        List<Map<String, String>> paramsMapLst = visualizationSuggestion.getParamMap();
-        if(paramsMapLst.size() <= 0){
-            return IDAConst.NO_VISUALIZATION_MSG;
-        }
-        StringBuilder responseMsg = new StringBuilder(visualizationSuggestion.getName() + " suits better for this dataset with following parameters\n");
-        for (Map<String, String> paramsMap :
-                paramsMapLst) {
-            for (String paramName : paramsMap.keySet()) {
-                responseMsg.append(paramName).append(": ");
-                responseMsg.append(paramsMap.get(paramName)).append("\n");
-            }
-        }
-        return responseMsg.toString();
-    }
+	public VizSuggestOrchestrator(String tableName, String datasetName) {
+		this.tableName = tableName;
+		this.datasetName = datasetName;
+	}
 
-    /**
-     * Function to read summary of a dataset from file and create summary model
-     *
-     * @param tableName data summary object of the given dataset
-     * @return Data summary model of the dataset
-     * @throws Exception
-     */
-    private DataSummary createDataSummary(String datasetName, String tableName) throws Exception {
-        int index = tableName.lastIndexOf(".");
-        String fileName = tableName.substring(0, index);
-        String metaData = new String(Files.readAllBytes(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("metadata/" + datasetName + "/" + fileName)).getFile())));
-        String[] summaryLines = metaData.split("\n");
-        DataSummary dataSummary = new DataSummary();
-        dataSummary.setName(summaryLines[0].split("\t")[1].trim());
-        dataSummary.setNumberOfInstances(Long.parseLong(summaryLines[1].split("\t")[1].trim()));
-        String[] attributeValues;
-        List<AttributeSummary> attributeSummaryList = new ArrayList<>();
-        AttributeSummary attributeSummary;
-        for (int i = 4; i < summaryLines.length; i++) {
-            summaryLines[i] = summaryLines[i].replaceAll("[/%]", "");
-            attributeValues = summaryLines[i].trim().split("\t");
-            attributeSummary = new AttributeSummary();
-            attributeSummary.setName(attributeValues[0]);
-            attributeSummary.setType(attributeValues[2]);
-            attributeSummary.setNominalTypeProbability(Double.parseDouble(attributeValues[3]));
-            attributeSummary.setIntegerTypeProbability(Double.parseDouble(attributeValues[4]));
-            attributeSummary.setRealNumTypeProbability(Double.parseDouble(attributeValues[5]));
-            attributeSummary.setMissingValuesCount(Long.parseLong(attributeValues[6]));
-            attributeSummary.setMissingValuesProbability(Double.parseDouble(attributeValues[7]));
-            attributeSummary.setUniqueValuesCount(Long.parseLong(attributeValues[8]));
-            attributeSummary.setUniqueValuesProbability(Double.parseDouble(attributeValues[9]));
-            attributeSummary.setDiscreteValuesCount(Long.parseLong(attributeValues[10]));
-            attributeSummaryList.add(attributeSummary);
-        }
-        dataSummary.setAttributeSummaryList(attributeSummaryList);
-        return dataSummary;
-    }
+	/**
+	 * Function accessible from outside to get the visualization suggestion for a dataset
+	 *
+	 * @return Message to the user containing suggested visualization details
+	 * @throws Exception
+	 */
+	public String getSuggestion() throws Exception {
+		VizSuggestionFactory vizSuggestionFactory = new VizSuggestionFactory();
+		DataSummary dataSummary = createDataSummary(datasetName, tableName);
+		VisualizationSuggestion visualizationSuggestion = vizSuggestionFactory.suggestVisualization(dataSummary).getParams(dataSummary);
+		List<Map<String, String>> paramsMapLst = visualizationSuggestion.getParamMap();
+		if (paramsMapLst.size() <= 0) {
+			return IDAConst.NO_VISUALIZATION_MSG;
+		}
+		StringBuilder responseMsg = new StringBuilder(visualizationSuggestion.getName() + " suits better for this dataset with following parameters\n");
+		for (Map<String, String> paramsMap :
+				paramsMapLst) {
+			for (String paramName : paramsMap.keySet()) {
+				responseMsg.append(paramName).append(": ");
+				responseMsg.append(paramsMap.get(paramName)).append("\n");
+			}
+		}
+		return responseMsg.toString();
+	}
 
-    /**
-     * TODO Use below functions with upload dataset to create metadata as soon as user uploads new dataset
-     */
+	/**
+	 * Function to read summary of a dataset from file and create summary model
+	 *
+	 * @param tableName data summary object of the given dataset
+	 * @return Data summary model of the dataset
+	 * @throws Exception
+	 */
+	private DataSummary createDataSummary(String datasetName, String tableName) throws Exception {
+		int index = tableName.lastIndexOf(".");
+		String fileName = tableName.substring(0, index);
+		String metaData = new String(Files.readAllBytes(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("metadata/" + datasetName + "/" + fileName)).getFile())));
+		String[] summaryLines = metaData.split("\n");
+		DataSummary dataSummary = new DataSummary();
+		dataSummary.setName(summaryLines[0].split("\t")[1].trim());
+		dataSummary.setNumberOfInstances(Long.parseLong(summaryLines[1].split("\t")[1].trim()));
+		String[] attributeValues;
+		List<AttributeSummary> attributeSummaryList = new ArrayList<>();
+		AttributeSummary attributeSummary;
+		for (int i = 4; i < summaryLines.length; i++) {
+			summaryLines[i] = summaryLines[i].replaceAll("[/%]", "");
+			attributeValues = summaryLines[i].trim().split("\t");
+			attributeSummary = new AttributeSummary();
+			attributeSummary.setName(attributeValues[0]);
+			attributeSummary.setType(attributeValues[2]);
+			attributeSummary.setNominalTypeProbability(Double.parseDouble(attributeValues[3]));
+			attributeSummary.setIntegerTypeProbability(Double.parseDouble(attributeValues[4]));
+			attributeSummary.setRealNumTypeProbability(Double.parseDouble(attributeValues[5]));
+			attributeSummary.setMissingValuesCount(Long.parseLong(attributeValues[6]));
+			attributeSummary.setMissingValuesProbability(Double.parseDouble(attributeValues[7]));
+			attributeSummary.setUniqueValuesCount(Long.parseLong(attributeValues[8]));
+			attributeSummary.setUniqueValuesProbability(Double.parseDouble(attributeValues[9]));
+			attributeSummary.setDiscreteValuesCount(Long.parseLong(attributeValues[10]));
+			attributeSummaryList.add(attributeSummary);
+		}
+		dataSummary.setAttributeSummaryList(attributeSummaryList);
+		return dataSummary;
+	}
+
+	/**
+	 * TODO Use below functions with upload dataset to create metadata as soon as user uploads new dataset
+	 */
     /*public void createMetainfo(String fileName, Instances data) throws IOException {
         int index = fileName.lastIndexOf(".");
         fileName = fileName.substring(0, index);
