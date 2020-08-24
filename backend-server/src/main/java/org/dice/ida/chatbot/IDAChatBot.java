@@ -1,22 +1,23 @@
 package org.dice.ida.chatbot;
 
-import com.google.cloud.dialogflow.v2.SessionsClient;
-import com.google.cloud.dialogflow.v2.SessionName;
-import com.google.cloud.dialogflow.v2.TextInput;
-import com.google.cloud.dialogflow.v2.QueryInput;
-import com.google.cloud.dialogflow.v2.DetectIntentResponse;
-import com.google.cloud.dialogflow.v2.QueryResult;
+import org.dice.ida.action.process.ActionExecutor;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
-import org.dice.ida.model.Intent;
-import org.dice.ida.vizsuggest.VizSuggestOrchestrator;
-import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.google.cloud.dialogflow.v2.DetectIntentResponse;
+import com.google.cloud.dialogflow.v2.QueryInput;
+import com.google.cloud.dialogflow.v2.QueryResult;
+import com.google.cloud.dialogflow.v2.SessionName;
+import com.google.cloud.dialogflow.v2.SessionsClient;
+import com.google.cloud.dialogflow.v2.TextInput;
+
+import java.util.Map;
 
 /**
  * Class to process messages using Dialogflow library
- *
  * @author Nandeesh Patel
  */
 @Component
@@ -35,14 +36,16 @@ public class IDAChatBot {
 
     /**
      * Method to process the user chat message and return a valid response
-     *
      * @param userMessage . Chat message from the user
      * @return Response to the user chat message
      */
     public ChatMessageResponse processMessage(ChatUserMessage userMessage) {
         String msgText = userMessage.getMessage();
-        messageResponse.setUiAction(IDAConst.UAC_NrmlMsg);
-        try {
+        messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+        Map<String, Object> dataMap = messageResponse.getPayload();
+        dataMap.put("activeDS", userMessage.getActiveDS());
+        dataMap.put("activeTable", userMessage.getActiveTable());
+        try{
             // Instantiate the dialogflow client using the credential json file
             SessionsClient sessionsClient = SessionsClient.create();
 
@@ -59,17 +62,12 @@ public class IDAChatBot {
             // Detect the intent of the query
             DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
             QueryResult queryResult = response.getQueryResult();
-            if (Intent.getForKey(queryResult.getIntent().getDisplayName()).equals(Intent.SUGGEST_VISUALIZATION)) {
-                VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator("IRIS");
-                messageResponse.setMessage(vizSuggestOrchestrator.getSuggestion());
-            } else {
-                messageResponse.setMessage(queryResult.getFulfillmentText());
-            }
-            messageResponse.setUiAction(Intent.getForKey(queryResult.getIntent().getDisplayName()).getAction());
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+			// forwarding the flow to action executor
+            ActionExecutor actionExecutor = new ActionExecutor(queryResult);
+            actionExecutor.processAction(messageResponse);
+        }catch (Exception ex){
             messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
-            messageResponse.setUiAction(IDAConst.UAC_NrmlMsg);
+            messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
         }
         return messageResponse;
     }

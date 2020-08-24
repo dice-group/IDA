@@ -28,7 +28,9 @@ export default class Demo extends Component {
             "senderId"  : "01",
             "message" :  message.data.text,
             "timestamp" : "",
-            "senderName" : "spoorthi"
+            "senderName" : "spoorthi",
+            "activeDS": "covid19",
+            "activeTable": "Patient_Data_Before_20-04-2020.csv"
         };
         const res = axios.post(API_URL + "/chatmessage", obj, {}
         ).then((response) => {

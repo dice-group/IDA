@@ -1,5 +1,6 @@
 package org.dice.ida.controller;
 import org.dice.ida.chatbot.IDAChatBot;
+import org.dice.ida.vizsuggest.VizSuggestOrchestrator;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
@@ -35,7 +36,18 @@ public class MessageController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value= "/chatmessage", method = RequestMethod.POST)
 	public ChatMessageResponse handleMessage(@RequestBody ChatUserMessage message) throws Exception {
-		System.out.println(message.getMessage());
 		return idaChatBot.processMessage(message);
+	}
+
+	@RequestMapping("/createmeta")
+	public String createMeta() {
+		VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator("", "covid19");
+		try{
+			vizSuggestOrchestrator.FileReader();
+		}catch (Exception ex) {
+			ex.printStackTrace();
+			return "Exception";
+		}
+		return "Metadata created for covid19!";
 	}
 }
