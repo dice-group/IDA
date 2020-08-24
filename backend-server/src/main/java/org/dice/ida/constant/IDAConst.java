@@ -46,4 +46,12 @@ public interface IDAConst {
 	public static final String DSMAP_PROP_FILEPATH = "datasetmap.properties";
 	// CSV File name Pattern
 	public static final String CSV_FILE_PATTERN = ".*[cC][sS][vV]$";
+
+	/**
+	 * Bar graph parameters thresholds
+	 */
+	public static final int X_PARAM_MAX_COUNT_OF_VALUES = 50;
+	public static final double  X_PARAM_UNIQUENESS_PROBABILITY = 100.0;
+	public static final double Y_PARAM_UNIQUENESS_MIN_PROBABILITY = 90.0;
+	public static final double X_PARAM_MIN_DUPLICATE_RATIO = 30.0;
 }

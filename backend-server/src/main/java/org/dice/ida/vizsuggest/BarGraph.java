@@ -1,5 +1,6 @@
 package org.dice.ida.vizsuggest;
 
+import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.VisualizationSuggestion;
@@ -23,16 +24,16 @@ public class BarGraph implements IVisualizationParent{
         VisualizationSuggestion visualizationSuggestion = new VisualizationSuggestion();
         List<AttributeSummary> xAxis = dataSummary.getAttributeSummaryList()
                 .stream()
-                .filter(x -> "Nom".equals(x.getType()) && x.getDiscreteValuesCount() <= 50).collect(Collectors.toList());
+                .filter(x -> "Nom".equals(x.getType()) && x.getDiscreteValuesCount() <= IDAConst.X_PARAM_MAX_COUNT_OF_VALUES).collect(Collectors.toList());
         Map<AttributeSummary, List<String>> paramMap = new HashMap<>();
         for (AttributeSummary attributeSummary :
                 xAxis) {
-            if (attributeSummary.getUniqueValuesProbability() == 100.00) {
+            if (attributeSummary.getUniqueValuesProbability() == IDAConst.X_PARAM_UNIQUENESS_PROBABILITY) {
                 paramMap.put(attributeSummary, dataSummary.getAttributeSummaryList()
                         .stream()
-                        .filter(x -> "Num".equals(x.getType()) && x.getUniqueValuesProbability() > 90.00)
+                        .filter(x -> "Num".equals(x.getType()) && x.getUniqueValuesProbability() > IDAConst.Y_PARAM_UNIQUENESS_MIN_PROBABILITY)
                         .map(AttributeSummary::getName).collect(Collectors.toList()));
-            } else if ((dataSummary.getNumberOfInstances() / attributeSummary.getDiscreteValuesCount()) > 30) {
+            } else if ((dataSummary.getNumberOfInstances() / attributeSummary.getDiscreteValuesCount()) > IDAConst.X_PARAM_MIN_DUPLICATE_RATIO) {
                 paramMap.put(attributeSummary, new ArrayList<>() {{
                     add("count of " + attributeSummary.getName());
                 }});
