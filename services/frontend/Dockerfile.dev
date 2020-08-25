@@ -7,8 +7,6 @@ RUN npm ci
 
 COPY frontend/src src
 COPY frontend/public public
-COPY frontend/scripts scripts
-COPY frontend/envs envs
 
 EXPOSE 4200
-CMD npm run start:dev
+CMD npm run start
