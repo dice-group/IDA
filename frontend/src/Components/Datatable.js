@@ -28,6 +28,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
+  
 }
 
 const rows = [
@@ -43,10 +44,28 @@ const useStyles = makeStyles({
     minWidth: 200,
   },
 });
+// eslint-disable-next-line 
+let parent=[];
+let temp=[];
 
-export default function CustomizedTables() {
+export default function CustomizedTables(props) {
   const classes = useStyles();
-
+  if(props.item !== undefined) {
+    let data = props.item.data;
+    let childData =props.item.children;
+    let value =['root',props.item.children]
+    console.log("val",value)
+    if (childData !== undefined){
+        if (value !== 'root'){
+          parent = childData.map((ch , idx) =>  
+            temp.push({data:ch.data})
+        );
+    }else{
+      temp.push(data)
+    }}
+    console.log("Love",data)
+    console.log("Life",temp)
+  }
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">

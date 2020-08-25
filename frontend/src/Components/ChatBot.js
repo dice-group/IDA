@@ -12,35 +12,43 @@ export default class ChatBot extends Component {
       messageList: [],
       changeCSS:{},
       selectClick:[],
+      pyld:[],
+      action:'1004',
+      msg: [],
     }
   }
   
-  _onMessageWasSent(message) {
+  _onMessageWasSent(message,props) {
     this.setState({
       messageList: [...this.state.messageList, message]
     })
-    // let changeCSS = {top:"50%" , transform: "translate(-50%, -50%)"}
-
     var outerscope = this;
     if (message.data.text.length > 0) {
         let obj = {
             "senderId"  : "01",
             "message" :  message.data.text,
             "timestamp" : "",
-            "senderName" : "spoorthi"
-        };
-        // console.log(obj,message.data.text);
-         if(message.data.text === "load dataset") {
-          this.props.setShowGrid(true);
-          console.log("props",this.props.setShowGrid);
-        }
-        const res = axios.post("http://localhost:8090/chatmessage", obj, {}
+            "senderName" : "spoorthi",
+            "activeDS" : "",
+            "activeTable": ""
+        };   
+        
+        const res = axios.post("http://localhost:8080/chatmessage", obj, {}
         ).then(response => {
             console.log(response);
             //changeCSS = {top:"50%" , right: 0, transform: "translate(-10%, -60%) !important"};
             outerscope._sendMessage(response.data.message);
-            // const msg = message.data.text;
-                        
+            this.msg = response.data.uiAction;
+            console.log("act",this.msg)
+            this.pyld =response.data.payload;
+            if( this.msg === 1004) {
+              console.log("lets dance")
+              // this.props.setShowGrid(true);
+              // console.log("props",this.props.setShowGrid);
+              this.props.setDetails(this.pyld);
+              // console.log("mas",this.pyld)      
+            }        
+                       
       }, function (err) {
             console.log("error");
             console.log(err.status);
@@ -59,7 +67,7 @@ export default class ChatBot extends Component {
       })
   }
  
-  render() {
+  render(props) {
     let changeCSS = {top:"50%" , transform: "translate(-50%, -50%)"};
 
     return (
