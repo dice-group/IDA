@@ -35,3 +35,4 @@ build/
 ida-chatbot-dialogflow.json
 
 src/main/resources/datasets
+src/main/resources/metadata
