@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-// import CustomizedTables from './Datatable';
+import CustomizedTables from './Datatable';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,18 +60,20 @@ export default function ScrollableTabsButtonAuto(props) {
   const checkItem = (index) => {
     // array iteration
     props.setSelectTree(index)
+    props.setSelectedTab(index)
 
   }
 
   const renderData =()=>{
-   
-      // return <CustomizedTables item = {props.item} />
-    
+    if(props.loaded === 'true'){
+      return <CustomizedTables item = {props.item}  selectedTab={props.selectedTab} selectTree={props.selectTree}/>
+    }
   }
+ 
   return (
     <div className={classes.root}>
       <ul>     
-      <AppBar position="static" color="default" >
+      <AppBar position="static" color="default"  >
         <Tabs
         onChange={handleChange}
         indicatorColor="#4f8bff"
@@ -81,15 +83,28 @@ export default function ScrollableTabsButtonAuto(props) {
         aria-label="scrollable auto tabs example"
         value = {props.selectedTab}
       >   
+      
         {tabs.map(
               (tabs, index)=>(  
                   <ul key = {tabs.id}> 
+                   <Tabs
+                      onChange={handleChange}
+                      indicatorColor="#4f8bff"
+                      textColor="primary"
+                      variant="scrollable"
+                      scrollButtons="auto"
+                      aria-label="scrollable auto tabs example"
+                      value = {props.selectedTab}
+                    >      
                   <Tab value={index} label={tabs.name}  onClick={(e) => checkItem(index)} /> 
+                  </Tabs>
                   </ul> 
               )  
           )}
+       
       </Tabs>
-    </AppBar> 
+      </AppBar> 
+    
           {/* </AppBar> 
           */}
       <TabPanel value={props.selectedTab} index={props.selectedTab}>

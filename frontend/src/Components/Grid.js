@@ -21,28 +21,30 @@ const useStyles = makeStyles((theme) => ({
 export default function CenteredGrid(props) {
   const classes = useStyles();
   const [selectedTab, setSelectedTab] = useState(0);
-  const [showGrid , setShowGrid ] = useState('false');
   const [item, setItem] = useState();
   const [selectTree, setSelectTree]=useState(0);
   const [ detail, setDetails]=useState([]);
+  const [loaded, setLoaded] = useState('false');
   let hiddenFlag = 'divHidden';
-  showGrid === 'false' ? hiddenFlag = 'divShow' : hiddenFlag = 'divHidden';
-
+  const loadTab = (loaded)=>
+  {
+    if(loaded === 'true'){
+    return <TabsWrappedLabel loaded={loaded} selectedTab={selectedTab} selectTree={selectTree} setSelectedTab ={setSelectedTab} setSelectTree={setSelectTree} item={item} setItem={setItem} />       
+  }
+}
   return (
     <div className={classes.root}>
       <div className = {hiddenFlag}>
       <Grid container showGrid= {props.showGrid} >
         <Grid item xs={3}>  
-          <RecursiveTreeView setSelectedTab={setSelectedTab} selectTree={selectTree} setItem={setItem}   detail={detail} />
+          <RecursiveTreeView loaded={loaded} setSelectedTab={setSelectedTab} selectTree={selectTree} setItem={setItem}   detail={detail} />
         </Grid>
         <Grid item xs={9}>
-        <TabsWrappedLabel selectedTab={selectedTab} setSelectedTab ={setSelectedTab} setSelectTree={setSelectTree} item={item} setItem={setItem} />        </Grid>
+            {loadTab(loaded)}
+         </Grid>
         </Grid>
         </div>
-        {/* <Grid item xs={4}> */}
-          <ChatBot setShowGrid ={setShowGrid}  setDetails={setDetails} selectedTab={selectedTab}/>
-        {/* </Grid> */}
-      
+          <ChatBot   setDetails={setDetails} selectedTab={selectedTab} setLoaded={setLoaded}/>      
     </div>
   );
 }

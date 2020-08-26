@@ -45,7 +45,9 @@ export default class ChatBot extends Component {
               console.log("lets dance")
               // this.props.setShowGrid(true);
               // console.log("props",this.props.setShowGrid);
+              
               this.props.setDetails(this.pyld);
+              this.props.setLoaded('true');
               // console.log("mas",this.pyld)      
             }        
                        

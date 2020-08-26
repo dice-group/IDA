@@ -6,10 +6,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Box from "@material-ui/core/Box";
 
-
-
-
-
 const useStyles = makeStyles({
   Box: {
     height: 1000,
@@ -26,6 +22,8 @@ const useStyles = makeStyles({
 let main =[];
 export default function RecursiveTreeView(props) {
   const classes = useStyles();
+  const isLoaded = props.loaded;
+  console.log("loaded",isLoaded)
   const callFunction =()=>{
     // eslint-disable-next-line 
     let parent =[];
@@ -43,13 +41,12 @@ export default function RecursiveTreeView(props) {
    
 }
 
-  
+
   const checkItem = (main) => {
     props.setSelectedTab(main.id)
     if (main.id === 'root'){
-    props.setItem(main);
+      props.setItem(main);
     }
-
   }
   
   const renderTree = (main) => (
@@ -70,8 +67,7 @@ export default function RecursiveTreeView(props) {
       defaultExpandIcon={<ChevronRightIcon />}
       selected = {props.selectTree}
       > 
-      
-      {renderTree(main)}
+      { renderTree(main)}
     </TreeView>
     </Box>
     </div>
