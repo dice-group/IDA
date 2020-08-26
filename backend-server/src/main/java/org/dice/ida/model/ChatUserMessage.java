@@ -7,6 +7,8 @@ public class ChatUserMessage {
 	private String senderId;
 	private String senderName;
 	private String message;
+	private String activeDS;
+	private String activeTable;
 	private Date timestamp;
 
 	public ChatUserMessage() {
@@ -38,6 +40,22 @@ public class ChatUserMessage {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getActiveDS() {
+		return activeDS;
+	}
+
+	public void setActiveDS(String activeDS) {
+		this.activeDS = activeDS;
+	}
+
+	public String getActiveTable() {
+		return activeTable;
+	}
+
+	public void setActiveTable(String activeTable) {
+		this.activeTable = activeTable;
 	}
 
 	public Date getTimestamp() {
