@@ -16,8 +16,8 @@ function build_container() {
     fi
 }
 
-build_container frontend .. -f frontend/Dockerfile.prod
-build_container backend-server .. -f backend-server/Dockerfile.dev
+build_container nginx .. -f frontend/Dockerfile.prod
+build_container backend-server .. -f backend-server/Dockerfile.prod
 
 export REGISTRY=$registry
 export VERSION=$version
