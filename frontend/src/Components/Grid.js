@@ -1,4 +1,4 @@
-import React ,{useState} from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ChatBot from './ChatBot';
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   paper: {
-    height:"100%",
+    height: "100%",
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
@@ -20,30 +20,28 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CenteredGrid(props) {
   const classes = useStyles();
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [item, setItem] = useState();
-  const [selectTree, setSelectTree]=useState(0);
-  const [ detail, setDetails]=useState([]);
+  const [detail, setDetails] = useState([]);
   const [loaded, setLoaded] = useState('false');
-  const loadTab = (loaded)=>
-  {
-    if(loaded === 'true'){
-    return <TabsWrappedLabel loaded={loaded} selectedTab={selectedTab} selectTree={selectTree} setSelectedTab ={setSelectedTab} setSelectTree={setSelectTree} item={item} setItem={setItem} />       
+  const [selectedNodeId, setSelectedNodeId] = useState('');
+  const [expandedNodeId, setExpandedNodeId] = useState('');
+  const loadTab = (loaded) => {
+    if (loaded === 'true') {
+      return <TabsWrappedLabel loaded={loaded} detail={detail} selectedNodeId={selectedNodeId} setSelectedNodeId={setSelectedNodeId} />
+    }
   }
-}
   return (
     <div className={classes.root}>
       <div>
-      <Grid container >
-        <Grid item xs={3}>  
-          <RecursiveTreeView loaded={loaded}  setSelectedTab={setSelectedTab} selectTree={selectTree} setItem={setItem}   detail={detail} />
-        </Grid>
-        <Grid item xs={9}>
+        <Grid container >
+          <Grid item xs={3}>
+            <RecursiveTreeView loaded={loaded} selectedNodeId={selectedNodeId} setSelectedNodeId={setSelectedNodeId} expandedNodeId={expandedNodeId} setExpandedNodeId={setExpandedNodeId} detail={detail} />
+          </Grid>
+          <Grid item xs={9}>
             {loadTab(loaded)}
-         </Grid>
+          </Grid>
         </Grid>
-        </div>
-        <ChatBot   setDetails={setDetails} selectedTab={selectedTab} setLoaded={setLoaded}/>      
+      </div>
+      <ChatBot setDetails={setDetails} setSelectedNodeId={setSelectedNodeId} setExpandedNodeId={setExpandedNodeId} setLoaded={setLoaded} />
     </div>
   );
 }

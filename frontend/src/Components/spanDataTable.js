@@ -47,6 +47,7 @@ let data=[];
 export default function SpanningTable(props) {
   const classes = useStyles();
     useEffect(()=>{
+      debugger;
         if(props.item !== undefined) {
             data = props.item.data;
             // eslint-disable-next-line
