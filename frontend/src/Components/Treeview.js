@@ -45,18 +45,20 @@ const chooseSelect = () =>{
         return props.selectTree;
     }
 }
-const itemset =(main) =>{
-  if(main.id === 'root'){
-      props.setItem(main);
-  }
-}
+// const itemset =() =>{
+//   if(main.id === 'root'){
+//       props.setItem(main);
+//   }
+// }
   const checkItem = (main) => {
     props.setSelectedTab(main);
-    
+    if(main.id === 'root'){
+      props.setItem(main);
+  }
   }
   const renderTree = (main) => (
     /* eslint-disable */
-    <TreeItem key= {Math.random()} nodeId={main.id} label={main.name} onChange={checkItem(main)} onClick={itemset(main)} >
+    <TreeItem key= {Math.random()} nodeId={main.id} label={main.name} onClick={(e)=>checkItem(main)}  >
       {Array.isArray(main.children) ? main.children.map((node) => renderTree(node)) : null}
     </TreeItem>
   
