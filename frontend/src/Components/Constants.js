@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ChatBot from './ChatBot';
-
+/* eslint-disable */
 export default function Constants(){
     const [uiActions, setUiActions] =useState([]);
     setUiActions([

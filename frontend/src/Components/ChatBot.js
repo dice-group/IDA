@@ -1,9 +1,7 @@
 import React, {Component} from "react";
 import axios from "axios";
 import {Launcher} from "react-chat-window";
-
-
-
+/* eslint-disable */
 export default class ChatBot extends Component {
  
   constructor(props) {
@@ -36,19 +34,13 @@ export default class ChatBot extends Component {
         const res = axios.post("http://localhost:8080/chatmessage", obj, {}
         ).then(response => {
             console.log(response);
-            //changeCSS = {top:"50%" , right: 0, transform: "translate(-10%, -60%) !important"};
             outerscope._sendMessage(response.data.message);
             this.msg = response.data.uiAction;
             console.log("act",this.msg)
             this.pyld =response.data.payload;
             if( this.msg === 1004) {
-              console.log("lets dance")
-              // this.props.setShowGrid(true);
-              // console.log("props",this.props.setShowGrid);
-              
               this.props.setDetails(this.pyld);
-              this.props.setLoaded('true');
-              // console.log("mas",this.pyld)      
+              this.props.setLoaded('true');    
             }        
                        
       }, function (err) {

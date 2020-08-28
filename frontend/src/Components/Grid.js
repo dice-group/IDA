@@ -5,7 +5,7 @@ import ChatBot from './ChatBot';
 import RecursiveTreeView from './Treeview';
 import TabsWrappedLabel from './Tabs';
 // import './chatbot.css';
-
+/* eslint-disable */
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -25,7 +25,6 @@ export default function CenteredGrid(props) {
   const [selectTree, setSelectTree]=useState(0);
   const [ detail, setDetails]=useState([]);
   const [loaded, setLoaded] = useState('false');
-  let hiddenFlag = 'divHidden';
   const loadTab = (loaded)=>
   {
     if(loaded === 'true'){
@@ -34,17 +33,17 @@ export default function CenteredGrid(props) {
 }
   return (
     <div className={classes.root}>
-      <div className = {hiddenFlag}>
-      <Grid container showGrid= {props.showGrid} >
+      <div>
+      <Grid container >
         <Grid item xs={3}>  
-          <RecursiveTreeView loaded={loaded} setSelectedTab={setSelectedTab} selectTree={selectTree} setItem={setItem}   detail={detail} />
+          <RecursiveTreeView loaded={loaded}  setSelectedTab={setSelectedTab} selectTree={selectTree} setItem={setItem}   detail={detail} />
         </Grid>
         <Grid item xs={9}>
             {loadTab(loaded)}
          </Grid>
         </Grid>
         </div>
-          <ChatBot   setDetails={setDetails} selectedTab={selectedTab} setLoaded={setLoaded}/>      
+        <ChatBot   setDetails={setDetails} selectedTab={selectedTab} setLoaded={setLoaded}/>      
     </div>
   );
 }

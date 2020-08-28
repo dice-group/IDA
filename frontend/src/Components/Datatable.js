@@ -22,7 +22,7 @@ const StyledTableCell = withStyles((theme) => ({
     color: theme.palette.common.white,
   },
   body: {
-    fontSize: 14,
+    fontSize: 12,
   },
 }))(TableCell);
 
@@ -100,7 +100,7 @@ const useStyles1 = makeStyles((theme) => ({
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 200,
+    minWidth: 100,
   },
 });
 // eslint-disable-next-line 
@@ -131,19 +131,13 @@ export default function CustomizedTables(props) {
     let data = props.item.data;
     // eslint-disable-next-line
     let childData =props.item.children;
-    let value =['root',props.item.children]
-    console.log("val",value);
-
-    console.log("haseeb",data);
+    let value =['root',props.item.children];
     seletedItem = value[1][props.selectTree].data;
     keysName = Object.keys(seletedItem[0]);
-    columnList = data[props.selectTree].fileColMd.map(col => col.colName);
-    
-    console.log("selected", seletedItem);
+    columnList = data[props.selectTree].fileColMd.map(col => col.colName);    
     parent = seletedItem.map((ch , idx) =>  
         temp.push(ch)
     );
-
   }
   return (
     <TableContainer component={Paper}>
@@ -161,10 +155,8 @@ export default function CustomizedTables(props) {
             : seletedItem
             ).map((row) => (
                     <StyledTableRow key={row}>    
-                    {keysName.map((colName) => (
-                    
-                        <StyledTableCell component="th" scope="row">{row[colName]}</StyledTableCell>
-                    
+                    {keysName.map((colName) => (                   
+                        <StyledTableCell component="th" scope="row">{row[colName]}</StyledTableCell> 
                     ))}
                     </StyledTableRow>
             ))}
@@ -175,7 +167,8 @@ export default function CustomizedTables(props) {
             </TableRow>
           )}
         </TableBody>
-        <TableFooter>
+      </Table>
+      <TableFooter>
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
@@ -193,7 +186,7 @@ export default function CustomizedTables(props) {
             />
           </TableRow>
         </TableFooter>
-      </Table>
     </TableContainer>
+  
   );
 }
