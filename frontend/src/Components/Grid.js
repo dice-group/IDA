@@ -24,9 +24,17 @@ export default function CenteredGrid(props) {
   const [loaded, setLoaded] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState('');
   const [expandedNodeId, setExpandedNodeId] = useState([]);
+  const [activeDS, setActiveDS] = useState('');
+  const [activeTable, setActiveTable] = useState('');
   const loadTab = (loaded) => {
     if (loaded) {
-      return <TabsWrappedLabel loaded={loaded} detail={detail} selectedNodeId={selectedNodeId} setSelectedNodeId={setSelectedNodeId} />
+      return <TabsWrappedLabel
+        loaded={loaded}
+        detail={detail}
+        selectedNodeId={selectedNodeId}
+        setSelectedNodeId={setSelectedNodeId}
+        setActiveTable={setActiveTable}
+      />
     }
   }
   return (
@@ -34,14 +42,33 @@ export default function CenteredGrid(props) {
       <div>
         <Grid container >
           <Grid item xs={3}>
-            <RecursiveTreeView loaded={loaded} selectedNodeId={selectedNodeId} setSelectedNodeId={setSelectedNodeId} expandedNodeId={expandedNodeId} setExpandedNodeId={setExpandedNodeId} detail={detail} />
+            <RecursiveTreeView
+              loaded={loaded}
+              selectedNodeId={selectedNodeId}
+              setSelectedNodeId={setSelectedNodeId}
+              expandedNodeId={expandedNodeId}
+              setExpandedNodeId={setExpandedNodeId}
+              detail={detail}
+              setActiveDS={setActiveDS}
+              setActiveTable={setActiveTable}
+            />
           </Grid>
           <Grid item xs={9}>
             {loadTab(loaded)}
           </Grid>
         </Grid>
       </div>
-      <ChatBot setDetails={setDetails} setSelectedNodeId={setSelectedNodeId} detail={detail} expandedNodeId={expandedNodeId} setExpandedNodeId={setExpandedNodeId} setLoaded={setLoaded} />
+      <ChatBot
+        setDetails={setDetails}
+        setSelectedNodeId={setSelectedNodeId}
+        detail={detail}
+        expandedNodeId={expandedNodeId}
+        setExpandedNodeId={setExpandedNodeId}
+        setLoaded={setLoaded}
+        activeDS={activeDS}
+        activeTable={activeTable}
+        setActiveDS={setActiveDS}
+      />
     </div>
   );
 }

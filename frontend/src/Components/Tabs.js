@@ -7,7 +7,6 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import CustomizedTables from './Datatable';
 import SpanningTable from "./spanDataTable";
-/* eslint-disable */
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -62,14 +61,14 @@ export default function ScrollableTabsButtonAuto(props) {
   const value = props.selectedNodeId || data.id;
   const handleChange = (event, newValue) => {
     props.setSelectedNodeId(newValue);
+    const selectedTab = tabs.find(tab => tab.value === newValue && tab.type === 'table') || {};
+    props.setActiveTable(selectedTab.label || '');
   };
   const renderData = (tab) => {
     if (tab.type === 'table') {
       return <CustomizedTables data={tab.data} columns={tab.columns} />;
     } else {
-      // TODO: Modify the Spanning table component to work with new design
       return <SpanningTable data={tab.data} />
-      // return <h3>Metada</h3>;
     }
   }
 
@@ -96,7 +95,6 @@ export default function ScrollableTabsButtonAuto(props) {
         {tabs.map(
           (tab, index) => (
             <TabPanel value={value} index={tab.value} key={index}>
-              {/* this is where the table is rendered */}
               {renderData(tab)}
             </TabPanel>
           )

@@ -28,8 +28,8 @@ export default class ChatBot extends Component {
         'message': message.data.text,
         'timestamp': '',
         'senderName': 'spoorthi',
-        'activeDS': '',
-        'activeTable': ''
+        'activeDS': this.props.activeDS,
+        'activeTable': this.props.activeTable
       };
       axios.post(IDA_CONSTANTS.API_BASE + '/chatmessage', obj)
         .then(response => {
@@ -66,6 +66,7 @@ export default class ChatBot extends Component {
             expandedNodes.push(main.id);
             this.props.setExpandedNodeId(expandedNodes);
             this.props.setSelectedNodeId(main.id);
+            this.props.setActiveDS(main.id);
             this.props.setLoaded(true);
           }
         })

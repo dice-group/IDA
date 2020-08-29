@@ -35,8 +35,13 @@ export default function RecursiveTreeView(props) {
   const handleToggle = (event, nodeIds) => {
     props.setExpandedNodeId(nodeIds);
   };
-  const handleSelect = (event, nodeIds) => {
-    props.setSelectedNodeId(nodeIds);
+  const handleSelect = (event, nodeId) => {
+    props.setSelectedNodeId(nodeId);
+    const parentNode = props.detail.find(ds => ds.id === nodeId || ds.children.findIndex(child => child.id === nodeId) >= 0);
+    props.setActiveDS(parentNode.id || '');
+    if (parentNode.id && parentNode.id !== nodeId) {
+      props.setActiveTable(parentNode.children.find(child => child.id === nodeId).name);
+    }
   };
 
   return (
