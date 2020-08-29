@@ -62,9 +62,11 @@ export default class ChatBot extends Component {
               dataSets.push(main);
               this.props.setDetails(dataSets);
             }
-            this.props.setLoaded(true);
+            const expandedNodes = this.props.expandedNodeId;
+            expandedNodes.push(main.id);
+            this.props.setExpandedNodeId(expandedNodes);
             this.props.setSelectedNodeId(main.id);
-            this.props.setExpandedNodeId(main.id);
+            this.props.setLoaded(true);
           }
         })
         .catch((err) => {

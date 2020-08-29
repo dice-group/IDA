@@ -23,7 +23,7 @@ export default function CenteredGrid(props) {
   const [detail, setDetails] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState('');
-  const [expandedNodeId, setExpandedNodeId] = useState('');
+  const [expandedNodeId, setExpandedNodeId] = useState([]);
   const loadTab = (loaded) => {
     if (loaded) {
       return <TabsWrappedLabel loaded={loaded} detail={detail} selectedNodeId={selectedNodeId} setSelectedNodeId={setSelectedNodeId} />
@@ -41,7 +41,7 @@ export default function CenteredGrid(props) {
           </Grid>
         </Grid>
       </div>
-      <ChatBot setDetails={setDetails} setSelectedNodeId={setSelectedNodeId} detail={detail} setExpandedNodeId={setExpandedNodeId} setLoaded={setLoaded} />
+      <ChatBot setDetails={setDetails} setSelectedNodeId={setSelectedNodeId} detail={detail} expandedNodeId={expandedNodeId} setExpandedNodeId={setExpandedNodeId} setLoaded={setLoaded} />
     </div>
   );
 }

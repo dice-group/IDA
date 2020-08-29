@@ -128,8 +128,8 @@ export default function CustomizedTables(props) {
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow>
-            {keysName.map((row) => (
-              <StyledTableCell align="right">{row}</StyledTableCell>
+            {keysName.map((row, index) => (
+              <StyledTableCell align="right" key={index}>{row}</StyledTableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -139,8 +139,8 @@ export default function CustomizedTables(props) {
             : seletedItem
           ).map((row, index) => (
             <StyledTableRow key={index}>
-              {keysName.map((colName) => (
-                <StyledTableCell component="th" scope="row">{row[colName]}</StyledTableCell>
+              {keysName.map((colName, index) => (
+                <StyledTableCell component="th" scope="row" key={index}>{row[colName]}</StyledTableCell>
               ))}
             </StyledTableRow>
           ))}
@@ -151,25 +151,25 @@ export default function CustomizedTables(props) {
             </TableRow>
           )}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              colSpan={3}
+              count={seletedItem.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              SelectProps={{
+                inputProps: { 'aria-label': 'rows per page' },
+                native: true,
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
-      <TableFooter>
-        <TableRow>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-            colSpan={3}
-            count={seletedItem.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            SelectProps={{
-              inputProps: { 'aria-label': 'rows per page' },
-              native: true,
-            }}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-            ActionsComponent={TablePaginationActions}
-          />
-        </TableRow>
-      </TableFooter>
     </TableContainer>
 
   );

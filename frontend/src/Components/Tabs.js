@@ -88,14 +88,14 @@ export default function ScrollableTabsButtonAuto(props) {
             selectionFollowsFocus={true}
           >
             {tabs.map(
-              tab => (
-                <Tab value={tab.value} label={tab.label} />
+              (tab, index) => (
+                <Tab value={tab.value} label={tab.label} key={index}/>
               ))}
           </Tabs>
         </AppBar>
         {tabs.map(
-          tab => (
-            <TabPanel value={value} index={tab.value}>
+          (tab, index) => (
+            <TabPanel value={value} index={tab.value} key={index}>
               {/* this is where the table is rendered */}
               {renderData(tab)}
             </TabPanel>

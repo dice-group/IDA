@@ -23,22 +23,21 @@ const useStyles = makeStyles({
 export default function RecursiveTreeView(props) {
   const classes = useStyles();
   const detail = props.detail;
-  const expanded = [props.expandedNodeId];
+  const expanded = props.expandedNodeId;
   const chooseSelect = () => {
     return props.selectedNodeId || '';
   }
-
-  const checkItem = (main) => {
-    props.setSelectedNodeId(main.id);
-    if(main.type === 'folder') {
-      props.setExpandedNodeId(main.id);
-    }
-  }
   const renderTree = (main) => (
-    main.id && <TreeItem key={Math.random()} nodeId={main.id} label={main.name} onClick={(e) => checkItem(main)}  >
+    main.id && <TreeItem key={Math.random()} nodeId={main.id} label={main.name}>
       {Array.isArray(main.children) ? main.children.map((node) => renderTree(node)) : null}
     </TreeItem>
   );
+  const handleToggle = (event, nodeIds) => {
+    props.setExpandedNodeId(nodeIds);
+  };
+  const handleSelect = (event, nodeIds) => {
+    props.setSelectedNodeId(nodeIds);
+  };
 
   return (
 
@@ -50,6 +49,8 @@ export default function RecursiveTreeView(props) {
           expanded={expanded}
           defaultExpandIcon={<ChevronRightIcon />}
           selected={chooseSelect()}
+          onNodeToggle={handleToggle}
+          onNodeSelect={handleSelect}
         >
           {detail.map(
             (main) => (
