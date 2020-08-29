@@ -1,118 +1,68 @@
-import React, { useEffect } from 'react';
-import { makeStyles,withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-      backgroundColor: '#4f8bff', // theme.palette.background.default,
-      color: theme.palette.common.white,
-    },
-    body: {
-      fontSize: 12,
-    },
-  }))(TableCell);
-  
-  const StyledTableRow = withStyles((theme) => ({
-    root: {
-      "&:nth-of-type(odd)": {
-        backgroundColor: theme.palette.action.hover,
-      },
-    },
-  }))(TableRow);
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Card, CardContent, Box } from '@material-ui/core';
+import CustomizedTables from './Datatable';
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
+  idaCard: {
+    marginTop: 15,
+    marginBottom: 15
+  }
 });
 
-let columnname0 =[];
-let  keysName0=[];
-let columnname1 =[];
-let  keysName1=[];
-let columnname2=[];
-let  keysName2=[];
-// eslint-disable-next-line
-let columnList = [];
-let seletedItem0 = [];
-let seletedItem1 = [];
-let seletedItem2 = [];
-let data=[];
 export default function SpanningTable(props) {
   const classes = useStyles();
-    useEffect(()=>{
-      debugger;
-        if(props.item !== undefined) {
-            data = props.item.data;
-            // eslint-disable-next-line
-            console.log("mufti",data);
-            seletedItem0 = data[0].fileColMd;
-            seletedItem1 = data[1].fileColMd;
-            seletedItem2 = data[2].fileColMd;
-            if (props.selectTree==='root'){
-                columnList = data[props.selectTree].fileColMd.map(col => col.colName);
-                console.log("selected", columnList);
-            }
-            columnname0 = data[0].fileColMd[0];
-            keysName0 = Object.keys(columnname0);
-            columnname1 = data[0].fileColMd[1];
-            keysName1 = Object.keys(columnname1);
-            columnname2 = data[0].fileColMd[2];
-            keysName2 = Object.keys(columnname2);
-        }
-    })
+  const tableData = props.data || [];
+  const keysName = [{
+    'label': 'Column Index',
+    'colName': 'colIndex',
+    'key': 'colIndex'
+  }, {
+    'label': 'Column Name',
+    'colName': 'colName',
+    'key': 'colName'
+  }, {
+    'label': 'Column Description',
+    'colName': 'colDesc',
+    'key': 'colDesc'
+  }, {
+    'label': 'Column Data Type',
+    'colName': 'colType',
+    'key': 'colType'
+  }];
+  tableData.forEach(table => {
+    table.metaData = Object.keys(table).filter(k => k !== 'fileColMd' && k !== 'metaData').map(key => ({
+      'key': key,
+      'value': table[key] + ''
+    }));
+  });
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="spanning table">
-        <TableHead>
-          <TableRow>
-            {keysName0.map((row) => (
-                    <StyledTableCell>{row}</StyledTableCell>
-                ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-       
-        
-           <TableRow>
-          <TableCell colSpan={3}> </TableCell>
-          </TableRow>
-        
-        {seletedItem0.map((row) => (
-            <StyledTableRow key={row.colIndex}>
-                 {keysName0.map((colName) => (
-              <StyledTableCell>{row[colName]}</StyledTableCell>
-              ))}
-            </StyledTableRow>
-          ))}
-          <TableRow>
-                 <TableCell colSpan={3}> </TableCell>
-            </TableRow>
-        {seletedItem1.map((row) => (
-                    <StyledTableRow key={row.colIndex}>
-                        {keysName1.map((colName) => (
-                    <StyledTableCell>{row[colName]}</StyledTableCell>
-                    ))}
-                    </StyledTableRow>
-                ))}
-                <TableRow>
-                      <TableCell colSpan={3}></TableCell>
-                </TableRow>  
-        {seletedItem2.map((row) => (
-                    <StyledTableRow key={row.colIndex}>
-                        {keysName2.map((colName) => (
-                    <StyledTableCell >{row[colName]}</StyledTableCell>
-                    ))}
-                    </StyledTableRow>
-                ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      {
+        tableData.map(
+          (table, i) => (
+            <Card className={classes.idaCard} key={i}>
+              <CardContent>
+                {table.metaData.map(
+                  (tableMd, j) => (
+                    <Grid container spacing={3} key={j}>
+                      <Grid container item xs={12} sm={6} md={4} lg={2}>
+                        {tableMd.key}:
+                      </Grid>
+                      <Grid container item xs={12} sm={6} md={8} lg={10}>
+                        {tableMd.value}
+                      </Grid>
+                    </Grid>
+                  )
+                )}
+                <Box mt={2} mb={2}>
+                  <CustomizedTables data={table.fileColMd} columns={keysName} noPagination={true} />
+                </Box>
+              </CardContent>
+            </Card>
+          )
+        )
+      }
+    </>
   );
 }

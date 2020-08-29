@@ -65,11 +65,11 @@ export default function ScrollableTabsButtonAuto(props) {
   };
   const renderData = (tab) => {
     if (tab.type === 'table') {
-      return <CustomizedTables data={tab.data} columns={tab.columns}/>;
+      return <CustomizedTables data={tab.data} columns={tab.columns} />;
     } else {
       // TODO: Modify the Spanning table component to work with new design
-      // return <SpanningTable data={tab.data} />
-      return <h3>Metada</h3>;
+      return <SpanningTable data={tab.data} />
+      // return <h3>Metada</h3>;
     }
   }
 
@@ -89,7 +89,7 @@ export default function ScrollableTabsButtonAuto(props) {
           >
             {tabs.map(
               (tab, index) => (
-                <Tab value={tab.value} label={tab.label} key={index}/>
+                <Tab value={tab.value} label={tab.label} key={index} />
               ))}
           </Tabs>
         </AppBar>

@@ -17,7 +17,7 @@ export default class ChatBot extends Component {
     }
   }
 
-  _onMessageWasSent(message, props) {
+  _onMessageWasSent(message) {
     this.setState({
       messageList: [...this.state.messageList, message]
     })
@@ -86,7 +86,7 @@ export default class ChatBot extends Component {
     })
   }
 
-  render(props) {
+  render() {
     let changeCSS = { top: '50%', transform: 'translate(-50%, -50%)' };
     return (
       <div style={{ changeCSS }} >
