@@ -7,6 +7,7 @@ public enum Intent {
     HELP("help", IDAConst.UAC_NRMLMSG),
     UPLOAD_DATASET("upload-dataset", IDAConst.UAC_UPLDDTMSG),
     LOAD_DATASET("load-dataset", IDAConst.UIA_LOADDS),
+    SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NRMLMSG),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
     private final String key;
