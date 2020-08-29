@@ -57,8 +57,12 @@ export default class ChatBot extends Component {
               data: metaData.filesMd,
               children: children
             };
-            this.props.setDetails(main);
-            this.props.setLoaded('true');
+            const dataSets = this.props.detail || [];
+            if(dataSets.findIndex(ds => ds.id === main.id) < 0){
+              dataSets.push(main);
+              this.props.setDetails(dataSets);
+            }
+            this.props.setLoaded(true);
             this.props.setSelectedNodeId(main.id);
             this.props.setExpandedNodeId(main.id);
           }

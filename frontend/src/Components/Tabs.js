@@ -43,13 +43,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ScrollableTabsButtonAuto(props) {
   const classes = useStyles();
-  const data = props.detail;
-  const tabs = [{
+  const data = props.detail.find(ds => ds.id === props.selectedNodeId || ds.children.findIndex(child => child.id === props.selectedNodeId) >= 0) || {};
+  const tabs = data.id ? [{
     'label': data.name + ' Metadata',
     'value': data.id,
     'data': data.data,
     'type': 'metadata'
-  }];
+  }] : [];
   (data.children || []).forEach(child => {
     tabs.push({
       'label': child.name,

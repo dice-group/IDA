@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 
 export default function RecursiveTreeView(props) {
   const classes = useStyles();
-  const main = props.detail;
+  const detail = props.detail;
   const expanded = [props.expandedNodeId];
   const chooseSelect = () => {
     return props.selectedNodeId || '';
@@ -51,7 +51,11 @@ export default function RecursiveTreeView(props) {
           defaultExpandIcon={<ChevronRightIcon />}
           selected={chooseSelect()}
         >
-          {renderTree(main)}
+          {detail.map(
+            (main) => (
+              renderTree(main)
+            )
+          )}
         </TreeView>
       </Box>
     </div>
