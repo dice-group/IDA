@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import ChatBot from './ChatBot';
-import RecursiveTreeView from './Treeview';
-import TabsWrappedLabel from './Tabs';
-// import './chatbot.css';
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import ChatBot from "./ChatBot";
+import RecursiveTreeView from "./Treeview";
+import TabsWrappedLabel from "./Tabs";
+// import "./chatbot.css";
 /* eslint-disable */
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     height: "100%",
     padding: theme.spacing(1),
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.palette.text.secondary,
   },
 }));
@@ -22,10 +22,10 @@ export default function CenteredGrid(props) {
   const classes = useStyles();
   const [detail, setDetails] = useState([]);
   const [loaded, setLoaded] = useState(false);
-  const [selectedNodeId, setSelectedNodeId] = useState('');
+  const [selectedNodeId, setSelectedNodeId] = useState("");
   const [expandedNodeId, setExpandedNodeId] = useState([]);
-  const [activeDS, setActiveDS] = useState('');
-  const [activeTable, setActiveTable] = useState('');
+  const [activeDS, setActiveDS] = useState("");
+  const [activeTable, setActiveTable] = useState("");
   const loadTab = (loaded) => {
     if (loaded) {
       return <TabsWrappedLabel

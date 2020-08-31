@@ -1,7 +1,7 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Card, CardContent, Box } from '@material-ui/core';
-import CustomizedTables from './Datatable';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { Grid, Card, CardContent, Box } from "@material-ui/core";
+import CustomizedTables from "./Datatable";
 
 const useStyles = makeStyles({
   idaCard: {
@@ -15,27 +15,25 @@ export default function SpanningTable(props) {
   const tableData = props.data || [];
   const keysName = [{
     "colIndex": 1,
-    'colName': 'Column Index',
-    'colAttr': 'colIndex'
+    "colName": "Column Index",
+    "colAttr": "colIndex"
   }, {
     "colIndex": 2,
-    'colName': 'Column Name',
-    'colName': 'colName',
-    'key': 'colName',
-    'colAttr': 'colName'
+    "colName": "Column Name",
+    "colAttr": "colName"
   }, {
     "colIndex": 3,
-    'colName': 'Column Description',
-    'colAttr': 'colDesc'
+    "colName": "Column Description",
+    "colAttr": "colDesc"
   }, {
     "colIndex": 4,
-    'colName': 'Column Data Type',
-    'colAttr': 'colType'
+    "colName": "Column Data Type",
+    "colAttr": "colType"
   }];
   tableData.forEach(table => {
-    table.metaData = Object.keys(table).filter(k => k !== 'fileColMd' && k !== 'metaData').map(key => ({
-      'key': key,
-      'value': table[key] + ''
+    table.metaData = Object.keys(table).filter((k) => k !== "fileColMd" && k !== "metaData").map(key => ({
+      key,
+      "value": table[key]
     }));
   });
   return (

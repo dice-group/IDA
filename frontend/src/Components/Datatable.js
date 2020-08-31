@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,17 +8,17 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
+import TableFooter from "@material-ui/core/TableFooter";
+import TablePagination from "@material-ui/core/TablePagination";
+import IconButton from "@material-ui/core/IconButton";
+import FirstPageIcon from "@material-ui/icons/FirstPage";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import LastPageIcon from "@material-ui/icons/LastPage";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: '#4f8bff', // theme.palette.background.default,
+    backgroundColor: "#4f8bff", // theme.palette.background.default,
     color: theme.palette.common.white,
   },
   body: {
@@ -69,24 +69,24 @@ function TablePaginationActions(props) {
         disabled={page === 0}
         aria-label="first page"
       >
-        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
       <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        {theme.direction === "rtl" ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
-        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
   );
@@ -111,11 +111,11 @@ export default function CustomizedTables(props) {
   const defaultRowsPerPage = props.noPagination ? 0 : 5;
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
   const tableData = props.data;
-  const keysName = props.columns.map(col => {
+  const keysName = props.columns.map((col) => {
     return {
-      'key': col.colAttr,
-      'label': col.colName
-    }
+      "key": col.colAttr,
+      "label": col.colName
+    };
   });
   let seletedItem = tableData;
 
@@ -135,7 +135,7 @@ export default function CustomizedTables(props) {
         <TableHead>
           <TableRow>
             {keysName.map((row, index) => (
-              <StyledTableCell align="left" key={index}>{row['label']}</StyledTableCell>
+              <StyledTableCell align="left" key={index}>{row["label"]}</StyledTableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -146,7 +146,7 @@ export default function CustomizedTables(props) {
           ).map((row, index) => (
             <StyledTableRow key={index}>
               {keysName.map((colName, index) => (
-                <StyledTableCell align="left" component="th" scope="row" key={index}>{row[colName['key']]}</StyledTableCell>
+                <StyledTableCell align="left" component="th" scope="row" key={index}>{row[colName["key"]]}</StyledTableCell>
               ))}
             </StyledTableRow>
           ))}
@@ -161,13 +161,13 @@ export default function CustomizedTables(props) {
           props.noPagination ? null : <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                 colSpan={keysName.length}
                 count={seletedItem.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
-                  inputProps: { 'aria-label': 'rows per page' },
+                  inputProps: { "aria-label": "rows per page" },
                   native: true,
                 }}
                 onChangePage={handleChangePage}

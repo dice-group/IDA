@@ -1,26 +1,7 @@
-.sc-chat-window{
-    /* top: calc(50% - 350px); 
-    left: calc(50% - 200px);  */
-    /* top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); */
-}
-.makeStyles-paper-2 {
-    /*box-shadow: unset;*/
-}
-/* 
-.WithStyles\(ForwardRef\(TableCell\)\)-head-13 {
-    background-color:#4f8bff !important;
-}
-
-.MuiTab-textColorPrimary.Mui-selected {
-    color: #4f8aff;
-} */
-
 .divShow {
-   display: block;
+  display: block;
 }
 
 .divHidden {
-    display: none !important;
- }
+  display: none !important;
+}
