@@ -111,7 +111,12 @@ export default function CustomizedTables(props) {
   const defaultRowsPerPage = props.noPagination ? 0 : 5;
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
   const tableData = props.data;
-  const keysName = props.columns.map(col => col.colName);
+  const keysName = props.columns.map(col => {
+    return {
+      'key': col.colAttr,
+      'label': col.colName
+    }
+  });
   let seletedItem = tableData;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, seletedItem.length - page * rowsPerPage);
@@ -130,7 +135,7 @@ export default function CustomizedTables(props) {
         <TableHead>
           <TableRow>
             {keysName.map((row, index) => (
-              <StyledTableCell align="left" key={index}>{row}</StyledTableCell>
+              <StyledTableCell align="left" key={index}>{row['label']}</StyledTableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -141,7 +146,7 @@ export default function CustomizedTables(props) {
           ).map((row, index) => (
             <StyledTableRow key={index}>
               {keysName.map((colName, index) => (
-                <StyledTableCell align="left" component="th" scope="row" key={index}>{row[colName]}</StyledTableCell>
+                <StyledTableCell align="left" component="th" scope="row" key={index}>{row[colName['key']]}</StyledTableCell>
               ))}
             </StyledTableRow>
           ))}

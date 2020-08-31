@@ -18,8 +18,14 @@ public class SuggestVisualization implements Action {
 			}
 			String datasetName = payload.get("activeDS").toString();
 			String tableName = payload.get("activeTable").toString();
-			VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator(tableName, datasetName);
-			chatMessageResponse.setMessage(vizSuggestOrchestrator.getSuggestion());
+			if (datasetName.isEmpty()) {
+				chatMessageResponse.setMessage(IDAConst.BOT_LOAD_DS_BEFORE);
+			} else if (tableName.isEmpty()) {
+				chatMessageResponse.setMessage(IDAConst.BOT_SELECT_TABLE);
+			} else {
+				VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator(tableName, datasetName);
+				chatMessageResponse.setMessage(vizSuggestOrchestrator.getSuggestion());
+			}
 			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		} catch (Exception e) {
 			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);

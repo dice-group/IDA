@@ -31,6 +31,8 @@ public interface IDAConst {
 	public static final String BOT_UNAVAILABLE = "IDA is currently unavailable";
 	public static final String BOT_LANGUAGE = "en-US";
 	public static final String BOT_SOMETHING_WRONG = "Something went wrong with that request. Please try again later.";
+	public static final String BOT_LOAD_DS_BEFORE = "Please load a dataset";
+	public static final String BOT_SELECT_TABLE = "Please load a table";
 
 	/**
 	 * Param Map Keys
@@ -39,6 +41,7 @@ public interface IDAConst {
 	public static final String PARAM_DATASET_NAME = "datasetname";
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
 	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
+	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
 
 	// Metadata File name Pattern
 	public static final String DSMD_FILE_PATTERN = "dsmd\\.[jJ][sS][oO][nN]$";

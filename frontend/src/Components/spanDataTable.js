@@ -14,21 +14,23 @@ export default function SpanningTable(props) {
   const classes = useStyles();
   const tableData = props.data || [];
   const keysName = [{
-    'label': 'Column Index',
-    'colName': 'colIndex',
-    'key': 'colIndex'
+    "colIndex": 1,
+    'colName': 'Column Index',
+    'colAttr': 'colIndex'
   }, {
-    'label': 'Column Name',
+    "colIndex": 2,
+    'colName': 'Column Name',
     'colName': 'colName',
-    'key': 'colName'
+    'key': 'colName',
+    'colAttr': 'colName'
   }, {
-    'label': 'Column Description',
-    'colName': 'colDesc',
-    'key': 'colDesc'
+    "colIndex": 3,
+    'colName': 'Column Description',
+    'colAttr': 'colDesc'
   }, {
-    'label': 'Column Data Type',
-    'colName': 'colType',
-    'key': 'colType'
+    "colIndex": 4,
+    'colName': 'Column Data Type',
+    'colAttr': 'colType'
   }];
   tableData.forEach(table => {
     table.metaData = Object.keys(table).filter(k => k !== 'fileColMd' && k !== 'metaData').map(key => ({
