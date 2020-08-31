@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import ChatBot from "./ChatBot";
 import RecursiveTreeView from "./Treeview";
 import TabsWrappedLabel from "./Tabs";
-// import "./chatbot.css";
+import "./chatbot.css";
 /* eslint-disable */
 const useStyles = makeStyles((theme) => ({
   root: {

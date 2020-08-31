@@ -96,10 +96,10 @@ export default class ChatBot extends Component {
             teamName: "IDA-ChatBot",
             imageUrl: "",
             className: { changeCSS }
-
           }}
           onMessageWasSent={this._onMessageWasSent.bind(this)}
           messageList={this.state.messageList}
+          showEmoji={false}
         />
       </div>
     );

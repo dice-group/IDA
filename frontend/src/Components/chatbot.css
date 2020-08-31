@@ -3,5 +3,13 @@
 }
 
 .divHidden {
-  display: none !important;
+  display: none;
+}
+
+.sc-user-input--file-icon-wrapper {
+  display: none;
+}
+
+.sc-chat-window {
+  max-height: none;
 }
