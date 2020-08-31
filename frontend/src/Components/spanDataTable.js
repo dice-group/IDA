@@ -30,11 +30,8 @@ export default function SpanningTable(props) {
     "colName": "Column Data Type",
     "colAttr": "colType"
   }];
-  tableData.forEach(table => {
-    table.metaData = Object.keys(table).filter((k) => k !== "fileColMd" && k !== "metaData").map(key => ({
-      key,
-      "value": table[key]
-    }));
+  tableData.forEach((table) => {
+    table.metaData = Object.keys(table).filter((k) => k !== "fileColMd" && k !== "metaData");
   });
   return (
     <>
@@ -44,13 +41,13 @@ export default function SpanningTable(props) {
             <Card className={classes.idaCard} key={i}>
               <CardContent>
                 {table.metaData.map(
-                  (tableMd, j) => (
+                  (tableMdKey, j) => (
                     <Grid container spacing={3} key={j}>
                       <Grid container item xs={12} sm={6} md={4} lg={2}>
-                        {tableMd.key}:
+                        {tableMdKey}:
                       </Grid>
                       <Grid container item xs={12} sm={6} md={8} lg={10}>
-                        {tableMd.value}
+                        {table[tableMdKey]}
                       </Grid>
                     </Grid>
                   )
