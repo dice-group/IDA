@@ -32,9 +32,9 @@ public class IDAChatBot {
 	private String projectId;
 	
 	@Autowired
-	ApplicationContext appContext;
+	private ApplicationContext appContext;
 	@Autowired
-	SessionUtil sessionUtil;
+	private SessionUtil sessionUtil;
 
 	private ChatMessageResponse messageResponse;
 
