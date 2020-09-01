@@ -1,5 +1,5 @@
 export const IDA_CONSTANTS = {
-    API_BASE: "http://ida.cs.upb.de:4200/ida-ws",        // change it to http://localhost:8080 if not using docker
+    API_BASE: "/ida-ws",        // change it to http://localhost:8080 if not using docker
     UI_ACTION_CODES: {
         UAC_NRMLMSG: 1001,
         UAC_UPLDDTMSG: 1002,
