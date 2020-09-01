@@ -1,0 +1,22 @@
+table {
+  min-width: 100%;
+}
+
+thead .MuiTableCell-head {
+  background-color: #4f8bff;
+  color: #fff;
+  font-size: 14px;
+}
+
+tbody .MuiTableCell-body {
+  font-size: 12px;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.pagination-root {
+  flex-shrink: 0;
+  margin-left: 20px;
+}

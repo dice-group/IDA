@@ -18,13 +18,15 @@
     "react-dom": "^16.13.1",
     "react-dropzone-component": "^3.2.0",
     "react-modal": "^3.11.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-simple-chatbot": "^0.6.1",
     "react-stomp": "^5.0.0",
     "styled-components": "^5.1.1"
   },
   "scripts": {
-    "start:dev": "node scripts/set-environment.js dev && PORT=4200 react-scripts start",
+    "start": "react-scripts start",
     "start:prod": "node scripts/set-environment.js prod && npm run build",
     "build": "react-scripts build",
     "test": "react-scripts test",
