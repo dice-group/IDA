@@ -3,23 +3,35 @@ package org.dice.ida.action.process;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.protobuf.Value;
+import javax.annotation.PostConstruct;
+
 import org.dice.ida.action.def.Action;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.Intent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import com.google.cloud.dialogflow.v2.QueryResult;
+import com.google.protobuf.Value;
+@Lazy
+@Component
 public class ActionExecutor {
-
+	@Autowired
+	private ActionMappingHelper mappingHelper;
 	private Action action;
 	private Map<String, Object> paramMap;
-
+	private QueryResult queryResult;
 	public ActionExecutor(QueryResult queryResult) {
+		this.queryResult = queryResult;
+	}
+	@PostConstruct
+	private void initialize() {
 		// Initiate the instance for the action
 		Intent intent = Intent.getForKey(queryResult.getIntent().getDisplayName());
 		this.paramMap = createParamMap(queryResult);
-		this.action = ActionMappingHelper.fetchActionInstance(intent.getKey());
+		this.action = mappingHelper.fetchActionInstance(intent.getKey());
 	}
 
 	private Map<String, Object> createParamMap(QueryResult queryResult){
