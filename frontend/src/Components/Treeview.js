@@ -1,84 +1,68 @@
-import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import TreeView from "@material-ui/lab/TreeView";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 3,
-
-  },
+const useStyles = makeStyles({
   Box: {
     height: 1000,
     width: 450,
     backgroundcolor: "lavender",
   },
-  control: {
-    padding: theme.spacing(0),
-  },
-  rootTree: {
+
+  root: {
     height: 216,
     flexGrow: 1,
-
     maxWidth: 400,
   },
-}));
+});
 
-export default function Treeview(){
+export default function RecursiveTreeView(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState([]);
-  const [selected, setSelected] = React.useState([]);
-
+  const detail = props.detail;
+  const expanded = props.expandedNodeId;
+  const chooseSelect = () => {
+    return props.selectedNodeId || "";
+  };
+  const renderTree = (main) => (
+    main.id && <TreeItem key={Math.random()} nodeId={main.id} label={main.name}>
+      {Array.isArray(main.children) ? main.children.map((node) => renderTree(node)) : null}
+    </TreeItem>
+  );
   const handleToggle = (event, nodeIds) => {
-    setExpanded(nodeIds);
+    props.setExpandedNodeId(nodeIds);
+  };
+  const handleSelect = (event, nodeId) => {
+    props.setSelectedNodeId(nodeId);
+    const parentNode = props.detail.find((ds) => ds.id === nodeId || ds.children.findIndex((child) => child.id === nodeId) >= 0);
+    props.setActiveDS(parentNode.id || "");
+    if (parentNode.id && parentNode.id !== nodeId) {
+      props.setActiveTable(parentNode.children.find((child) => child.id === nodeId).name);
+    }
   };
 
-  const handleSelect = (event, nodeIds) => {
-    setSelected(nodeIds);
-  };
+  return (
 
-  return(
-    <div  style={{ width: "100%", }}>
-       <Box display="flex"   p={1} m={1} bgcolor="background.paper">
-       <Box p={1} height="auto" bgcolor="grey.300">
+    <div style={{ width: "100%", }}>
+      <Box p={1} height="auto" >
         <TreeView
-              className={classes.rootTree}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              expanded={expanded}
-              selected={selected}
-              onNodeToggle={handleToggle}
-              onNodeSelect={handleSelect}
-            >
-            <TreeItem nodeId="1" label="Applications">
-              <TreeItem nodeId="2" label="Calendar" />
-              <TreeItem nodeId="3" label="Chrome" />
-              <TreeItem nodeId="4" label="Webstorm" />
-            </TreeItem>
-              <TreeItem nodeId="5" label="Documents">
-                <TreeItem nodeId="6" label="Material-UI">
-                  <TreeItem nodeId="7" label="src">
-                    <TreeItem nodeId="8" label="index.js" />
-                    <TreeItem nodeId="9" label="tree-view.js" />
-                  </TreeItem>
-                </TreeItem>
-              </TreeItem>
-            </TreeView>
-          </Box>
-          <div>
-          <React.Fragment>
-            <CssBaseline />
-            <Container maxWidth="sm">
-              <Typography component="div" style={{ backgroundColor: "#cfe8fc", height: "100vh" }} />
-            </Container>
-          </React.Fragment>
-          </div>
+          className={classes.root}
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          expanded={expanded}
+          defaultExpandIcon={<ChevronRightIcon />}
+          selected={chooseSelect()}
+          onNodeToggle={handleToggle}
+          onNodeSelect={handleSelect}
+        >
+          {detail.map(
+            (main) => (
+              renderTree(main)
+            )
+          )}
+        </TreeView>
       </Box>
     </div>
   );

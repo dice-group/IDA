@@ -1,5 +1,15 @@
+.divShow {
+  display: block;
+}
+
+.divHidden {
+  display: none;
+}
+
+.sc-user-input--file-icon-wrapper {
+  display: none;
+}
+
 .sc-chat-window {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  max-height: none;
 }
