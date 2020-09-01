@@ -1,13 +1,17 @@
 version: "3"
 
 services:
+  nginx:
+    image: $REGISTRY/ida/nginx:$VERSION
+    ports:
+      - 4200:80
+    networks:
+      - ida-net
   ida-backend:
     image: $REGISTRY/ida/backend-server:$VERSION
     volumes:
       - "../backend-server/src:/build/backend-server/src"
       - "../backend-server/target:/build/backend-server/target"
-    ports:
-      - 8080:8080
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/build/backend-server/src/main/resources/ida-chatbot-dialogflow.json
     networks:
@@ -17,8 +21,6 @@ services:
     volumes:
       - "../frontend/src:/app/src"
       - "../frontend/public:/app/public"
-    ports:
-      - 4200:4200
     stdin_open: true
     networks:
       - ida-net
