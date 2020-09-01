@@ -11,12 +11,14 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.google.cloud.dialogflow.v2.QueryResult;
 import com.google.protobuf.Value;
 @Lazy
 @Component
+@Scope("prototype")
 public class ActionExecutor {
 	@Autowired
 	private ActionMappingHelper mappingHelper;

@@ -35,12 +35,8 @@ public class IDAChatBot {
 	private ApplicationContext appContext;
 	@Autowired
 	private SessionUtil sessionUtil;
-
+	@Autowired
 	private ChatMessageResponse messageResponse;
-
-	public IDAChatBot(ChatMessageResponse messageResponse) {
-		this.messageResponse = messageResponse;
-	}
 
 	/**
 	 * Method to process the user chat message and return a valid response
