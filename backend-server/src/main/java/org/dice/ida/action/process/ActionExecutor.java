@@ -27,7 +27,7 @@ public class ActionExecutor {
 		this.queryResult = queryResult;
 	}
 	@PostConstruct
-	private void initialize() {
+	public void initialize() {
 		// Initiate the instance for the action
 		Intent intent = Intent.getForKey(queryResult.getIntent().getDisplayName());
 		this.paramMap = createParamMap(queryResult);

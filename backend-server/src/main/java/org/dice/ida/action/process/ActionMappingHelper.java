@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class ActionMappingHelper {
 	
 	@Autowired
-	ApplicationContext appContext;
+	private ApplicationContext appContext;
 
 	public Action fetchActionInstance(String intentText) {
 		Action action;

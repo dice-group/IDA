@@ -8,6 +8,10 @@ public class BarGraphData {
 	private String xAxisLabel;
 	private String yAxisLabel;
 	
+	//Optional attributes
+	private String dsName;
+	private String tableName;
+	// TODO: Add filtering information
 	
 	public BarGraphData(String label, List<BarGraphItem> items, String xAxisLabel, String yAxisLabel) {
 		super();
@@ -16,11 +20,7 @@ public class BarGraphData {
 		this.xAxisLabel = xAxisLabel;
 		this.yAxisLabel = yAxisLabel;
 	}
-	//Optional attributes
-	private String dsName;
-	private String tableName;
-	// TODO: Add filtering information
-	
+	// Optional
 	public BarGraphData(String label, List<BarGraphItem> items, String xAxisLabel, String yAxisLabel, String dsName,
 			String tableName) {
 		super();
