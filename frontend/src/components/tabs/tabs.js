@@ -5,8 +5,10 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import CustomizedTables from "./Datatable";
-import SpanningTable from "./spanDataTable";
+import CustomizedTables from "../datatable/datatable";
+import SpanningTable from "../datatable/spanDataTable";
+import "./tabs.css";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -32,16 +34,7 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
-
 export default function ScrollableTabsButtonAuto(props) {
-  const classes = useStyles();
   const data = props.detail.find((ds) => ds.id === props.selectedNodeId || ds.children.findIndex((child) => child.id === props.selectedNodeId) >= 0) || {};
   const tabs = data.id ? [{
     "label": data.name + " Metadata",
@@ -65,16 +58,19 @@ export default function ScrollableTabsButtonAuto(props) {
     props.setActiveTable(selectedTab.label || "");
   };
   const renderData = (tab) => {
-    if (tab.type === "table") {
-      return <CustomizedTables data={tab.data} columns={tab.columns} />;
-    } else {
-      return <SpanningTable data={tab.data} />;
+    switch (tab.type) {
+      case "table":
+        return <CustomizedTables data={tab.data} columns={tab.columns} />;
+      case "metadata":
+        return <SpanningTable data={tab.data} />;
+      default:
+        return null;
     }
   };
 
   return (
-    <div className={classes.root}>
-      <ul>
+    <div className={"root"}>
+      <ul className={"tab-list"}>
         <AppBar position="static" color="default"  >
           <Tabs
             onChange={handleChange}

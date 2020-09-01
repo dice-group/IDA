@@ -10,6 +10,13 @@
   display: none;
 }
 
+.no-data .sc-open-icon,
+.no-data .sc-closed-icon,
+.no-data .sc-launcher,
+.no-data .sc-chat-window {
+  right: 43%;
+}
+
 .sc-chat-window {
   max-height: none;
 }

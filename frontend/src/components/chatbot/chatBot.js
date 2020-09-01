@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Launcher } from "react-chat-window";
-import { IDA_CONSTANTS } from "./Constants";
+import { IDA_CONSTANTS } from "../constants";
+import "./chatbot.css";
 /* eslint-disable */
 export default class ChatBot extends Component {
 
@@ -14,6 +15,7 @@ export default class ChatBot extends Component {
       pyld: [],
       action: "1004",
       msg: [],
+      isOpen: true
     }
   }
 
@@ -87,19 +89,26 @@ export default class ChatBot extends Component {
     })
   }
 
+  handleClick() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
   render() {
-    let changeCSS = { top: "50%", transform: "translate(-50%, -50%)" };
     return (
-      <div style={{ changeCSS }} >
+      <div className={this.props.detail.length ? "" : "no-data"}>
         <Launcher
           agentProfile={{
             teamName: "IDA-ChatBot",
             imageUrl: "",
-            className: { changeCSS }
+            className: ""
           }}
           onMessageWasSent={this._onMessageWasSent.bind(this)}
           messageList={this.state.messageList}
           showEmoji={false}
+          isOpen={this.state.isOpen}
+          handleClick={this.handleClick.bind(this)}
         />
       </div>
     );

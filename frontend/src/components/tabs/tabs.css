@@ -1,0 +1,9 @@
+.root {
+    flex-grow: 1;
+    width: 100%;
+    background-color: #fff;
+}
+
+.tab-list {
+    padding-left: 0;
+}
