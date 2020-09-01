@@ -1,6 +1,7 @@
 package org.dice.ida.action.process;
 
 import org.dice.ida.action.def.Action;
+import org.dice.ida.action.def.BarGraphAction;
 import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.DefaultAction;
@@ -27,6 +28,9 @@ public class ActionMappingHelper {
 				break;
 			case SUGGEST_VISUALIZATION:
 				action = new SuggestVisualization();
+				break;
+			case BAR_GRAPH:
+				action = new BarGraphAction();
 				break;
 			default:
 				action = new DefaultAction();

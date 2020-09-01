@@ -8,6 +8,7 @@ public enum Intent {
     UPLOAD_DATASET("upload-dataset", IDAConst.UAC_UPLDDTMSG),
     LOAD_DATASET("load-dataset", IDAConst.UIA_LOADDS),
     SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NRMLMSG),
+    BAR_GRAPH("bar-graph", IDAConst.UIA_BARGRAPH),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
     private final String key;

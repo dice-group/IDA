@@ -15,6 +15,8 @@ public interface IDAConst {
 	public static final int UIA_LOADDS = 1004;
 	// Open Upload dataset modal window
 	public static final int UAC_UPLDDTMSG = 1002;
+	//Load bar graph
+	public static final int UIA_BARGRAPH = 1005;
 	/**
 	 *  Pre-defined action codes
 	 */
@@ -42,6 +44,9 @@ public interface IDAConst {
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
 	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
 	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
+	public static final String PARAM_XAXIS_NAME = "x-axis";
+	public static final String PARAM_YAXIS_NAME = "y-axis";
+	
 
 	// Metadata File name Pattern
 	public static final String DSMD_FILE_PATTERN = "dsmd\\.[jJ][sS][oO][nN]$";
