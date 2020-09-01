@@ -27,7 +27,7 @@ export default class ChatBot extends Component {
         "senderId": "01",
         "message": message.data.text,
         "timestamp": "",
-        "senderName": "spoorthi",
+        "senderName": "user",
         "activeDS": this.props.activeDS,
         "activeTable": this.props.activeTable
       };

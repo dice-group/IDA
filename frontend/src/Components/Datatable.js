@@ -15,34 +15,9 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: "#4f8bff", // theme.palette.background.default,
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 12,
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-const useStyles1 = makeStyles((theme) => ({
-  root: {
-    flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
-  },
-}));
+import "./datatable.css";
 
 function TablePaginationActions(props) {
-  const classes = useStyles1();
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
 
@@ -63,7 +38,7 @@ function TablePaginationActions(props) {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={"pagination-root"}>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -99,14 +74,7 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 100,
-  },
-});
-
 export default function CustomizedTables(props) {
-  const classes = useStyles();
   const [page, setPage] = useState(0);
   const defaultRowsPerPage = props.noPagination ? 0 : 5;
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
@@ -131,11 +99,11 @@ export default function CustomizedTables(props) {
   };
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
+      <Table aria-label="ida table">
         <TableHead>
           <TableRow>
             {keysName.map((row, index) => (
-              <StyledTableCell align="left" key={index}>{row["label"]}</StyledTableCell>
+              <TableCell align="left" key={index}>{row["label"]}</TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -144,11 +112,11 @@ export default function CustomizedTables(props) {
             ? seletedItem.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : seletedItem
           ).map((row, index) => (
-            <StyledTableRow key={index}>
+            <TableRow key={index}>
               {keysName.map((colName, index) => (
-                <StyledTableCell align="left" component="th" scope="row" key={index}>{row[colName["key"]]}</StyledTableCell>
+                <TableCell align="left" component="th" scope="row" key={index}>{row[colName["key"]]}</TableCell>
               ))}
-            </StyledTableRow>
+            </TableRow>
           ))}
 
           {emptyRows > 0 && (
