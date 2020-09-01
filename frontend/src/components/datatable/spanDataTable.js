@@ -1,17 +1,9 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Card, CardContent, Box } from "@material-ui/core";
-import CustomizedTables from "./Datatable";
-
-const useStyles = makeStyles({
-  idaCard: {
-    marginTop: 15,
-    marginBottom: 15
-  }
-});
+import CustomizedTables from "./datatable";
+import "./datatable.css";
 
 export default function SpanningTable(props) {
-  const classes = useStyles();
   const tableData = props.data || [];
   const keysName = [{
     "colIndex": 1,
@@ -58,7 +50,7 @@ export default function SpanningTable(props) {
       {
         tableData.map(
           (table, i) => (
-            <Card className={classes.idaCard} key={i}>
+            <Card className={"ida-card"} key={i}>
               <CardContent>
                 {table.metaData.map(
                   (tableMd, j) => (
