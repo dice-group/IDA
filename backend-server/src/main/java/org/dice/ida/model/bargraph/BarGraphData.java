@@ -5,21 +5,29 @@ import java.util.List;
 public class BarGraphData {
 	private String label;
 	private List<BarGraphItem> items;
+	private String xAxisLabel;
+	private String yAxisLabel;
 	
-	public BarGraphData(String label, List<BarGraphItem> items) {
+	
+	public BarGraphData(String label, List<BarGraphItem> items, String xAxisLabel, String yAxisLabel) {
 		super();
 		this.label = label;
 		this.items = items;
+		this.xAxisLabel = xAxisLabel;
+		this.yAxisLabel = yAxisLabel;
 	}
 	//Optional attributes
 	private String dsName;
 	private String tableName;
 	// TODO: Add filtering information
 	
-	public BarGraphData(String label, List<BarGraphItem> items, String dsName, String tableName) {
+	public BarGraphData(String label, List<BarGraphItem> items, String xAxisLabel, String yAxisLabel, String dsName,
+			String tableName) {
 		super();
 		this.label = label;
 		this.items = items;
+		this.xAxisLabel = xAxisLabel;
+		this.yAxisLabel = yAxisLabel;
 		this.dsName = dsName;
 		this.tableName = tableName;
 	}
@@ -48,7 +56,17 @@ public class BarGraphData {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
+	public String getxAxisLabel() {
+		return xAxisLabel;
+	}
+	public void setxAxisLabel(String xAxisLabel) {
+		this.xAxisLabel = xAxisLabel;
+	}
+	public String getyAxisLabel() {
+		return yAxisLabel;
+	}
+	public void setyAxisLabel(String yAxisLabel) {
+		this.yAxisLabel = yAxisLabel;
+	}
 	
-	
-
 }
