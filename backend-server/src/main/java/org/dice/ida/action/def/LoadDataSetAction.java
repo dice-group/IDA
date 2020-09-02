@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.util.FileUtil;
+import org.springframework.stereotype.Component;
 import org.dice.ida.model.ChatMessageResponse;
-
+@Component
 public class LoadDataSetAction implements Action {
 
 

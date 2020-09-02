@@ -1,15 +1,21 @@
 package org.dice.ida.action.process;
 
 import org.dice.ida.action.def.Action;
-import org.dice.ida.action.def.SimpleTextAction;
-import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.DefaultAction;
+import org.dice.ida.action.def.LoadDataSetAction;
+import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.SuggestVisualization;
 import org.dice.ida.model.Intent;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+@Component
 public class ActionMappingHelper {
+	
+	@Autowired
+	private ApplicationContext appContext;
 
-	public static Action fetchActionInstance(String intentText) {
+	public Action fetchActionInstance(String intentText) {
 		Action action;
 		// return the instance for requested action
 		Intent intent = Intent.getForKey(intentText);
@@ -17,19 +23,19 @@ public class ActionMappingHelper {
 			case GREETING:
 			case UNKNOWN:
 			case HELP:
-				action = new SimpleTextAction();
+				action = appContext.getBean(SimpleTextAction.class);
 				break;
 //			case UPLOAD_DATASET:
 //				 TODO: do something
 //				break;
 			case LOAD_DATASET:
-				action = new LoadDataSetAction();
+				action = appContext.getBean(LoadDataSetAction.class);
 				break;
 			case SUGGEST_VISUALIZATION:
-				action = new SuggestVisualization();
+				action = appContext.getBean(SuggestVisualization.class);
 				break;
 			default:
-				action = new DefaultAction();
+				action = appContext.getBean(DefaultAction.class);
 				break;
 		}
 		return action;
