@@ -1,11 +1,11 @@
 import React from "react";
-import CenteredGrid from "./Components/Grid";
+import Home from "./components/home";
 
 export default function App(){
   return(
     <div  style={{ width: "100%", }}>
          <div>
-          <CenteredGrid/>
+          <Home/>
         </div>
     </div>
   );

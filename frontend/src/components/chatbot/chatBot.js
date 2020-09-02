@@ -1,26 +1,34 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Launcher } from "react-chat-window";
-import { IDA_CONSTANTS } from "./Constants";
+import { IDA_CONSTANTS } from "../constants";
+import "./chatbot.css";
 /* eslint-disable */
 export default class ChatBot extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      messageList: [],
+      messageList: [{
+        author: "them",
+        type: "text",
+        data: {
+          text: "Hello, Welcome to IDA. How may I help you?"
+        }
+      }],
       changeCSS: {},
       selectClick: [],
       pyld: [],
       action: "1004",
       msg: [],
-    }
+      isOpen: true
+    };
   }
 
   _onMessageWasSent(message) {
     this.setState({
       messageList: [...this.state.messageList, message]
-    })
+    });
     var outerscope = this;
     if (message.data.text.length > 0) {
       const obj = {
@@ -43,7 +51,6 @@ export default class ChatBot extends Component {
             data.forEach(table =>
               children.push({
                 id: metaData.dsName + "_" + table.name,
-                // name: metaData.filesMd.filter(file => file.fileName.toLowerCase() === table.name.toLowerCase())[0].fileDesc,
                 name: table.name,
                 type: "file",
                 data: table.data,
@@ -58,7 +65,7 @@ export default class ChatBot extends Component {
               children: children
             };
             const dataSets = this.props.detail || [];
-            if(dataSets.findIndex(ds => ds.id === main.id) < 0){
+            if (dataSets.findIndex(ds => ds.id === main.id) < 0) {
               dataSets.push(main);
               this.props.setDetails(dataSets);
             }
@@ -87,19 +94,26 @@ export default class ChatBot extends Component {
     })
   }
 
+  handleClick() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
   render() {
-    let changeCSS = { top: "50%", transform: "translate(-50%, -50%)" };
     return (
-      <div style={{ changeCSS }} >
+      <div className={this.props.detail.length ? "" : "no-data"}>
         <Launcher
           agentProfile={{
             teamName: "IDA-ChatBot",
             imageUrl: "",
-            className: { changeCSS }
+            className: ""
           }}
           onMessageWasSent={this._onMessageWasSent.bind(this)}
           messageList={this.state.messageList}
           showEmoji={false}
+          isOpen={this.state.isOpen}
+          handleClick={this.handleClick.bind(this)}
         />
       </div>
     );
