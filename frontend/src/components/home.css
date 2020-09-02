@@ -1,9 +1,9 @@
 .nav-bar-container,
 .content {
-    max-height: 100vh;
-    overflow-y: auto;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 .root {
-    flex-grow: 1;
+  flex-grow: 1;
 }
