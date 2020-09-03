@@ -1,6 +1,7 @@
 package org.dice.ida.visualizer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class BarGraphVisualizer {
 	String dataSetName;
 	String tableName;
 	Attribute xaxis ;
-	Attribute yxaxis;
+	Attribute yaxis;
 	List<BarGraphItem> items;
 	Instances data;
 	DataSummary DS;
@@ -58,7 +59,7 @@ public class BarGraphVisualizer {
 		
         //Loads the File
 			xaxis = data.attribute(xAxisLabel);
-			yxaxis = data.attribute(xAxisLabel);
+			yaxis = data.attribute(yAxisLabel);
 			if (xaxis.isNominal())
 			{
 				loadNominal(); 
@@ -74,7 +75,42 @@ public class BarGraphVisualizer {
 	}
 	public void loadNominal()
 	{
-		List<AttributeSummary> attributeSummary =DS.getAttributeSummaryList();
-		
+		HashMap<String,Double> temp = new HashMap<String,Double>();
+		AttributeSummary xaxisSummary =DS.getAttributeSummaryList().stream().filter(x->x.getName().equalsIgnoreCase(xAxisLabel)).collect(Collectors.toList()).get(0);
+		AttributeSummary yaxisSummary =DS.getAttributeSummaryList().stream().filter(x->x.getName().equalsIgnoreCase(yAxisLabel)).collect(Collectors.toList()).get(0);
+		if(yaxisSummary.getType().equalsIgnoreCase("Num"))
+		{
+			for (int i =0;i<data.numInstances();i++)
+			{
+				if(temp.containsKey(data.instance(i).stringValue(xaxis)))
+				{
+					double yvalue = temp.get(data.instance(i).stringValue(xaxis));
+					temp.put(data.instance(i).stringValue(xaxis),yvalue+data.instance(i).value(yaxis));
+				}
+				else
+				{
+					temp.put(data.instance(i).stringValue(xaxis),data.instance(i).value(yaxis));
+				}
+			}
+		}
+		if(yaxisSummary.getType().equalsIgnoreCase("Nom"))
+		{
+			for (int i =0;i<data.numInstances();i++)
+			{
+				if(temp.containsKey(data.instance(i).stringValue(xaxis)))
+				{
+					double yvalue = temp.get(data.instance(i).stringValue(xaxis));
+					temp.put(data.instance(i).stringValue(xaxis),yvalue+1);
+				}
+				else
+				{
+					temp.put(data.instance(i).stringValue(xaxis),1.0);
+				}
+			}
+		}
+		for (String key:temp.keySet() )
+		{
+			items.add(new BarGraphItem(key,temp.get(key)));
+		}
 	}
 }
