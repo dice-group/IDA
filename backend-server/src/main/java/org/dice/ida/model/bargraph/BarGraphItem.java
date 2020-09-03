@@ -1,11 +1,11 @@
 package org.dice.ida.model.bargraph;
 
 public class BarGraphItem {
-	
+
 	private String x;
-	private Double y;
-	
-	public BarGraphItem(String x, Double y) {
+	private String y;
+
+	public BarGraphItem(String x, String y) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -16,10 +16,10 @@ public class BarGraphItem {
 	public void setX(String x) {
 		this.x = x;
 	}
-	public Double getY() {
+	public String getY() {
 		return y;
 	}
-	public void setY(Double y) {
+	public void setY(String y) {
 		this.y = y;
 	}
 	@Override

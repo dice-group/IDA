@@ -2,7 +2,6 @@ package org.dice.ida.visualizer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
@@ -11,6 +10,7 @@ import org.dice.ida.model.bargraph.BarGraphItem;
 import org.dice.ida.util.MetaFileReader;
 import weka.core.Attribute;
 import weka.core.Instances;
+import weka.core.Instance;
 /**
  * Class to provide required attributes for bar graph visualization and apply data filters.
  *
@@ -23,9 +23,9 @@ public class BarGraphVisualizer {
 	String label = "Bar Graph";
 	String dataSetName;
 	String tableName;
-	Attribute xaxis ;
-	Attribute yxaxis;
-	List<BarGraphItem> items;
+	Attribute xaxis;
+	Attribute yaxis;
+	List<BarGraphItem> barChartItems;
 	Instances data;
 	DataSummary DS;
 	public BarGraphVisualizer(String xAxis, String yAxis, String dsName,
@@ -45,36 +45,39 @@ public class BarGraphVisualizer {
 	}
 	public BarGraphData createBarGraph()
 	{
-		
-		items = new ArrayList<BarGraphItem>();
-		loadBarGraphItem();  
-		
-		return new BarGraphData(label, items , xAxisLabel, yAxisLabel,dataSetName,
+		barChartItems = new ArrayList<BarGraphItem>();
+		loadBarGraphItem();
+
+		return new BarGraphData(label, barChartItems , xAxisLabel, yAxisLabel,dataSetName,
 				tableName);
 	}
+
 	private void loadBarGraphItem()
 	{
-		//check for filter and load bar graph items 
-		
-        //Loads the File
-			xaxis = data.attribute(xAxisLabel);
-			yxaxis = data.attribute(xAxisLabel);
-			if (xaxis.isNominal())
-			{
-				loadNominal(); 
-			}
-			if (xaxis.isNumeric())
-			{
-				
-			}
-			if (xaxis.isDate())
-			{
-				
-			}
+		xaxis = data.attribute(xAxisLabel);
+		yaxis = data.attribute(yAxisLabel);
+		if (xaxis.isNominal())
+		{
+			loadNominal();
+		}
+		if (xaxis.isNumeric())
+		{
+			loadNumericData();
+		}
+		if (xaxis.isDate())
+		{
+
+		}
 	}
 	public void loadNominal()
 	{
 		List<AttributeSummary> attributeSummary =DS.getAttributeSummaryList();
-		
+
+	}
+	public void loadNumericData()
+	{
+		for(Instance instance: data) {
+			barChartItems.add(new BarGraphItem(instance.toString(xaxis), instance.toString(yaxis)));
+		}
 	}
 }
