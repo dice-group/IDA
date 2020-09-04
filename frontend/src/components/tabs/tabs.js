@@ -6,6 +6,7 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
+import IDABarChart from "./../visualizations/barchart/barchart";
 import "./tabs.css";
 
 function TabPanel(props) {
@@ -46,8 +47,8 @@ export default function ScrollableTabsButtonAuto(props) {
       "label": child.name,
       "value": child.id,
       "data": child.data,
-      "type": "table",
-      "columns": data.data.filter((fl) => fl.fileName === child.fileName)[0].fileColMd
+      "type": child.type,
+      "columns": child.type === "table" ? data.data.filter((fl) => fl.fileName === child.fileName)[0].fileColMd : null
     });
   });
   const value = props.selectedNodeId || data.id;
@@ -62,6 +63,8 @@ export default function ScrollableTabsButtonAuto(props) {
         return <CustomizedTables data={tab.data} columns={tab.columns} />;
       case "metadata":
         return <SpanningTable data={tab.data} />;
+      case "barchart":
+        return <IDABarChart />;
       default:
         return null;
     }
