@@ -51,6 +51,6 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             break;
         }
         default:
-            console.log("Action code did not match")
+            console.log("Action code did not match");
     }
 }
