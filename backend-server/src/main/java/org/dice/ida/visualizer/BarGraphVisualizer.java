@@ -1,9 +1,10 @@
 package org.dice.ida.visualizer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.*;
 
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
@@ -109,7 +110,17 @@ public class BarGraphVisualizer {
 				}
 			}
 		}
-		for (String key:temp.keySet() )
+
+		Map<String, Double> sorted = temp
+				.entrySet()
+				.stream()
+				.sorted(comparingByValue())
+				.limit(20)
+				.collect(
+						toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+								LinkedHashMap::new));
+
+		for (String key : sorted.keySet())
 		{
 			items.add(new BarGraphItem(key,temp.get(key).toString()));
 		}
