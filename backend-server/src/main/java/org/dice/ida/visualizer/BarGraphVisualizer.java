@@ -111,7 +111,37 @@ public class BarGraphVisualizer {
 			}
 		}
 
-		Map<String, Double> sorted = temp
+		for (String key : sortAndLimit(temp).keySet())
+		{
+			items.add(new BarGraphItem(key,temp.get(key).toString()));
+		}
+	}
+
+	public void loadNumericData()
+	{
+
+		HashMap<String, Double> bins = new HashMap<>();
+		for(Instance instance: data) {
+			if (! bins.containsKey(instance.toString(xaxis))) {
+				bins.put(instance.toString(xaxis), instance.value(yaxis));
+			} else {
+				// bin has this x-value already then
+				bins.put(instance.toString(xaxis), (bins.get(instance.toString(xaxis)) + instance.value(yaxis)));
+			}
+		}
+		for (String key : sortAndLimit(bins).keySet()) {
+			items.add(new BarGraphItem(key, bins.get(key).toString()));
+		}
+	}
+
+	/**
+	 * Take hashmap as input and using Java Stream return sorted first 20 records
+	 * key value pairs as map in ascending order
+	 * @param hm
+	 * @return Map
+	 */
+	private Map<String, Double> sortAndLimit(HashMap<String, Double> hm) {
+		return hm
 				.entrySet()
 				.stream()
 				.sorted(comparingByValue())
@@ -119,16 +149,5 @@ public class BarGraphVisualizer {
 				.collect(
 						toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
 								LinkedHashMap::new));
-
-		for (String key : sorted.keySet())
-		{
-			items.add(new BarGraphItem(key,temp.get(key).toString()));
-		}
-	}
-	public void loadNumericData()
-	{
-		for(Instance instance: data) {
-			items.add(new BarGraphItem(instance.toString(xaxis), instance.toString(yaxis)));
-		}
 	}
 }
