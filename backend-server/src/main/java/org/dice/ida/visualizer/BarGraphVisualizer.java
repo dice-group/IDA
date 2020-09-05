@@ -1,7 +1,6 @@
 package org.dice.ida.visualizer;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.*;
@@ -70,15 +69,15 @@ public class BarGraphVisualizer {
 		{
 			loadNumericData();
 		}
-		if (xaxis.isDate())
-		{
-			// Date is non trivial case
-		}
+//		if (xaxis.isDate())
+//		{
+//			// Date is non trivial case
+//		}
 	}
 	public void loadNominal()
 	{
 		HashMap<String,Double> temp = new HashMap<String,Double>();
-		AttributeSummary yaxisSummary =DS.getAttributeSummaryList().stream().filter(x->x.getName().equalsIgnoreCase(yAxisLabel)).collect(Collectors.toList()).get(0);
+		AttributeSummary yaxisSummary =DS.getAttributeSummaryList().stream().filter(x->x.getName().equalsIgnoreCase(yAxisLabel)).collect(toList()).get(0);
 		if(yaxisSummary.getType().equalsIgnoreCase("Num"))
 		{
 			for (int i =0;i<data.numInstances();i++)
