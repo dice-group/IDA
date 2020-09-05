@@ -1,25 +1,11 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import ChatBot from "./ChatBot";
-import RecursiveTreeView from "./Treeview";
-import TabsWrappedLabel from "./Tabs";
-import "./chatbot.css";
-/* eslint-disable */
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    height: "100%",
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-}));
+import ChatBot from "./chatbot/chatBot";
+import RecursiveTreeView from "./navbar/navbar";
+import TabsWrappedLabel from "./tabs/tabs";
+import "./home.css";
 
-export default function CenteredGrid(props) {
-  const classes = useStyles();
+export default function Home(props) {
   const [detail, setDetails] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState("");
@@ -38,10 +24,10 @@ export default function CenteredGrid(props) {
     }
   }
   return (
-    <div className={classes.root}>
+    <div className={"root"}>
       <div>
         <Grid container >
-          <Grid item xs={3}>
+          <Grid item xs={3} className="nav-bar-container">
             <RecursiveTreeView
               loaded={loaded}
               selectedNodeId={selectedNodeId}
@@ -53,7 +39,7 @@ export default function CenteredGrid(props) {
               setActiveTable={setActiveTable}
             />
           </Grid>
-          <Grid item xs={9}>
+          <Grid item xs={9} className={"content"}>
             {loadTab(loaded)}
           </Grid>
         </Grid>

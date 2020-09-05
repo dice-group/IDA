@@ -66,4 +66,10 @@ public interface IDAConst {
 	public static final double  X_PARAM_UNIQUENESS_PROBABILITY = 100.0;
 	public static final double Y_PARAM_UNIQUENESS_MIN_PROBABILITY = 90.0;
 	public static final double X_PARAM_MIN_DUPLICATE_RATIO = 30.0;
+	
+	/**
+	 * Miscellaneous
+	 */
+	public static final String DF_SESSION_ID = "df-sid-key";
+	public static final int DF_SID_LEN = 6;
 }

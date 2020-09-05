@@ -3,9 +3,9 @@ package org.dice.ida.model.bargraph;
 public class BarGraphItem {
 
 	private String x;
-	private String y;
+	private Double y;
 
-	public BarGraphItem(String x, String y) {
+	public BarGraphItem(String x, Double y) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -16,10 +16,10 @@ public class BarGraphItem {
 	public void setX(String x) {
 		this.x = x;
 	}
-	public String getY() {
+	public Double getY() {
 		return y;
 	}
-	public void setY(String y) {
+	public void setY(Double y) {
 		this.y = y;
 	}
 	@Override

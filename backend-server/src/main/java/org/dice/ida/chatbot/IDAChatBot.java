@@ -1,10 +1,17 @@
 package org.dice.ida.chatbot;
 
+import java.util.Map;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.dice.ida.action.process.ActionExecutor;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.util.SessionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.google.cloud.dialogflow.v2.DetectIntentResponse;
@@ -13,8 +20,6 @@ import com.google.cloud.dialogflow.v2.QueryResult;
 import com.google.cloud.dialogflow.v2.SessionName;
 import com.google.cloud.dialogflow.v2.SessionsClient;
 import com.google.cloud.dialogflow.v2.TextInput;
-
-import java.util.Map;
 
 /**
  * Class to process messages using Dialogflow library
@@ -25,15 +30,13 @@ import java.util.Map;
 public class IDAChatBot {
 	@Value("${dialogflow.project.id}")
 	private String projectId;
-
-	@Value("${dialogflow.session.id}")
-	private String sessionId;
-
+	
+	@Autowired
+	private ApplicationContext appContext;
+	@Autowired
+	private SessionUtil sessionUtil;
+	@Autowired
 	private ChatMessageResponse messageResponse;
-
-	public IDAChatBot(ChatMessageResponse messageResponse) {
-		this.messageResponse = messageResponse;
-	}
 
 	/**
 	 * Method to process the user chat message and return a valid response
@@ -51,6 +54,7 @@ public class IDAChatBot {
 			// Instantiate the dialogflow client using the credential json file
 			SessionsClient sessionsClient = SessionsClient.create();
 
+			String sessionId = fetchDfSessionId();
 			// Set the session name using the sessionId and projectID
 			SessionName session = SessionName.of(projectId, sessionId);
 
@@ -65,12 +69,27 @@ public class IDAChatBot {
 			DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
 			QueryResult queryResult = response.getQueryResult();
 			// forwarding the flow to action executor
-			ActionExecutor actionExecutor = new ActionExecutor(queryResult);
+			
+			AutowireCapableBeanFactory factory = appContext.getAutowireCapableBeanFactory();
+			ActionExecutor actionExecutor = factory.getBean(ActionExecutor.class, queryResult);
 			actionExecutor.processAction(messageResponse);
 		} catch (Exception ex) {
 			messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
 			messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		}
 		return messageResponse;
+	}
+	
+
+	public String fetchDfSessionId() {
+		String sessionId = null;
+		Map<String, Object> sessionMap = sessionUtil.getSessionMap();
+		if(!sessionMap.containsKey(IDAConst.DF_SESSION_ID)) {
+			// TODO: change the type of key needed as per the requirement
+			// Create new session key
+			sessionMap.put(IDAConst.DF_SESSION_ID,RandomStringUtils.randomAlphanumeric(IDAConst.DF_SID_LEN));
+		}
+		sessionId = (String) sessionMap.get(IDAConst.DF_SESSION_ID);
+		return sessionId;
 	}
 }
