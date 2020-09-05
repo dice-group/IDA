@@ -60,7 +60,7 @@ public class BarGraphAction implements Action {
 						}
 						if (xaxist && yaxist) {
 							barGraph = new BarGraphVisualizer(xAxis, yAxis, datasetName, tableName, data).createBarGraph();
-							payload.put("BarGraphData", barGraph);
+							payload.put("barGraphData", barGraph);
 							chatMessageResponse.setPayload(payload);
 							chatMessageResponse.setMessage(IDAConst.BAR_GRAPH_LOADED);
 							chatMessageResponse.setUiAction(IDAConst.UIA_BARGRAPH);
