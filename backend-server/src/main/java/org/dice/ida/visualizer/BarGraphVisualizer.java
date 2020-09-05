@@ -113,7 +113,7 @@ public class BarGraphVisualizer {
 
 		for (String key : sortAndLimit(temp).keySet())
 		{
-			items.add(new BarGraphItem(key,temp.get(key).toString()));
+			items.add(new BarGraphItem(key,temp.get(key)));
 		}
 	}
 
@@ -130,7 +130,7 @@ public class BarGraphVisualizer {
 			}
 		}
 		for (String key : sortAndLimit(bins).keySet()) {
-			items.add(new BarGraphItem(key, bins.get(key).toString()));
+			items.add(new BarGraphItem(key, bins.get(key)));
 		}
 	}
 
