@@ -30,7 +30,7 @@ import com.google.cloud.dialogflow.v2.TextInput;
 public class IDAChatBot {
 	@Value("${dialogflow.project.id}")
 	private String projectId;
-	
+
 	@Autowired
 	private ApplicationContext appContext;
 	@Autowired
@@ -69,7 +69,7 @@ public class IDAChatBot {
 			DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
 			QueryResult queryResult = response.getQueryResult();
 			// forwarding the flow to action executor
-			
+
 			AutowireCapableBeanFactory factory = appContext.getAutowireCapableBeanFactory();
 			ActionExecutor actionExecutor = factory.getBean(ActionExecutor.class, queryResult);
 			actionExecutor.processAction(messageResponse);
@@ -79,7 +79,7 @@ public class IDAChatBot {
 		}
 		return messageResponse;
 	}
-	
+
 
 	public String fetchDfSessionId() {
 		String sessionId = null;

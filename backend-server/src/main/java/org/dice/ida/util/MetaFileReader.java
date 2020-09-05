@@ -4,8 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 

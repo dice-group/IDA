@@ -1,17 +1,12 @@
 package org.dice.ida.vizsuggest;
 
 import org.dice.ida.constant.IDAConst;
-import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.VisualizationSuggestion;
 import org.dice.ida.util.MetaFileReader;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class to orchestrate the visualization suggestion based on the dataset
@@ -59,7 +54,7 @@ public class VizSuggestOrchestrator {
 	 * @return Data summary model of the dataset
 	 * @throws Exception
 	 */
-	
+
 
 	/**
 	 * TODO Use below functions with upload dataset to create metadata as soon as user uploads new dataset

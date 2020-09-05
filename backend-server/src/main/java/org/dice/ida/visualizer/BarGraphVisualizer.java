@@ -21,24 +21,24 @@ import weka.core.Instances;
  */
 
 public class BarGraphVisualizer {
-	String xAxisLabel;
-	String yAxisLabel;
-	String label = "Bar Graph";
-	String dataSetName;
-	String tableName;
-	Attribute xaxis ;
-	Attribute yaxis;
-	List<BarGraphItem> items;
-	Instances data;
-	DataSummary DS;
+	private String yAxisLabel;
+	private String xAxisLabel;
+	private String dataSetName;
+	private String tableName;
+	private String label = "Bar Graph";
+	private Attribute xaxis;
+	private Attribute yaxis;
+	private List<BarGraphItem> items;
+	private Instances data;
+	private DataSummary DS;
 	public BarGraphVisualizer(String xAxis, String yAxis, String dsName,
 							  String tableName, Instances data)
 	{
 		this.xAxisLabel = xAxis;
 		this.yAxisLabel = yAxis;
-		this.dataSetName = dsName;
 		this.tableName = tableName;
 		this.data = data;
+		this.dataSetName = dsName;
 		try {
 			DS = new MetaFileReader().createDataSummary(dataSetName, tableName);
 		} catch (Exception e) {
@@ -72,13 +72,12 @@ public class BarGraphVisualizer {
 		}
 		if (xaxis.isDate())
 		{
-
+			// Date is non trivial case
 		}
 	}
 	public void loadNominal()
 	{
 		HashMap<String,Double> temp = new HashMap<String,Double>();
-		AttributeSummary xaxisSummary =DS.getAttributeSummaryList().stream().filter(x->x.getName().equalsIgnoreCase(xAxisLabel)).collect(Collectors.toList()).get(0);
 		AttributeSummary yaxisSummary =DS.getAttributeSummaryList().stream().filter(x->x.getName().equalsIgnoreCase(yAxisLabel)).collect(Collectors.toList()).get(0);
 		if(yaxisSummary.getType().equalsIgnoreCase("Num"))
 		{

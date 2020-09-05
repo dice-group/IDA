@@ -44,7 +44,8 @@ public class BarGraphAction implements Action {
 					BarGraphData barGraph;
 
 					if (xAxis != null && !xAxis.isEmpty() && yAxis != null && !yAxis.isEmpty()) {
-						boolean xaxist = false, yaxist = false;
+						boolean xaxist = false;
+						boolean yaxist = false;
 						CSVLoader loader = new CSVLoader();
 						//Loads the File
 						loader.setSource(new File("./src/main/resources/datasets/" + datasetName + "/" + tableName));
