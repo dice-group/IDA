@@ -6,7 +6,7 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             const metaData = payload.dsMd || {};
             const data = payload.dsData || [];
             const children = [];
-            data.forEach(table =>
+            data.forEach((table) =>
                 children.push({
                     id: metaData.dsName + "_" + table.name,
                     name: table.name,
@@ -20,10 +20,10 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
                 name: metaData.dsName,
                 type: "dataset",
                 data: metaData.filesMd,
-                children: children
+                children
             };
             const dataSets = props.detail || [];
-            if (dataSets.findIndex(ds => ds.id === main.id) < 0) {
+            if (dataSets.findIndex((ds) => ds.id === main.id) < 0) {
                 dataSets.push(main);
                 props.setDetails(dataSets);
             }
@@ -37,9 +37,9 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_BARGRAPH: {
             const treeData = props.detail;
-            const activeDS = treeData.find(node => node.id === payload.activeDS);
+            const activeDS = treeData.find((node) => node.id === payload.activeDS);
             activeDS.children = activeDS.children || [];
-            const barChartCount = activeDS.children.filter(c => c.type === "barchart").length;
+            const barChartCount = activeDS.children.filter((c) => c.type === "barchart").length;
             activeDS.children.push({
                 id: payload.activeDS + "_barchart_" + (barChartCount + 1),
                 name: "Bar Graph " + (barChartCount + 1),
@@ -51,6 +51,5 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             break;
         }
         default:
-            console.log("Action code did not match");
     }
 }
