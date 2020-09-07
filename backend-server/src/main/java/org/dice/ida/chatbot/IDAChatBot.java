@@ -30,7 +30,8 @@ import com.google.cloud.dialogflow.v2.TextInput;
 public class IDAChatBot {
 	@Value("${dialogflow.project.id}")
 	private String projectId;
-	
+	private String sessionId = null;
+
 	@Autowired
 	private ApplicationContext appContext;
 	@Autowired
@@ -54,7 +55,9 @@ public class IDAChatBot {
 			// Instantiate the dialogflow client using the credential json file
 			SessionsClient sessionsClient = SessionsClient.create();
 
-			String sessionId = fetchDfSessionId();
+			if (sessionId == null) {
+				sessionId = fetchDfSessionId();
+			}
 			// Set the session name using the sessionId and projectID
 			SessionName session = SessionName.of(projectId, sessionId);
 
@@ -69,7 +72,7 @@ public class IDAChatBot {
 			DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
 			QueryResult queryResult = response.getQueryResult();
 			// forwarding the flow to action executor
-			
+
 			AutowireCapableBeanFactory factory = appContext.getAutowireCapableBeanFactory();
 			ActionExecutor actionExecutor = factory.getBean(ActionExecutor.class, queryResult);
 			actionExecutor.processAction(messageResponse);
@@ -79,7 +82,7 @@ public class IDAChatBot {
 		}
 		return messageResponse;
 	}
-	
+
 
 	public String fetchDfSessionId() {
 		String sessionId = null;

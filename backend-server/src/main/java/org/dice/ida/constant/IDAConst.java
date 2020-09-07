@@ -15,6 +15,8 @@ public interface IDAConst {
 	public static final int UIA_LOADDS = 1004;
 	// Open Upload dataset modal window
 	public static final int UAC_UPLDDTMSG = 1002;
+	//Load bar graph
+	public static final int UIA_BARGRAPH = 1005;
 	/**
 	 *  Pre-defined action codes
 	 */
@@ -49,6 +51,13 @@ public interface IDAConst {
 	public static final String DSMAP_PROP_FILEPATH = "datasetmap.properties";
 	// CSV File name Pattern
 	public static final String CSV_FILE_PATTERN = ".*[cC][sS][vV]$";
+
+	// Bar graph
+	public static final String PARAM_XAXIS_NAME = "x-axis";
+	public static final String PARAM_YAXIS_NAME = "y-axis";
+	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
+	public static final String INVALID_BG_DATA_PROVIDED = "Hmm, either provided Y-axis, X-axis or both were incorrect";
+
 
 	/**
 	 * Bar graph parameters thresholds

@@ -1,10 +1,10 @@
 package org.dice.ida.model.bargraph;
 
 public class BarGraphItem {
-	
+
 	private String x;
 	private Double y;
-	
+
 	public BarGraphItem(String x, Double y) {
 		super();
 		this.x = x;
