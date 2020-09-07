@@ -37,17 +37,17 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_BARGRAPH: {
             const treeData = props.detail;
-            const activeDS = treeData.find(node => node.id === payload.dsName);
+            const activeDS = treeData.find(node => node.id === payload.activeDS);
             activeDS.children = activeDS.children || [];
             const barChartCount = activeDS.children.filter(c => c.type === "barchart").length;
             activeDS.children.push({
-                id: payload.dsName + "_barchart_" + (barChartCount + 1),
+                id: payload.activeDS + "_barchart_" + (barChartCount + 1),
                 name: "Bar Graph " + (barChartCount + 1),
                 type: "barchart",
-                data: payload,
+                data: payload.barGraphData,
                 fileName: "Bar Graph " + (barChartCount + 1)
             });
-            props.setSelectedNodeId(payload.dsName + "_barchart_" + (barChartCount + 1));
+            props.setSelectedNodeId(payload.activeDS + "_barchart_" + (barChartCount + 1));
             break;
         }
         default:
