@@ -30,7 +30,6 @@ import com.google.cloud.dialogflow.v2.TextInput;
 public class IDAChatBot {
 	@Value("${dialogflow.project.id}")
 	private String projectId;
-	private String sessionId = null;
 
 	@Autowired
 	private ApplicationContext appContext;
@@ -55,9 +54,8 @@ public class IDAChatBot {
 			// Instantiate the dialogflow client using the credential json file
 			SessionsClient sessionsClient = SessionsClient.create();
 
-			if (sessionId == null) {
-				sessionId = fetchDfSessionId();
-			}
+			
+			String	sessionId = fetchDfSessionId();
 			// Set the session name using the sessionId and projectID
 			SessionName session = SessionName.of(projectId, sessionId);
 

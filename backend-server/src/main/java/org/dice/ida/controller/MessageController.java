@@ -38,7 +38,7 @@ public class MessageController {
 	 * @return Response to the chat message
 	 * @throws Exception
 	 */
-	@CrossOrigin(origins = "*")
+	@CrossOrigin(origins = "*", allowCredentials = "true")
 	@RequestMapping(value = "/chatmessage", method = RequestMethod.POST)
 	public ChatMessageResponse handleMessage(@RequestBody ChatUserMessage message) throws Exception {
 		return idaChatBot.processMessage(message);
