@@ -139,7 +139,8 @@ public class BarGraphVisualizer {
 		} else {
 			String[] tokens = filterText.split(" "); // tokenized filter text
 			String filterType = tokens[0]; // Dialogflow makes sure that these tokens are in correct order
-			int rangeStart = 0, rangeEnd = 0;
+			int rangeStart = 0;
+			int rangeEnd = 0;
 
 			// Extracting ranges
 			if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FIRST)) {
@@ -173,7 +174,7 @@ public class BarGraphVisualizer {
 	}
 
 	/**
-	 * Take hashmap as input and using Java Stream return sorted first 20 records
+	 * Take hashmap as input and using Java Stream return sorted records.
 	 * key value pairs as map in ascending order
 	 *
 	 * @param hm
