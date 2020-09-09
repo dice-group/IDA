@@ -50,11 +50,13 @@ public class IDAChatBot {
 		Map<String, Object> dataMap = messageResponse.getPayload();
 		dataMap.put("activeDS", userMessage.getActiveDS());
 		dataMap.put("activeTable", userMessage.getActiveTable());
+		SessionsClient sessionsClient = null;
+
 		try {
 			// Instantiate the dialogflow client using the credential json file
-			SessionsClient sessionsClient = SessionsClient.create();
+			sessionsClient = SessionsClient.create();
 
-			
+
 			String	sessionId = fetchDfSessionId();
 			// Set the session name using the sessionId and projectID
 			SessionName session = SessionName.of(projectId, sessionId);
@@ -77,6 +79,8 @@ public class IDAChatBot {
 		} catch (Exception ex) {
 			messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
 			messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+		} finally {
+			sessionsClient.close();
 		}
 		return messageResponse;
 	}
