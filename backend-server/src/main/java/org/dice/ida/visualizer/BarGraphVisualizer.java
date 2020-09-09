@@ -10,6 +10,7 @@ import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
 import org.dice.ida.util.MetaFileReader;
+import org.dice.ida.constant.IDAConst;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -17,7 +18,7 @@ import weka.core.Instances;
 /**
  * Class to provide required attributes for bar graph visualization and apply data filters.
  *
- * @author Sourabh
+ * @author Sourabh, Maqbool
  */
 
 public class BarGraphVisualizer {
@@ -28,7 +29,6 @@ public class BarGraphVisualizer {
 	private String label = "Bar Graph";
 	private Attribute xaxis;
 	private Attribute yaxis;
-	private String filterText;
 	private List<BarGraphItem> items;
 	private Instances data;
 	private DataSummary DS;
@@ -37,10 +37,10 @@ public class BarGraphVisualizer {
 							  String tableName, String filterText, Instances data) {
 		this.xAxisLabel = xAxis;
 		this.yAxisLabel = yAxis;
-		this.filterText = filterText;
 		this.tableName = tableName;
 
-		applyFilter(data);
+		// prepare filter then apply them to data
+		prepareFilter(data, filterText);
 
 		this.dataSetName = dsName;
 		try {
@@ -107,9 +107,9 @@ public class BarGraphVisualizer {
 	}
 
 	public void loadNumericData() {
-		System.out.println("well");
 		HashMap<String, Double> bins = new HashMap<>();
 		for (Instance instance : data) {
+			// Aggregating all y-axis values on its x-axis
 			if (!bins.containsKey(instance.toString(xaxis))) {
 				bins.put(instance.toString(xaxis), instance.value(yaxis));
 			} else {
@@ -123,37 +123,52 @@ public class BarGraphVisualizer {
 		}
 	}
 
-	private void applyFilter(Instances rows) {
-		if (filterText.equals("all")) {
-			this.data = rows;
+	/**
+	 * This method Uses filterText provided by User and filter
+	 * out required rows from data.
+	 * It prepares ranges to filter out rows and then send
+	 * those ranges to applyFilter function.
+	 *
+	 * @param data
+	 * @param filterText
+	 */
+	private void prepareFilter(Instances data, String filterText) {
+		if (filterText.equals(IDAConst.BG_FILTER_ALL)) {
+			// All data has been selected
+			this.data = data;
 		} else {
-			String[] tokens = filterText.split(" ");
-			String filterType = null;
-			int filterQuantity;
+			String[] tokens = filterText.split(" "); // tokenized filter text
+			String filterType = tokens[0]; // Dialogflow makes sure that these tokens are in correct order
+			int rangeStart = 0, rangeEnd = 0;
 
-			filterQuantity =  Integer.parseInt(tokens[1]);
-			filterType = tokens[0];
-
-			if (filterType.equalsIgnoreCase("first")) {
-
-				this.data = new Instances(rows, filterQuantity);
-				for (int i = 0; i < filterQuantity; i++) {
-					this.data.add(rows.instance(i));
-				}
-			} else if (filterType.equalsIgnoreCase("last")) {
-
-				this.data = new Instances(rows, filterQuantity);
-				for (int i = rows.size(); i >  rows.size()-filterQuantity; i--) {
-					this.data.add(rows.instance(i-1));
-				}
-			} else if (filterType.equalsIgnoreCase("from")) {
-				int rangeStart =  Integer.parseInt(tokens[1]);
-				int rangeEnd =  Integer.parseInt(tokens[3]);
-				this.data = new Instances(rows, rangeEnd - rangeStart);
-				for (int i = rangeStart; i < rangeEnd; i++) {
-					this.data.add(rows.instance(i));
-				}
+			// Extracting ranges
+			if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FIRST)) {
+				rangeStart = 0;
+				rangeEnd = Integer.parseInt(tokens[1]);
+			} else if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_LAST)) {
+				rangeStart = data.size() - Integer.parseInt(tokens[1]);
+				rangeEnd = data.size();
+			} else if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FROM)) {
+				rangeStart =  Integer.parseInt(tokens[1]) - 1;
+				rangeEnd =  Integer.parseInt(tokens[3]);
 			}
+			applyFilter(data, rangeStart, rangeEnd);
+		}
+	}
+
+	/**
+	 * Uses ranges produced by prepareFilter method and simply
+	 * filter out data
+	 *
+	 * @param data
+	 * @param rangeStart
+	 * @param rangeEnd
+	 */
+	private void applyFilter(Instances data, int rangeStart, int rangeEnd) {
+		this.data = new Instances(data, rangeEnd - rangeStart);
+		for (int i = rangeStart; i < rangeEnd; i++) {
+			System.out.println(data.instance(i));
+			this.data.add(data.instance(i));
 		}
 	}
 

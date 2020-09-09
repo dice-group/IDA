@@ -58,6 +58,11 @@ public interface IDAConst {
 	public static final String PARAM_YAXIS_NAME = "y-axis";
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
 	public static final String INVALID_BG_DATA_PROVIDED = "Hmm, either provided Y-axis, X-axis or both were incorrect";
+	public static final String BG_FILTER_ALL = "all";
+	public static final String BG_FILTER_FIRST = "first";
+	public static final String BG_FILTER_LAST = "last";
+	public static final String BG_FILTER_FROM = "from";
+
 
 
 	/**
