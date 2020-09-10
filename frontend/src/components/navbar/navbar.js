@@ -24,7 +24,7 @@ export default function IDANavbar(props) {
     if (selectedNode && selectedNode.type !== "parent") {
       props.setSelectedNodeId(nodeId);
       const tabs = props.tabs;
-      if (tabs.findIndex(t => t.id === nodeId) < 0) {
+      if (tabs.findIndex((t) => t.id === nodeId) < 0) {
         tabs.push(selectedNode);
         props.setTabs(tabs);
       }
@@ -38,22 +38,13 @@ export default function IDANavbar(props) {
   };
 
   const fetchNodeFromId = (nodeId, tree) => {
-    let found = null;
-    let i;
-    for (i = 0; i < tree.length; i++) {
-      if (tree[i].id === nodeId) {
-        found = tree[i];
-        break;
-      }
-    }
+    let found = tree.find((t) => t.id === nodeId);
     if (!found) {
-      for (i = 0; i < tree.length; i++) {
-        if (tree[i].children && tree[i].children.length) {
-          found = fetchNodeFromId(nodeId, tree[i].children);
-          if (found)
-            break;
+      tree.forEach((t) => {
+        if (t.children && t.children.length && !found) {
+          found = fetchNodeFromId(nodeId, t.children);
         }
-      }
+      });
     }
     return found;
   };

@@ -7,7 +7,7 @@ import Box from "@material-ui/core/Box";
 import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
 import IDABarChart from "./../visualizations/barchart/barchart";
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from "@material-ui/icons/Close";
 import "./tabs.css";
 import { Grid, IconButton } from "@material-ui/core";
 
