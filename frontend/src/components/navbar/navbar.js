@@ -19,6 +19,17 @@ export default function IDANavbar(props) {
   const handleToggle = (event, nodeIds) => {
     props.setExpandedNodeId(nodeIds);
   };
+  const fetchNodeFromId = (nodeId, tree) => {
+    let found = tree.find((t) => t.id === nodeId);
+    if (!found) {
+      tree.forEach((t) => {
+        if (t.children && t.children.length && !found) {
+          found = fetchNodeFromId(nodeId, t.children);
+        }
+      });
+    }
+    return found;
+  };
   const handleSelect = (event, nodeId) => {
     const selectedNode = fetchNodeFromId(nodeId, detail);
     if (selectedNode && selectedNode.type !== "parent") {
@@ -35,18 +46,6 @@ export default function IDANavbar(props) {
       }
       props.setActiveDS(selectedNode.dsName);
     }
-  };
-
-  const fetchNodeFromId = (nodeId, tree) => {
-    let found = tree.find((t) => t.id === nodeId);
-    if (!found) {
-      tree.forEach((t) => {
-        if (t.children && t.children.length && !found) {
-          found = fetchNodeFromId(nodeId, t.children);
-        }
-      });
-    }
-    return found;
   };
 
   return (
