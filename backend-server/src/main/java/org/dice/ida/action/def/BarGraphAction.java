@@ -41,6 +41,7 @@ public class BarGraphAction implements Action {
 				} else {
 					String xAxis = paramMap.get(IDAConst.PARAM_XAXIS_NAME).toString();
 					String yAxis = paramMap.get(IDAConst.PARAM_YAXIS_NAME).toString();
+					String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 					BarGraphData barGraph;
 
 					if (xAxis != null && !xAxis.isEmpty() && yAxis != null && !yAxis.isEmpty()) {
@@ -60,7 +61,7 @@ public class BarGraphAction implements Action {
 							}
 						}
 						if (xaxist && yaxist) {
-							barGraph = new BarGraphVisualizer(xAxis, yAxis, datasetName, tableName, data).createBarGraph();
+							barGraph = new BarGraphVisualizer(xAxis, yAxis, datasetName, tableName, filterString, data).createBarGraph();
 							payload.put("barGraphData", barGraph);
 							chatMessageResponse.setPayload(payload);
 							chatMessageResponse.setMessage(IDAConst.BAR_GRAPH_LOADED);

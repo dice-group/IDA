@@ -53,10 +53,16 @@ public interface IDAConst {
 	public static final String CSV_FILE_PATTERN = ".*[cC][sS][vV]$";
 
 	// Bar graph
+	public static final String PARAM_FILTER_STRING = "items-selection";
 	public static final String PARAM_XAXIS_NAME = "x-axis";
 	public static final String PARAM_YAXIS_NAME = "y-axis";
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
 	public static final String INVALID_BG_DATA_PROVIDED = "Hmm, either provided Y-axis, X-axis or both were incorrect";
+	public static final String BG_FILTER_ALL = "all";
+	public static final String BG_FILTER_FIRST = "first";
+	public static final String BG_FILTER_LAST = "last";
+	public static final String BG_FILTER_FROM = "from";
+
 
 
 	/**
@@ -66,7 +72,7 @@ public interface IDAConst {
 	public static final double  X_PARAM_UNIQUENESS_PROBABILITY = 100.0;
 	public static final double Y_PARAM_UNIQUENESS_MIN_PROBABILITY = 90.0;
 	public static final double X_PARAM_MIN_DUPLICATE_RATIO = 30.0;
-	
+
 	/**
 	 * Miscellaneous
 	 */

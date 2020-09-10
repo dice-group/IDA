@@ -3,7 +3,8 @@ export const IDA_CONSTANTS = {
     UI_ACTION_CODES: {
         UAC_NRMLMSG: 1001,
         UAC_UPLDDTMSG: 1002,
-        UIA_LOADDS: 1004        
+        UIA_LOADDS: 1004,
+        UAC_BARGRAPH: 1005        
     },
     BUTTON_ACTIONS: {
         PDAC_KNWMR: 2001,
