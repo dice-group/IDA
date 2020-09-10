@@ -5,7 +5,7 @@ COPY backend-server/src backend-server/src
 
 WORKDIR /build/backend-server
 COPY --from=MAVEN_BUILD /build/backend-server/src/main/resources/ida-chatbot-dialogflow.json /usr/local/
-export GOOGLE_APPLICATION_CREDENTIALS="/usr/local/ida-chatbot-dialogflow.json"
+RUN GOOGLE_APPLICATION_CREDENTIALS="/usr/local/ida-chatbot-dialogflow.json"
 RUN mvn package
 
 FROM tomcat:8.5.37-jre11
