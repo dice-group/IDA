@@ -7,7 +7,9 @@ import Box from "@material-ui/core/Box";
 import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
 import IDABarChart from "./../visualizations/barchart/barchart";
+import CloseIcon from "@material-ui/icons/Close";
 import "./tabs.css";
+import { Grid, IconButton } from "@material-ui/core";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -34,28 +36,28 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
+function TabHeader(props) {
+  const { removeTab, ...newProps } = props;
+  return (
+    <div>
+      <Grid container alignItems="center">
+        <Tab {...newProps} />
+        <IconButton onClick={() => removeTab(props.value)}>
+          <CloseIcon />
+        </IconButton>
+      </Grid>
+    </div>
+  );
+}
+
 export default function ScrollableTabsButtonAuto(props) {
   const data = props.detail.find((ds) => ds.id === props.selectedNodeId || ds.children.findIndex((child) => child.id === props.selectedNodeId) >= 0) || {};
-  const tabs = data.id ? [{
-    "label": data.name + " Metadata",
-    "value": data.id,
-    "data": data.data,
-    "type": "metadata"
-  }] : [];
-  (data.children || []).forEach((child) => {
-    tabs.push({
-      "label": child.name,
-      "value": child.id,
-      "data": child.data,
-      "type": child.type,
-      "columns": child.type === "table" ? data.data.filter((fl) => fl.fileName === child.fileName)[0].fileColMd : null
-    });
-  });
+  const tabs = props.tabs;
   const value = props.selectedNodeId || data.id;
   const handleChange = (event, newValue) => {
     props.setSelectedNodeId(newValue);
-    const selectedTab = tabs.find((tab) => tab.value === newValue && tab.type === "table") || {};
-    props.setActiveTable(selectedTab.label || "");
+    const selectedTab = tabs.find((tab) => tab.id === newValue && tab.type === "table") || {};
+    props.setActiveTable(selectedTab.name || "");
   };
   const renderData = (tab) => {
     switch (tab.type) {
@@ -64,10 +66,17 @@ export default function ScrollableTabsButtonAuto(props) {
       case "metadata":
         return <SpanningTable data={tab.data} />;
       case "barchart":
-        return <IDABarChart data={tab.data} nodeId={tab.value} />;
+        return <IDABarChart data={tab.data} nodeId={tab.id} />;
       default:
         return null;
     }
+  };
+  const removeTab = (tabId) => {
+    const newTabs = tabs.filter((t) => t.id !== tabId);
+    if (tabId === value) {
+      handleChange(null, newTabs[0] ? newTabs[0].id : "");
+    }
+    props.setTabs(newTabs);
   };
 
   return (
@@ -85,14 +94,15 @@ export default function ScrollableTabsButtonAuto(props) {
             selectionFollowsFocus={true}
           >
             {tabs.map(
-              (tab, index) => (
-                <Tab value={tab.value} label={tab.label} key={index} />
+              (tab) => (
+                <TabHeader value={tab.id} label={tab.name} key={tab.id} removeTab={removeTab}>
+                </TabHeader>
               ))}
           </Tabs>
         </AppBar>
         {tabs.map(
-          (tab, index) => (
-            <TabPanel value={value} index={tab.value} key={index}>
+          (tab) => (
+            <TabPanel value={value} index={tab.id} key={tab.id}>
               {renderData(tab)}
             </TabPanel>
           )

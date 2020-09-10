@@ -10,13 +10,23 @@
   display: none;
 }
 
-.no-data .sc-open-icon,
-.no-data .sc-closed-icon,
-.no-data .sc-launcher,
 .no-data .sc-chat-window {
   right: 43%;
 }
 
+.sc-open-icon,
+.sc-closed-icon,
+.sc-launcher {
+  top: 0;
+  z-index: 1200;
+}
+
+.sc-launcher {
+  background-color: skyblue;
+  cursor: pointer;
+}
+
 .sc-chat-window {
-  max-height: none;
+  max-height: 80vh;
+  z-index: 1200;
 }
