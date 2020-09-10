@@ -5,7 +5,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 import Box from "@material-ui/core/Box";
 
-export default function RecursiveTreeView(props) {
+export default function IDANavbar(props) {
   const detail = props.detail;
   const expanded = props.expandedNodeId;
   const chooseSelect = () => {
@@ -20,12 +20,42 @@ export default function RecursiveTreeView(props) {
     props.setExpandedNodeId(nodeIds);
   };
   const handleSelect = (event, nodeId) => {
-    props.setSelectedNodeId(nodeId);
-    const parentNode = props.detail.find((ds) => ds.id === nodeId || ds.children.findIndex((child) => child.id === nodeId) >= 0);
-    props.setActiveDS(parentNode.id || "");
-    if (parentNode.id && parentNode.id !== nodeId) {
-      props.setActiveTable(parentNode.children.find((child) => child.id === nodeId).name);
+    const selectedNode = fetchNodeFromId(nodeId, detail);
+    if (selectedNode && selectedNode.type !== "parent") {
+      props.setSelectedNodeId(nodeId);
+      const tabs = props.tabs;
+      if (tabs.findIndex(t => t.id === nodeId) < 0) {
+        tabs.push(selectedNode);
+        props.setTabs(tabs);
+      }
+      if (selectedNode.type === "table") {
+        props.setActiveTable(selectedNode.name);
+      } else {
+        props.setActiveTable("");
+      }
+      props.setActiveDS(selectedNode.dsName);
     }
+  };
+
+  const fetchNodeFromId = (nodeId, tree) => {
+    let found = null;
+    let i;
+    for (i = 0; i < tree.length; i++) {
+      if (tree[i].id === nodeId) {
+        found = tree[i];
+        break;
+      }
+    }
+    if (!found) {
+      for (i = 0; i < tree.length; i++) {
+        if (tree[i].children && tree[i].children.length) {
+          found = fetchNodeFromId(nodeId, tree[i].children);
+          if (found)
+            break;
+        }
+      }
+    }
+    return found;
   };
 
   return (

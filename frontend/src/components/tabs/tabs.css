@@ -7,3 +7,7 @@
 .tab-list {
   padding-left: 0;
 }
+
+.tab-close-icon {
+  display: inline;
+}
