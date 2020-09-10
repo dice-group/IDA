@@ -42,6 +42,7 @@ public interface IDAConst {
 	public static final String PARAM_TEXT_MSG = "TEXT_MSG";
 	public static final String PARAM_DATASET_NAME = "datasetname";
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
+	public static final String PARAM_INTENT_DETECTION_CONFIDENCE = "intent_detection_confidence";
 	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
 	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
 
@@ -59,6 +60,7 @@ public interface IDAConst {
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
 	public static final String INVALID_X_AXIS_NAME = "Provided x-axis column name was incorrect! Please try again.";
 	public static final String INVALID_Y_AXIS_NAME = "Provided Y-axis column name was incorrect! Please try again.";
+	public static final String INVALID_FILTER = "Please select a valid filter (for example: all | first 20 | last 30  | from 55 to 100 records).";
 	public static final String BG_FILTER_ALL = "all";
 	public static final String BG_FILTER_FIRST = "first";
 	public static final String BG_FILTER_LAST = "last";

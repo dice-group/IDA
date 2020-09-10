@@ -77,6 +77,14 @@ public class BarGraphAction implements Action {
 							chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 						}
 					} else {
+						double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+
+						// Here for incorrect "filterstring" parameter value, confidence will be 0 or 1 otherwise
+						// because we have a regex for this parameter (over Dialogflow) so it will either match
+						// or wont match
+						if (isStringEmpty(filterString) && confidence == 0.0) {
+							paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
+						}
 						SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 					}
 				}
