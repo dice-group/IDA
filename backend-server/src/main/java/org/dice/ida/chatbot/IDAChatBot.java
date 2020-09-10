@@ -1,5 +1,6 @@
 package org.dice.ida.chatbot;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -38,6 +39,16 @@ public class IDAChatBot {
 	@Autowired
 	private ChatMessageResponse messageResponse;
 
+	public static final SessionsClient SESSIONS_CLIENT = getDfSessionsClient();
+
+	private static final SessionsClient getDfSessionsClient() {
+		try {
+	        return SessionsClient.create();
+	    } catch (final IOException exc) {
+	        throw new Error(exc);
+	    }
+	}
+
 	/**
 	 * Method to process the user chat message and return a valid response
 	 *
@@ -50,13 +61,10 @@ public class IDAChatBot {
 		Map<String, Object> dataMap = messageResponse.getPayload();
 		dataMap.put("activeDS", userMessage.getActiveDS());
 		dataMap.put("activeTable", userMessage.getActiveTable());
-		SessionsClient sessionsClient = null;
 
 		try {
 			// Instantiate the dialogflow client using the credential json file
-			sessionsClient = SessionsClient.create();
-
-
+			SessionsClient sessionsClient = SESSIONS_CLIENT;
 			String	sessionId = fetchDfSessionId();
 			// Set the session name using the sessionId and projectID
 			SessionName session = SessionName.of(projectId, sessionId);
@@ -79,8 +87,6 @@ public class IDAChatBot {
 		} catch (Exception ex) {
 			messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
 			messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-		} finally {
-			sessionsClient.close();
 		}
 		return messageResponse;
 	}
@@ -90,7 +96,6 @@ public class IDAChatBot {
 		String sessionId = null;
 		Map<String, Object> sessionMap = sessionUtil.getSessionMap();
 		if(!sessionMap.containsKey(IDAConst.DF_SESSION_ID)) {
-			// TODO: change the type of key needed as per the requirement
 			// Create new session key
 			sessionMap.put(IDAConst.DF_SESSION_ID,RandomStringUtils.randomAlphanumeric(IDAConst.DF_SID_LEN));
 		}
