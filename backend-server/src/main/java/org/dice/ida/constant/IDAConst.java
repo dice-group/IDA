@@ -34,7 +34,7 @@ public interface IDAConst {
 	public static final String BOT_LANGUAGE = "en-US";
 	public static final String BOT_SOMETHING_WRONG = "Something went wrong with that request. Please try again later.";
 	public static final String BOT_LOAD_DS_BEFORE = "Please load a dataset";
-	public static final String BOT_SELECT_TABLE = "Please load a table";
+	public static final String BOT_SELECT_TABLE = "Please select a data table";
 
 	/**
 	 * Param Map Keys
@@ -57,7 +57,8 @@ public interface IDAConst {
 	public static final String PARAM_XAXIS_NAME = "x-axis";
 	public static final String PARAM_YAXIS_NAME = "y-axis";
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
-	public static final String INVALID_BG_DATA_PROVIDED = "Hmm, either provided Y-axis, X-axis or both were incorrect";
+	public static final String INVALID_X_AXIS_NAME = "Provided x-axis column name was incorrect! Please try again.";
+	public static final String INVALID_Y_AXIS_NAME = "Provided Y-axis column name was incorrect! Please try again.";
 	public static final String BG_FILTER_ALL = "all";
 	public static final String BG_FILTER_FIRST = "first";
 	public static final String BG_FILTER_LAST = "last";
