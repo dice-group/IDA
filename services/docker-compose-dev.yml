@@ -12,8 +12,6 @@ services:
     volumes:
       - "../backend-server/src:/build/backend-server/src"
       - "../backend-server/target:/build/backend-server/target"
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/build/backend-server/src/main/resources/ida-chatbot-dialogflow.json
     networks:
       - ida-net
   ida-frontend:

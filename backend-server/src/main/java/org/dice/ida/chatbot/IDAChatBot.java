@@ -43,7 +43,7 @@ public class IDAChatBot {
 
 	private static final SessionsClient getDfSessionsClient() {
 		try {
-	        return SessionsClient.create();
+	        return SessionsClient.create(IDAChatbotUtil.getSessionSettings());
 	    } catch (final IOException exc) {
 	        throw new Error(exc);
 	    }

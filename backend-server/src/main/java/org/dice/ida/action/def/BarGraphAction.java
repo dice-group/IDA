@@ -6,6 +6,7 @@ import java.util.Map;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.bargraph.BarGraphData;
+import org.dice.ida.util.FileUtil;
 import org.dice.ida.visualizer.BarGraphVisualizer;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
@@ -20,7 +21,6 @@ public class BarGraphAction implements Action {
 
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
-		// TODO Auto-generated method stub
 
 		try {
 			Map<String, Object> payload = chatMessageResponse.getPayload();
@@ -49,13 +49,15 @@ public class BarGraphAction implements Action {
 						boolean yaxist = false;
 						CSVLoader loader = new CSVLoader();
 						//Loads the File
-						loader.setSource(new File("./src/main/resources/datasets/" + datasetName + "/" + tableName));
+						String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+						loader.setSource(new File(path));
 						Instances data = loader.getDataSet();
 						for (int i = 0; i < data.numAttributes(); i++) {
 							if (data.attribute(i).name().trim().equalsIgnoreCase(xAxis.trim())) {
 								xAxis = data.attribute(i).name();
 								xaxist = true;
-							} if (data.attribute(i).name().trim().equalsIgnoreCase(yAxis.trim())) {
+							}
+							if (data.attribute(i).name().trim().equalsIgnoreCase(yAxis.trim())) {
 								yAxis = data.attribute(i).name();
 								yaxist = true;
 							}

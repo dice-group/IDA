@@ -8,6 +8,5 @@ RUN mvn package
 
 FROM tomcat:8.5.37-jre11
 EXPOSE 8080
-COPY --from=MAVEN_BUILD /build/backend-server/src/main/resources/ida-chatbot-dialogflow.json /usr/local/
 COPY --from=MAVEN_BUILD /build/backend-server/target/ida-ws.war /usr/local/tomcat/webapps
 RUN /usr/local/tomcat/bin/catalina.sh start
