@@ -1,6 +1,8 @@
 package org.dice.ida.chatbot;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -44,7 +46,7 @@ public class IDAChatBot {
 	private static final SessionsClient getDfSessionsClient() {
 		try {
 	        return SessionsClient.create(IDAChatbotUtil.getSessionSettings());
-	    } catch (final IOException exc) {
+	    } catch (final IOException | InvalidKeySpecException | NoSuchAlgorithmException exc) {
 	        throw new Error(exc);
 	    }
 	}
@@ -64,7 +66,6 @@ public class IDAChatBot {
 
 		try {
 			// Instantiate the dialogflow client using the credential json file
-			SessionsClient sessionsClient = SESSIONS_CLIENT;
 			String	sessionId = fetchDfSessionId();
 			// Set the session name using the sessionId and projectID
 			SessionName session = SessionName.of(projectId, sessionId);
@@ -77,7 +78,7 @@ public class IDAChatBot {
 			QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
 
 			// Detect the intent of the query
-			DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
+			DetectIntentResponse response = SESSIONS_CLIENT.detectIntent(session, queryInput);
 			QueryResult queryResult = response.getQueryResult();
 			// forwarding the flow to action executor
 
@@ -93,7 +94,7 @@ public class IDAChatBot {
 
 
 	public String fetchDfSessionId() {
-		String sessionId = null;
+		String sessionId;
 		Map<String, Object> sessionMap = sessionUtil.getSessionMap();
 		if(!sessionMap.containsKey(IDAConst.DF_SESSION_ID)) {
 			// Create new session key

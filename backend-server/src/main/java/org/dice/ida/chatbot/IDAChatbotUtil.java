@@ -38,6 +38,7 @@ public class IDAChatbotUtil {
 	/**
 	 * Method to read the application properties file and store it in a map as class member.
 	 * Cannot use Value annotation since we need it as static member
+	 *
 	 * @throws IOException when file does not exist
 	 */
 	private static void readProperties() throws IOException {
@@ -54,53 +55,47 @@ public class IDAChatbotUtil {
 
 	/**
 	 * Method to read the dialogflow credentials from the json file and return it as a map
+	 *
 	 * @return map of dialogflow authentication credentials
 	 */
-	private static Map<String, String> readCredentials() {
+	private static Map<String, String> readCredentials() throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> credentials;
 		String credentialsFilePath = props.get("dialogflow.credentials.path");
-		try {
-			String jsonString = new String(Files.readAllBytes(Paths.get(IDAChatbotUtil.class.getClassLoader().getResource(credentialsFilePath).getPath())));
-			credentials = objectMapper.readValue(jsonString, new TypeReference<Map<String, String>>() {
-			});
-			return credentials;
-		} catch (IOException ex) {
-			throw new Error(ex);
-		}
+		String jsonString = new String(Files.readAllBytes(Paths.get(IDAChatbotUtil.class.getClassLoader().getResource(credentialsFilePath).getPath())));
+		credentials = objectMapper.readValue(jsonString, new TypeReference<Map<String, String>>() {
+		});
+		return credentials;
 	}
 
 	/**
 	 * Method to create a session settings object from the dialogflow auth credentials
+	 *
 	 * @return Dialogflow session settings to create the session
 	 */
-	public static SessionsSettings getSessionSettings() {
-		try {
-			readProperties();
-			Map<String, String> credentialsMap = readCredentials();
+	public static SessionsSettings getSessionSettings() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		readProperties();
+		Map<String, String> credentialsMap = readCredentials();
 			/*
 			 Convert the base64 private key to RSA Private key
 			 */
-			String privateKey = credentialsMap.get(IDAConst.CRED_PRIVATE_KEY);
-			privateKey = privateKey.replace(IDAConst.CRED_PRIVATE_KEY_BEGIN, "");
-			privateKey = privateKey.replace(IDAConst.CRED_PRIVATE_KEY_END, "");
-			privateKey = privateKey.replaceAll("\\s+", "");
-			byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(privateKey);
-			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
-			KeyFactory kf = KeyFactory.getInstance(IDAConst.CRED_PRIVATE_KEY_TYPE);
-			PrivateKey rsaPrivateKey = kf.generatePrivate(keySpec);
+		String privateKey = credentialsMap.get(IDAConst.CRED_PRIVATE_KEY);
+		privateKey = privateKey.replace(IDAConst.CRED_PRIVATE_KEY_BEGIN, "");
+		privateKey = privateKey.replace(IDAConst.CRED_PRIVATE_KEY_END, "");
+		privateKey = privateKey.replaceAll("\\s+", "");
+		byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(privateKey);
+		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
+		KeyFactory kf = KeyFactory.getInstance(IDAConst.CRED_PRIVATE_KEY_TYPE);
+		PrivateKey rsaPrivateKey = kf.generatePrivate(keySpec);
 
-			Credentials idaCredentials = ServiceAccountCredentials.newBuilder()
-					.setProjectId(props.get(IDAConst.CRED_PATH_KEY))
-					.setPrivateKeyId(credentialsMap.get(IDAConst.CRED_PRIVATE_KEY_ID))
-					.setPrivateKey(rsaPrivateKey)
-					.setClientEmail(credentialsMap.get(IDAConst.CRED_CLIENT_EMAIL))
-					.setClientId(credentialsMap.get(IDAConst.CRED_CLIENT_ID))
-					.setTokenServerUri(URI.create(credentialsMap.get(IDAConst.CRED_TOKEN_URI))).build();
-			return SessionsSettings.newBuilder()
-					.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException | IOException e) {
-			throw new Error(e);
-		}
+		Credentials idaCredentials = ServiceAccountCredentials.newBuilder()
+				.setProjectId(props.get(IDAConst.CRED_PATH_KEY))
+				.setPrivateKeyId(credentialsMap.get(IDAConst.CRED_PRIVATE_KEY_ID))
+				.setPrivateKey(rsaPrivateKey)
+				.setClientEmail(credentialsMap.get(IDAConst.CRED_CLIENT_EMAIL))
+				.setClientId(credentialsMap.get(IDAConst.CRED_CLIENT_ID))
+				.setTokenServerUri(URI.create(credentialsMap.get(IDAConst.CRED_TOKEN_URI))).build();
+		return SessionsSettings.newBuilder()
+				.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
 	}
 }
