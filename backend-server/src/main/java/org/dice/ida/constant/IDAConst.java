@@ -78,4 +78,17 @@ public interface IDAConst {
 	 */
 	public static final String DF_SESSION_ID = "df-sid-key";
 	public static final int DF_SID_LEN = 6;
+
+	/**
+	 * Dialogflow credential object keys and util strings
+	 */
+	public static final String CRED_PRIVATE_KEY_ID = "private_key_id";
+	public static final String CRED_PRIVATE_KEY = "private_key";
+	public static final String CRED_CLIENT_EMAIL = "client_email";
+	public static final String CRED_CLIENT_ID = "client_id";
+	public static final String CRED_TOKEN_URI = "token_uri";
+	public static final String CRED_PATH_KEY = "dialogflow.project.id";
+	public static final String CRED_PRIVATE_KEY_BEGIN = "-----BEGIN PRIVATE KEY-----";
+	public static final String CRED_PRIVATE_KEY_END = "-----END PRIVATE KEY-----";
+	public static final String CRED_PRIVATE_KEY_TYPE = "RSA";
 }

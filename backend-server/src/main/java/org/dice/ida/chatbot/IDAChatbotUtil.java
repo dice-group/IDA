@@ -7,7 +7,6 @@ import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.dialogflow.v2.SessionsSettings;
 import org.dice.ida.constant.IDAConst;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -26,14 +25,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Chatbot utility class
+ *
+ * @author Nandeesh Patel
+ */
 @Component
 public class IDAChatbotUtil {
 
 	private static Map<String, String> props;
 
+	/**
+	 * Method to read the application properties file and store it in a map as class member.
+	 * Cannot use Value annotation since we need it as static member
+	 * @throws IOException when file does not exist
+	 */
 	private static void readProperties() throws IOException {
 		props = new HashMap<String, String>();
-		// Read dsmap file
 		Properties prop = new Properties();
 		InputStream input = new FileInputStream(IDAChatbotUtil.class.getClassLoader().getResource("application.properties").getPath());
 		prop.load(input);
@@ -44,6 +52,10 @@ public class IDAChatbotUtil {
 		}
 	}
 
+	/**
+	 * Method to read the dialogflow credentials from the json file and return it as a map
+	 * @return map of dialogflow authentication credentials
+	 */
 	private static Map<String, String> readCredentials() {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> credentials;
@@ -58,28 +70,33 @@ public class IDAChatbotUtil {
 		}
 	}
 
+	/**
+	 * Method to create a session settings object from the dialogflow auth credentials
+	 * @return Dialogflow session settings to create the session
+	 */
 	public static SessionsSettings getSessionSettings() {
 		try {
 			readProperties();
-			String projectId = props.get("dialogflow.project.id");
 			Map<String, String> credentialsMap = readCredentials();
-			String privateKeyId = credentialsMap.get("private_key_id");
-			String pkcs8Pem = credentialsMap.get("private_key");
-			String clientEmail = credentialsMap.get("client_email");
-			String clientId = credentialsMap.get("client_id");
-			String tokenServerUri = credentialsMap.get("token_uri");
-
-			pkcs8Pem = pkcs8Pem.replace("-----BEGIN PRIVATE KEY-----", "");
-			pkcs8Pem = pkcs8Pem.replace("-----END PRIVATE KEY-----", "");
-			pkcs8Pem = pkcs8Pem.replaceAll("\\s+", "");
-			byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(pkcs8Pem);
+			/*
+			 Convert the base64 private key to RSA Private key
+			 */
+			String privateKey = credentialsMap.get(IDAConst.CRED_PRIVATE_KEY);
+			privateKey = privateKey.replace(IDAConst.CRED_PRIVATE_KEY_BEGIN, "");
+			privateKey = privateKey.replace(IDAConst.CRED_PRIVATE_KEY_END, "");
+			privateKey = privateKey.replaceAll("\\s+", "");
+			byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(privateKey);
 			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-			PrivateKey privKey = kf.generatePrivate(keySpec);
-			Credentials idaCredentials = ServiceAccountCredentials.newBuilder().setProjectId(projectId)
-					.setPrivateKeyId(privateKeyId).setPrivateKey(privKey)
-					.setClientEmail(clientEmail).setClientId(clientId)
-					.setTokenServerUri(URI.create(tokenServerUri)).build();
+			KeyFactory kf = KeyFactory.getInstance(IDAConst.CRED_PRIVATE_KEY_TYPE);
+			PrivateKey rsaPrivateKey = kf.generatePrivate(keySpec);
+
+			Credentials idaCredentials = ServiceAccountCredentials.newBuilder()
+					.setProjectId(props.get(IDAConst.CRED_PATH_KEY))
+					.setPrivateKeyId(credentialsMap.get(IDAConst.CRED_PRIVATE_KEY_ID))
+					.setPrivateKey(rsaPrivateKey)
+					.setClientEmail(credentialsMap.get(IDAConst.CRED_CLIENT_EMAIL))
+					.setClientId(credentialsMap.get(IDAConst.CRED_CLIENT_ID))
+					.setTokenServerUri(URI.create(credentialsMap.get(IDAConst.CRED_TOKEN_URI))).build();
 			return SessionsSettings.newBuilder()
 					.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException | IOException e) {
