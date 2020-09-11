@@ -11,7 +11,8 @@ public class MetaFileReader {
 	public DataSummary createDataSummary(String datasetName, String tableName) throws Exception {
 		int index = tableName.lastIndexOf(".");
 		String fileName = tableName.substring(0, index);
-		String metaData = new String(Files.readAllBytes(Paths.get("./src/main/resources/"+"metadata/" + datasetName + "/" + fileName)));
+		String path = new FileUtil().fetchSysFilePath("metadata/" + datasetName + "/" + fileName);
+		String metaData = new String(Files.readAllBytes(Paths.get(path)));
 		String[] summaryLines = metaData.split("\n");
 		DataSummary dataSummary = new DataSummary();
 		dataSummary.setName(summaryLines[0].split("\t")[1].trim());
