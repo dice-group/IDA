@@ -44,7 +44,7 @@ public class BarGraphAction implements Action {
 					String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 					BarGraphData barGraph;
 
-					if (xAxis != null && !xAxis.isEmpty() && yAxis != null && !yAxis.isEmpty()) {
+					if (!isStringEmpty(filterString) && !isStringEmpty(xAxis) && !isStringEmpty(yAxis)) {
 						boolean xaxist = false;
 						boolean yaxist = false;
 						CSVLoader loader = new CSVLoader();
@@ -69,20 +69,37 @@ public class BarGraphAction implements Action {
 							chatMessageResponse.setMessage(IDAConst.BAR_GRAPH_LOADED);
 							chatMessageResponse.setUiAction(IDAConst.UIA_BARGRAPH);
 						} else {
-							chatMessageResponse.setMessage(IDAConst.INVALID_BG_DATA_PROVIDED);
+							if (!xaxist) {
+								// If x-axis was invalid then
+								chatMessageResponse.setMessage(IDAConst.INVALID_X_AXIS_NAME);
+							} else {
+								// If y-axis was invalid then
+								chatMessageResponse.setMessage(IDAConst.INVALID_Y_AXIS_NAME);
+							}
 							chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 						}
 					} else {
+						double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+
+						// Here for incorrect "filterstring" parameter value, confidence will be 0 or 1 otherwise
+						// because we have a regex for this parameter (over Dialogflow) so it will either match
+						// or wont match
+						if (isStringEmpty(filterString) && confidence == 0.0) {
+							paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
+						}
 						SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 					}
 				}
 			}
-
 		} catch (Exception e) {
 			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		}
 
+	}
+
+	public boolean isStringEmpty(String str) {
+		return str == null || str.isEmpty();
 	}
 
 
