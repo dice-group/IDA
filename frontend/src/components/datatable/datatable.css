@@ -24,3 +24,7 @@ tbody tr:nth-of-type(odd) {
 .ida-card {
   margin: 15px 0;
 }
+
+.MuiTable-root {
+  height: -webkit-fill-available;
+}

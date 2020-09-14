@@ -20,6 +20,7 @@ import "./datatable.css";
 function TablePaginationActions(props) {
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
+  //let page = 5;
 
   const handleFirstPageButtonClick = (event) => {
     onChangePage(event, 0);
@@ -76,9 +77,11 @@ TablePaginationActions.propTypes = {
 
 export default function CustomizedTables(props) {
   const [page, setPage] = useState(0);
-  const defaultRowsPerPage = props.noPagination ? 0 : 5;
+  const defaultRowsPerPage = props.noPagination ? 0 : 7;
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
   const tableData = props.data;
+  const [temo, setTemo] = useState(rowsPerPage);
+
   const keysName = props.columns.map((col) => {
     return {
       "key": col.colAttr,
@@ -95,7 +98,8 @@ export default function CustomizedTables(props) {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setTemo(parseInt(event.target.value, 10))
+    // setPage(0);
   };
   return (
     <TableContainer component={Paper}>
@@ -109,7 +113,7 @@ export default function CustomizedTables(props) {
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? seletedItem.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            ? seletedItem.slice(page * rowsPerPage, page * temo + temo)
             : seletedItem
           ).map((row, index) => (
             <TableRow key={index}>
@@ -129,7 +133,7 @@ export default function CustomizedTables(props) {
           props.noPagination ? null : <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                rowsPerPageOptions={[5,10, 25, { label: "All", value: -1 }]}
                 colSpan={keysName.length}
                 count={seletedItem.length}
                 rowsPerPage={rowsPerPage}
