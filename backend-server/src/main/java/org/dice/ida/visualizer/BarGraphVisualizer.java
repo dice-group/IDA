@@ -1,19 +1,21 @@
 package org.dice.ida.visualizer;
 
-import java.util.*;
-
-import static java.util.Map.Entry.comparingByValue;
-import static java.util.stream.Collectors.*;
-
+import org.apache.commons.lang3.time.DateUtils;
+import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
 import org.dice.ida.util.MetaFileReader;
-import org.dice.ida.constant.IDAConst;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.util.*;
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Class to provide required attributes for bar graph visualization and apply data filters.
@@ -38,6 +40,8 @@ public class BarGraphVisualizer {
 		this.xAxisLabel = xAxis;
 		this.yAxisLabel = yAxis;
 		this.tableName = tableName;
+		xaxis = data.attribute(xAxisLabel);
+		yaxis = data.attribute(yAxisLabel);
 
 		// prepare filter then apply them to data
 		prepareFilter(data, filterText);
@@ -52,7 +56,7 @@ public class BarGraphVisualizer {
 	}
 
 	public BarGraphData createBarGraph() {
-		items = new ArrayList<BarGraphItem>();
+		items = new ArrayList<>();
 		loadBarGraphItem();
 
 		return new BarGraphData(label, items, xAxisLabel, yAxisLabel, dataSetName,
@@ -63,22 +67,84 @@ public class BarGraphVisualizer {
 		//check for filter and load bar graph items
 
 		//Loads the File
-		xaxis = data.attribute(xAxisLabel);
-		yaxis = data.attribute(yAxisLabel);
-		if (xaxis.isNominal()) {
+		AttributeSummary xaxisSummary = DS.getAttributeSummaryList().stream().filter(x -> x.getName().equalsIgnoreCase(xAxisLabel)).collect(toList()).get(0);
+
+		if (xaxisSummary.getType().equalsIgnoreCase("Nom")) {
 			loadNominal();
 		}
-		if (xaxis.isNumeric()) {
+		if (xaxisSummary.getType().equalsIgnoreCase("Num")) {
 			loadNumericData();
 		}
-//		if (xaxis.isDate())
-//		{
-//			// Date is non trivial case
-//		}
+		if (xaxisSummary.getType().equalsIgnoreCase("Date")) {
+			loadDateData();
+		}
+	}
+
+	public void loadDateData() {
+		HashMap<String, Double> temp_date = new HashMap<>();
+		HashMap<String, Double> temp_month = new HashMap<>();
+		HashMap<String, Double> temp_year = new HashMap<>();
+		Calendar cal = Calendar.getInstance();
+		String[] parsePatterns = {"dd MMMM"};
+		for (int i = 0; i < data.numInstances(); i++) {
+			try {
+				Date d = DateUtils.parseDateStrictly(data.instance(i).stringValue(xaxis).trim(), parsePatterns);
+				cal.setTime(d);
+				if (temp_date.containsKey(data.instance(i).stringValue(xaxis))) {
+					double yvalue = temp_date.get(data.instance(i).stringValue(xaxis));
+					temp_date.put(data.instance(i).stringValue(xaxis), yvalue + data.instance(i).value(yaxis));
+				} else {
+					temp_date.put(data.instance(i).stringValue(xaxis), data.instance(i).value(yaxis));
+				}
+
+				if (temp_month.containsKey(getMonth(cal.get(Calendar.MONTH)))) {
+					double yvalue = temp_month.get(getMonth(cal.get(Calendar.MONTH)));
+					temp_month.put(getMonth(cal.get(Calendar.MONTH)), yvalue + data.instance(i).value(yaxis));
+				} else {
+					temp_month.put(getMonth(cal.get(Calendar.MONTH)), data.instance(i).value(yaxis));
+				}
+				if (temp_year.containsKey(String.valueOf(cal.get(Calendar.YEAR)))) {
+					double yvalue = temp_year.get(String.valueOf(cal.get(Calendar.YEAR)));
+					temp_year.put(String.valueOf(cal.get(Calendar.YEAR)), yvalue + data.instance(i).value(yaxis));
+				} else {
+					temp_year.put(String.valueOf(cal.get(Calendar.YEAR)), data.instance(i).value(yaxis));
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		sortAndLoad(temp_date, temp_month, temp_year);
+	}
+
+	public String getMonth(int month) {
+		return new DateFormatSymbols().getMonths()[month];
+	}
+
+	public void sortAndLoad(HashMap<String, Double> date, HashMap<String, Double> month, HashMap<String, Double> year) {
+		int d = Math.abs(date.size() - 10), m = Math.abs(month.size() - 10), y = Math.abs(year.size() - 10);
+		if (m <= d) {
+			if (m <= y)
+				load(month);
+			else
+				load(year);
+		} else {
+			if (y <= d)
+				load(year);
+			else
+				load(month);
+		}
+	}
+
+	public void load(HashMap<String, Double> loadData) {
+		for (String x : loadData.keySet()) {
+			items.add(new BarGraphItem(x, loadData.get(x)));
+		}
+
 	}
 
 	public void loadNominal() {
-		HashMap<String, Double> temp = new HashMap<String, Double>();
+		HashMap<String, Double> temp = new HashMap<>();
 		AttributeSummary yaxisSummary = DS.getAttributeSummaryList().stream().filter(x -> x.getName().equalsIgnoreCase(yAxisLabel)).collect(toList()).get(0);
 		if (yaxisSummary.getType().equalsIgnoreCase("Num")) {
 			for (int i = 0; i < data.numInstances(); i++) {
@@ -150,8 +216,8 @@ public class BarGraphVisualizer {
 				rangeStart = data.size() - Integer.parseInt(tokens[1]);
 				rangeEnd = data.size();
 			} else if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FROM)) {
-				rangeStart =  Integer.parseInt(tokens[1]) - 1;
-				rangeEnd =  Integer.parseInt(tokens[3]);
+				rangeStart = Integer.parseInt(tokens[1]) - 1;
+				rangeEnd = Integer.parseInt(tokens[3]);
 			}
 			applyFilter(data, rangeStart, rangeEnd);
 		}
