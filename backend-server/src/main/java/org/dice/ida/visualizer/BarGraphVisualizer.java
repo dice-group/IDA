@@ -212,13 +212,12 @@ public class BarGraphVisualizer {
 
 			// Extracting ranges
 			if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FIRST)) {
-				rangeStart = 0;
-				rangeEnd = Integer.parseInt(tokens[1]);
+				rangeEnd = Math.min(Integer.parseInt(tokens[1]), data.size());
 			} else if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_LAST)) {
-				rangeStart = data.size() - Integer.parseInt(tokens[1]);
+				rangeStart = Math.max(data.size() - Integer.parseInt(tokens[1]), 0);
 				rangeEnd = data.size();
 			} else if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FROM)) {
-				rangeStart = Integer.parseInt(tokens[1]) - 1;
+				rangeStart = Integer.parseInt(tokens[1]) == 0 ? 0 : Integer.parseInt(tokens[1]) - 1;
 				rangeEnd = Integer.parseInt(tokens[3]);
 			}
 			applyFilter(data, rangeStart, rangeEnd);
@@ -236,7 +235,6 @@ public class BarGraphVisualizer {
 	private void applyFilter(Instances data, int rangeStart, int rangeEnd) {
 		this.data = new Instances(data, rangeEnd - rangeStart);
 		for (int i = rangeStart; i < rangeEnd; i++) {
-			System.out.println(data.instance(i));
 			this.data.add(data.instance(i));
 		}
 	}

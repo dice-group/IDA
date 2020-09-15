@@ -60,6 +60,7 @@ public interface IDAConst {
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
 	public static final String INVALID_X_AXIS_NAME = "Provided x-axis column name was incorrect! Please try again.";
 	public static final String INVALID_Y_AXIS_NAME = "Provided Y-axis column name was incorrect! Please try again.";
+	public static final String INVALID_RANGE = "Provided range for filter was incorrect! Please try again.";
 	public static final String INVALID_FILTER = "Please select a valid filter (for example: all | first 20 | last 30  | from 55 to 100 records).";
 	public static final String BG_FILTER_ALL = "all";
 	public static final String BG_FILTER_FIRST = "first";
