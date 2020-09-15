@@ -43,6 +43,7 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             expandedNodes.push(main.id);
             expandedNodes.push(metaData.dsName + "_dataset");
             props.setExpandedNodeId(expandedNodes);
+            props.setNavBarClass("");
             props.setLoaded(true);
             break;
         }

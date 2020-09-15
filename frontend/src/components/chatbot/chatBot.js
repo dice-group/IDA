@@ -21,8 +21,7 @@ export default class ChatBot extends Component {
       selectClick: [],
       pyld: [],
       action: "1004",
-      msg: [],
-      isOpen: true
+      msg: []
     };
   }
 
@@ -65,9 +64,7 @@ export default class ChatBot extends Component {
   }
 
   handleClick() {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    this.props.setIsChatbotOpen(!this.props.isChatbotOpen);
   }
 
   render() {
@@ -82,7 +79,7 @@ export default class ChatBot extends Component {
           onMessageWasSent={this._onMessageWasSent.bind(this)}
           messageList={this.state.messageList}
           showEmoji={false}
-          isOpen={this.state.isOpen}
+          isOpen={this.props.isChatbotOpen}
           handleClick={this.handleClick.bind(this)}
         />
       </div>
