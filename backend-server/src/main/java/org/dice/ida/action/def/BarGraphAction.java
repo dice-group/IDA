@@ -62,7 +62,7 @@ public class BarGraphAction implements Action {
 								yaxist = true;
 							}
 						}
-						if (xaxist && yaxist) {
+						if (xaxist && yaxist && isFilterRangeValid(filterString, data)) {
 							barGraph = new BarGraphVisualizer(xAxis, yAxis, datasetName, tableName, filterString, data).createBarGraph();
 							payload.put("barGraphData", barGraph);
 							chatMessageResponse.setPayload(payload);
@@ -72,9 +72,11 @@ public class BarGraphAction implements Action {
 							if (!xaxist) {
 								// If x-axis was invalid then
 								chatMessageResponse.setMessage(IDAConst.INVALID_X_AXIS_NAME);
-							} else {
+							} else if (!yaxist) {
 								// If y-axis was invalid then
 								chatMessageResponse.setMessage(IDAConst.INVALID_Y_AXIS_NAME);
+							} else if (!isFilterRangeValid(filterString, data)) {
+								chatMessageResponse.setMessage(IDAConst.INVALID_RANGE);
 							}
 							chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 						}
@@ -100,6 +102,27 @@ public class BarGraphAction implements Action {
 
 	public boolean isStringEmpty(String str) {
 		return str == null || str.isEmpty();
+	}
+
+	/**
+	 * We are only interested to validate range filter e.g from 100 to 200
+	 * And this function does it!
+	 * @param filterText
+	 * @return
+	 */
+	public boolean isFilterRangeValid(String filterText, Instances data) {
+		String[] tokens = filterText.split(" "); // tokenized filter text
+		String filterType = tokens[0]; // Dialogflow makes sure that these tokens are in correct order
+		boolean result = true;
+		int rangeStart;
+		int rangeEnd;
+
+		if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FROM)) {
+			rangeStart = Integer.parseInt(tokens[1]);
+			rangeEnd = Integer.parseInt(tokens[3]);
+			result = !(rangeStart >= rangeEnd || rangeStart > data.size() - 1 || rangeEnd > data.size());
+		}
+		return result;
 	}
 
 
