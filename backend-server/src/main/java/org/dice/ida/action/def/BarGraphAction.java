@@ -7,6 +7,7 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.util.FileUtil;
+import org.dice.ida.util.TextUtil;
 import org.dice.ida.visualizer.BarGraphVisualizer;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
@@ -53,11 +54,11 @@ public class BarGraphAction implements Action {
 						loader.setSource(new File(path));
 						Instances data = loader.getDataSet();
 						for (int i = 0; i < data.numAttributes(); i++) {
-							if (data.attribute(i).name().trim().equalsIgnoreCase(xAxis.trim())) {
+							if (TextUtil.matchString(data.attribute(i).name().trim(),xAxis.trim())) {
 								xAxis = data.attribute(i).name();
 								xaxist = true;
 							}
-							if (data.attribute(i).name().trim().equalsIgnoreCase(yAxis.trim())) {
+							if (TextUtil.matchString(data.attribute(i).name().trim(),yAxis.trim())) {
 								yAxis = data.attribute(i).name();
 								yaxist = true;
 							}
