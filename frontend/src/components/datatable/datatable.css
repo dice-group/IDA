@@ -5,7 +5,7 @@ table {
 thead .MuiTableCell-head {
   background-color: #4f8bff;
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 tbody .MuiTableCell-body {
@@ -25,6 +25,9 @@ tbody tr:nth-of-type(odd) {
   margin: 15px 0;
 }
 
-.MuiTable-root {
-  height: -webkit-fill-available;
+.MuiTableCell-root {
+  height: 50px !important;
+}
+.MuiTableCell-body {
+  height: 50px !important;
 }
