@@ -17,6 +17,9 @@ public interface IDAConst {
 	public static final int UAC_UPLDDTMSG = 1002;
 	//Load bar graph
 	public static final int UIA_BARGRAPH = 1005;
+	//Load bubble chart
+	public static final int UIA_BUBBLECHART = 1006;
+
 	/**
 	 *  Pre-defined action codes
 	 */
