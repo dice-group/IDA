@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 @Scope("singleton")
 public class ValidatorUtil {
-	public boolean isStringEmpty(String str) {
+	public static boolean isStringEmpty(String str) {
 		return str == null || str.isEmpty();
 	}
 
@@ -29,7 +29,7 @@ public class ValidatorUtil {
 	 * @param filterText
 	 * @return
 	 */
-	public boolean isFilterRangeValid(String filterText, Instances data) {
+	public static boolean isFilterRangeValid(String filterText, Instances data) {
 		String[] tokens = filterText.split(" "); // tokenized filter text
 		String filterType = tokens[0]; // Dialogflow makes sure that these tokens are in correct order
 		boolean result = true;
@@ -52,7 +52,7 @@ public class ValidatorUtil {
 	 * @param chatMessageResponse
 	 * @return
 	 */
-	public boolean preActionValidation(ChatMessageResponse chatMessageResponse) {
+	public static boolean preActionValidation(ChatMessageResponse chatMessageResponse) {
 
 		boolean results = false;
 		Map<String, Object> payload = chatMessageResponse.getPayload();
@@ -70,7 +70,7 @@ public class ValidatorUtil {
 				results = true;
 			}
 		}
-		chatMessageResponse.setUiAction(IDAConst.UIA_BARGRAPH);
+		chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		return results;
 	}
 
