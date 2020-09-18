@@ -6,6 +6,7 @@ import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
+import org.dice.ida.util.FilterUtil;
 import org.dice.ida.util.MetaFileReader;
 import org.dice.ida.util.TextUtil;
 import weka.core.Attribute;
@@ -15,6 +16,7 @@ import weka.core.Instances;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.util.*;
+import java.util.logging.Filter;
 
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toList;
@@ -46,8 +48,8 @@ public class BarGraphVisualizer {
 		xaxis = data.attribute(xAxisLabel);
 		yaxis = data.attribute(yAxisLabel);
 
-		// prepare filter then apply them to data
-		prepareFilter(data, filterText);
+		// filtering the data w.r.t to filterText
+		this.data = FilterUtil.filterData(data, filterText);
 
 		this.dataSetName = dsName;
 		try {
@@ -188,54 +190,6 @@ public class BarGraphVisualizer {
 
 		for (String key : sortAndLimit(bins).keySet()) {
 			items.add(new BarGraphItem(key, bins.get(key)));
-		}
-	}
-
-	/**
-	 * This method Uses filterText provided by User and filter
-	 * out required rows from data.
-	 * It prepares ranges to filter out rows and then send
-	 * those ranges to applyFilter function.
-	 *
-	 * @param data
-	 * @param filterText
-	 */
-	private void prepareFilter(Instances data, String filterText) {
-		if (filterText.equals(IDAConst.BG_FILTER_ALL)) {
-			// All data has been selected
-			this.data = data;
-		} else {
-			String[] tokens = filterText.split(" "); // tokenized filter text
-			String filterType = tokens[0]; // Dialogflow makes sure that these tokens are in correct order
-			int rangeStart = 0;
-			int rangeEnd = 0;
-
-			// Extracting ranges
-			if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_FIRST)) {
-				rangeEnd = Math.min(Integer.parseInt(tokens[1]), data.size());
-			} else if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_LAST)) {
-				rangeStart = Math.max(data.size() - Integer.parseInt(tokens[1]), 0);
-				rangeEnd = data.size();
-			} else if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_FROM)) {
-				rangeStart = Integer.parseInt(tokens[1]) == 0 ? 0 : Integer.parseInt(tokens[1]) - 1;
-				rangeEnd = Integer.parseInt(tokens[3]);
-			}
-			applyFilter(data, rangeStart, rangeEnd);
-		}
-	}
-
-	/**
-	 * Uses ranges produced by prepareFilter method and simply
-	 * filter out data
-	 *
-	 * @param data
-	 * @param rangeStart
-	 * @param rangeEnd
-	 */
-	private void applyFilter(Instances data, int rangeStart, int rangeEnd) {
-		this.data = new Instances(data, rangeEnd - rangeStart);
-		for (int i = rangeStart; i < rangeEnd; i++) {
-			this.data.add(data.instance(i));
 		}
 	}
 
