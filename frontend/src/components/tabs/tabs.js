@@ -18,14 +18,12 @@ function TabPanel(props) {
       role="tabpanel"
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
-      aria-labelledby={`scrollable-auto-tab-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}      
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          {children}
-        </Box>
-      )}
+      <Box p={3}>
+        {children}
+      </Box>
     </div>
   );
 }
