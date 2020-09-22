@@ -63,7 +63,7 @@ public class BubbleChartVisualizer {
 			for (Instance instance : data) {
 				// Aggregating all y-axis values on its x-axis
 				if (!bins.containsKey(instance.toString(col))) {
-					bins.put(instance.toString(col), 0.0);
+					bins.put(instance.toString(col), 1.0);
 				} else {
 					// bin has this x-value already then
 					bins.put(instance.toString(col), (bins.get(instance.toString(col)) + 1));

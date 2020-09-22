@@ -1,7 +1,6 @@
 package org.dice.ida.visualizer;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.bargraph.BarGraphData;
@@ -16,7 +15,6 @@ import weka.core.Instances;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.util.*;
-import java.util.logging.Filter;
 
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toList;
