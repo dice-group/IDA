@@ -3,9 +3,9 @@ package org.dice.ida.model.bubblechart;
 public class BubbleChartItem {
 	private String label;
 	private String description;
-	private int size;
+	private Double size;
 
-	public BubbleChartItem(String label, String description, int size) {
+	public BubbleChartItem(String label, String description, Double size) {
 		super();
 		this.label = label;
 		this.description = description;
@@ -28,11 +28,11 @@ public class BubbleChartItem {
 		this.description = description;
 	}
 
-	public int getSize() {
+	public Double getSize() {
 		return this.size;
 	}
 
-	public void setSize(int size) {
+	public void setSize(Double size) {
 		this.size = size;
 	}
 

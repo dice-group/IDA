@@ -21,6 +21,9 @@ public enum Intent {
     }
 
     public static Intent getForKey(String key) {
+		// Follow up intent management
+		key = key.contains(" - ")  ? key.split(" - ")[0] : key;
+
         for (Intent intent : Intent.values()) {
             if (intent.key.equalsIgnoreCase(key))
                 return intent;
