@@ -81,6 +81,7 @@ public interface IDAConst {
  	public static final String BC_INVALID_FIRST_COL = "Provided first column name was incorrect, it does not exist on the loaded table!";
  	public static final String BC_INVALID_SECOND_COL = "Provided second column name was incorrect, it does not exist on the loaded table!";
  	public static final String BC_NOT_NUM_SECOND_COL = "Provided second column was not numerical! try again please";
+ 	public static final String BC_INCORRECT_COL = "Provided column name was incorrect! please tell the column name again?";
 
 	/**
 	 * Bar graph parameters thresholds

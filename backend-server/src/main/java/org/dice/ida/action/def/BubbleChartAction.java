@@ -33,10 +33,9 @@ public class BubbleChartAction implements Action {
 				String tableName = payload.get("activeTable").toString();
 				String filterString = paramMap.containsKey(IDAConst.PARAM_FILTER_STRING) ? paramMap.get(IDAConst.PARAM_FILTER_STRING).toString() : "";
 				BubbleChartVisualizer bubbleChart;
+				double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
 
 				if (ValidatorUtil.isStringEmpty(filterString)) {
-					double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
-
 					// If confidence is zero then it means provided filter was incorrect
 					if (confidence == 0.0) {
 						paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
@@ -114,6 +113,9 @@ public class BubbleChartAction implements Action {
 								}
 							}
 						} else {
+							if (confidence == 0.0) {
+								paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.BC_INCORRECT_COL);
+							}
 							SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 						}
 					} else {
