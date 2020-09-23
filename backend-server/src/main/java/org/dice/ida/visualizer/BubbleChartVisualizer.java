@@ -27,7 +27,6 @@ public class BubbleChartVisualizer {
 	private String[] columns;
 	private List<BubbleChartItem> items;
 	private Instances data;
-	private DataSummary DS;
 
 	public BubbleChartVisualizer(String[] columns, String dsName,
 							  String tableName, String filterText, Instances data) {
@@ -38,12 +37,6 @@ public class BubbleChartVisualizer {
 		this.data = FilterUtil.filterData(data, filterText);
 
 		this.dataSetName = dsName;
-		try {
-			DS = new MetaFileReader().createDataSummary(dataSetName, tableName);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	public BubbleChartData createBubbleChart() {
@@ -77,9 +70,6 @@ public class BubbleChartVisualizer {
 			HashMap<String, Double> bins = new HashMap<>();
 			Attribute ref_col = data.attribute(this.columns[0]);
 			Attribute val_col = data.attribute(this.columns[1]);
-
-			// TODO: VALIDATE AND ALSO CHECK IF VALUE COL IS NUMERICAL
-
 			for (Instance instance : data) {
 				// Aggregating all y-axis values on its x-axis
 				if (!bins.containsKey(instance.toString(ref_col))) {
