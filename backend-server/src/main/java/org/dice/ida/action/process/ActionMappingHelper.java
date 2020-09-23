@@ -1,11 +1,6 @@
 package org.dice.ida.action.process;
 
-import org.dice.ida.action.def.Action;
-import org.dice.ida.action.def.BarGraphAction;
-import org.dice.ida.action.def.SimpleTextAction;
-import org.dice.ida.action.def.LoadDataSetAction;
-import org.dice.ida.action.def.DefaultAction;
-import org.dice.ida.action.def.SuggestVisualization;
+import org.dice.ida.action.def.*;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +33,9 @@ public class ActionMappingHelper {
 				break;
 			case BAR_GRAPH:
 				action = new BarGraphAction();
+				break;
+			case BUBBLE_CHART:
+				action = new BubbleChartAction();
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);

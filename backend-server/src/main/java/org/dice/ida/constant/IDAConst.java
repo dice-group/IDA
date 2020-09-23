@@ -17,6 +17,9 @@ public interface IDAConst {
 	public static final int UAC_UPLDDTMSG = 1002;
 	//Load bar graph
 	public static final int UIA_BARGRAPH = 1005;
+	//Load bubble chart
+	public static final int UIA_BUBBLECHART = 1006;
+
 	/**
 	 *  Pre-defined action codes
 	 */
@@ -34,7 +37,7 @@ public interface IDAConst {
 	public static final String BOT_LANGUAGE = "en-US";
 	public static final String BOT_SOMETHING_WRONG = "Something went wrong with that request. Please try again later.";
 	public static final String BOT_LOAD_DS_BEFORE = "Please load a dataset";
-	public static final String BOT_SELECT_TABLE = "Please load a table";
+	public static final String BOT_SELECT_TABLE = "Please select a data table";
 
 	/**
 	 * Param Map Keys
@@ -42,6 +45,7 @@ public interface IDAConst {
 	public static final String PARAM_TEXT_MSG = "TEXT_MSG";
 	public static final String PARAM_DATASET_NAME = "datasetname";
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
+	public static final String PARAM_INTENT_DETECTION_CONFIDENCE = "intent_detection_confidence";
 	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
 	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
 
@@ -57,13 +61,27 @@ public interface IDAConst {
 	public static final String PARAM_XAXIS_NAME = "x-axis";
 	public static final String PARAM_YAXIS_NAME = "y-axis";
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
-	public static final String INVALID_BG_DATA_PROVIDED = "Hmm, either provided Y-axis, X-axis or both were incorrect";
+	public static final String INVALID_X_AXIS_NAME = "Provided x-axis column name was incorrect! Please try again.";
+	public static final String INVALID_Y_AXIS_NAME = "Provided Y-axis column name was incorrect! Please try again.";
+	public static final String INVALID_RANGE = "Provided range for filter was incorrect! Please try again.";
+	public static final String INVALID_FILTER = "Please select a valid filter (for example: all | first 20 | last 30  | from 55 to 100 records).";
 	public static final String BG_FILTER_ALL = "all";
 	public static final String BG_FILTER_FIRST = "first";
 	public static final String BG_FILTER_LAST = "last";
 	public static final String BG_FILTER_FROM = "from";
 
-
+	// Bubble chart
+	public static final String BC_ONE = "one";
+	public static final String BC_COL_NAME = "col_name";
+	public static final String BC_TWO = "two";
+	public static final String BC_FIRST_COL = "first_col";
+	public static final String BC_SECOND_COL = "second_col";
+ 	public static final String BC_LOADED = "Bubble chart has been loaded";
+ 	public static final String BC_INVALID_COL = "Provided column name was incorrect, it does not exist on the loaded table!";
+ 	public static final String BC_INVALID_FIRST_COL = "Provided first column name was incorrect, it does not exist on the loaded table!";
+ 	public static final String BC_INVALID_SECOND_COL = "Provided second column name was incorrect, it does not exist on the loaded table!";
+ 	public static final String BC_NOT_NUM_SECOND_COL = "Provided second column was not numerical! try again please";
+ 	public static final String BC_INCORRECT_COL = "Provided column name was incorrect! please tell the column name again?";
 
 	/**
 	 * Bar graph parameters thresholds
