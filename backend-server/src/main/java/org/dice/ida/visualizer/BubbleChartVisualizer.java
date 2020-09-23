@@ -21,10 +21,9 @@ import static java.util.stream.Collectors.toMap;
  */
 
 public class BubbleChartVisualizer {
-	private String dataSetName;
-	private String tableName;
-	private String label = "Bubble Chart";
-	private String[] columns;
+	private final String dataSetName;
+	private final String tableName;
+	private final String[] columns;
 	private List<BubbleChartItem> items;
 	private Instances data;
 
@@ -42,46 +41,43 @@ public class BubbleChartVisualizer {
 	public BubbleChartData createBubbleChart() {
 		items = new ArrayList<>();
 		loadBubbleGraphItem();
-
+		String label = "Bubble Chart";
 		return new BubbleChartData(label, items, dataSetName,
 				tableName);
 	}
 
 	private void loadBubbleGraphItem() {
 		if (this.columns.length == 1) {
-			HashMap<String, Double> bins = new HashMap<>();
 			Attribute col = data.attribute(this.columns[0]);
-
-			// **** for one column
-			for (Instance instance : data) {
-				// Aggregating all y-axis values on its x-axis
-				if (!bins.containsKey(instance.toString(col))) {
-					bins.put(instance.toString(col), 1.0);
-				} else {
-					// bin has this x-value already then
-					bins.put(instance.toString(col), (bins.get(instance.toString(col)) + 1));
-				}
-			}
-
-			for (String key : sortAndLimit(bins).keySet()) {
-				items.add(new BubbleChartItem(key, "description", bins.get(key)));
-			}
+			populateItems(new Attribute[]{col});
 		} else if (this.columns.length == 2) {
-			HashMap<String, Double> bins = new HashMap<>();
 			Attribute ref_col = data.attribute(this.columns[0]);
 			Attribute val_col = data.attribute(this.columns[1]);
-			for (Instance instance : data) {
-				// Aggregating all y-axis values on its x-axis
-				if (!bins.containsKey(instance.toString(ref_col))) {
-					bins.put(instance.toString(ref_col), instance.value(val_col));
+			populateItems(new Attribute[]{ref_col, val_col});
+		}
+	}
+
+	private void populateItems (Attribute[] cols) {
+		HashMap<String, Double> bins = new HashMap<>();
+
+		for (Instance instance : data) {
+			if (!bins.containsKey(instance.toString(cols[0]))) {
+				if (cols.length == 1) {
+					bins.put(instance.toString(cols[0]), 1.0);
 				} else {
-					// bin has this x-value already then
-					bins.put(instance.toString(ref_col), (bins.get(instance.toString(ref_col)) + instance.value(val_col)));
+					bins.put(instance.toString(cols[0]), instance.value(cols[1]));
+				}
+			} else {
+				if (cols.length == 1) {
+					bins.put(instance.toString(cols[0]), (bins.get(instance.toString(cols[0])) + 1));
+				} else {
+					bins.put(instance.toString(cols[0]), (bins.get(instance.toString(cols[0])) + instance.value(cols[1])));
 				}
 			}
-			for (String key : sortAndLimit(bins).keySet()) {
-				items.add(new BubbleChartItem(key, "description", bins.get(key)));
-			}
+		}
+
+		for (String key : sortAndLimit(bins).keySet()) {
+			items.add(new BubbleChartItem(key, key, bins.get(key)));
 		}
 	}
 
