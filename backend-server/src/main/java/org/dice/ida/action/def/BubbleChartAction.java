@@ -51,8 +51,8 @@ public class BubbleChartAction implements Action {
 
 					if (ValidatorUtil.isFilterRangeValid(filterString, data)) {
 
-						if (paramMap.containsKey("one") && !ValidatorUtil.isStringEmpty(paramMap.get("col_name").toString())) {
-							String col_name = paramMap.get("col_name").toString();
+						if (paramMap.containsKey(IDAConst.BC_ONE) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_COL_NAME).toString())) {
+							String col_name = paramMap.get(IDAConst.BC_COL_NAME).toString();
 							boolean isColExists = false;
 							for (int i = 0; i < data.numAttributes(); i++) {
 								if (TextUtil.matchString(data.attribute(i).name().trim(), col_name.trim())) {
@@ -64,18 +64,18 @@ public class BubbleChartAction implements Action {
 								bubbleChart = new BubbleChartVisualizer(new String[]{col_name}, datasetName, tableName, filterString, data);
 								payload.put("bubbleChartData", bubbleChart.createBubbleChart());
 								chatMessageResponse.setPayload(payload);
-								chatMessageResponse.setMessage("Bubble chart laoded");
+								chatMessageResponse.setMessage(IDAConst.BC_LOADED);
 								chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
 							} else {
-								chatMessageResponse.setMessage("Invalid col name");
+								chatMessageResponse.setMessage(IDAConst.BC_INVALID_COL);
 								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 							}
 						}
-						else if (paramMap.containsKey("two") && !ValidatorUtil.isStringEmpty(paramMap.get("first_col").toString()) && !ValidatorUtil.isStringEmpty(paramMap.get("second_col").toString())) {
-							String first_col = paramMap.get("first_col").toString();
+						else if (paramMap.containsKey(IDAConst.BC_TWO) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_FIRST_COL).toString()) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_SECOND_COL).toString())) {
+							String first_col = paramMap.get(IDAConst.BC_FIRST_COL).toString();
 							boolean isFirstColExists = false;
 
-							String second_col = paramMap.get("second_col").toString();
+							String second_col = paramMap.get(IDAConst.BC_SECOND_COL).toString();
 							boolean isSecondColExists = false;
 
 							// Checking if both column exists on our dataset
@@ -89,10 +89,10 @@ public class BubbleChartAction implements Action {
 							}
 
 							if (!isFirstColExists) {
-								chatMessageResponse.setMessage("Invalid first col name");
+								chatMessageResponse.setMessage(IDAConst.BC_INVALID_FIRST_COL);
 								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 							} else if (!isSecondColExists) {
-								chatMessageResponse.setMessage("Invalid second col name");
+								chatMessageResponse.setMessage(IDAConst.BC_INVALID_SECOND_COL);
 								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 							} else if (isFirstColExists && isSecondColExists) {
 								// Both Column exists
@@ -104,10 +104,10 @@ public class BubbleChartAction implements Action {
 									bubbleChart = new BubbleChartVisualizer(new String[]{first_col, second_col}, datasetName, tableName, filterString, data);
 									payload.put("bubbleChartData", bubbleChart.createBubbleChart());
 									chatMessageResponse.setPayload(payload);
-									chatMessageResponse.setMessage("Bubble chart laoded");
+									chatMessageResponse.setMessage(IDAConst.BC_LOADED);
 									chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
 								} else {
-									chatMessageResponse.setMessage("Second column was not numerical! try again please");
+									chatMessageResponse.setMessage(IDAConst.BC_NOT_NUM_SECOND_COL);
 									chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 								}
 							}
@@ -115,6 +115,7 @@ public class BubbleChartAction implements Action {
 							SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 						}
 					} else {
+						// Provided data filter range was incorrect
 						chatMessageResponse.setMessage(IDAConst.INVALID_RANGE);
 						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 					}

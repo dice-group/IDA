@@ -70,7 +70,17 @@ public interface IDAConst {
 	public static final String BG_FILTER_LAST = "last";
 	public static final String BG_FILTER_FROM = "from";
 
-
+	// Bubble chart
+	public static final String BC_ONE = "one";
+	public static final String BC_COL_NAME = "col_name";
+	public static final String BC_TWO = "two";
+	public static final String BC_FIRST_COL = "first_col";
+	public static final String BC_SECOND_COL = "second_col";
+ 	public static final String BC_LOADED = "Bubble chart has been loaded";
+ 	public static final String BC_INVALID_COL = "Provided column name was incorrect, it does not exist on the loaded table!";
+ 	public static final String BC_INVALID_FIRST_COL = "Provided first column name was incorrect, it does not exist on the loaded table!";
+ 	public static final String BC_INVALID_SECOND_COL = "Provided second column name was incorrect, it does not exist on the loaded table!";
+ 	public static final String BC_NOT_NUM_SECOND_COL = "Provided second column was not numerical! try again please";
 
 	/**
 	 * Bar graph parameters thresholds
