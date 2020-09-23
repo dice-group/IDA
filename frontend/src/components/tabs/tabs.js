@@ -7,6 +7,7 @@ import Box from "@material-ui/core/Box";
 import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
 import IDABarChart from "./../visualizations/barchart/barchart";
+import IDABubbleGraph from "./../visualizations/bubblechart/bubblechart"
 import "./tabs.css";
 
 function TabPanel(props) {
@@ -65,6 +66,8 @@ export default function ScrollableTabsButtonAuto(props) {
         return <SpanningTable data={tab.data} />;
       case "barchart":
         return <IDABarChart data={tab.data} nodeId={tab.value} />;
+      case "bubblechart":
+        return <IDABubbleGraph data={tab.data} nodeId={tab.value} />;
       default:
         return null;
     }
