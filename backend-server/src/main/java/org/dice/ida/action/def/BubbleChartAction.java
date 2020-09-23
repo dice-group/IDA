@@ -35,6 +35,12 @@ public class BubbleChartAction implements Action {
 				BubbleChartVisualizer bubbleChart;
 
 				if (ValidatorUtil.isStringEmpty(filterString)) {
+					double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+
+					// If confidence is zero then it means provided filter was incorrect
+					if (confidence == 0.0) {
+						paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
+					}
 					SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 				} else {
 					CSVLoader loader = new CSVLoader();

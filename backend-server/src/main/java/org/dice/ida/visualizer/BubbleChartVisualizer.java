@@ -1,11 +1,8 @@
 package org.dice.ida.visualizer;
 
-import org.dice.ida.constant.IDAConst;
-import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
 import org.dice.ida.util.FilterUtil;
-import org.dice.ida.util.MetaFileReader;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -15,9 +12,9 @@ import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * Class to provide required attributes for bar graph visualization and apply data filters.
+ * Class that manages bubble chart visualization and apply data filters.
  *
- * @author Sourabh, Maqbool
+ * @author Maqbool
  */
 
 public class BubbleChartVisualizer {
