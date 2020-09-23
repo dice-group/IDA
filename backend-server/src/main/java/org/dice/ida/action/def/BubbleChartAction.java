@@ -57,6 +57,7 @@ public class BubbleChartAction implements Action {
 							for (int i = 0; i < data.numAttributes(); i++) {
 								if (TextUtil.matchString(data.attribute(i).name().trim(), col_name.trim())) {
 									isColExists = true;
+									col_name = data.attribute(i).name(); // just to manage date type column case
 								}
 							}
 
@@ -82,6 +83,7 @@ public class BubbleChartAction implements Action {
 							for (int i = 0; i < data.numAttributes(); i++) {
 								if (TextUtil.matchString(data.attribute(i).name().trim(), first_col.trim())) {
 									isFirstColExists = true;
+									first_col = data.attribute(i).name(); // just to manage date type column case
 								}
 								if (TextUtil.matchString(data.attribute(i).name().trim(), second_col.trim())) {
 									isSecondColExists = true;
@@ -123,7 +125,7 @@ public class BubbleChartAction implements Action {
 			} catch (Exception e) {
 				chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-				System.out.println(e);
+				e.printStackTrace();
 			}
 		}
 	}
