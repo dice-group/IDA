@@ -24,10 +24,3 @@ tbody tr:nth-of-type(odd) {
 .ida-card {
   margin: 15px 0;
 }
-
-.MuiTableCell-root {
-  height: 50px !important;
-}
-.MuiTableCell-body {
-  height: 50px !important;
-}
