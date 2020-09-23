@@ -9,8 +9,6 @@ services:
       - ida-net
   ida-backend:
     image: $REGISTRY/ida/backend-server:$VERSION
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/usr/local/ida-chatbot-dialogflow.json
     networks:
       - ida-net
 networks:
