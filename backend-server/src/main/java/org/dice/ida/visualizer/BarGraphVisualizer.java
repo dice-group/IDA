@@ -124,7 +124,8 @@ public class BarGraphVisualizer {
 	}
 
 	public void sortAndLoad(HashMap<String, Double> date, HashMap<String, Double> month, HashMap<String, Double> year) {
-		int d = Math.abs(date.size() - 10), m = Math.abs(month.size() - 10);
+		int d = Math.abs(date.size() - 10);
+		int m = Math.abs(month.size() - 10);
 		int y = Math.abs(year.size() - 10);
 		if (m <= d) {
 			if (m <= y)
