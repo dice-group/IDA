@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import weka.core.Instances;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
