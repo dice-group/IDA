@@ -78,7 +78,7 @@ export default function CustomizedTables(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(props.noPagination ? 0 : 5);
   const tableData = props.data;
-  const tableId = props.nodeId
+  const tableId = props.nodeId;
   const keysName = props.columns.map((col) => {
     return {
       "key": col.colAttr,
