@@ -60,7 +60,7 @@ export default function ScrollableTabsButtonAuto(props) {
   const renderData = (tab) => {
     switch (tab.type) {
       case "table":
-        return <CustomizedTables data={tab.data} columns={tab.columns} />;
+        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id}/>;
       case "metadata":
         return <SpanningTable data={tab.data} />;
       case "barchart":
