@@ -7,7 +7,7 @@ import Box from "@material-ui/core/Box";
 import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
 import IDABarChart from "./../visualizations/barchart/barchart";
-import IDABubbleGraph from "./../visualizations/bubblechart/bubblechart"
+import IDABubbleGraph from "./../visualizations/bubblechart/bubblechart";
 import "./tabs.css";
 
 function TabPanel(props) {
