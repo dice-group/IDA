@@ -20,6 +20,7 @@ import "./datatable.css";
 function TablePaginationActions(props) {
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
+  //let page = 5;
 
   const handleFirstPageButtonClick = (event) => {
     onChangePage(event, 0);
@@ -73,12 +74,18 @@ TablePaginationActions.propTypes = {
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
 };
+let intViewportHeight = window.innerHeight;
+let intViewportWidth = window.innerWidth;
+console.log("height",intViewportHeight);
+console.log("width",intViewportWidth);
 
 export default function CustomizedTables(props) {
   const [page, setPage] = useState(0);
-  const defaultRowsPerPage = props.noPagination ? 0 : 5;
+  const defaultrowcount = Math.round(intViewportHeight/50/1.7);
+  const defaultRowsPerPage = props.noPagination ? 0 : defaultrowcount;
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
   const tableData = props.data;
+  
   const keysName = props.columns.map((col) => {
     return {
       "key": col.colAttr,
@@ -95,15 +102,15 @@ export default function CustomizedTables(props) {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    // setPage(0);
   };
   return (
     <TableContainer component={Paper}>
       <Table aria-label="ida table">
-        <TableHead>
-          <TableRow>
+        <TableHead >
+          <TableRow >
             {keysName.map((row, index) => (
-              <TableCell align="left" key={index}>{row["label"]}</TableCell>
+              <TableCell align="left" key={index} style={{ height: 50}}>{row["label"]}</TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -112,15 +119,15 @@ export default function CustomizedTables(props) {
             ? seletedItem.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : seletedItem
           ).map((row, index) => (
-            <TableRow key={index}>
+            <TableRow key={index} style={{ height: 50}}>
               {keysName.map((colName, index) => (
-                <TableCell align="left" component="th" scope="row" key={index}>{row[colName["key"]]}</TableCell>
+                <TableCell align="left" component="th" scope="row" key={index} >{row[colName["key"]]}</TableCell>
               ))}
             </TableRow>
           ))}
 
           {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
+            <TableRow style={{ height: 50 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
           )}
@@ -129,7 +136,7 @@ export default function CustomizedTables(props) {
           props.noPagination ? null : <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                rowsPerPageOptions={[defaultrowcount ,Math.round(defaultrowcount*1.5), Math.round(defaultrowcount*2.5), { label: "All", value: -1 }]}
                 colSpan={keysName.length}
                 count={seletedItem.length}
                 rowsPerPage={rowsPerPage}
