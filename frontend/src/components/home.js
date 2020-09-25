@@ -9,8 +9,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ChatIcon from '@material-ui/icons/Chat';
-import SpeakerNotesOffIcon from '@material-ui/icons/SpeakerNotesOff';
+import ChatIcon from "@material-ui/icons/Chat";
+import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
 import { Fab, Typography } from "@material-ui/core";
 
 import "./home.css";
