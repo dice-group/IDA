@@ -50,6 +50,21 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             props.setSelectedNodeId(payload.activeDS + "_barchart_" + (barChartCount + 1));
             break;
         }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_BUBBLECHART: {
+            const treeData = props.detail;
+            const activeDS = treeData.find((node) => node.id === payload.activeDS);
+            activeDS.children = activeDS.children || [];
+            const bubbleChartCount = activeDS.children.filter((c) => c.type === "bubblechart").length;
+            activeDS.children.push({
+                id: payload.activeDS + "_bubblechart_" + (bubbleChartCount + 1),
+                name: "Bubble Graph " + (bubbleChartCount + 1),
+                type: "bubblechart",
+                data: payload.bubbleChartData,
+                fileName: "Bubble Chart " + (bubbleChartCount + 1)
+            });
+            props.setSelectedNodeId(payload.activeDS + "_bubblechart_" + (bubbleChartCount + 1));
+            break;
+        }
         default:
     }
 }
