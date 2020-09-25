@@ -4,13 +4,26 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
+import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+
+
+const IDATheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#4e8cff" // This is an orange looking color
+    }
+  }
+});
+
 // import React from "react";
 // import SockJsClient from "react-stomp";
 
 ReactDOM.render(
 
   <React.StrictMode>
-    <App/>
+    <ThemeProvider theme={IDATheme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
@@ -40,7 +53,7 @@ serviceWorker.unregister();
 //             onMessage={(msg) => { console.log(msg); }}
 //             ref={ (client) => { this.clientRef = client }} />
 //       </div>
-      
+
 //     );
-   
+
 // x
