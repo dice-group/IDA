@@ -4,7 +4,8 @@ import java.util.Map;
 
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
-
+import org.springframework.stereotype.Component;
+@Component
 public class SimpleTextAction implements Action {
 
 	@Override

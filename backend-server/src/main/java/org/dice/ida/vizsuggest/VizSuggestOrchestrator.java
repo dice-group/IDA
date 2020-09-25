@@ -1,16 +1,12 @@
 package org.dice.ida.vizsuggest;
 
 import org.dice.ida.constant.IDAConst;
-import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.VisualizationSuggestion;
+import org.dice.ida.util.MetaFileReader;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class to orchestrate the visualization suggestion based on the dataset
@@ -34,7 +30,7 @@ public class VizSuggestOrchestrator {
 	 */
 	public String getSuggestion() throws Exception {
 		VizSuggestionFactory vizSuggestionFactory = new VizSuggestionFactory();
-		DataSummary dataSummary = createDataSummary(datasetName, tableName);
+		DataSummary dataSummary = new MetaFileReader().createDataSummary(datasetName, tableName);
 		VisualizationSuggestion visualizationSuggestion = vizSuggestionFactory.suggestVisualization(dataSummary).getParams(dataSummary);
 		List<Map<String, String>> paramsMapLst = visualizationSuggestion.getParamMap();
 		if (paramsMapLst.size() <= 0) {
@@ -58,36 +54,7 @@ public class VizSuggestOrchestrator {
 	 * @return Data summary model of the dataset
 	 * @throws Exception
 	 */
-	private DataSummary createDataSummary(String datasetName, String tableName) throws Exception {
-		int index = tableName.lastIndexOf(".");
-		String fileName = tableName.substring(0, index);
-		String metaData = new String(Files.readAllBytes(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("metadata/" + datasetName + "/" + fileName)).getFile())));
-		String[] summaryLines = metaData.split("\n");
-		DataSummary dataSummary = new DataSummary();
-		dataSummary.setName(summaryLines[0].split("\t")[1].trim());
-		dataSummary.setNumberOfInstances(Long.parseLong(summaryLines[1].split("\t")[1].trim()));
-		String[] attributeValues;
-		List<AttributeSummary> attributeSummaryList = new ArrayList<>();
-		AttributeSummary attributeSummary;
-		for (int i = 4; i < summaryLines.length; i++) {
-			summaryLines[i] = summaryLines[i].replaceAll("[/%]", "");
-			attributeValues = summaryLines[i].trim().split("\t");
-			attributeSummary = new AttributeSummary();
-			attributeSummary.setName(attributeValues[0]);
-			attributeSummary.setType(attributeValues[2]);
-			attributeSummary.setNominalTypeProbability(Double.parseDouble(attributeValues[3]));
-			attributeSummary.setIntegerTypeProbability(Double.parseDouble(attributeValues[4]));
-			attributeSummary.setRealNumTypeProbability(Double.parseDouble(attributeValues[5]));
-			attributeSummary.setMissingValuesCount(Long.parseLong(attributeValues[6]));
-			attributeSummary.setMissingValuesProbability(Double.parseDouble(attributeValues[7]));
-			attributeSummary.setUniqueValuesCount(Long.parseLong(attributeValues[8]));
-			attributeSummary.setUniqueValuesProbability(Double.parseDouble(attributeValues[9]));
-			attributeSummary.setDiscreteValuesCount(Long.parseLong(attributeValues[10]));
-			attributeSummaryList.add(attributeSummary);
-		}
-		dataSummary.setAttributeSummaryList(attributeSummaryList);
-		return dataSummary;
-	}
+
 
 	/**
 	 * TODO Use below functions with upload dataset to create metadata as soon as user uploads new dataset
