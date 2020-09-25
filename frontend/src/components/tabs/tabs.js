@@ -19,7 +19,7 @@ function TabPanel(props) {
       role="tabpanel"
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
-      aria-labelledby={`scrollable-auto-tab-${index}`}      
+      aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
       <Box p={3}>
@@ -39,8 +39,8 @@ function TabHeader(props) {
   const { removeTab, ...newProps } = props;
   return (
     <div>
-      <Grid container alignItems="center">
-        <Tab {...newProps} />
+      <Grid container alignItems="left">
+        <Tab {...newProps} title={props.label}/>
         <IconButton onClick={() => removeTab(props.value)}>
           <CloseIcon />
         </IconButton>
@@ -61,7 +61,7 @@ export default function ScrollableTabsButtonAuto(props) {
   const renderData = (tab) => {
     switch (tab.type) {
       case "table":
-        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id}/>;
+        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id} />;
       case "metadata":
         return <SpanningTable data={tab.data} />;
       case "barchart":
