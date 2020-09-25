@@ -38,7 +38,9 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             if (dataSets.findIndex((ds) => ds.id === main.id) < 0) {
                 dataSets.push(main);
                 props.setDetails(dataSets);
-                const tabs = props.tabs || [];
+            }
+            const tabs = props.tabs;
+            if (tabs.findIndex((t) => t.id === children[0].id) < 0) {
                 tabs.push(children[0]);
                 props.setTabs(tabs);
             }
