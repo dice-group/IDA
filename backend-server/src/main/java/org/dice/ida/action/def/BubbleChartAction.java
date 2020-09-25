@@ -32,7 +32,6 @@ public class BubbleChartAction implements Action {
 				String datasetName = payload.get("activeDS").toString();
 				String tableName = payload.get("activeTable").toString();
 				String filterString = paramMap.containsKey(IDAConst.PARAM_FILTER_STRING) ? paramMap.get(IDAConst.PARAM_FILTER_STRING).toString() : "";
-				BubbleChartVisualizer bubbleChart;
 				double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
 
 				if (ValidatorUtil.isStringEmpty(filterString)) {
