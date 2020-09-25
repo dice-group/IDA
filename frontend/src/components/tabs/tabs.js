@@ -67,9 +67,9 @@ export default function ScrollableTabsButtonAuto(props) {
       case "metadata":
         return <SpanningTable data={tab.data} />;
       case "barchart":
-        return <IDABarChart data={tab.data} nodeId={tab.value} />;
+        return <IDABarChart data={tab.data} nodeId={tab.id} />;
       case "bubblechart":
-        return <IDABubbleGraph data={tab.data} nodeId={tab.value} />;
+        return <IDABubbleGraph data={tab.data} nodeId={tab.id} />;
       default:
         return null;
     }
