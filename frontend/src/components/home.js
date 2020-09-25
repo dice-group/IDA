@@ -117,6 +117,7 @@ export default function Home(props) {
           activeDS={activeDS}
           activeTable={activeTable}
           setActiveDS={setActiveDS}
+          setActiveTable={setActiveTable}
           tabs={tabs}
           setTabs={setTabs}
           setNavBarClass={setNavBarClass}

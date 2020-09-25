@@ -38,12 +38,18 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             if (dataSets.findIndex((ds) => ds.id === main.id) < 0) {
                 dataSets.push(main);
                 props.setDetails(dataSets);
+                const tabs = props.tabs || [];
+                tabs.push(children[0]);
+                props.setTabs(tabs);
             }
             const expandedNodes = props.expandedNodeId;
             expandedNodes.push(main.id);
             expandedNodes.push(metaData.dsName + "_dataset");
             props.setExpandedNodeId(expandedNodes);
             props.setNavBarClass("");
+            props.setActiveTable("");
+            props.setActiveDS(metaData.dsName);
+            props.setSelectedNodeId(children[0].id);
             props.setLoaded(true);
             break;
         }
@@ -57,7 +63,7 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
                 type: "parent",
                 children: []
             };
-            if(!vizChildren) {
+            if (!vizChildren) {
                 activeDS.children.push(viz);
             }
             const barChartCount = viz.children.filter((c) => c.type === "barchart").length;
