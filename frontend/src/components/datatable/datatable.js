@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -20,7 +20,6 @@ import "./datatable.css";
 function TablePaginationActions(props) {
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
-  //let page = 5;
 
   const handleFirstPageButtonClick = (event) => {
     onChangePage(event, 0);
@@ -74,18 +73,12 @@ TablePaginationActions.propTypes = {
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
 };
-let intViewportHeight = window.innerHeight;
-let intViewportWidth = window.innerWidth;
-console.log("height",intViewportHeight);
-console.log("width",intViewportWidth);
 
 export default function CustomizedTables(props) {
   const [page, setPage] = useState(0);
-  const defaultrowcount = Math.round(intViewportHeight/50/1.7);
-  const defaultRowsPerPage = props.noPagination ? 0 : defaultrowcount;
-  const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
+  const [rowsPerPage, setRowsPerPage] = useState(props.noPagination ? 0 : 5);
   const tableData = props.data;
-  
+  const tableId = props.nodeId;
   const keysName = props.columns.map((col) => {
     return {
       "key": col.colAttr,
@@ -93,6 +86,12 @@ export default function CustomizedTables(props) {
     };
   });
   let seletedItem = tableData;
+  useEffect(() => {
+    if (tableId && document.getElementById(tableId)) {
+      const rowHeight = document.getElementById(tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
+      rowHeight && setRowsPerPage(Math.floor((window.innerHeight * 0.65) / rowHeight));
+    }
+  }, [tableId]);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, seletedItem.length - page * rowsPerPage);
 
@@ -102,15 +101,16 @@ export default function CustomizedTables(props) {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    // setPage(0);
   };
+
+
   return (
     <TableContainer component={Paper}>
-      <Table aria-label="ida table">
+      <Table aria-label="ida table" id={tableId}>
         <TableHead >
           <TableRow >
             {keysName.map((row, index) => (
-              <TableCell align="left" key={index} style={{ height: 50}}>{row["label"]}</TableCell>
+              <TableCell align="left" key={index}>{row["label"]}</TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -119,7 +119,7 @@ export default function CustomizedTables(props) {
             ? seletedItem.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : seletedItem
           ).map((row, index) => (
-            <TableRow key={index} style={{ height: 50}}>
+            <TableRow key={index} component="tr" className="ida-table-row">
               {keysName.map((colName, index) => (
                 <TableCell align="left" component="th" scope="row" key={index} >{row[colName["key"]]}</TableCell>
               ))}
@@ -136,7 +136,7 @@ export default function CustomizedTables(props) {
           props.noPagination ? null : <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[defaultrowcount ,Math.round(defaultrowcount*1.5), Math.round(defaultrowcount*2.5), { label: "All", value: -1 }]}
+                rowsPerPageOptions={[rowsPerPage, rowsPerPage * 2, rowsPerPage * 3, rowsPerPage * 4]}
                 colSpan={keysName.length}
                 count={seletedItem.length}
                 rowsPerPage={rowsPerPage}
