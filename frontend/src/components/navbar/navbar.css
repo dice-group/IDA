@@ -1,0 +1,6 @@
+.MuiTreeItem-root.Mui-selected .MuiTreeItem-content {
+  background-color: #4e8cff;
+  color: #fff;
+  border-radius: 5px;
+  padding: 3px;
+}
