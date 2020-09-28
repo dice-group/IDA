@@ -11,3 +11,13 @@
 .tab-close-icon {
   display: inline;
 }
+
+.MuiButtonBase-root.MuiTab-root {
+  white-space: nowrap;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.MuiButtonBase-root.MuiTab-root .MuiTab-wrapper {
+  align-items: flex-start;
+}

@@ -7,6 +7,7 @@ import Box from "@material-ui/core/Box";
 import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
 import IDABarChart from "./../visualizations/barchart/barchart";
+import IDABubbleGraph from "./../visualizations/bubblechart/bubblechart";
 import CloseIcon from "@material-ui/icons/Close";
 import "./tabs.css";
 import { Grid, IconButton } from "@material-ui/core";
@@ -18,7 +19,7 @@ function TabPanel(props) {
       role="tabpanel"
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
-      aria-labelledby={`scrollable-auto-tab-${index}`}      
+      aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
       <Box p={3}>
@@ -38,8 +39,8 @@ function TabHeader(props) {
   const { removeTab, ...newProps } = props;
   return (
     <div>
-      <Grid container alignItems="center">
-        <Tab {...newProps} />
+      <Grid container alignItems="left">
+        <Tab {...newProps} title={props.label}/>
         <IconButton onClick={() => removeTab(props.value)}>
           <CloseIcon />
         </IconButton>
@@ -60,11 +61,13 @@ export default function ScrollableTabsButtonAuto(props) {
   const renderData = (tab) => {
     switch (tab.type) {
       case "table":
-        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id}/>;
+        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id} />;
       case "metadata":
         return <SpanningTable data={tab.data} />;
       case "barchart":
         return <IDABarChart data={tab.data} nodeId={tab.id} />;
+      case "bubblechart":
+        return <IDABubbleGraph data={tab.data} nodeId={tab.id} />;
       default:
         return null;
     }
