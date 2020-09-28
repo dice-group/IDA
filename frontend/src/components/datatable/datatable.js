@@ -77,6 +77,7 @@ TablePaginationActions.propTypes = {
 export default function CustomizedTables(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(props.noPagination ? 0 : 5);
+  const [rowsPerPageList, setRowsPerPageList] = useState([]);
   const tableData = props.data;
   const tableId = props.nodeId;
   const keysName = props.columns.map((col) => {
@@ -89,7 +90,11 @@ export default function CustomizedTables(props) {
   useEffect(() => {
     if (tableId && document.getElementById(tableId)) {
       const rowHeight = document.getElementById(tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
-      rowHeight && setRowsPerPage(Math.floor((window.innerHeight * 0.65) / rowHeight));
+      if(rowHeight) {
+        const defaultRowsPerPage = Math.floor((window.innerHeight * 0.65) / rowHeight);
+        setRowsPerPage(defaultRowsPerPage);
+        setRowsPerPageList([defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 3, defaultRowsPerPage * 4, defaultRowsPerPage * 5]);
+      }
     }
   }, [tableId]);
 
@@ -136,7 +141,7 @@ export default function CustomizedTables(props) {
           props.noPagination ? null : <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[rowsPerPage, rowsPerPage * 2, rowsPerPage * 3, rowsPerPage * 4]}
+                rowsPerPageOptions={rowsPerPageList}
                 colSpan={keysName.length}
                 count={seletedItem.length}
                 rowsPerPage={rowsPerPage}
