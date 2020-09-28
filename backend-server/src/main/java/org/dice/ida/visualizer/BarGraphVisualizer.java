@@ -7,12 +7,15 @@ import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
 import org.dice.ida.util.MetaFileReader;
+import org.dice.ida.util.TextUtil;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.util.*;
+
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -67,7 +70,7 @@ public class BarGraphVisualizer {
 		//check for filter and load bar graph items
 
 		//Loads the File
-		AttributeSummary xaxisSummary = DS.getAttributeSummaryList().stream().filter(x -> x.getName().equalsIgnoreCase(xAxisLabel)).collect(toList()).get(0);
+		AttributeSummary xaxisSummary = DS.getAttributeSummaryList().stream().filter(x -> TextUtil.matchString(x.getName(), xAxisLabel)).collect(toList()).get(0);
 
 		if (xaxisSummary.getType().equalsIgnoreCase("Nom")) {
 			loadNominal();
@@ -110,7 +113,6 @@ public class BarGraphVisualizer {
 					temp_year.put(String.valueOf(cal.get(Calendar.YEAR)), data.instance(i).value(yaxis));
 				}
 			} catch (ParseException e) {
-				e.printStackTrace();
 				continue;
 			}
 		}
@@ -122,9 +124,9 @@ public class BarGraphVisualizer {
 	}
 
 	public void sortAndLoad(HashMap<String, Double> date, HashMap<String, Double> month, HashMap<String, Double> year) {
-		int d = Math.abs(date.size() - 10),
-			m = Math.abs(month.size() - 10),
-			y = Math.abs(year.size() - 10);
+		int d = Math.abs(date.size() - 10);
+		int m = Math.abs(month.size() - 10);
+		int y = Math.abs(year.size() - 10);
 		if (m <= d) {
 			if (m <= y)
 				load(month);
@@ -147,7 +149,7 @@ public class BarGraphVisualizer {
 
 	public void loadNominal() {
 		HashMap<String, Double> temp = new HashMap<>();
-		AttributeSummary yaxisSummary = DS.getAttributeSummaryList().stream().filter(x -> x.getName().equalsIgnoreCase(yAxisLabel)).collect(toList()).get(0);
+		AttributeSummary yaxisSummary = DS.getAttributeSummaryList().stream().filter(x -> TextUtil.matchString(x.getName(), yAxisLabel)).collect(toList()).get(0);
 		if (yaxisSummary.getType().equalsIgnoreCase("Num")) {
 			for (int i = 0; i < data.numInstances(); i++) {
 				if (temp.containsKey(data.instance(i).stringValue(xaxis))) {
@@ -211,12 +213,12 @@ public class BarGraphVisualizer {
 			int rangeEnd = 0;
 
 			// Extracting ranges
-			if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FIRST)) {
+			if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_FIRST)) {
 				rangeEnd = Math.min(Integer.parseInt(tokens[1]), data.size());
-			} else if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_LAST)) {
+			} else if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_LAST)) {
 				rangeStart = Math.max(data.size() - Integer.parseInt(tokens[1]), 0);
 				rangeEnd = data.size();
-			} else if (filterType.equalsIgnoreCase(IDAConst.BG_FILTER_FROM)) {
+			} else if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_FROM)) {
 				rangeStart = Integer.parseInt(tokens[1]) == 0 ? 0 : Integer.parseInt(tokens[1]) - 1;
 				rangeEnd = Integer.parseInt(tokens[3]);
 			}
