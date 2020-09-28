@@ -1,5 +1,37 @@
 import { IDA_CONSTANTS } from "./constants";
 
+function addVisualizationEntry(props, vizData, label, name, activeDSName) {
+    const treeData = props.detail;
+    const activeDS = treeData.find((node) => node.id === activeDSName);
+    const vizChildren = activeDS.children.find((c) => c.id === activeDSName + "_visualizations");
+    const viz = vizChildren || {
+        id: activeDSName + "_visualizations",
+        name: "Visualizations",
+        type: "parent",
+        children: []
+    };
+    if (!vizChildren) {
+        activeDS.children.push(viz);
+    }
+    const vizCount = viz.children.filter((c) => c.type === name).length;
+    const vizNode = {
+        id: activeDSName + "_" + name + "_" + (vizCount + 1),
+        name: label + " " + (vizCount + 1),
+        type: name,
+        data: vizData,
+        fileName: label + " " + (vizCount + 1)
+    };
+    viz.children.push(vizNode);
+    const tabs = props.tabs;
+    tabs.push(vizNode);
+    props.setTabs(tabs);
+    props.setDetails(treeData);
+    const expandedNodes = props.expandedNodeId;
+    expandedNodes.indexOf(activeDSName + "_visualizations") < 0 && expandedNodes.push(activeDSName + "_visualizations");
+    props.setExpandedNodeId(expandedNodes);
+    props.setSelectedNodeId(activeDSName + "_" + name + "_" + (vizCount + 1));
+}
+
 export default function IDAChatbotActionHandler(props, actionCode, payload) {
     switch (actionCode) {
         case IDA_CONSTANTS.UI_ACTION_CODES.UIA_LOADDS: {
@@ -65,36 +97,4 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
         }
         default:
     }
-}
-
-function addVisualizationEntry(props, vizData, label, name, activeDSName) {
-    const treeData = props.detail;
-    const activeDS = treeData.find((node) => node.id === activeDSName);
-    const vizChildren = activeDS.children.find((c) => c.id === activeDSName + "_visualizations");
-    const viz = vizChildren || {
-        id: activeDSName + "_visualizations",
-        name: "Visualizations",
-        type: "parent",
-        children: []
-    };
-    if (!vizChildren) {
-        activeDS.children.push(viz);
-    }
-    const vizCount = viz.children.filter((c) => c.type === name).length;
-    const vizNode = {
-        id: activeDSName + "_" + name + "_" + (vizCount + 1),
-        name: label + " " + (vizCount + 1),
-        type: name,
-        data: vizData,
-        fileName: label + " " + (vizCount + 1)
-    };
-    viz.children.push(vizNode);
-    const tabs = props.tabs;
-    tabs.push(vizNode);
-    props.setTabs(tabs);
-    props.setDetails(treeData);
-    const expandedNodes = props.expandedNodeId;
-    expandedNodes.indexOf(activeDSName + "_visualizations") < 0 && expandedNodes.push(activeDSName + "_visualizations");
-    props.setExpandedNodeId(expandedNodes);
-    props.setSelectedNodeId(activeDSName + "_" + name + "_" + (vizCount + 1));
 }
