@@ -7,12 +7,13 @@ import TabsWrappedLabel from "./tabs/tabs";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ChatIcon from "@material-ui/icons/Chat";
+import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
+import { Fab, Typography } from "@material-ui/core";
 
 import "./home.css";
-import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -20,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  chatbotToggleIcon: {
+    color: "#4e8cff",
+    backgroundColor: "#fff"
   }
 }));
 
@@ -32,6 +37,7 @@ export default function Home(props) {
   const [activeDS, setActiveDS] = useState("");
   const [activeTable, setActiveTable] = useState("");
   const [tabs, setTabs] = useState([]);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(true);
   const loadTab = (loaded) => {
     if (loaded && tabs.length) {
       return <TabsWrappedLabel
@@ -45,35 +51,32 @@ export default function Home(props) {
       />
     }
   }
-  // const [navBarWidth, setNavBarWidth] = useState(3);
-  // const [contentWidth, setContentWidth] = useState(9);
   const [navBarVisiblity, setNavBarVisiblity] = useState(true);
-  const [navBarClass, setNavBarClass] = useState("");
+  const [navBarClass, setNavBarClass] = useState("no-navbar");
   const toggleNavBar = () => {
     if (!navBarVisiblity) {
-      // setNavBarWidth(3);
-      // setContentWidth(9);
       setNavBarClass("");
     } else {
-      // setNavBarWidth(1);
-      // setContentWidth(11);
       setNavBarClass("navbar-hidden");
     }
     setNavBarVisiblity(!navBarVisiblity);
+  }
+  const toggleChatWindow = () => {
+    setIsChatbotOpen(!isChatbotOpen);
   }
   return (
     <>
       <CssBaseline />
       <AppBar>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={toggleNavBar}>
-            {
-              loaded && (navBarVisiblity ? <ChevronLeftIcon fontSize="large" /> : <ChevronRightIcon fontSize="large" />)
-            }
-          </IconButton>
           <Typography variant="h6" className={classes.title} align="center">
             Intelligent Data Assistant
           </Typography>
+          <Fab size="small" color="default" aria-label="toggle" className={classes.chatbotToggleIcon} onClick={toggleChatWindow}>
+            {
+              isChatbotOpen ? <SpeakerNotesOffIcon /> : <ChatIcon />
+            }
+          </Fab>
         </Toolbar>
       </AppBar>
       <Toolbar />
@@ -94,6 +97,11 @@ export default function Home(props) {
                 setTabs={setTabs}
               />
             </div>
+            <Fab size="small" color="primary" aria-label="toggle" className={"navbar-toggle-icon"} onClick={toggleNavBar}>
+              {
+                loaded && (navBarVisiblity ? <ChevronLeftIcon /> : <ChevronRightIcon />)
+              }
+            </Fab>
           </Grid>
           <Grid item className={"content"}>
             {loadTab(loaded)}
@@ -109,8 +117,12 @@ export default function Home(props) {
           activeDS={activeDS}
           activeTable={activeTable}
           setActiveDS={setActiveDS}
+          setActiveTable={setActiveTable}
           tabs={tabs}
           setTabs={setTabs}
+          setNavBarClass={setNavBarClass}
+          isChatbotOpen={isChatbotOpen}
+          setIsChatbotOpen={setIsChatbotOpen}
         />
       </div>
     </>

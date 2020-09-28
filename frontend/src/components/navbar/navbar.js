@@ -5,6 +5,8 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 import Box from "@material-ui/core/Box";
 
+import "./navbar.css";
+
 export default function IDANavbar(props) {
   const detail = props.detail;
   const expanded = props.expandedNodeId;
