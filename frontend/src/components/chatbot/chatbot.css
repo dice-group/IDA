@@ -1,22 +1,16 @@
-.divShow {
-  display: block;
-}
-
-.divHidden {
-  display: none;
-}
-
 .sc-user-input--file-icon-wrapper {
   display: none;
 }
 
-.no-data .sc-open-icon,
-.no-data .sc-closed-icon,
-.no-data .sc-launcher,
 .no-data .sc-chat-window {
   right: 43%;
 }
 
+.sc-launcher {
+  display: none;
+}
+
 .sc-chat-window {
-  max-height: none;
+  max-height: 80vh;
+  z-index: 1200;
 }
