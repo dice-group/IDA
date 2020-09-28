@@ -166,7 +166,8 @@ public class BarGraphVisualizer {
 					double yvalue = temp.get(data.instance(i).stringValue(xaxis));
 					temp.put(data.instance(i).stringValue(xaxis), yvalue + 1);
 				} else {
-					temp.put(data.instance(i).stringValue(xaxis), 1.0);
+					String xvalue = data.instance(i).stringValue(xaxis).equals("?") ? "unknown" : data.instance(i).stringValue(xaxis);
+					temp.put(xvalue, 1.0);
 				}
 			}
 		}
