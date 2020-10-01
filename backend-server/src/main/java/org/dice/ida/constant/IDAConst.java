@@ -109,4 +109,7 @@ public interface IDAConst {
 	public static final String CRED_PRIVATE_KEY_BEGIN = "-----BEGIN PRIVATE KEY-----";
 	public static final String CRED_PRIVATE_KEY_END = "-----END PRIVATE KEY-----";
 	public static final String CRED_PRIVATE_KEY_TYPE = "RSA";
+
+	// Db utils
+	public  static final String NULL_VALUE_IDENTIFIER = "<ida-unknown>";
 }
