@@ -11,5 +11,6 @@ export const IDA_CONSTANTS = {
         PDAC_KNWMR: 2001,
         PDAC_UPLDDT: 2002,
         PDAC_VWDTS: 2003
-    }
+    },
+    UNKNOWN_LABEL: "UNKNOWN"
 };

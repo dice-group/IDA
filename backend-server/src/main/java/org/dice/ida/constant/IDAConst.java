@@ -111,5 +111,5 @@ public interface IDAConst {
 	public static final String CRED_PRIVATE_KEY_TYPE = "RSA";
 
 	// Db utils
-	public  static final String NULL_VALUE_IDENTIFIER = "<ida-unknown>";
+	public  static final String NULL_VALUE_IDENTIFIER = "UNKNOWN";
 }
