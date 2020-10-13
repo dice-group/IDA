@@ -19,6 +19,8 @@ public interface IDAConst {
 	public static final int UIA_BARGRAPH = 1005;
 	//Load bubble chart
 	public static final int UIA_BUBBLECHART = 1006;
+	// Draw line chart
+	public static  final int UIA_LINECHART = 1007;
 
 	/**
 	 *  Pre-defined action codes
