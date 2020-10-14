@@ -112,4 +112,5 @@ public interface IDAConst {
 
 	// Db utils
 	public  static final String NULL_VALUE_IDENTIFIER = "UNKNOWN";
+	public static final String QUESTION_MARK_SYMBOL = "?";
 }
