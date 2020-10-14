@@ -107,7 +107,7 @@ public class ValidatorUtil {
 	 * @param columnList - List of column names to be validated (provided as parameters to the visualization)
 	 * @throws IDAException - Throws exception with a message based on the failed scenario
 	 */
-	public static void areParametersValid(String dsName, String tableName, List<String> columnList) throws IDAException {
+	public static Map<String, String> areParametersValid(String dsName, String tableName, List<String> columnList) throws IDAException {
 		if (isStringEmpty(dsName)) {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
@@ -118,6 +118,7 @@ public class ValidatorUtil {
 			throw new IDAException(IDAConst.BOT_SELECT_TABLE);
 		}
 		try {
+			Map<String, String> columnMap = new HashMap<>();
 			boolean tableExists = false;
 			ObjectNode metaData = new FileUtil().getDatasetMetaData(dsName);
 			JsonNode fileDetails = metaData.get(IDAConst.FILE_DETAILS_ATTR);
@@ -127,8 +128,11 @@ public class ValidatorUtil {
 					if(columnList != null && !columnList.isEmpty()) {
 						JsonNode columnDetails = fileDetails.get(i).get(IDAConst.COLUMN_DETAILS_ATTR);
 						List<String> columns = new ArrayList<>();
+						String columnName;
 						for (int j = 0; j < columnDetails.size(); j++) {
-							columns.add(columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText().toLowerCase());
+							columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText().toLowerCase();
+							columns.add(columnName);
+							columnMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
 						}
 						for (String column : columnList) {
 							if (!columns.contains(column.toLowerCase())) {
@@ -141,6 +145,7 @@ public class ValidatorUtil {
 			if(!tableExists) {
 				throw new IDAException(IDAConst.TABLE_DOES_NOT_EXIST_MSG);
 			}
+			return columnMap;
 		} catch (IOException ex) {
 			throw new IDAException(IDAConst.TABLE_DOES_NOT_EXIST_MSG);
 		}

@@ -119,6 +119,7 @@ public interface IDAConst {
 	public static final String FILE_NAME_ATTR = "fileName";
 	public static final String COLUMN_DETAILS_ATTR = "fileColMd";
 	public static final String COLUMN_NAME_ATTR = "colAttr";
+	public static final String COLUMN_TYPE_ATTR = "colType";
 	public static final String TABLE_DOES_NOT_EXIST_MSG = "Selected table does not exist";
 
 	/**
@@ -127,4 +128,13 @@ public interface IDAConst {
 	public static final String LINE_CHART_PARAM_DATE_COL = "date_column";
 	public static final String LINE_CHART_PARAM_LABEL_COL = "line_label_column";
 	public static final String LINE_CHART_PARAM_VALUE_COL = "line_value_column";
+	public static final String INVALID_DATE_COLUMN_MSG = " is not a date column";
+	public static final String INVALID_NUMERIC_COLUMN_MSG = " is not a numeric column";
+
+	/**
+	 * Column data types
+	 */
+	public static final String COLUMN_TYPE_NOMINAL = "string";
+	public static final String COLUMN_TYPE_NUMERIC = "numeric";
+	public static final String COLUMN_TYPE_DATE = "date";
 }
