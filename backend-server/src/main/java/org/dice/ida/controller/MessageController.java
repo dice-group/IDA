@@ -1,14 +1,15 @@
 package org.dice.ida.controller;
 
 import org.dice.ida.chatbot.IDAChatBot;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.dice.ida.exception.IDAException;
+import org.dice.ida.util.ValidatorUtil;
+import org.springframework.web.bind.annotation.*;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Rest controller to handle the normal chat messages from the client
