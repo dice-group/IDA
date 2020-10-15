@@ -36,6 +36,7 @@ public class DataUtil {
 		for (int i = 0; i < data.numInstances(); i++) {
 			Map<String, String> temp = new HashMap<>();
 			for (Attribute column : attrcolumn) {
+				//TODO : update it once PR62 gets merged
 				if (data.instance(i).toString(column) == null)
 					temp.put(column.name(), "Not Defined");
 				else
