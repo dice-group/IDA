@@ -95,6 +95,10 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             addVisualizationEntry(props, payload.bubbleChartData, "Bubble Chart", "bubblechart", payload.activeDS);
             break;
         }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_LINECHART: {
+            addVisualizationEntry(props, payload.lineChartData, "line Chart", "linechart", payload.activeDS);
+            break;
+        }
         default:
     }
 }

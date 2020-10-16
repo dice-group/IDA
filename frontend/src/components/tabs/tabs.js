@@ -8,6 +8,7 @@ import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
 import IDABarChart from "./../visualizations/barchart/barchart";
 import IDABubbleGraph from "./../visualizations/bubblechart/bubblechart";
+import IDAMultiLineGraph from "./../visualizations/multiline/mulitiline"
 import CloseIcon from "@material-ui/icons/Close";
 import "./tabs.css";
 import { Grid, IconButton } from "@material-ui/core";
@@ -68,6 +69,8 @@ export default function ScrollableTabsButtonAuto(props) {
         return <IDABarChart data={tab.data} nodeId={tab.id} />;
       case "bubblechart":
         return <IDABubbleGraph data={tab.data} nodeId={tab.id} />;
+      case "linechart":
+        return <IDAMultiLineGraph data={tab.data} nodeId={tab.id} />;
       default:
         return null;
     }
