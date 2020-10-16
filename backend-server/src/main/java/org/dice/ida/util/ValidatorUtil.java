@@ -130,8 +130,8 @@ public class ValidatorUtil {
 						List<String> columns = new ArrayList<>();
 						String columnName;
 						for (int j = 0; j < columnDetails.size(); j++) {
-							columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText().toLowerCase();
-							columns.add(columnName);
+							columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
+							columns.add(columnName.toLowerCase());
 							columnMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
 						}
 						for (String column : columnList) {
