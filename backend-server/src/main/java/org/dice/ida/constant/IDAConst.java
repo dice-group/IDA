@@ -137,4 +137,11 @@ public interface IDAConst {
 	public static final String COLUMN_TYPE_NOMINAL = "string";
 	public static final String COLUMN_TYPE_NUMERIC = "numeric";
 	public static final String COLUMN_TYPE_DATE = "date";
+	public static final String[] DATE_PATTERNS = {"dd/MM/yyyy", "dd MMM", "MMM YYYY", "dd/MM/yyyy HH:mm:ss"};
+	public static final String LABEL_TYPE_DATE = "day";
+	public static final String LABEL_TYPE_MONTH = "month";
+	public static final String LABEL_TYPE_YEAR = "year";
+	public static final String COUNT_OF_PREFIX = "Count of ";
+	public static final String LINE_CHART_DESC_PREFIX = "Line chart for ";
+	public static final String LINE_CHART_PROPERTY_NAME = "lineChartData";
 }

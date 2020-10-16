@@ -2,9 +2,6 @@ package org.dice.ida.util;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import weka.core.Attribute;
-import weka.core.Instances;
-import weka.core.converters.CSVLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,33 +13,35 @@ import java.util.Map;
 /**
  * Class to expose util methods for Data based operation in IDA
  *
- * @author Sourabh
- *
+ * @author Sourabh, Nandeesh
  */
 @Component
 @Scope("singleton")
-
 public class DataUtil {
+	/**
+	 * Method to read a CSV file and return its contents (only required columns) as a list of maps
+	 *
+	 * @param datasetName - name of the dataset
+	 * @param tableName - name of the table ( file name)
+	 * @param columns - list of columns whose data is required
+	 * @return list of maps where each map represents a row of the table
+	 * @throws IOException - Exception when the dataset or table does not exist
+	 */
 	public List<Map<String, String>> getData(String datasetName, String tableName, List<String> columns) throws IOException {
-		List<Attribute> attrcolumn = new ArrayList<>();
 		List<Map<String, String>> extractedData = new ArrayList<>();
-		CSVLoader loader = new CSVLoader();
 		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
-		loader.setSource(new File(path));
-		Instances data = loader.getDataSet();
-		for (String column : columns)
-			attrcolumn.add(data.attribute(column));
-
-		for (int i = 0; i < data.numInstances(); i++) {
-			Map<String, String> temp = new HashMap<>();
-			for (Attribute column : attrcolumn) {
-				//TODO : update it once PR62 gets merged
-				if (data.instance(i).toString(column) == null)
-					temp.put(column.name(), "Not Defined");
-				else
-					temp.put(column.name(), data.instance(i).toString(column));
+		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
+		for (Map<String, String> row : fileData) {
+			Map<String, String> dataRow = new HashMap<>();
+			for (String column : columns) {
+				// TODO: Change this to a constant
+				if (ValidatorUtil.isStringEmpty(row.get(column))) {
+					dataRow.put(column, "UNKNOWN");
+				} else {
+					dataRow.put(column, row.get(column));
+				}
 			}
-			extractedData.add(temp);
+			extractedData.add(dataRow);
 		}
 		return extractedData;
 
