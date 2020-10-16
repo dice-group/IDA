@@ -130,10 +130,10 @@ public class LineChartAction implements Action {
 			xAxisLabels = dayLabels;
 			binType = IDAConst.LABEL_TYPE_DATE;
 		} else if (m <= y && m <= d) {
-			xAxisLabels = dayLabels;
+			xAxisLabels = monthLabels;
 			binType = IDAConst.LABEL_TYPE_MONTH;
 		} else {
-			xAxisLabels = dayLabels;
+			xAxisLabels = yearLabels;
 			binType = IDAConst.LABEL_TYPE_YEAR;
 		}
 	}
