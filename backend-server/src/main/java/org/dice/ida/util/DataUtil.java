@@ -1,5 +1,6 @@
 package org.dice.ida.util;
 
+import org.dice.ida.constant.IDAConst;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -34,12 +35,7 @@ public class DataUtil {
 		for (Map<String, String> row : fileData) {
 			Map<String, String> dataRow = new HashMap<>();
 			for (String column : columns) {
-				// TODO: Change this to a constant
-				if (ValidatorUtil.isStringEmpty(row.get(column))) {
-					dataRow.put(column, "UNKNOWN");
-				} else {
-					dataRow.put(column, row.get(column));
-				}
+				dataRow.put(column, DbUtils.manageNullValues(row.get(column)));
 			}
 			extractedData.add(dataRow);
 		}
