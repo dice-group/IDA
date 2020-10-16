@@ -66,7 +66,6 @@ public class LineChartAction implements Action {
 			createChartData();	// Create data for the chart based on intervals
 			payload.put(IDAConst.LINE_CHART_PROPERTY_NAME, createLineChartData());
 			chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 			chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 		} catch (IDAException ex) {
 			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
