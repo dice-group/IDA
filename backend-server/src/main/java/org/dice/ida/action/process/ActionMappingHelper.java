@@ -7,6 +7,7 @@ import org.dice.ida.action.def.DefaultAction;
 import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.SuggestVisualization;
+import org.dice.ida.action.def.LineChartAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -42,6 +43,9 @@ public class ActionMappingHelper {
 				break;
 			case BUBBLE_CHART:
 				action = new BubbleChartAction();
+				break;
+			case LINE_CHART:
+				action = new LineChartAction();
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);
