@@ -95,9 +95,8 @@ public class LineChartAction implements Action {
 	 * Method to create the X-Axis labels and intervals based on the size of data
 	 * Eg: Days when data is small, Months when data is spread across many months, Years when data is spread across years
 	 *
-	 * @throws ParseException - Exception when a date is not in correct format
 	 */
-	private void setBinTypeAndLabels() throws ParseException {
+	private void setBinTypeAndLabels() {
 		Calendar calendar = Calendar.getInstance();
 		List<String> dayLabels = new ArrayList<>();
 		List<String> monthLabels = new ArrayList<>();
@@ -107,7 +106,12 @@ public class LineChartAction implements Action {
 
 		for (Map<String, String> object : tableData) {
 			String currentDate = object.get(dateColumn).trim();
-			calendar.setTime(DateUtils.parseDateStrictly(currentDate, IDAConst.DATE_PATTERNS));
+			try {
+				calendar.setTime(DateUtils.parseDateStrictly(currentDate, IDAConst.DATE_PATTERNS));
+			} catch (ParseException ex) {
+				ex.printStackTrace();
+				continue; // Ignore the row and continue with the next
+			}
 
 			if (!dayLabels.contains(currentDate)) {
 				dayLabels.add(currentDate);
@@ -128,7 +132,7 @@ public class LineChartAction implements Action {
 		if (d <= m && d <= y) {
 			xAxisLabels = dayLabels;
 			binType = IDAConst.LABEL_TYPE_DATE;
-		} else if (m <= y && m <= d) {
+		} else if (m <= y) {
 			xAxisLabels = monthLabels;
 			binType = IDAConst.LABEL_TYPE_MONTH;
 		} else {
@@ -140,9 +144,8 @@ public class LineChartAction implements Action {
 	/**
 	 * Method to create the data for each lines based on the bin type.
 	 *
-	 * @throws ParseException - Exception when a date is not in correct format
 	 */
-	private void createChartData() throws ParseException {
+	private void createChartData() {
 		Map<String, Double> labelData;
 		String date;
 		String label;
@@ -171,7 +174,12 @@ public class LineChartAction implements Action {
 					labelData.put(l, 0.0);
 				}
 			}
-			dateKey = extractDateKey(binType, date);
+			try {
+				dateKey = extractDateKey(binType, date);
+			} catch (ParseException ex) {
+				ex.printStackTrace();
+				continue; // Ignore the row and continue with the next
+			}
 			if (labelData.containsKey(dateKey))
 				labelData.put(dateKey, labelData.get(dateKey) + value);
 			else
