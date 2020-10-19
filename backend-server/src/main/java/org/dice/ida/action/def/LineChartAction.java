@@ -40,7 +40,7 @@ public class LineChartAction implements Action {
 	private Comparator<String> yearComparator;
 	private List<String> xAxisLabels;
 	private String binType;
-	Map<String, Map<String, Double>> chartData = new HashMap<>();
+	private final Map<String, Map<String, Double>> chartData = new HashMap<>();
 
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {

@@ -1,6 +1,5 @@
 package org.dice.ida.util;
 
-import org.dice.ida.constant.IDAConst;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
