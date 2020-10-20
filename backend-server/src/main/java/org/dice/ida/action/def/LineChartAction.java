@@ -42,6 +42,11 @@ public class LineChartAction implements Action {
 	private String binType;
 	private final Map<String, Map<String, Double>> chartData = new HashMap<>();
 
+	/**
+	 *
+	 * @param paramMap - parameters from dialogflow
+	 * @param chatMessageResponse - API response object
+	 */
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
 		Map<String, Object> payload = chatMessageResponse.getPayload();
