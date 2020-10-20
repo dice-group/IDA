@@ -217,7 +217,7 @@ public class LineChartAction implements Action {
 			for (String key : labelData.keySet()) {
 				values.add(labelData.get(key));
 			}
-			lineChartItem.setValues(values);
+			lineChartItem.setLineValues(values);
 			lines.add(lineChartItem);
 		}
 		lineChartData.setLines(lines);
