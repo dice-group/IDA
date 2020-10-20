@@ -2,19 +2,7 @@ import React,{Component} from 'react';
 import { withStyles } from "@material-ui/core/styles";
 import * as d3 from "d3";
 
-let data ={  
-            dates: [1-10-2020, 2-10-2020, 3-10-2020, 4-10-2020, 5-10-2020],     
-            series: [{
-                "name": "City1",
-                "val": [100, 125, 130, 90, 103]
-            },{
-                "name": "City2",
-                "val": [110, 95, 97, 91 ,100]
-            },{
-                "name": "City3",
-                "val": [75, 95, 83, 92, 80]
-            }]
-        }
+
 const styles = theme => ({
     linechart: {
         border: "1px solid black", 
@@ -26,37 +14,42 @@ class IDAMultiLineGraph extends Component {
     height = 270;
     width = 600;
     margin = ({top: 5, right: 5, bottom: 15, left: 15})
-    // graphData = {};
+    graphData = {};
     containerId = "";
-  
-    // constructor(props) {
-    //   super(props);
-    // //   this.containerId = props.nodeId;
-    // //   this.graphData = props.data;
-    // }
+    val =[];
+    datalines=[];
+    constructor(props) {
+      super(props);
+      this.containerId = props.nodeId;
+      this.graphData = props.data;
+      this.datalines = this.graphData.lines;
+      this.val= this.datalines.values;
+    }
+    
     componentDidMount() {
-      this.drawGraph();
+        this.graphData && this.datalines && this.drawGraph();
     }
    drawGraph(){ 
-        const svg = d3.select("#linechart")
+    console.log(this.val)
+    const data = this.graphData;
+    console.log("data",data)
+    if (data && data.length) {
+        const svg = d3.select(this.containerId)
             .append("svg")
             .attr("viewBox", [0, 0, this.width, this.height])
             .style("overflow", "visible");
 
         const x = d3.scaleUtc()
-            .domain(d3.extent(data.dates))
+            .domain(d3.extent(data.xAxisLabels))
             .range([this.margin.left, this.width - this.margin.right])
-        console.log(x);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max(data.series, d => d3.max(d.val))]).nice()
+            .domain([0, d3.max(this.datalines, d => d3.max(d.this.val))]).nice()
             .range([this.height - this.margin.bottom, this.margin.top])
-        console.log(y);
 
         var xAxis = g => g
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
-        console.log(xAxis);
 
         var yAxis = g => g
             .attr("transform", `translate(${this.margin.left},0)`)
@@ -78,7 +71,7 @@ class IDAMultiLineGraph extends Component {
 
         const line = d3.line()
             .defined(d => !isNaN(d))
-            .x((d, i) => x(data.dates[i]))
+            .x((d, i) => x(data.xAxisLabels[i]))
             .y(d => y(d))
         console.log(line)
 
@@ -89,10 +82,10 @@ class IDAMultiLineGraph extends Component {
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .selectAll("path")
-            .data(data.series)
+            .data(this.datalines)
             .join("path")
             .style("mix-blend-mode", "multiply")
-            .attr("d", d => line(d.val));
+            .attr("d", d => line(d.this.val));
             
             /////
 
@@ -129,11 +122,11 @@ class IDAMultiLineGraph extends Component {
               const pointer = d3.pointer(event, this);
               const xm = x.invert(pointer[0]);
               const ym = y.invert(pointer[1]);
-              const i = d3.bisectCenter(data.dates, xm);
-              const s = d3.least(data.series, d => Math.abs(d.val[i] - ym));
+              const i = d3.bisectCenter(data.xAxisLabels, xm);
+              const s = d3.least(this.datalines, d => Math.abs(d.this.val[i] - ym));
               path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
-              dot.attr("transform", `translate(${x(data.dates[i])},${y(s.val[i])})`);
-              dot.select("text").text(s.name);            
+              dot.attr("transform", `translate(${x(data.xAxisLabels[i])},${y(s.this.val[i])})`);
+              dot.select("text").text(s.labels);            
             }
 
         function entered() {
@@ -145,11 +138,11 @@ class IDAMultiLineGraph extends Component {
               path.style("mix-blend-mode", "multiply").attr("stroke", null);
               dot.attr("display", "none");
             }
-        
+    }
     }
    render() {
     const { classes } = this.props;
-        return <div className={classes.linechart} id="linechart"></div >;
+        return <div classlabels={classes.linechart} id={this.containerId}></div >;
     }
   }  
   export default  withStyles(styles, { withTheme: true })(IDAMultiLineGraph);
