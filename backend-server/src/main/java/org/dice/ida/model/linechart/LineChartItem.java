@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LineChartItem {
 	private String label;
-	private List<Double> values;
+	private List<Double> lineValues;
 
 	public String getLabel() {
 		return label;
@@ -14,11 +14,11 @@ public class LineChartItem {
 		this.label = label;
 	}
 
-	public List<Double> getValues() {
-		return values;
+	public List<Double> getLineValues() {
+		return lineValues;
 	}
 
-	public void setValues(List<Double> values) {
-		this.values = values;
+	public void setLineValues(List<Double> lineValues) {
+		this.lineValues = lineValues;
 	}
 }

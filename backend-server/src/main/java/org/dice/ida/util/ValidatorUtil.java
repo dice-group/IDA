@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import weka.core.Instances;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -24,14 +23,13 @@ import java.util.*;
 @Component
 @Scope("singleton")
 public class ValidatorUtil {
-	private static Map<String, String> dsPathMap;
+	private static final Map<String, String> dsPathMap = new HashMap<String, String>();;
 
 	public static boolean isStringEmpty(String str) {
 		return str == null || str.isEmpty();
 	}
 
 	public ValidatorUtil() throws IOException {
-		dsPathMap = new HashMap<String, String>();
 		// Read dsmap file
 		Properties prop = new Properties();
 		InputStream input = new FileInputStream(getClass().getClassLoader().getResource(IDAConst.DSMAP_PROP_FILEPATH).getFile());
