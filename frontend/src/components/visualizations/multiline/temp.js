@@ -45,34 +45,31 @@ class IDAMultiLineGraph extends Component {
         this.graphData && this.data && this.drawGraph();
     }
    drawGraph(){ 
-    console.log("lets naach")
+    
     console.log(this.data)
-    console.log(this.graphData)
+
 
     if (this.data && this.data.length) {
-        console.log("haseeb bhai dance")
+        
         const svg = d3.select("#linechart")
             .append("svg")
             .attr("viewBox", [0, 0, this.width, this.height])
             .style("overflow", "visible");
         
         // const formatDate = d3.time.format("%B-%Y") 
-        const val=  this.data.map((element) =>  element.xAxisLabels);
-        console.log("val",val);
+        // const val=  this.data.map((element) =>  element.xAxisLabels);
+        // console.log("val",val);
         const x = d3.scaleUtc()
-            .domain(d3.extent(this.data[0].dates))
+            .domain(d3.extent(this.data.dates))
             .range([this.margin.left, this.width - this.margin.right])
-        console.log(x);
 
         const y = d3.scaleLinear()
             .domain([0, d3.max(this.data[0].series, d => d3.max(d.lineValues))]).nice()
             .range([this.height - this.margin.bottom, this.margin.top])
-        console.log(y);
 
         var xAxis = g => g
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
-        console.log(xAxis);
 
         var yAxis = g => g
             .attr("transform", `translate(${this.margin.left},0)`)
@@ -83,8 +80,6 @@ class IDAMultiLineGraph extends Component {
             .attr("text-anchor", "start")
             .attr("font-weight", "bold")
             .text(this.data.y));
-
-        console.log(yAxis);
 
         svg.append("g")
             .call(xAxis);
