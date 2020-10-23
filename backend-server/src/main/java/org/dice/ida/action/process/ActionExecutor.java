@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.cloud.dialogflow.v2.QueryResult;
 import com.google.protobuf.Value;
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Lazy
 @Component
 @Scope("prototype")
@@ -31,6 +32,7 @@ public class ActionExecutor {
 	@PostConstruct
 	public void initialize() {
 		// Initiate the instance for the action
+
 		Intent intent = Intent.getForKey(queryResult.getIntent().getDisplayName());
 		this.paramMap = createParamMap(queryResult);
 		this.action = mappingHelper.fetchActionInstance(intent.getKey());

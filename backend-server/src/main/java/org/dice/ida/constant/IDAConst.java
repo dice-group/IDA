@@ -148,4 +148,26 @@ public interface IDAConst {
 	public static final String COUNT_OF_PREFIX = "Count of ";
 	public static final String LINE_CHART_DESC_PREFIX = "Line chart for ";
 	public static final String LINE_CHART_PROPERTY_NAME = "lineChartData";
+	/**
+	 * Column data types
+	 */
+	public String prefix = "prefix dc: <http://purl.org/dc/elements/1.1/>\n" +
+			"prefix owl: <http://www.w3.org/2002/07/owl#>\n" +
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+			"prefix xml: <http://www.w3.org/XML/1998/namespace>\n" +
+			"prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+			"prefix ivoc: <https://www.upb.de/ida/viz/ontology/class/> \n" +
+			"prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+			"prefix ivodp: <https://www.upb.de/ida/viz/ontology/data-property/> \n" +
+			"prefix ivoop: <https://www.upb.de/ida/viz/ontology/object-property/> \n" +
+			"prefix instance: <https://www.upb.de/ida/viz/data/instance/> \n" +
+			"prefix parameter: <https://www.upb.de/ida/viz/data/parameter/> \n" +
+			"prefix reference: <https://www.upb.de/ida/viz/data/reference/> \n" +
+			"prefix information: <https://www.upb.de/ida/viz/data/information/> \n" +
+			"prefix visualization: <https://www.upb.de/ida/viz/data/visualization/> \n" +
+			"prefix instance_param: <https://www.upb.de/ida/viz/data/instance_param/> \n" +
+			"prefix representation_tree: <https://www.upb.de/ida/viz/data/representation_tree/> \n" +
+			"prefix representational_type: <https://www.upb.de/ida/viz/data/representational_type/> \n" +
+			"prefix representation_tree_node: <https://www.upb.de/ida/viz/data/representation_tree_node/>\n";
+
 }
