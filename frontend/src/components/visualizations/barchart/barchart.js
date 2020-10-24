@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 
 import "./barchart.css";
+import { IDA_CONSTANTS } from '../../constants';
 
 export default class IDABarGraph extends Component {
   margin = {
     top: 20,
     right: 0,
-    bottom: 50,
+    bottom: 100,
     left: 60
   };
   height = 700;
@@ -26,6 +27,12 @@ export default class IDABarGraph extends Component {
   }
 
   drawBarGraph() {
+
+    this.graphData.items.forEach(item => {
+      item.xLabel = item.x;
+      item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
+    });
+
     /**
      * append y-axis label
      */
@@ -90,7 +97,7 @@ export default class IDABarGraph extends Component {
       .append("rect")
       .attr("x", (d) => scaleX(d.x))
       .attr("y", (d) => scaleY(d.y))
-      .attr("value", (d) => d.y)
+      .attr("value", (d) => d.xLabel + ": " + d.y)
       .attr("width", scaleX.bandwidth())
       .attr("height", (d, i) => scaleY(0) - scaleY(d.y))
       .attr("fill", "#4f8bff")
@@ -116,11 +123,13 @@ export default class IDABarGraph extends Component {
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(scaleX).tickSizeOuter(0))
       .selectAll("text")
-      .attr("y", 0)
-      .attr("x", 9)
-      .attr("dy", ".35em")
-      .attr("transform", "rotate(90)")
-      .style("text-anchor", "start");
+      .attr("x", -10)
+      .attr("y", -5)
+      .attr("transform", "rotate(-90)")
+      .style("text-anchor", "end")
+      .style("fill", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000")
+      .style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
+      .attr("class", "x-axis-label");
 
     /**
    * append y-axis to the graph

@@ -5,6 +5,7 @@ import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
+import org.dice.ida.util.DbUtils;
 import org.dice.ida.util.FilterUtil;
 import org.dice.ida.util.MetaFileReader;
 import org.dice.ida.util.TextUtil;
@@ -144,7 +145,6 @@ public class BarGraphVisualizer {
 		for (String x : loadData.keySet()) {
 			items.add(new BarGraphItem(x, loadData.get(x)));
 		}
-
 	}
 
 	public void loadNominal() {
@@ -156,7 +156,7 @@ public class BarGraphVisualizer {
 					double yvalue = temp.get(data.instance(i).stringValue(xaxis));
 					temp.put(data.instance(i).stringValue(xaxis), yvalue + data.instance(i).value(yaxis));
 				} else {
-					temp.put(data.instance(i).stringValue(xaxis), data.instance(i).value(yaxis));
+					temp.put(DbUtils.manageNullValues(data.instance(i).stringValue(xaxis)), data.instance(i).value(yaxis));
 				}
 			}
 		}
@@ -166,7 +166,7 @@ public class BarGraphVisualizer {
 					double yvalue = temp.get(data.instance(i).stringValue(xaxis));
 					temp.put(data.instance(i).stringValue(xaxis), yvalue + 1);
 				} else {
-					temp.put(data.instance(i).stringValue(xaxis), 1.0);
+					temp.put(DbUtils.manageNullValues(data.instance(i).stringValue(xaxis)), 1.0);
 				}
 			}
 		}
@@ -180,11 +180,11 @@ public class BarGraphVisualizer {
 		HashMap<String, Double> bins = new HashMap<>();
 		for (Instance instance : data) {
 			// Aggregating all y-axis values on its x-axis
-			if (!bins.containsKey(instance.toString(xaxis))) {
-				bins.put(instance.toString(xaxis), instance.value(yaxis));
-			} else {
+			if (bins.containsKey(instance.toString(xaxis))) {
 				// bin has this x-value already then
 				bins.put(instance.toString(xaxis), (bins.get(instance.toString(xaxis)) + instance.value(yaxis)));
+			} else {
+				bins.put(DbUtils.manageNullValues(instance.toString(xaxis)), instance.value(yaxis));
 			}
 		}
 
