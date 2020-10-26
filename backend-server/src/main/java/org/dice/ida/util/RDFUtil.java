@@ -93,7 +93,7 @@ public class RDFUtil {
 		String paramType;
 		QuerySolution resource;
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?label ?paramLabel ?paramType ?transformationLabel ?transformationTargetType" +
+				"SELECT DISTINCT ?label ?paramLabel ?paramType ?transformationLabel ?transformationTargetType " +
 				"WHERE {" +
 				"  ?s a ivoc:Instance;" +
 				"     ?p ?o ;" +
