@@ -19,6 +19,8 @@ public interface IDAConst {
 	public static final int UIA_BARGRAPH = 1005;
 	//Load bubble chart
 	public static final int UIA_BUBBLECHART = 1006;
+	// Draw line chart
+	public static  final int UIA_LINECHART = 1007;
 
 	/**
 	 *  Pre-defined action codes
@@ -109,6 +111,43 @@ public interface IDAConst {
 	public static final String CRED_PRIVATE_KEY_BEGIN = "-----BEGIN PRIVATE KEY-----";
 	public static final String CRED_PRIVATE_KEY_END = "-----END PRIVATE KEY-----";
 	public static final String CRED_PRIVATE_KEY_TYPE = "RSA";
+
+	// Db utils
+	public  static final String NULL_VALUE_IDENTIFIER = "UNKNOWN";
+	public static final String QUESTION_MARK_SYMBOL = "?";
+
+	/**
+	 * parameter validation constants
+	 */
+	public static final String FILE_DETAILS_ATTR = "filesMd";
+	public static final String FILE_NAME_ATTR = "fileName";
+	public static final String COLUMN_DETAILS_ATTR = "fileColMd";
+	public static final String COLUMN_NAME_ATTR = "colAttr";
+	public static final String COLUMN_TYPE_ATTR = "colType";
+	public static final String TABLE_DOES_NOT_EXIST_MSG = "Selected table does not exist";
+
+	/**
+	 * Line chart constants
+	 */
+	public static final String LINE_CHART_PARAM_DATE_COL = "date_column";
+	public static final String LINE_CHART_PARAM_LABEL_COL = "line_label_column";
+	public static final String LINE_CHART_PARAM_VALUE_COL = "line_value_column";
+	public static final String INVALID_DATE_COLUMN_MSG = " is not a date column";
+	public static final String INVALID_NUMERIC_COLUMN_MSG = " is not a numeric column";
+
+	/**
+	 * Column data types
+	 */
+	public static final String COLUMN_TYPE_NOMINAL = "string";
+	public static final String COLUMN_TYPE_NUMERIC = "numeric";
+	public static final String COLUMN_TYPE_DATE = "date";
+	public static final String[] DATE_PATTERNS = {"dd/MM/yyyy", "dd MMM", "MMM YYYY", "dd/MM/yyyy HH:mm:ss"};
+	public static final String LABEL_TYPE_DATE = "day";
+	public static final String LABEL_TYPE_MONTH = "month";
+	public static final String LABEL_TYPE_YEAR = "year";
+	public static final String COUNT_OF_PREFIX = "Count of ";
+	public static final String LINE_CHART_DESC_PREFIX = "Line chart for ";
+	public static final String LINE_CHART_PROPERTY_NAME = "lineChartData";
 
 	/**
 	 * Prefixes for SPARQL queries

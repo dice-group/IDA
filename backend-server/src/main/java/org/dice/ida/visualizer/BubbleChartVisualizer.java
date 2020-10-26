@@ -2,6 +2,7 @@ package org.dice.ida.visualizer;
 
 import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
+import org.dice.ida.util.DbUtils;
 import org.dice.ida.util.FilterUtil;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -58,17 +59,17 @@ public class BubbleChartVisualizer {
 		HashMap<String, Double> bins = new HashMap<>();
 
 		for (Instance instance : data) {
-			if (!bins.containsKey(instance.toString(cols[0]))) {
-				if (cols.length == 1) {
-					bins.put(instance.toString(cols[0]), 1.0);
-				} else {
-					bins.put(instance.toString(cols[0]), instance.value(cols[1]));
-				}
-			} else {
+			if (bins.containsKey(instance.toString(cols[0]))) {
 				if (cols.length == 1) {
 					bins.put(instance.toString(cols[0]), (bins.get(instance.toString(cols[0])) + 1));
 				} else {
 					bins.put(instance.toString(cols[0]), (bins.get(instance.toString(cols[0])) + instance.value(cols[1])));
+				}
+			} else {
+				if (cols.length == 1) {
+					bins.put(DbUtils.manageNullValues(instance.toString(cols[0])), 1.0);
+				} else {
+					bins.put(DbUtils.manageNullValues(instance.toString(cols[0])), instance.value(cols[1]));
 				}
 			}
 		}
