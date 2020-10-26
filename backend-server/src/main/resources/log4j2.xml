@@ -12,7 +12,7 @@
 	<Loggers>
 		<logger name="io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler" level="OFF"/> <!-- this logger logs all the dataset content and its enable by default so we disabled it -->
 		<Root level="debug">
-			<AppenderRef ref="Console" />
+			<!-- <AppenderRef ref="Console" /> -->
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>
