@@ -10,7 +10,7 @@ services:
   ida-backend:
     image: $REGISTRY/ida/backend-server:$VERSION
     volumes:
-      - "../logs:/usr/local/tomcat/logs"
+      - "~/ida-qa-logs:/usr/local/tomcat/logs"
     networks:
       - ida-net
 networks:
