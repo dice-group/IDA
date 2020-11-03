@@ -12,7 +12,8 @@ public enum Intent {
 	BAR_GRAPH_TEST("bar-graph-test",IDAConst.UIA_BARGRAPH),
     BUBBLE_CHART("bubble-chart", IDAConst.UIA_BUBBLECHART),
 	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
-    UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
+    UNKNOWN("unknown", IDAConst.UAC_NRMLMSG),
+    BOOK_FLIGHT("book_flight", IDAConst.UAC_NRMLMSG);
 
     private final String key;
     private final int action;

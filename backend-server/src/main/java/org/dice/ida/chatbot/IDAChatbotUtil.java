@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.dialogflow.v2.SessionsSettings;
+import com.google.cloud.dialogflow.v2beta1.ContextsSettings;
+import com.google.cloud.dialogflow.v2beta1.SessionsSettings;
 import org.dice.ida.constant.IDAConst;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +35,7 @@ import java.util.Properties;
 public class IDAChatbotUtil {
 
 	private static Map<String, String> props;
+	private static Credentials idaCredentials;
 
 	/**
 	 * Method to read the application properties file and store it in a map as class member.
@@ -74,6 +76,12 @@ public class IDAChatbotUtil {
 	 * @return Dialogflow session settings to create the session
 	 */
 	public static SessionsSettings getSessionSettings() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		createCredentials();
+		return SessionsSettings.newBuilder()
+				.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
+	}
+
+	private static void createCredentials() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		readProperties();
 		Map<String, String> credentialsMap = readCredentials();
 			/*
@@ -88,14 +96,18 @@ public class IDAChatbotUtil {
 		KeyFactory kf = KeyFactory.getInstance(IDAConst.CRED_PRIVATE_KEY_TYPE);
 		PrivateKey rsaPrivateKey = kf.generatePrivate(keySpec);
 
-		Credentials idaCredentials = ServiceAccountCredentials.newBuilder()
+		idaCredentials = ServiceAccountCredentials.newBuilder()
 				.setProjectId(props.get(IDAConst.CRED_PATH_KEY))
 				.setPrivateKeyId(credentialsMap.get(IDAConst.CRED_PRIVATE_KEY_ID))
 				.setPrivateKey(rsaPrivateKey)
 				.setClientEmail(credentialsMap.get(IDAConst.CRED_CLIENT_EMAIL))
 				.setClientId(credentialsMap.get(IDAConst.CRED_CLIENT_ID))
 				.setTokenServerUri(URI.create(credentialsMap.get(IDAConst.CRED_TOKEN_URI))).build();
-		return SessionsSettings.newBuilder()
+	}
+
+	public static ContextsSettings getContextsSettings() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException{
+		createCredentials();
+		return ContextsSettings.newBuilder()
 				.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
 	}
 }

@@ -1,6 +1,15 @@
 package org.dice.ida.action.process;
 
-import org.dice.ida.action.def.*;
+import org.dice.ida.action.def.Action;
+import org.dice.ida.action.def.BubbleChartAction;
+import org.dice.ida.action.def.BarGraphAction;
+import org.dice.ida.action.def.DefaultAction;
+import org.dice.ida.action.def.LoadDataSetAction;
+import org.dice.ida.action.def.SimpleTextAction;
+import org.dice.ida.action.def.SuggestVisualization;
+import org.dice.ida.action.def.LineChartAction;
+import org.dice.ida.action.def.BookFlightAction;
+import org.dice.ida.action.def.BarGraphTestAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -35,13 +44,16 @@ public class ActionMappingHelper {
 				action = new BarGraphAction();
 				break;
 			case BAR_GRAPH_TEST:
-				action =new BarGraphTestAction();
+				action = new BarGraphTestAction();
 				break;
 			case BUBBLE_CHART:
 				action = new BubbleChartAction();
 				break;
 			case LINE_CHART:
 				action = new LineChartAction();
+				break;
+			case BOOK_FLIGHT:
+				action = appContext.getBean(BookFlightAction.class);
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);
