@@ -1,8 +1,5 @@
 package org.dice.ida.action.def;
 
-import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.util.RDFUtil;
@@ -18,20 +15,8 @@ import java.util.stream.Collectors;
 public class BarGraphTestAction implements Action {
 	String xAxis, yAxis;
 	String xleafType, transType;
-	Model model = null;
-	QueryExecution queryExecution = null;
-	ResultSet resultSet;
-	List<String> leafNodes;
 	Map<String, Map<String, Map<String, String>>> instanceMap;
 	Map<String, String> columnMap;
-
-	public BarGraphTestAction() {
-		model = ModelFactory.createDefaultModel();
-		//Path Change Needed
-		String path = "C:\\Users\\APoddar\\IdeaProjects\\RDFModel\\src\\main\\resources\\ida_viz_model_latest.ttl";
-		model.read(path);
-		leafNodes = new ArrayList<>();
-	}
 
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {

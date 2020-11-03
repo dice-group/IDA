@@ -44,7 +44,7 @@ public class ActionMappingHelper {
 				action = new BarGraphAction();
 				break;
 			case BAR_GRAPH_TEST:
-				action = new BarGraphTestAction();
+				action = appContext.getBean(BarGraphTestAction.class);
 				break;
 			case BUBBLE_CHART:
 				action = new BubbleChartAction();
