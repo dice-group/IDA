@@ -143,4 +143,26 @@ public class RDFUtil {
 		model = null;
 		return instanceMap;
 	}
+	public Map<Integer,String> getAttributeMap(String intent)
+	{
+		Map<Integer,String> attributeMap = new HashMap<>();
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?param  ?priority\n" +
+				"WHERE {\n" +
+				"visualization:"+intent +" ?p ?o;"+
+				"ivoop:hasParam ?param.\n"+
+				"?param ivodp:hasPriority ?priority.\n"+
+			"}\n";
+
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		while(attributeResultSet.hasNext())
+		{
+			QuerySolution querySolution = attributeResultSet.next();
+			String param = querySolution.get("param").asNode().toString();
+			Integer priority = (int) querySolution.get("priority").asNode().getLiteralValue();
+			attributeMap.put(priority.intValue(),param.substring(param.lastIndexOf("/")+1));
+
+		}
+		return attributeMap;
+	}
 }

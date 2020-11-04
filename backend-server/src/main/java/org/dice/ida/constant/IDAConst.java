@@ -50,6 +50,7 @@ public interface IDAConst {
 	public static final String PARAM_INTENT_DETECTION_CONFIDENCE = "intent_detection_confidence";
 	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
 	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
+	public static final String INTENT_NAME = "intentname";
 
 	// Metadata File name Pattern
 	public static final String DSMD_FILE_PATTERN = "dsmd\\.[jJ][sS][oO][nN]$";
