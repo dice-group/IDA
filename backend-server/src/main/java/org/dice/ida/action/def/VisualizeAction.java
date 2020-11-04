@@ -40,7 +40,7 @@ public class VisualizeAction implements Action {
 			instanceMap = new RDFUtil().getInstances("bar_chart");
 			String datasetName = payload.get("activeDS").toString();
 			String tableName = payload.get("activeTable").toString();
-			attributeList = new RDFUtil().getAttributeMap(paramMap.get(IDAConst.INTENT_NAME).toString());
+			attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
 			attributeMap = getOrderedAttributeMap(attributeList,paramMap);
 			instanceMap = getFilteredInstances(attributeMap);
 

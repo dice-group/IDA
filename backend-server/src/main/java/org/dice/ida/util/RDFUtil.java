@@ -143,7 +143,7 @@ public class RDFUtil {
 		model = null;
 		return instanceMap;
 	}
-	public Map<Integer,String> getAttributeMap(String intent)
+	public Map<Integer,String> getAttributeList(String intent)
 	{
 		Map<Integer,String> attributeMap = new HashMap<>();
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
