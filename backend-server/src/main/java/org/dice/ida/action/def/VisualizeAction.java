@@ -21,8 +21,8 @@ import java.util.Map;
 public class VisualizeAction implements Action {
 
 	private List<Map<String, String>> tableData;
-	private Map<Integer,String> attributeList;
-	private Map<String,String> attributeMap;
+	private Map<Integer, String> attributeList;
+	private Map<String, String> attributeMap;
 	Map<String, Map<String, Map<String, String>>> instanceMap;
 	private List<String> instances;
 	private String Intent;
@@ -40,19 +40,17 @@ public class VisualizeAction implements Action {
 			String datasetName = payload.get("activeDS").toString();
 			String tableName = payload.get("activeTable").toString();
 			attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
-			attributeMap = getOrderedAttributeMap(attributeList,paramMap);
-			instanceMap = getFilteredInstances(attributeMap);
+			attributeMap = getOrderedAttributeMap(attributeList, paramMap);
+			instanceMap = getFilteredInstances("X-Axis", "numeric");
 		}
 	}
 
-	private Map<String, Map<String, Map<String, String>>> getFilteredInstances(Map<String, String> attributeMap) {
+	private Map<String, Map<String, Map<String, String>>> getFilteredInstances(String attribute, String attributeType) {
 		Map<String, Map<String, Map<String, String>>> filteredInstances = new HashMap<>();
-		for(String attr: attributeMap.keySet()) {
-			for(String instance: instanceMap.keySet()) {
-				for(String attribute: instanceMap.get(instance).keySet()) {
-					if(attribute.equals(attr) && IDAConst.PARAM_TYPE_TREE.get(attributeMap.get(attr)).contains(instanceMap.get(instance).get(attribute).get(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY))) {
-						filteredInstances.put(instance, instanceMap.get(instance));
-					}
+		for (String instance : instanceMap.keySet()) {
+			for (String param : instanceMap.get(instance).keySet()) {
+				if (attribute.equals(param) && IDAConst.PARAM_TYPE_TREE.get(attributeType).contains(instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY).toLowerCase())) {
+					filteredInstances.put(instance, instanceMap.get(instance));
 				}
 			}
 		}
