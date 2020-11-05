@@ -187,7 +187,7 @@ public interface IDAConst {
 				add("numeric");
 				add("bins");
 				add("unique");
-				add("nonunique");
+				add("non unique");
 			}
 		});
 		put("date", new ArrayList<>() {
@@ -195,14 +195,14 @@ public interface IDAConst {
 				add("date");
 				add("bins");
 				add("unique");
-				add("nonunique");
+				add("non unique");
 			}
 		});
 		put("string", new ArrayList<>() {
 			{
 				add("string");
 				add("unique");
-				add("nonunique");
+				add("non unique");
 			}
 		});
 	}};

@@ -8,9 +8,8 @@ import org.dice.ida.util.ValidatorUtil;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class to handle the line chart implementation
@@ -26,6 +25,7 @@ public class VisualizeAction implements Action {
 	Map<String, Map<String, Map<String, String>>> instanceMap;
 	private List<String> instances;
 	private String Intent;
+	Map<String, String> columnMap;
 
 
 	/**
@@ -34,15 +34,61 @@ public class VisualizeAction implements Action {
 	 */
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
-		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
-			Map<String, Object> payload = chatMessageResponse.getPayload();
-			instanceMap = new RDFUtil().getInstances("bar_chart");
-			String datasetName = payload.get("activeDS").toString();
-			String tableName = payload.get("activeTable").toString();
-			attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
-			attributeMap = getOrderedAttributeMap(attributeList, paramMap);
-			instanceMap = getFilteredInstances("X-Axis", "numeric");
+		try{
+			StringBuilder textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+			if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
+				Map<String, Object> payload = chatMessageResponse.getPayload();
+				instanceMap = new RDFUtil().getInstances("bar_chart");
+				String attributeType;
+				String attributeName;
+				String datasetName = payload.get("activeDS").toString();
+				String tableName = payload.get("activeTable").toString();
+				attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
+				columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, getColumnNames(attributeList, paramMap));
+				for(int i = 1; i <=attributeList.size();i++) {
+					attributeName = attributeList.get(i);
+					if(paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
+						break;
+					}
+					attributeType = paramMap.getOrDefault(attributeName + "_type", null) == null ?
+								columnMap.get(paramMap.get(attributeName).toString()) :
+								paramMap.get(attributeName + "_type").toString();
+					instanceMap = getFilteredInstances(attributeName, attributeType.toLowerCase());
+					if(paramMap.getOrDefault(attributeName + "_type", null) == null) {
+						if(instanceMap.size()==0)
+						{
+							// delete o/p context of parameter continue for same parameter
+						}else if(instanceMap.size() == 1)
+						{
+							// set o/p for next parameter and skip the param type intent
+						}else if(instanceMap.size() > 1)
+						{
+							textMsg = new StringBuilder("It can be used as ");
+							Set<String> options = new HashSet<>();
+							for (String instance : instanceMap.keySet()) {
+								for (String attribute : instanceMap.get(instance).keySet()) {
+									if (attribute.equals(attributeName)) {
+										options.add(instanceMap.get(instance).get(attribute).get(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY));
+									}
+								}
+							}
+							textMsg.append(String.join(" or ", options));
+							textMsg.append("\n Which option do you need?");
+							// generate text to choose param type from filtered instances
+						}
+					}else if(instanceMap.size()==0) {
+						// ask user to choose correct type from given options
+					}
+				}
+				chatMessageResponse.setMessage(textMsg.toString());
+				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			}
 		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
 	private Map<String, Map<String, Map<String, String>>> getFilteredInstances(String attribute, String attributeType) {
@@ -57,15 +103,22 @@ public class VisualizeAction implements Action {
 		return filteredInstances;
 	}
 
+	private List<String> getColumnNames (Map<Integer, String> attributeList, Map<String, Object> paramMap) {
+		List<String> columnList = new ArrayList<>();
+		for(String param: attributeList.values()) {
+			if(!paramMap.getOrDefault(param, "").toString().isEmpty()) {
+				columnList.add(paramMap.get(param).toString());
+			}
+		}
+		return columnList;
+	}
+
 	private Map<String, String> getOrderedAttributeMap(Map<Integer, String> attributeList, Map<String, Object> paramMap) {
 		Map<String, String> attributeMap = new HashMap<>();
 		String attributeName;
-		String attributeType;
 		for (int i = 1; i <= attributeList.size(); i++) {
 			attributeName = attributeList.get(i);
-			attributeType = attributeName + "_type";
 			attributeMap.put(attributeName, paramMap.getOrDefault(attributeName, "").toString());
-			attributeMap.put(attributeType, paramMap.getOrDefault(attributeType, "").toString());
 		}
 		return attributeMap;
 	}
