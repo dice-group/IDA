@@ -7,6 +7,7 @@ import org.dice.ida.action.def.DefaultAction;
 import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.SuggestVisualization;
+import org.dice.ida.action.def.ListDataSetsAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,6 +34,9 @@ public class ActionMappingHelper {
 //				break;
 			case LOAD_DATASET:
 				action = appContext.getBean(LoadDataSetAction.class);
+				break;
+			case LIST_DATASET:
+				action = appContext.getBean(ListDataSetsAction.class);
 				break;
 			case SUGGEST_VISUALIZATION:
 				action = appContext.getBean(SuggestVisualization.class);

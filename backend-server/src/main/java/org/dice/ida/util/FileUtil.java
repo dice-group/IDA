@@ -35,6 +35,7 @@ import org.dice.ida.constant.IDAConst;
 public class FileUtil {
 
 	private Map<String, String> dsPathMap;
+	private final ArrayList<String> datasetsList = new ArrayList<>();
 
 	public FileUtil() throws IOException {
 		dsPathMap = new HashMap<String, String>();
@@ -42,12 +43,17 @@ public class FileUtil {
 		Properties prop = new Properties();
 		InputStream input = new FileInputStream(fetchSysFilePath(IDAConst.DSMAP_PROP_FILEPATH));
 		prop.load(input);
-		String keyStr;
+		String dataset;
 		for (Object key : prop.keySet()) {
-			keyStr = key.toString();
-			dsPathMap.put(keyStr, prop.getProperty(keyStr));
+			dataset = key.toString();
+			datasetsList.add(dataset);
+			dsPathMap.put(dataset, prop.getProperty(dataset));
 		}
 
+	}
+
+	public ArrayList<String> getListOfDatasets() {
+		return datasetsList;
 	}
 
 	/**
