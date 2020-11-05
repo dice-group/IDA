@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * Utility Class containing RDF query functions.
@@ -82,6 +83,7 @@ public class RDFUtil {
 
 	/**
 	 * Method to get the list of instances, their parameters, types and transformations of a given visualization
+	 *
 	 * @param vizName - name of the visualization
 	 * @return Map of instance labels and its details
 	 */
@@ -119,7 +121,7 @@ public class RDFUtil {
 				"}";
 		ResultSet instancesResultSet = getResultFromQuery(queryString);
 		if (instancesResultSet == null) {
-			return null;
+			return instanceMap;
 		}
 		while (instancesResultSet.hasNext()) {
 			resource = instancesResultSet.next();
@@ -131,7 +133,7 @@ public class RDFUtil {
 				instanceParam.put(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY, resource.get("transformationLabel").asLiteral().getString());
 			} else {
 				instanceParam.put(IDAConst.INSTANCE_PARAM_TYPE_KEY, paramType);
-				instanceParam.put(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY, null);
+				instanceParam.put(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY, paramType);
 			}
 			instance = instanceMap.getOrDefault(instanceLabel, new HashMap<>());
 			instance.put(resource.get("paramLabel").asLiteral().getString(), instanceParam);
@@ -143,26 +145,31 @@ public class RDFUtil {
 		model = null;
 		return instanceMap;
 	}
-	public Map<Integer,String> getAttributeList(String intent)
-	{
-		Map<Integer,String> attributeMap = new HashMap<>();
+
+	public Map<Integer, String> getAttributeList(String intent) {
+		Map<Integer, String> attributeMap = new TreeMap<>();
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?param  ?priority\n" +
-				"WHERE {\n" +
-				"visualization:"+intent +" ?p ?o;"+
-				"ivoop:hasParam ?param.\n"+
-				"?param ivodp:hasPriority ?priority.\n"+
-			"}\n";
-
+				"SELECT DISTINCT ?paramLabel  ?priority " +
+				"WHERE { " +
+				"  visualization:" + intent + " ?p ?o ;" +
+				"                               ivoop:hasParam ?param . " +
+				"  ?param rdfs:label ?paramLabel ." +
+				"  ?param ivodp:hasPriority ?priority . " +
+				"}";
 		ResultSet attributeResultSet = getResultFromQuery(queryString);
-		while(attributeResultSet.hasNext())
-		{
-			QuerySolution querySolution = attributeResultSet.next();
-			String param = querySolution.get("param").asNode().toString();
-			Integer priority = (int) querySolution.get("priority").asNode().getLiteralValue();
-			attributeMap.put(priority.intValue(),param.substring(param.lastIndexOf("/")+1));
-
+		if (attributeResultSet == null) {
+			return null;
 		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String param = querySolution.get("paramLabel").asLiteral().getString();
+			int priority = (int) querySolution.get("priority").asNode().getLiteralValue();
+			attributeMap.put(priority, param);
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
 		return attributeMap;
 	}
 }

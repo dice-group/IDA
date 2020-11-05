@@ -36,6 +36,7 @@ public class ActionExecutor {
 		// Initiate the instance for the action
 		Intent intent = Intent.getForKey(queryResult.getIntent().getDisplayName());
 		this.paramMap = createParamMap(queryResult);
+		paramMap.put(IDAConst.INTENT_NAME, intent.getKey());
 		this.action = mappingHelper.fetchActionInstance(intent.getKey());
 	}
 
@@ -47,7 +48,6 @@ public class ActionExecutor {
 		paramMap.put(IDAConst.PARAM_TEXT_MSG, messageResponseText);
 		paramMap.put(IDAConst.PARAM_ALL_REQUIRED_PARAMS_PRESENT, queryResult.getAllRequiredParamsPresent());
 		paramMap.put(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE, queryResult.getIntentDetectionConfidence());
-		paramMap.put(IDAConst.INTENT_NAME,queryResult.getIntent().getDisplayName());
 
 		if (queryResult.getParameters().getFieldsCount() > 0) {
 			for (Map.Entry<String, Value> entry : queryResult.getParameters().getFieldsMap().entrySet()) {

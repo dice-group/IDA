@@ -1,4 +1,10 @@
 package org.dice.ida.constant;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This interface consists of all the constant values across IDA
  * @author Nikit
@@ -174,5 +180,31 @@ public interface IDAConst {
 	public static final String TRANSFORMATION_LABEL = "Transformation";
 	public static final String INSTANCE_PARAM_TYPE_KEY = "type";
 	public static final String INSTANCE_PARAM_TRANS_TYPE_KEY = "trans_type";
+
+	public static final Map<String, List<String>> PARAM_TYPE_TREE = new HashMap<>() {{
+		put("numeric", new ArrayList<>() {
+			{
+				add("numeric");
+				add("bins");
+				add("unique");
+				add("nonunique");
+			}
+		});
+		put("date", new ArrayList<>() {
+			{
+				add("date");
+				add("bins");
+				add("unique");
+				add("nonunique");
+			}
+		});
+		put("string", new ArrayList<>() {
+			{
+				add("string");
+				add("unique");
+				add("nonunique");
+			}
+		});
+	}};
 
 }

@@ -8,7 +8,7 @@ import org.dice.ida.util.ValidatorUtil;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,15 +22,14 @@ public class VisualizeAction implements Action {
 
 	private List<Map<String, String>> tableData;
 	private Map<Integer,String> attributeList;
-	private LinkedHashMap<String,String> attributeMap;
+	private Map<String,String> attributeMap;
 	Map<String, Map<String, Map<String, String>>> instanceMap;
 	private List<String> instances;
 	private String Intent;
 
 
 	/**
-	 *
-	 * @param paramMap - parameters from dialogflow
+	 * @param paramMap            - parameters from dialogflow
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
@@ -43,32 +42,35 @@ public class VisualizeAction implements Action {
 			attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
 			attributeMap = getOrderedAttributeMap(attributeList,paramMap);
 			instanceMap = getFilteredInstances(attributeMap);
-
 		}
-
-
-
 	}
 
-	private Map<String, Map<String, Map<String, String>>> getFilteredInstances(LinkedHashMap<String, String> attributeMap) {
-		return null;
+	private Map<String, Map<String, Map<String, String>>> getFilteredInstances(Map<String, String> attributeMap) {
+		Map<String, Map<String, Map<String, String>>> filteredInstances = new HashMap<>();
+		for(String attr: attributeMap.keySet()) {
+			for(String instance: instanceMap.keySet()) {
+				for(String attribute: instanceMap.get(instance).keySet()) {
+					if(attribute.equals(attr) && IDAConst.PARAM_TYPE_TREE.get(attributeMap.get(attr)).contains(instanceMap.get(instance).get(attribute).get(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY))) {
+						filteredInstances.put(instance, instanceMap.get(instance));
+					}
+				}
+			}
+		}
+		return filteredInstances;
 	}
 
-
-
-	private LinkedHashMap<String, String> getOrderedAttributeMap(Map<Integer, String> attributeList, Map<String, Object> paramMap) {
-		LinkedHashMap<String,String> attributeMap = new LinkedHashMap<>();
-		for(int i =1;i<=attributeList.size();i++)
-		{
-			String attributeName = attributeList.get(i);
-			String attributeType = attributeName+"_type";
-			attributeMap.put(attributeName,paramMap.getOrDefault(attributeName,"").toString());
-			attributeMap.put(attributeType,paramMap.getOrDefault(attributeType,"").toString());
-
+	private Map<String, String> getOrderedAttributeMap(Map<Integer, String> attributeList, Map<String, Object> paramMap) {
+		Map<String, String> attributeMap = new HashMap<>();
+		String attributeName;
+		String attributeType;
+		for (int i = 1; i <= attributeList.size(); i++) {
+			attributeName = attributeList.get(i);
+			attributeType = attributeName + "_type";
+			attributeMap.put(attributeName, paramMap.getOrDefault(attributeName, "").toString());
+			attributeMap.put(attributeType, paramMap.getOrDefault(attributeType, "").toString());
 		}
 		return attributeMap;
 	}
-
 
 	/**
 	 * Method to validate the datatype of the columns provided for the line chart
