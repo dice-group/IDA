@@ -51,7 +51,7 @@ public class BarGraphTestAction implements Action {
 				} else {
 					List<String> columnNameList = new ArrayList<>();
 					columnNameList.add(xAxis);
-					columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList);
+					columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList).get(0);
 
 					if (ValidatorUtil.isStringEmpty(yAxis) || ValidatorUtil.isStringEmpty(transType)) {
 						if (ValidatorUtil.isStringEmpty(yAxis)) {

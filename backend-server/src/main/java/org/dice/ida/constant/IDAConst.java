@@ -131,6 +131,7 @@ public interface IDAConst {
 	public static final String COLUMN_DETAILS_ATTR = "fileColMd";
 	public static final String COLUMN_NAME_ATTR = "colAttr";
 	public static final String COLUMN_TYPE_ATTR = "colType";
+	public static final String COLUMN_UNIQUE_ATTR = "isUnique";
 	public static final String TABLE_DOES_NOT_EXIST_MSG = "Selected table does not exist";
 
 	/**
@@ -180,6 +181,9 @@ public interface IDAConst {
 	public static final String TRANSFORMATION_LABEL = "Transformation";
 	public static final String INSTANCE_PARAM_TYPE_KEY = "type";
 	public static final String INSTANCE_PARAM_TRANS_TYPE_KEY = "trans_type";
+	public static final String INSTANCE_PARAM_TYPE_UNIQUE = "unique";
+	public static final String INSTANCE_PARAM_TYPE_NON_UNIQUE = "non unique";
+	public static final String INSTANCE_PARAM_TYPE_NOT_REQUIRED = "not required";
 
 	public static final Map<String, List<String>> PARAM_TYPE_TREE = new HashMap<>() {{
 		put("numeric", new ArrayList<>() {
@@ -188,6 +192,8 @@ public interface IDAConst {
 				add("bins");
 				add("unique");
 				add("non unique");
+				add("sum of");
+				add("average");
 			}
 		});
 		put("date", new ArrayList<>() {

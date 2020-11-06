@@ -105,7 +105,7 @@ public class ValidatorUtil {
 	 * @param columnList - List of column names to be validated (provided as parameters to the visualization)
 	 * @throws IDAException - Throws exception with a message based on the failed scenario
 	 */
-	public static Map<String, String> areParametersValid(String dsName, String tableName, List<String> columnList) throws IDAException {
+	public static List<Map<String, String>> areParametersValid(String dsName, String tableName, List<String> columnList) throws IDAException {
 		if (isStringEmpty(dsName)) {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
@@ -116,7 +116,8 @@ public class ValidatorUtil {
 			throw new IDAException(IDAConst.BOT_SELECT_TABLE);
 		}
 		try {
-			Map<String, String> columnMap = new HashMap<>();
+			Map<String, String> columnTypeMap = new HashMap<>();
+			Map<String, String> columnUniquenessMap = new HashMap<>();
 			boolean tableExists = false;
 			ObjectNode metaData = new FileUtil().getDatasetMetaData(dsName);
 			JsonNode fileDetails = metaData.get(IDAConst.FILE_DETAILS_ATTR);
@@ -130,7 +131,8 @@ public class ValidatorUtil {
 						for (int j = 0; j < columnDetails.size(); j++) {
 							columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
 							columns.add(columnName.toLowerCase());
-							columnMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
+							columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
+							columnUniquenessMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_UNIQUE_ATTR).asText());
 						}
 						for (String column : columnList) {
 							if (!columns.contains(column.toLowerCase())) {
@@ -143,7 +145,10 @@ public class ValidatorUtil {
 			if(!tableExists) {
 				throw new IDAException(IDAConst.TABLE_DOES_NOT_EXIST_MSG);
 			}
-			return columnMap;
+			return new ArrayList<>(){{
+				add(columnTypeMap);
+				add(columnUniquenessMap);
+			}};
 		} catch (IOException ex) {
 			throw new IDAException(IDAConst.TABLE_DOES_NOT_EXIST_MSG);
 		}
