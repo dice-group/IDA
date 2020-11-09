@@ -33,16 +33,23 @@ public interface IDAConst {
 	/**
 	 *  Chatbot constants
 	 */
-	public static final String BOT_UNAVAILABLE = "IDA is currently unavailable";
 	public static final String BOT_LANGUAGE = "en-US";
+	public static final String UNK_INTENT_COUNT = "unknownIntentCount";
+
+	/**
+	 * IDA response
+	 */
+	public static final String BOT_UNAVAILABLE = "IDA is currently unavailable";
 	public static final String BOT_SOMETHING_WRONG = "Something went wrong with that request. Please try again later.";
 	public static final String BOT_LOAD_DS_BEFORE = "Please load a dataset";
-	public static final String BOT_SELECT_TABLE = "Please select a data table";
+	public static final String BOT_SELECT_TABLE = "The currently active table is meta data table, please open a data table from side bar";
+	public static final String BOT_HELP = "Hmm, I could not understand it again. May be you can try asking me \"what can you do\" to get help?";
 
 	/**
 	 * Param Map Keys
 	 */
 	public static final String PARAM_TEXT_MSG = "TEXT_MSG";
+	public static final String PARAM_INTENT = "INTENT";
 	public static final String PARAM_DATASET_NAME = "datasetname";
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
 	public static final String PARAM_INTENT_DETECTION_CONFIDENCE = "intent_detection_confidence";
