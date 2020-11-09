@@ -35,6 +35,7 @@ public interface IDAConst {
 	 */
 	public static final String BOT_LANGUAGE = "en-US";
 	public static final String UNK_INTENT_COUNT = "unknownIntentCount";
+	public static final String[] VISUALIZATIONS_LIST = {"Bar graph", "Bubble chart"};
 
 	/**
 	 * IDA response

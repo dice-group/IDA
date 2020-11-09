@@ -33,7 +33,7 @@ public class ListDataSetsAction implements Action {
 				{
 					if (i == (datasetsSize-1)) {
 						message.append(" and ");
-					} else if (datasetsSize > 2 && i > 0) {
+					} else if (i != 0) {
 						message.append(", ");
 					}
 					message.append(datasets.get(i));
