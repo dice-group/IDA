@@ -25,6 +25,7 @@ public class ChatMessageResponse {
 	private Map<Integer, String> predefinedActions;
 	private Map<String, Object> payload;
 	private Date timestamp;
+	private int errCode;
 
 	public ChatMessageResponse() {
 		//Setting timestamp by default at creation
@@ -37,14 +38,14 @@ public class ChatMessageResponse {
 		this.message = message;
 		this.timestamp = new Date();
 	}
-	
+
 	public void addPayloadItem(String key, Object value) {
 		if(this.payload == null) {
 			this.payload = new HashMap<String, Object>();
 		}
 		this.payload.put(key, value);
 	}
-	
+
 	public void addPredefinedAction(Integer actionCode, String label) {
 		if(this.predefinedActions == null) {
 			this.predefinedActions = new HashMap<Integer, String>();
@@ -92,5 +93,18 @@ public class ChatMessageResponse {
 	public void setPayload(Map<String, Object> payload) {
 		this.payload = payload;
 	}
-	
+
+	public int getErrCode() {
+		return errCode;
+	}
+
+	public void setErrCode(int errCode) {
+		this.errCode = errCode;
+	}
+
+	@Override
+	public String toString() {
+		return "ResponseBean [actnCode=" + uiAction + ", payload="
+				+ payload + ", chatmsg=" + message + "]";
+	}
 }

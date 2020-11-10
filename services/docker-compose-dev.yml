@@ -12,6 +12,7 @@ services:
     volumes:
       - "../backend-server/src:/build/backend-server/src"
       - "../backend-server/target:/build/backend-server/target"
+      - "~/ida-local-logs:/usr/local/tomcat/logs"
     networks:
       - ida-net
   ida-frontend:
