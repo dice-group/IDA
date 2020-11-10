@@ -1,7 +1,11 @@
 package org.dice.ida.logging;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.Aspect;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.slf4j.Logger;
@@ -29,7 +33,7 @@ public class AspectLogger {
 	 * Creates the point cut for the MessageRestController
 	 *
 	 */
-	@Pointcut("execution(* org.dice.ida.controller.*.*(..))")
+	@Pointcut("execution(* org.dice.ida.controller.MessageController.*(..))")
 	public void controller() {
 		//PointCut for MessageRestController
 		log.info("[EXECUTION] controller execution started");

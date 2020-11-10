@@ -13,6 +13,8 @@ services:
       - FUSEKI_URL=http://fuseki:3030/
       - FUSEKI_USER=admin
       - FUSEKI_PW=$FUSEKI_PW
+    volumes:
+      - "~/ida-qa-logs:/usr/local/tomcat/logs"
     networks:
       - ida-net
   fuseki:

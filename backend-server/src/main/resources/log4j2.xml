@@ -4,7 +4,7 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{dd-MMM-yyyy HH:mm:ss} %-5level %c{1} %msg %n"/>
 		</Console>
-		<File name="File" fileName="ida.log">
+		<File name="File" fileName="logs/ida.log">
 			<PatternLayout pattern="%d{dd-MMM-yyyy HH:mm:ss} %-5level %c{1} %msg %n"/>
 		</File>
 	</Appenders>
@@ -12,7 +12,7 @@
 	<Loggers>
 		<logger name="io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler" level="OFF"/> <!-- this logger logs all the dataset content and its enable by default so we disabled it -->
 		<Root level="debug">
-			<AppenderRef ref="Console" />
+			<!-- <AppenderRef ref="Console" /> -->
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>
