@@ -33,6 +33,7 @@ public class ActionExecutor {
 		// Initiate the instance for the action
 		Intent intent = Intent.getForKey(queryResult.getIntent().getDisplayName());
 		this.paramMap = createParamMap(queryResult);
+		this.paramMap.put(IDAConst.PARAM_INTENT, intent);
 		this.action = mappingHelper.fetchActionInstance(intent.getKey());
 	}
 
