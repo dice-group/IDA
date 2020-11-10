@@ -5,6 +5,8 @@ cd "${BASH_SOURCE%/*}" || exit
 version=$(cat VERSION)
 registry=${REGISTRY:-localhost:5000}
 
+fuseki_pw=${FUSEKI_PW:-$(cat FUSEKI_PW)}
+
 function build_container() {
     tag=$registry/ida/$1:$version
     echo "Building $1: $tag..."
@@ -21,5 +23,6 @@ build_container backend-server .. -f backend-server/Dockerfile.prod
 
 export REGISTRY=$registry
 export VERSION=$version
+export FUSEKI_PW=$fuseki_pw
 
 docker stack deploy --compose-file docker-compose-qa.yml ida-stack-qa

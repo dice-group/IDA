@@ -101,9 +101,9 @@ public class BarGraphVisualizer {
 					temp_date.put(data.instance(i).stringValue(xaxis), data.instance(i).value(yaxis));
 				}
 
-				if (temp_month.containsKey(getMonth(cal.get(Calendar.MONTH)))) {
+				if (temp_month.containsKey(getMonth(cal.get(Calendar.MONTH))+(cal.get(Calendar.YEAR)))) {
 					double yvalue = temp_month.get(getMonth(cal.get(Calendar.MONTH)));
-					temp_month.put(getMonth(cal.get(Calendar.MONTH)), yvalue + data.instance(i).value(yaxis));
+					temp_month.put(getMonth(cal.get(Calendar.MONTH))+(cal.get(Calendar.YEAR)), yvalue + data.instance(i).value(yaxis));
 				} else {
 					temp_month.put(getMonth(cal.get(Calendar.MONTH)), data.instance(i).value(yaxis));
 				}
@@ -128,16 +128,12 @@ public class BarGraphVisualizer {
 		int d = Math.abs(date.size() - 10);
 		int m = Math.abs(month.size() - 10);
 		int y = Math.abs(year.size() - 10);
-		if (m <= d) {
-			if (m <= y)
-				load(month);
-			else
-				load(year);
+		if (d <= m && d <= y) {
+			load(date);
+		} else if (m <= y && m <= d) {
+			load(month);
 		} else {
-			if (y <= d)
-				load(year);
-			else
-				load(month);
+			load(year);
 		}
 	}
 
