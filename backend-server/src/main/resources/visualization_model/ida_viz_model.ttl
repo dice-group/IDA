@@ -505,7 +505,7 @@ parameter:bubble_label rdf:type owl:NamedIndividual ,
                        ivoop:hasParamTree representation_tree:tree_1 ;
                        ivoop:hasRepType representational_type:Categorical ;
                        ivodp:hasPriority 1 ;
-                       rdfs:label "Label of the bubble"@en .
+                       rdfs:label "Bubble_Label"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/parameter/bubble_size
@@ -513,7 +513,7 @@ parameter:bubble_size rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasPriority 2 ;
-                      rdfs:label "Size of the bubble"@en .
+                      rdfs:label "Bubble_Size"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/parameter/x_axis

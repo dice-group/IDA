@@ -49,6 +49,9 @@ public class ActionMappingHelper {
 			case BOOK_FLIGHT:
 				action = appContext.getBean(BookFlightAction.class);
 				break;
+			case BUBBLECHART:
+				action = appContext.getBean(VisualizeAction.class);
+				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);
 				break;

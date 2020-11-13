@@ -51,7 +51,11 @@ public class ActionExecutor {
 
 		if (queryResult.getParameters().getFieldsCount() > 0) {
 			for (Map.Entry<String, Value> entry : queryResult.getParameters().getFieldsMap().entrySet()) {
-				paramMap.put(entry.getKey(), entry.getValue().getStringValue());
+				if (Value.KindCase.STRING_VALUE.equals(entry.getValue().getKindCase())) {
+					paramMap.put(entry.getKey(), entry.getValue().getStringValue());
+				} else {
+					paramMap.put(entry.getKey(), entry.getValue());
+				}
 			}
 		}
 

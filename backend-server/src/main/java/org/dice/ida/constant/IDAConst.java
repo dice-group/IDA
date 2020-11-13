@@ -1,9 +1,7 @@
 package org.dice.ida.constant;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormatSymbols;
+import java.util.*;
 
 /**
  * This interface consists of all the constant values across IDA
@@ -149,7 +147,7 @@ public interface IDAConst {
 	public static final String COLUMN_TYPE_NOMINAL = "string";
 	public static final String COLUMN_TYPE_NUMERIC = "numeric";
 	public static final String COLUMN_TYPE_DATE = "date";
-	public static final String[] DATE_PATTERNS = {"dd/MM/yyyy", "dd MMM", "MMM YYYY", "dd/MM/yyyy HH:mm:ss"};
+	public static final String[] DATE_PATTERNS = {"dd/MM/yyyy", "dd MMM", "MMM YYYY", "dd/MM/yyyy HH:mm:ss", "dd-MMM-yyyy", "MMMM-yyyy", "YYYY"};
 	public static final String LABEL_TYPE_DATE = "day";
 	public static final String LABEL_TYPE_MONTH = "month";
 	public static final String LABEL_TYPE_YEAR = "year";
@@ -184,6 +182,10 @@ public interface IDAConst {
 	public static final String INSTANCE_PARAM_TYPE_UNIQUE = "unique";
 	public static final String INSTANCE_PARAM_TYPE_NON_UNIQUE = "non unique";
 	public static final String INSTANCE_PARAM_TYPE_NOT_REQUIRED = "not required";
+	public static final String INSTANCE_PARAM_TYPE_BINS = "bins";
+	public static final String TRANSFORMATION_TYPE_AVG = "average";
+	public static final String TRANSFORMATION_TYPE_SUM = "sum of";
+	public static final String TRANSFORMATION_TYPE_COUNT = "count of";
 
 	public static final Map<String, List<String>> PARAM_TYPE_TREE = new HashMap<>() {{
 		put("numeric", new ArrayList<>() {
@@ -212,5 +214,33 @@ public interface IDAConst {
 			}
 		});
 	}};
+	public static final List<String> MONTHS_LIST = Arrays.asList(new DateFormatSymbols().getMonths());
+	public static final String COMPARATOR_TYPE_DOUBLE = "doubleString";
+	public static final String COMPARATOR_TYPE_DATE = "dateString";
+	public static final String COMPARATOR_TYPE_MONTH = "monthYearString";
+	public static final String COMPARATOR_TYPE_YEAR = "yearString";
+	public static final String COMPARATOR_TYPE_DOUBLE_BIN = "doubleBin";
+	public static final String COMPARATOR_TYPE_DATE_BIN = "dateBin";
+	public static final String COMPARATOR_TYPE_UNKNOWN = "unknown";
+
+	String VIZ_TYPE_BAR_CHART = "bar_chart";
+	String VIZ_TYPE_BUBBLE_CHART = "bubble_chart";
+	String BUBBLE_LABEL_PARAM = "Bubble_Label";
+	String BUBBLE_SIZE_PARAM = "Bubble_Size";
+	String X_AXIS_PARAM = "X-Axis";
+	String Y_AXIS_PARAM = "Y-Axis";
+
+	public static final String PARAMETER_TYPE_BIN_SIZE = "bin_size";
+	public static final String PARAMETER_TYPE_DURATION_UNIT = "unit";
+	public static final String PARAMETER_TYPE_DURATION_SIZE = "amount";
+	public static final String CONTEXT_GET_BIN_SIZE = "get_bin_size";
+	public static final String CONTEXT_GET_BIN_DURATION = "get_bin_duration";
+	public static final String DURATION_TYPE_WEEK = "wk";
+	public static final String DURATION_TYPE_MONTH = "mo";
+	public static final String DURATION_TYPE_YEAR = "yr";
+	public static final String LABEL_PATTERN_DATE = "dd-MMM-yyyy";
+	public static final String LABEL_PATTERN_MONTH = "MMMM-yyyy";
+	public static final String LABEL_PATTERN_YEAR = "yyyy";
+	public static final String ATTRIBUTE_TYPE_SUFFIX = "_type";
 
 }

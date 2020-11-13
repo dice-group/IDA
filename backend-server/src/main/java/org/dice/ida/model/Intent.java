@@ -13,6 +13,7 @@ public enum Intent {
     BUBBLE_CHART("bubble-chart", IDAConst.UIA_BUBBLECHART),
 	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
 	VISUALIZE("bar_chart",IDAConst.UIA_BARGRAPH),
+	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG),
     BOOK_FLIGHT("book_flight", IDAConst.UAC_NRMLMSG);
 
