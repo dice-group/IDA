@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.google.cloud.dialogflow.v2.QueryResult;
+import com.google.cloud.dialogflow.v2beta1.QueryResult;
 import com.google.protobuf.Value;
+
 @Lazy
 @Component
 @Scope("prototype")
@@ -25,19 +26,21 @@ public class ActionExecutor {
 	private Action action;
 	private Map<String, Object> paramMap;
 	private QueryResult queryResult;
+
 	public ActionExecutor(QueryResult queryResult) {
 		this.queryResult = queryResult;
 	}
+
 	@PostConstruct
 	public void initialize() {
 		// Initiate the instance for the action
 		Intent intent = Intent.getForKey(queryResult.getIntent().getDisplayName());
 		this.paramMap = createParamMap(queryResult);
-		this.paramMap.put(IDAConst.PARAM_INTENT, intent);
+		paramMap.put(IDAConst.INTENT_NAME, intent.getKey());
 		this.action = mappingHelper.fetchActionInstance(intent.getKey());
 	}
 
-	private Map<String, Object> createParamMap(QueryResult queryResult){
+	private Map<String, Object> createParamMap(QueryResult queryResult) {
 
 		Map<String, Object> paramMap = new HashMap<>();
 		String messageResponseText = queryResult.getFulfillmentText();
@@ -48,7 +51,11 @@ public class ActionExecutor {
 
 		if (queryResult.getParameters().getFieldsCount() > 0) {
 			for (Map.Entry<String, Value> entry : queryResult.getParameters().getFieldsMap().entrySet()) {
-				paramMap.put(entry.getKey(), entry.getValue().getStringValue());
+				if (Value.KindCase.STRING_VALUE.equals(entry.getValue().getKindCase())) {
+					paramMap.put(entry.getKey(), entry.getValue().getStringValue());
+				} else {
+					paramMap.put(entry.getKey(), entry.getValue());
+				}
 			}
 		}
 

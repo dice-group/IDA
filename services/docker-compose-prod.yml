@@ -9,12 +9,12 @@ services:
       - ida-net
   ida-backend:
     image: $REGISTRY/ida/backend-server:$VERSION
+    volumes:
+      - "~/ida-prod-logs:/usr/local/tomcat/logs"
     environment:
       - FUSEKI_URL=http://fuseki:3030/
       - FUSEKI_USER=admin
       - FUSEKI_PW=$FUSEKI_PW
-    volumes:
-      - "~/ida-prod-logs:/usr/local/tomcat/logs"
     networks:
       - ida-net
   fuseki:
