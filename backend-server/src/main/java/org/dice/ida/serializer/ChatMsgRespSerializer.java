@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 public class ChatMsgRespSerializer extends StdSerializer<ChatMessageResponse>{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	protected ChatMsgRespSerializer() {
 		this(null);
 	}
@@ -32,8 +32,9 @@ public class ChatMsgRespSerializer extends StdSerializer<ChatMessageResponse>{
 		gen.writeObjectField("predefinedActions", value.getPredefinedActions());
 		gen.writeObjectField("payload", value.getPayload());
 		gen.writeObjectField("timestamp", value.getTimestamp());
+		gen.writeObjectField("errorCode", value.getErrCode());
 		gen.writeEndObject();
-		
+
 	}
 
 }

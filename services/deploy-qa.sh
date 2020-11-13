@@ -2,6 +2,9 @@
 
 cd "${BASH_SOURCE%/*}" || exit
 
+### Check for logs dir, if not found create it
+[ ! -d ~/ida-qa-logs ] && mkdir -p ~/ida-qa-logs
+
 version=$(cat VERSION)
 registry=${REGISTRY:-localhost:5000}
 
