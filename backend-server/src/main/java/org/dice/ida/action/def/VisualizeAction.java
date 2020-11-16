@@ -35,7 +35,7 @@ import java.util.Objects;
 import java.util.Calendar;
 
 /**
- * Class to handle the line chart implementation
+ * Class to handle the any visualization
  *
  * @author Nandeesh Patel, Sourabh Poddar
  */
@@ -155,6 +155,15 @@ public class VisualizeAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to filter the possible instances for the visualization based on the parameter and its type
+	 *
+	 * @param attribute - parameter label
+	 * @param attributeType - parameter type ( bin, numeric, date etc.,)
+	 * @param columnName - name of the column to be mapped to the parameter
+	 * @param isTypeFromUser - Was the type selected by user or fetched from metadata
+	 * @return - list of options for the user to choose from
+	 */
 	private Set<String> getFilteredInstances(String attribute, String attributeType, String columnName, boolean isTypeFromUser) {
 		Map<String, Map<String, Map<String, String>>> filteredInstances = new HashMap<>();
 		String instanceParamType;
@@ -190,6 +199,13 @@ public class VisualizeAction implements Action {
 		return options;
 	}
 
+	/**
+	 * Method to get the list of column names required for rendering the visualization from the values received from Dialogflow
+	 *
+	 * @param attributeList - list of attributes from the RDF model
+	 * @param paramMap - map of parameter and its value from dialogflow
+	 * @return - list of column names
+	 */
 	private List<String> getColumnNames(Map<Integer, String> attributeList, Map<String, Object> paramMap) {
 		List<String> columnList = new ArrayList<>();
 		for (String param : attributeList.values()) {
@@ -200,6 +216,11 @@ public class VisualizeAction implements Action {
 		return columnList;
 	}
 
+	/**
+	 * Method to initialize the columns for all parameters and values for the parameter types
+	 *
+	 * @param paramMap - map of parameter and its value from dialogflow
+	 */
 	private void getParameters(Map<String, Object> paramMap) {
 		parameterMap = new HashMap<>();
 		parameterTypeMap = new HashMap<>();
@@ -219,6 +240,13 @@ public class VisualizeAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to create data for the visualization based on parameters (for now, this works only for bar graph and bubble chart)
+	 *
+	 * @param param1 - first param for the visualization
+	 * @param param2 - second param for the visualization
+	 * @param paramMap - map of parameter and its value from dialogflow
+	 */
 	private void createGraphData(String param1, String param2, Map<String, Object> paramMap) {
 		String xAxisColumn = parameterMap.get(param1);
 		String yAxisColumn = parameterMap.get(param2);
@@ -389,6 +417,14 @@ public class VisualizeAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to add a new entry to list of graph items
+	 *
+	 * @param xValue - label value of an entry
+	 * @param yValueString - second parameter value in string
+	 * @param yAxisColumnType - second parameter type
+	 * @param labelCounts - count of each label (useful for calculating the average)
+	 */
 	private void updateGraphItemList(String xValue, String yValueString, String yAxisColumnType, Map<String, Integer> labelCounts) {
 		Double yValue;
 		try {
@@ -413,6 +449,9 @@ public class VisualizeAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to create a response object based on graph items for bar graph
+	 */
 	private void createBarGraphResponse() {
 		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM);
 		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
@@ -427,6 +466,12 @@ public class VisualizeAction implements Action {
 		payload.put("barGraphData", new BarGraphData(graphLabel, barGraphItemList, xAxisColumn, yAxisLabel));
 	}
 
+	/**
+	 * Method to create a response object based on graph items for bubble graph
+	 *
+	 * @param dsName - name of the dataset
+	 * @param tableName - name of the table
+	 */
 	private void createBubbleChartResponse(String dsName, String tableName) {
 		String labelColumn = parameterMap.get(IDAConst.BUBBLE_LABEL_PARAM);
 		String sizeColumn = parameterMap.get(IDAConst.BUBBLE_SIZE_PARAM);

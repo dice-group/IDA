@@ -10,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * An util class to manage dialogflow contexts
+ *
+ * @author Nandeesh Patel, Sourabh Poddar
+ */
 @Component
 public class DialogFlowUtil {
 
@@ -19,6 +24,11 @@ public class DialogFlowUtil {
 	@Autowired
 	private IDAChatBot idaChatBot;
 
+	/**
+	 * Method to remove a context from list of active contexts
+	 *
+	 * @param contextString - context name
+	 */
 	public void deleteContext(String contextString) {
 		String contextName = "projects/" + projectId + "/agent/sessions/" + idaChatBot.fetchDfSessionId() + "/contexts/" + contextString;
 		try (ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings())) {
@@ -28,6 +38,11 @@ public class DialogFlowUtil {
 		}
 	}
 
+	/**
+	 * Method to add a context to list of active contexts
+	 *
+	 * @param contextString - context name
+	 */
 	public void setContext(String contextString) {
 		try (ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings())) {
 			// Set the session name using the sessionId (UUID) and projectID (my-project-id)
