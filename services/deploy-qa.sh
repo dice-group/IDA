@@ -23,6 +23,7 @@ function build_container() {
 
 build_container nginx .. -f frontend/Dockerfile.prod
 build_container backend-server .. -f backend-server/Dockerfile.prod
+build_container fuseki-server .. -f Dockerfile.fuseki
 
 export REGISTRY=$registry
 export VERSION=$version
