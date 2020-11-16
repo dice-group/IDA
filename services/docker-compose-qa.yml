@@ -25,10 +25,8 @@ services:
     environment:
       - ADMIN_PASSWORD=$FUSEKI_PW
     volumes:
-      - fuseki-storage:/fuseki
+      - ./fuseki:/fuseki
     networks:
       - ida-net
-volumes:
-  fuseki-storage:
 networks:
   ida-net:

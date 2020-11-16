@@ -46,8 +46,7 @@ public class RDFUtil {
 			/*
 			 *	Create a fuseki model from the file and run the query on that model for test cases or if docker is not set up.
 			 */
-			// TODO: Uncomment the below logic once fuseki server works on docker
-//			if (dbHost == null || dbHost.isEmpty() || dbHost.isBlank()) {
+			if (dbHost == null || dbHost.isEmpty() || dbHost.isBlank()) {
 				try {
 					model = ModelFactory.createDefaultModel();
 					String path = Objects.requireNonNull(getClass().getClassLoader().getResource("visualization_model/ida_viz_model.ttl")).getFile();
@@ -56,7 +55,7 @@ public class RDFUtil {
 				} catch (NullPointerException ex) {
 					return null;
 				}
-			/*} else {
+			} else {
 				try {
 					RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + "ida_viz");
 					conn = (RDFConnectionFuseki) builder.build();
@@ -66,7 +65,7 @@ public class RDFUtil {
 				} finally {
 					conn.close();
 				}
-			}*/
+			}
 		} else {
 			queryExecution = QueryExecutionFactory.create(query, model);
 		}
