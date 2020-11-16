@@ -49,24 +49,10 @@ public class ActionMappingHelper {
 			case SUGGEST_VISUALIZATION:
 				action = appContext.getBean(SuggestVisualization.class);
 				break;
-			case BAR_GRAPH:
-				action = new BarGraphAction();
-				break;
-			case BAR_GRAPH_TEST:
-				action = appContext.getBean(BarGraphTestAction.class);
-				break;
-			case VISUALIZE:
-				action = appContext.getBean(VisualizeAction.class);
-				break;
-			case BUBBLE_CHART:
-				action = new BubbleChartAction();
-				break;
 			case LINE_CHART:
 				action = new LineChartAction();
 				break;
-			case BOOK_FLIGHT:
-				action = appContext.getBean(BookFlightAction.class);
-				break;
+			case BARCHART:
 			case BUBBLECHART:
 				action = appContext.getBean(VisualizeAction.class);
 				break;
