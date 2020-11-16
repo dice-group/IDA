@@ -8,14 +8,10 @@ public enum Intent {
     UPLOAD_DATASET("upload-dataset", IDAConst.UAC_UPLDDTMSG),
     LOAD_DATASET("load-dataset", IDAConst.UIA_LOADDS),
     SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NRMLMSG),
-    BAR_GRAPH("bar-graph", IDAConst.UIA_BARGRAPH),
-	BAR_GRAPH_TEST("bar-graph-test",IDAConst.UIA_BARGRAPH),
-    BUBBLE_CHART("bubble-chart", IDAConst.UIA_BUBBLECHART),
 	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
-	VISUALIZE("bar_chart",IDAConst.UIA_BARGRAPH),
+	BARCHART("bar_chart",IDAConst.UIA_BARGRAPH),
 	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
-    UNKNOWN("unknown", IDAConst.UAC_NRMLMSG),
-    BOOK_FLIGHT("book_flight", IDAConst.UAC_NRMLMSG);
+    UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
     private final String key;
     private final int action;
