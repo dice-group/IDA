@@ -438,23 +438,24 @@ public class VisualizeAction implements Action {
 	private Map<String, Integer> initializeGraphItemsForDateBins(LocalDate startDate, LocalDate max, String binType, int binSize, DateTimeFormatter formatter) {
 		Map<String, Integer> labelCounts = new HashMap<>();
 		String label;
-		while (startDate.isBefore(max)) {
+		LocalDate nextDate = startDate;
+		while (nextDate.isBefore(max)) {
 			switch (binType) {
 				case IDAConst.DURATION_TYPE_WEEK:
-					label = startDate.format(formatter) + " - " + startDate.plusWeeks(binSize).minusDays(1).format(formatter);
-					startDate = startDate.plusWeeks(binSize);
+					label = nextDate.format(formatter) + " - " + nextDate.plusWeeks(binSize).minusDays(1).format(formatter);
+					nextDate = nextDate.plusWeeks(binSize);
 					break;
 				case IDAConst.DURATION_TYPE_MONTH:
-					label = binSize == 1 ? startDate.format(formatter) : startDate.format(formatter) + " - " + startDate.plusMonths(binSize).minusDays(1).format(formatter);
-					startDate = startDate.plusMonths(binSize);
+					label = binSize == 1 ? nextDate.format(formatter) : nextDate.format(formatter) + " - " + nextDate.plusMonths(binSize).minusDays(1).format(formatter);
+					nextDate = nextDate.plusMonths(binSize);
 					break;
 				case IDAConst.DURATION_TYPE_YEAR:
-					label = binSize == 1 ? startDate.format(formatter) : startDate.format(formatter) + " - " + startDate.plusYears(binSize).minusDays(1).format(formatter);
-					startDate = startDate.plusYears(binSize);
+					label = binSize == 1 ? nextDate.format(formatter) : nextDate.format(formatter) + " - " + nextDate.plusYears(binSize).minusDays(1).format(formatter);
+					nextDate = nextDate.plusYears(binSize);
 					break;
 				default:
-					label = startDate.format(formatter) + " - " + startDate.plusDays(binSize - 1).format(formatter);
-					startDate = startDate.plusDays(binSize);
+					label = nextDate.format(formatter) + " - " + nextDate.plusDays(binSize - 1).format(formatter);
+					nextDate = nextDate.plusDays(binSize);
 					break;
 			}
 			graphItems.put(label, 0.0);
