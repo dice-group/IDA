@@ -8,10 +8,10 @@ import CustomizedTables from "../datatable/datatable";
 import SpanningTable from "../datatable/spanDataTable";
 import IDABarChart from "./../visualizations/barchart/barchart";
 import IDABubbleGraph from "./../visualizations/bubblechart/bubblechart";
-import IDAMultiLineGraph from "./../visualizations/multiline/temp"
 import CloseIcon from "@material-ui/icons/Close";
 import "./tabs.css";
 import { Grid, IconButton } from "@material-ui/core";
+import IDALineChart from "../visualizations/linechart/linechart";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,7 +41,7 @@ function TabHeader(props) {
   return (
     <div>
       <Grid container alignItems="left">
-        <Tab {...newProps} title={props.label}/>
+        <Tab {...newProps} title={props.label} />
         <IconButton onClick={() => removeTab(props.value)}>
           <CloseIcon />
         </IconButton>
@@ -70,7 +70,7 @@ export default function ScrollableTabsButtonAuto(props) {
       case "bubblechart":
         return <IDABubbleGraph data={tab.data} nodeId={tab.id} />;
       case "linechart":
-        return <IDAMultiLineGraph data={tab.data} nodeId={tab.id} />;
+        return <IDALineChart data={tab.data} nodeId={tab.id} />;
       default:
         return null;
     }
