@@ -62,7 +62,7 @@ public class DialogFlowUtil {
 					.build();
 
 			// Performs the create context request
-			Context response = contextsClient.createContext(session, context);
+			contextsClient.createContext(session, context);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
