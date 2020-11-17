@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TreeMap;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * Class to handle the line chart implementation
@@ -131,7 +132,7 @@ public class LineChartAction implements Action {
 		dayLabels.sort(dateComparator);
 		monthLabels.sort(monthComparator);
 		yearLabels.sort(yearComparator);
-		int d = Math.abs(dayLabels.size() - 10);
+		/*int d = Math.abs(dayLabels.size() - 10);
 		int m = Math.abs(monthLabels.size() - 10);
 		int y = Math.abs(yearLabels.size() - 10);
 		if (d <= m && d <= y) {
@@ -143,7 +144,10 @@ public class LineChartAction implements Action {
 		} else {
 			xAxisLabels = yearLabels;
 			binType = IDAConst.LABEL_TYPE_YEAR;
-		}
+		}*/
+		// TODO: since D3 handles the binning automatically remove the binning logic here. Can be done while integrating with RDF model
+		xAxisLabels = dayLabels;
+		binType = IDAConst.LABEL_TYPE_DATE;
 	}
 
 	/**
@@ -154,7 +158,7 @@ public class LineChartAction implements Action {
 		Map<String, Double> labelData;
 		String date;
 		String label;
-		Double value;
+		double value;
 		String dateKey;
 		for (Map<String, String> row : tableData) {
 			date = row.get(dateColumn);
@@ -185,8 +189,9 @@ public class LineChartAction implements Action {
 				ex.printStackTrace();
 				continue; // Ignore the row and continue with the next
 			}
-			if (labelData.containsKey(dateKey))
-				labelData.put(dateKey, labelData.get(dateKey) + value);
+			Double oldValue = labelData.get(dateKey);
+			if (oldValue != null)
+				labelData.put(dateKey, oldValue + value);
 			else
 				labelData.put(dateKey, value);
 			chartData.put(label, labelData);
@@ -207,7 +212,15 @@ public class LineChartAction implements Action {
 		}
 		lineChartData.setyAxisLabel(yAxisLabel);
 		lineChartData.setChartDesc(IDAConst.LINE_CHART_DESC_PREFIX + yAxisLabel + " across " + dateColumn);
-		lineChartData.setxAxisLabels(xAxisLabels);
+		List<Date> dateLabels = xAxisLabels.stream().map(l -> {
+			try {
+				return DateUtils.parseDate(l, IDAConst.DATE_PATTERNS);
+			}catch (ParseException e) {
+				System.out.println("Date parse exception:" + l);
+			}
+			return new Date();
+		}).collect(Collectors.toList());
+		lineChartData.setxAxisLabels(dateLabels);
 		List<LineChartItem> lines = new ArrayList<>();
 		for (String label : chartData.keySet()) {
 			Map<String, Double> labelData = chartData.get(label);

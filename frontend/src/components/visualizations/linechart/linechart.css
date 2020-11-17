@@ -1,0 +1,32 @@
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 100px;
+  padding: 6px;
+  font: 14px sans-serif;
+  background: #000;
+  color: #fff;
+  border: 0;
+  border-radius: 3px;
+  pointer-events: none;
+  word-break: break-word;
+}
+
+.line-chart-legend {
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+.MuiListItem-root.Mui-selected {
+  background-color: unset;
+}
+
+.MuiListItem-root.Mui-selected .MuiListItemText-root span {
+  text-decoration: line-through;
+}
+
+.legend-item-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
