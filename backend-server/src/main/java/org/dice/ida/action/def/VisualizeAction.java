@@ -58,7 +58,7 @@ public class VisualizeAction implements Action {
 	private Map<String, Object> payload;
 	private Map<String, Double> graphItems;
 	private Comparator<String> comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
-	StringBuilder textMsg;
+	private StringBuilder textMsg;
 
 	/**
 	 * @param paramMap            - parameters from dialogflow
@@ -130,44 +130,61 @@ public class VisualizeAction implements Action {
 					columnMap.get(paramMap.get(attributeName).toString()) :
 					attributeType;
 			options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty());
-			if (options.size() == 0 && attributeType.isEmpty()) {
-				dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-				dialogFlowUtil.setContext("get_" + attributeList.get(i));
-				textMsg = new StringBuilder("It cannot be used as " + attributeList.get(i) + ". Please give a different column?");
+			if (createResponseForUser(options, i, attributeName, attributeType, paramMap)) {
 				break;
-			} else if (options.size() == 0) {
-				dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-				dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-				textMsg = new StringBuilder("It cannot be used as " + attributeType + ". Please provide correct type.");
-				break;
-			} else if (options.size() > 1 && attributeType.isEmpty()) {
-				dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-				dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-				textMsg = new StringBuilder("It can be used as ");
-				textMsg.append(String.join(" or ", options));
-				textMsg.append("\n Which option do you need?");
-				break;
-			}
-			if (i == 1 && !attributeType.isEmpty() && IDAConst.INSTANCE_PARAM_TYPE_BINS.equals(attributeType.toLowerCase())) {
-				Value paramVal = (Value) paramMap.get(IDAConst.PARAMETER_TYPE_BIN_SIZE);
-				if ("date".equals(columnMap.get(paramMap.get(attributeName).toString()))) {
-					if (paramVal == null || !paramVal.hasStructValue()) {
-						dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-						dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_DURATION);
-						textMsg = new StringBuilder("What should be the duration of each bin?");
-						break;
-					}
-				} else {
-					if (paramVal == null) {
-						dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-						dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_SIZE);
-						textMsg = new StringBuilder("What should be the size of each bin?");
-						break;
-					}
-				}
 			}
 		}
 		return options;
+	}
+
+	/**
+	 * Validate the value for attribute and its type. Return true if response is ready
+	 *
+	 * @param options       - options available after filtering
+	 * @param i             - priority of the attribute
+	 * @param attributeName - name of the attribute
+	 * @param attributeType - type of the attribute
+	 * @param paramMap      - parameter map from dialogflow
+	 * @return - true if response is ready and false otherwise
+	 */
+	private boolean createResponseForUser(Set<String> options, int i, String attributeName, String attributeType, Map<String, Object> paramMap) {
+		if (options.size() == 0 && attributeType.isEmpty()) {
+			dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+			dialogFlowUtil.setContext("get_" + attributeList.get(i));
+			textMsg = new StringBuilder("It cannot be used as " + attributeList.get(i) + ". Please give a different column?");
+			return true;
+		} else if (options.size() == 0) {
+			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
+			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+			textMsg = new StringBuilder("It cannot be used as " + attributeType + ". Please provide correct type.");
+			return true;
+		} else if (options.size() > 1 && attributeType.isEmpty()) {
+			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
+			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+			textMsg = new StringBuilder("It can be used as ");
+			textMsg.append(String.join(" or ", options));
+			textMsg.append("\n Which option do you need?");
+			return true;
+		}
+		if (i == 1 && !attributeType.isEmpty() && IDAConst.INSTANCE_PARAM_TYPE_BINS.equals(attributeType.toLowerCase())) {
+			Value paramVal = (Value) paramMap.get(IDAConst.PARAMETER_TYPE_BIN_SIZE);
+			if ("date".equals(columnMap.get(paramMap.get(attributeName).toString()))) {
+				if (paramVal == null || !paramVal.hasStructValue()) {
+					dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
+					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_DURATION);
+					textMsg = new StringBuilder("What should be the duration of each bin?");
+					return true;
+				}
+			} else {
+				if (paramVal == null) {
+					dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
+					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_SIZE);
+					textMsg = new StringBuilder("What should be the size of each bin?");
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -308,6 +325,15 @@ public class VisualizeAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to process the bins for numeric labels
+	 *
+	 * @param binSize         - size of the bins
+	 * @param xAxisColumn     - column for primary parameter
+	 * @param yAxisColumn     - column for secondary parameter
+	 * @param yAxisColumnType - type of secondary parameter
+	 * @param labelCounts     - map of labels to its counts
+	 */
 	private void processBinsForNumericLabels(int binSize, String xAxisColumn, String yAxisColumn, String yAxisColumnType, Map<String, Integer> labelCounts) {
 		String xValue;
 		List<Double> values = tableData.stream().map(e -> {
@@ -340,7 +366,17 @@ public class VisualizeAction implements Action {
 		}
 	}
 
-	private void processBinsForDateLabels(int binSize, String binType, String xAxisColumn, String yAxisColumn, String yAxisColumnType, Map<String, Integer> labelCounts){
+	/**
+	 * Method to process the bins for date labels
+	 *
+	 * @param binSize         - size of the bins
+	 * @param binType         - type of duration (days, weeks, months or years)
+	 * @param xAxisColumn     - column for labels
+	 * @param yAxisColumn     - column for values
+	 * @param yAxisColumnType - type of value column
+	 * @param labelCounts     - map of labels to its counts
+	 */
+	private void processBinsForDateLabels(int binSize, String binType, String xAxisColumn, String yAxisColumn, String yAxisColumnType, Map<String, Integer> labelCounts) {
 		String xValue;
 		List<Date> values = tableData.stream().map(e -> e.get(xAxisColumn))
 				.sorted(LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DATE_BIN))
@@ -355,9 +391,6 @@ public class VisualizeAction implements Action {
 				.collect(Collectors.toList());
 		Calendar calendar = Calendar.getInstance();
 		Date min = values.get(0);
-		String label;
-		LocalDate binVal;
-		LocalDate intervalBegin;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(IDAConst.LABEL_PATTERN_DATE);
 		calendar.setTime(min);
 		if (IDAConst.DURATION_TYPE_MONTH.equals(binType)) {
@@ -377,7 +410,34 @@ public class VisualizeAction implements Action {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		LocalDate startDate = localMin;
+		labelCounts.putAll(initializeGraphItemsForDateBins(localMin, max, binType, binSize, formatter));
+		for (Map<String, String> entry : tableData) {
+			try {
+				calendar.setTime(DateUtils.parseDate(entry.get(xAxisColumn), IDAConst.DATE_PATTERNS));
+				xValue = getBinLabelFromDate(binType, calendar, binSize, localMin, formatter);
+			} catch (ParseException | NullPointerException ex) {
+				xValue = entry.get(xAxisColumn);
+			}
+			updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
+		}
+		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
+			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
+		}
+	}
+
+	/**
+	 * Method to initialize the graph items for all bins
+	 *
+	 * @param startDate - start date
+	 * @param max       - end date
+	 * @param binType   - type of bins ( days, weeks, months or years)
+	 * @param binSize   - size of bins
+	 * @param formatter - date string formatter
+	 * @return - map of bin labels and their counts
+	 */
+	private Map<String, Integer> initializeGraphItemsForDateBins(LocalDate startDate, LocalDate max, String binType, int binSize, DateTimeFormatter formatter) {
+		Map<String, Integer> labelCounts = new HashMap<>();
+		String label;
 		while (startDate.isBefore(max)) {
 			switch (binType) {
 				case IDAConst.DURATION_TYPE_WEEK:
@@ -395,51 +455,59 @@ public class VisualizeAction implements Action {
 				default:
 					label = startDate.format(formatter) + " - " + startDate.plusDays(binSize - 1).format(formatter);
 					startDate = startDate.plusDays(binSize);
+					break;
 			}
 			graphItems.put(label, 0.0);
 			labelCounts.put(label, 1);
 		}
+		return labelCounts;
+	}
+
+	/**
+	 * Method to get bin label based on the date string, bin type and bin size
+	 *
+	 * @param binType   - type of the bin
+	 * @param calendar  - calendar set from date string
+	 * @param binSize   - size of the bin
+	 * @param localMin  - min date from the table data
+	 * @param formatter - date string formatter
+	 * @return - bin label for the given date
+	 */
+	private String getBinLabelFromDate(String binType, Calendar calendar, int binSize, LocalDate localMin, DateTimeFormatter formatter) {
+		String xValue;
+		LocalDate binVal;
+		LocalDate intervalBegin;
 		long diff;
-		for (Map<String, String> entry : tableData) {
-			try {
-				calendar.setTime(DateUtils.parseDate(entry.get(xAxisColumn), IDAConst.DATE_PATTERNS));
-				switch (binType) {
-					case IDAConst.DURATION_TYPE_WEEK:
-						calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-						binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						diff = ChronoUnit.WEEKS.between(localMin, binVal);
-						intervalBegin = localMin.plusWeeks((diff / binSize) * binSize);
-						xValue = intervalBegin.format(formatter) + " - " + intervalBegin.plusWeeks(binSize).minusDays(1).format(formatter);
-						break;
-					case IDAConst.DURATION_TYPE_MONTH:
-						calendar.set(Calendar.DAY_OF_MONTH, 1);
-						binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						diff = ChronoUnit.MONTHS.between(localMin, binVal);
-						intervalBegin = localMin.plusMonths((diff / binSize) * binSize);
-						xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " - " + intervalBegin.plusMonths(binSize).minusDays(1).format(formatter);
-						break;
-					case IDAConst.DURATION_TYPE_YEAR:
-						calendar.set(Calendar.DAY_OF_YEAR, 1);
-						binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						diff = ChronoUnit.YEARS.between(localMin, binVal);
-						intervalBegin = localMin.plusYears((diff / binSize) * binSize);
-						xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " - " + intervalBegin.plusYears(binSize).minusDays(1).format(formatter);
-						break;
-					default:
-						binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						diff = ChronoUnit.DAYS.between(localMin, binVal);
-						intervalBegin = localMin.plusDays((diff / binSize) * binSize);
-						xValue = intervalBegin.format(formatter) + " - " + intervalBegin.plusDays(binSize - 1).format(formatter);
-						break;
-				}
-			} catch (ParseException | NullPointerException ex) {
-				xValue = entry.get(xAxisColumn);
-			}
-			updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
+		switch (binType) {
+			case IDAConst.DURATION_TYPE_WEEK:
+				calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				diff = ChronoUnit.WEEKS.between(localMin, binVal);
+				intervalBegin = localMin.plusWeeks((diff / binSize) * binSize);
+				xValue = intervalBegin.format(formatter) + " - " + intervalBegin.plusWeeks(binSize).minusDays(1).format(formatter);
+				break;
+			case IDAConst.DURATION_TYPE_MONTH:
+				calendar.set(Calendar.DAY_OF_MONTH, 1);
+				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				diff = ChronoUnit.MONTHS.between(localMin, binVal);
+				intervalBegin = localMin.plusMonths((diff / binSize) * binSize);
+				xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " - " + intervalBegin.plusMonths(binSize).minusDays(1).format(formatter);
+				break;
+			case IDAConst.DURATION_TYPE_YEAR:
+				calendar.set(Calendar.DAY_OF_YEAR, 1);
+				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				diff = ChronoUnit.YEARS.between(localMin, binVal);
+				intervalBegin = localMin.plusYears((diff / binSize) * binSize);
+				xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " - " + intervalBegin.plusYears(binSize).minusDays(1).format(formatter);
+				break;
+			default:
+				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				diff = ChronoUnit.DAYS.between(localMin, binVal);
+				intervalBegin = localMin.plusDays((diff / binSize) * binSize);
+				xValue = intervalBegin.format(formatter) + " - " + intervalBegin.plusDays(binSize - 1).format(formatter);
+				break;
 		}
-		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
-			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
-		}
+		return xValue;
 	}
 
 	/**
