@@ -44,7 +44,7 @@ public class IDAChatbotUtil {
 	 * @throws IOException when file does not exist
 	 */
 	private static void readProperties() throws IOException {
-		props = new HashMap<String, String>();
+		props = new HashMap<>();
 		Properties prop = new Properties();
 		InputStream input = new FileInputStream(IDAChatbotUtil.class.getClassLoader().getResource("application.properties").getPath());
 		prop.load(input);
@@ -65,13 +65,17 @@ public class IDAChatbotUtil {
 		Map<String, String> credentials;
 		String credentialsFilePath = props.get("dialogflow.credentials.path");
 		String jsonString = new String(Files.readAllBytes(Paths.get(IDAChatbotUtil.class.getClassLoader().getResource(credentialsFilePath).getPath())));
-		credentials = objectMapper.readValue(jsonString, new TypeReference<Map<String, String>>() {
+		credentials = objectMapper.readValue(jsonString, new TypeReference<>() {
 		});
 		return credentials;
 	}
 
 	/**
 	 * Method to create a session settings object from the dialogflow auth credentials
+	 *
+	 * @throws IOException - when credential file does not exist
+	 * @throws NoSuchAlgorithmException - wrong encryption algorithm
+	 * @throws InvalidKeySpecException - wrong credential key
 	 *
 	 * @return Dialogflow session settings to create the session
 	 */
@@ -81,6 +85,13 @@ public class IDAChatbotUtil {
 				.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
 	}
 
+	/**
+	 * Method to create Dialogflow credential object
+	 *
+	 * @throws IOException - when credential file does not exist
+	 * @throws NoSuchAlgorithmException - wrong encryption algorithm
+	 * @throws InvalidKeySpecException - wrong credential key
+	 */
 	private static void createCredentials() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		readProperties();
 		Map<String, String> credentialsMap = readCredentials();
@@ -105,6 +116,15 @@ public class IDAChatbotUtil {
 				.setTokenServerUri(URI.create(credentialsMap.get(IDAConst.CRED_TOKEN_URI))).build();
 	}
 
+	/**
+	 * Method to create a context settings object from the dialogflow auth credentials
+	 *
+	 *  @throws IOException - when credential file does not exist
+	 * 	@throws NoSuchAlgorithmException - wrong encryption algorithm
+	 * 	@throws InvalidKeySpecException - wrong credential key
+	 *
+	 *  @return Dialogflow context settings for context management
+	 */
 	public static ContextsSettings getContextsSettings() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException{
 		createCredentials();
 		return ContextsSettings.newBuilder()

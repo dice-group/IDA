@@ -6,6 +6,11 @@ import org.dice.ida.constant.IDAConst;
 import java.text.ParseException;
 import java.util.Comparator;
 
+/**
+ * Enum containing comparator functions for all types of labels used in visualizations
+ *
+ * @author Nandeesh Patel
+ */
 public enum LableComparator {
 
 	DATESTRING(IDAConst.COMPARATOR_TYPE_DATE, (String date1, String date2) -> {

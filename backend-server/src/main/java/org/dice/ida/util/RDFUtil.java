@@ -22,7 +22,7 @@ import java.util.TreeMap;
 /**
  * Utility Class containing RDF query functions.
  *
- * @author Nandeesh
+ * @author Nandeesh Patel, Sourabh Poddar
  */
 @Component
 public class RDFUtil {
@@ -146,12 +146,18 @@ public class RDFUtil {
 		return instanceMap;
 	}
 
-	public Map<Integer, String> getAttributeList(String intent) {
+	/**
+	 * Method to fetch the list of parameters for a given visualization from RDF model
+	 *
+	 * @param vizName - name of the visualization
+	 * @return - Map of attributes/parameters for the given visualization
+	 */
+	public Map<Integer, String> getAttributeList(String vizName) {
 		Map<Integer, String> attributeMap = new TreeMap<>();
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
 				"SELECT DISTINCT ?paramLabel  ?priority " +
 				"WHERE { " +
-				"  visualization:" + intent + " ?p ?o ;" +
+				"  visualization:" + vizName + " ?p ?o ;" +
 				"                               ivoop:hasParam ?param . " +
 				"  ?param rdfs:label ?paramLabel ." +
 				"  ?param ivodp:hasPriority ?priority . " +
