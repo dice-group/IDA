@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import * as d3 from "d3";
 
+import "./bubblechart.css";
+
 export default class IDABubbleGraph extends Component {
   height = 700;
   width = 1000;
@@ -54,7 +56,9 @@ export default class IDABubbleGraph extends Component {
     }
   }
   render() {
-    return <div className="bubblechart-container" id={this.containerId} ></div >;
+    return <div className="tab-container">
+      <div className="bubblechart-container" id={this.containerId}></div>
+    </div>;
   }
 
 }

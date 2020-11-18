@@ -140,7 +140,9 @@ export default class IDABarGraph extends Component {
   }
 
   render() {
-    return <div className="bargraph-container" id={this.containerId
-    } ></div >;
+    return <div className="tab-container">
+      <div className="bargraph-container" id={this.containerId}>
+      </div>
+    </div>;
   }
 }
