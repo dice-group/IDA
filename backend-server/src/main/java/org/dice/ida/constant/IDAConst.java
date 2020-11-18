@@ -64,7 +64,7 @@ public interface IDAConst {
 	public static final String CSV_FILE_PATTERN = ".*[cC][sS][vV]$";
 
 	// Bar graph
-	public static final String PARAM_FILTER_STRING = "items-selection";
+	public static final String PARAM_FILTER_STRING = "records-selection";
 	public static final String PARAM_XAXIS_NAME = "x-axis";
 	public static final String PARAM_YAXIS_NAME = "y-axis";
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
