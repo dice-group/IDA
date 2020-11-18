@@ -1,16 +1,10 @@
-import React, { Component } from 'react';
-import * as d3 from 'd3';
-import { withStyles } from "@material-ui/core/styles";
-import "./barchart.css";
-import { IDA_CONSTANTS } from '../../constants';
+import React, { Component } from "react";
+import * as d3 from "d3";
 
-const styles = theme => ({
-  root: {
-    border: "1px solid black",
-    overflow:"hidden"
-  },
-});
-class IDABarGraph extends Component {
+import "./barchart.css";
+import { IDA_CONSTANTS } from "../../constants";
+
+export default class IDABarGraph extends Component {
   margin = {
     top: 20,
     right: 0,
@@ -146,10 +140,9 @@ class IDABarGraph extends Component {
   }
 
   render() {
-    return
-	  <div className="tab-container">
-	  	<div className="bargraph-container" id={this.containerId} style={{border: "1px solid black"}}></div >
-	  </div>;
+    return <div className="tab-container">
+      <div className="bargraph-container" id={this.containerId}>
+      </div>
+    </div>;
   }
 }
-export default withStyles(styles, { withTheme: true })(IDABarGraph);
