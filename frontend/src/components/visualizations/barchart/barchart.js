@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import * as d3 from 'd3';
+import React, { Component } from "react";
+import * as d3 from "d3";
 
 import "./barchart.css";
-import { IDA_CONSTANTS } from '../../constants';
+import { IDA_CONSTANTS } from "../../constants";
 
 export default class IDABarGraph extends Component {
   margin = {

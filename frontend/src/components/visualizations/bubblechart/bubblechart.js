@@ -4,6 +4,12 @@ import * as d3 from "d3";
 import "./bubblechart.css";
 
 export default class IDABubbleGraph extends Component {
+  margin = {
+    top: 20,
+    right: 0,
+    bottom: 100,
+    left: 60
+  };
   height = 700;
   width = 1000;
   graphData = {};
@@ -53,6 +59,11 @@ export default class IDABubbleGraph extends Component {
 
       entry.append("title")
         .text(d => (d.data.description + ':  ' + d.value));
+
+      const zoom = d3.zoom()
+        .scaleExtent([0.1, 10])
+        .on('zoom', function (event) { svg.attr('transform', event.transform); });
+      svg.call(zoom);
     }
   }
   render() {
