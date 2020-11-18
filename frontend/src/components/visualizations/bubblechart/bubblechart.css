@@ -1,0 +1,8 @@
+.bubblechart-container {
+  width: 1000px;
+}
+
+.tab-container {
+  max-width: 100%;
+  overflow-x: auto;
+}

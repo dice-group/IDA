@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { withStyles } from "@material-ui/core/styles";
 import * as d3 from 'd3';
 
+import "./bubblechart.css";
 
 const styles = theme => ({
   root: {
-    border: "1px solid black", 
+    border: "1px solid black",
     overflow:"hidden"
   },
 });
@@ -17,8 +18,8 @@ class IDABubbleGraph extends Component {
         bottom: 100,
         left: 60
       };
-  height = 700 
-  width = 1000 
+  height = 700
+  width = 1000
   graphData = {};
   containerId = "";
 
@@ -47,7 +48,7 @@ class IDABubbleGraph extends Component {
         const entry = svg.selectAll("g")
             .data(root.leaves())
             .join("g")
-            .attr("transform", d => `translate(${d.x + 1},${d.y + 1})`); 
+            .attr("transform", d => `translate(${d.x + 1},${d.y + 1})`);
         entry.append("circle")
             .attr("id", (d, i) => "clip" + i)
             .attr("r", d => d.r)
@@ -71,8 +72,9 @@ class IDABubbleGraph extends Component {
   }
   render() {
     const { classes } = this.props;
-        return <div className={classes.root} id={this.containerId} ></div >;
-
+    return <div className="tab-container">
+		<div className={classes.root} id={this.containerId} ></div >
+	</div>;
   }
 
 }

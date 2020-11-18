@@ -6,7 +6,7 @@ import { IDA_CONSTANTS } from '../../constants';
 
 const styles = theme => ({
   root: {
-    border: "1px solid black", 
+    border: "1px solid black",
     overflow:"hidden"
   },
 });
@@ -146,9 +146,10 @@ class IDABarGraph extends Component {
   }
 
   render() {
-    
-    return <div className="bargraph-container" id={this.containerId
-    } style={{border: "1px solid black"}}></div >;
+    return
+	  <div className="tab-container">
+	  	<div className="bargraph-container" id={this.containerId} style={{border: "1px solid black"}}></div >
+	  </div>;
   }
 }
 export default withStyles(styles, { withTheme: true })(IDABarGraph);
