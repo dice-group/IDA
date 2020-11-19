@@ -76,7 +76,6 @@ public class VisualizeAction implements Action {
 				String paramType;
 				String datasetName = payload.get("activeDS").toString();
 				String tableName = payload.get("activeTable").toString();
-				System.out.println("\n\n" + paramMap + "\n\n");
 				String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 
 				if (ValidatorUtil.isStringEmpty(filterString)) {
@@ -102,7 +101,6 @@ public class VisualizeAction implements Action {
 							if (i > 1) {
 								dialogFlowUtil.deleteContext("get_" + attributeList.get(i - 1) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 							}
-							System.out.println("\n\n\n>>>> get_" + attributeList.get(i));
 							dialogFlowUtil.setContext("get_" + attributeList.get(i));
 							textMsg = new StringBuilder("Which column should be mapped to " + attributeList.get(i) + " ?");
 							break;
@@ -144,7 +142,7 @@ public class VisualizeAction implements Action {
 						}
 					}
 					if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
-						tableData = dataUtil.getData(datasetName, tableName, columnNameList);
+						tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
 						getParameters(paramMap);
 						switch (vizType) {
 							case IDAConst.VIZ_TYPE_BAR_CHART:
