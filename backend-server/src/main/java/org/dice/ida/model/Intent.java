@@ -16,6 +16,7 @@ public enum Intent {
 	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
 	VISUALIZE("bar_chart",IDAConst.UIA_BARGRAPH),
 	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
+	CLUSTERING("clustering",IDAConst.UAC_NRMLMSG),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG),
     BOOK_FLIGHT("book_flight", IDAConst.UAC_NRMLMSG);
 
