@@ -2,6 +2,8 @@ package org.dice.ida.action.process;
 
 import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.Action;
+import org.dice.ida.action.def.ListDataSetsAction;
+import org.dice.ida.action.def.ListVisualizationsAction;
 import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.SuggestVisualization;
 import org.dice.ida.action.def.LineChartAction;
@@ -33,6 +35,12 @@ public class ActionMappingHelper {
 //				break;
 			case LOAD_DATASET:
 				action = appContext.getBean(LoadDataSetAction.class);
+				break;
+			case LIST_DATASET:
+				action = appContext.getBean(ListDataSetsAction.class);
+				break;
+			case LIST_VISUALIZATION:
+				action = appContext.getBean(ListVisualizationsAction.class);
 				break;
 			case SUGGEST_VISUALIZATION:
 				action = appContext.getBean(SuggestVisualization.class);
