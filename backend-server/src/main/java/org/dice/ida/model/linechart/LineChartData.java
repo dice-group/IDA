@@ -1,12 +1,13 @@
 package org.dice.ida.model.linechart;
 
+import java.util.Date;
 import java.util.List;
 
 public class LineChartData {
 	private String chartDesc;
 	private String xAxisLabel;
 	private String yAxisLabel;
-	private List<String> xAxisLabels;
+	private List<Date> xAxisLabels;
 	private List<LineChartItem> lines;
 
 	public String getChartDesc() {
@@ -33,11 +34,11 @@ public class LineChartData {
 		this.yAxisLabel = yAxisLabel;
 	}
 
-	public List<String> getxAxisLabels() {
+	public List<Date> getxAxisLabels() {
 		return xAxisLabels;
 	}
 
-	public void setxAxisLabels(List<String> xAxisLabels) {
+	public void setxAxisLabels(List<Date> xAxisLabels) {
 		this.xAxisLabels = xAxisLabels;
 	}
 

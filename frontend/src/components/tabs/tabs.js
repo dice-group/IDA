@@ -11,6 +11,7 @@ import IDABubbleGraph from "./../visualizations/bubblechart/bubblechart";
 import CloseIcon from "@material-ui/icons/Close";
 import "./tabs.css";
 import { Grid, IconButton } from "@material-ui/core";
+import IDALineChart from "../visualizations/linechart/linechart";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -68,6 +69,8 @@ export default function ScrollableTabsButtonAuto(props) {
         return <IDABarChart data={tab.data} nodeId={tab.id} />;
       case "bubblechart":
         return <IDABubbleGraph data={tab.data} nodeId={tab.id} />;
+      case "linechart":
+        return <IDALineChart data={tab.data} nodeId={tab.id} />;
       default:
         return null;
     }
