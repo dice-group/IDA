@@ -74,29 +74,99 @@ public class VisualizeAction implements Action {
 				instanceMap = new RDFUtil().getInstances(vizType);
 				String datasetName = payload.get("activeDS").toString();
 				String tableName = payload.get("activeTable").toString();
-				attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
-				List<String> columnNameList = getColumnNames(attributeList, paramMap);
-				List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList);
-				columnMap = columnDetail.get(0);
-				columnUniquenessMap = columnDetail.get(1);
-				Set<String> options = processParameters(paramMap);
-				if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
-					tableData = dataUtil.getData(datasetName, tableName, columnNameList);
-					getParameters(paramMap);
-					if (IDAConst.VIZ_TYPE_BAR_CHART.equals(vizType)) {
-						createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
-						createBarGraphResponse();
-						chatMessageResponse.setMessage(IDAConst.BAR_GRAPH_LOADED);
-						chatMessageResponse.setUiAction(IDAConst.UIA_BARGRAPH);
-					} else {
-						createGraphData(IDAConst.BUBBLE_LABEL_PARAM, IDAConst.BUBBLE_SIZE_PARAM, paramMap);
-						createBubbleChartResponse(datasetName, tableName);
-						chatMessageResponse.setMessage(IDAConst.BC_LOADED);
-						chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
+				String attributeType;
+				String attributeName;
+				String paramType;
+				String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
+
+				if (ValidatorUtil.isStringEmpty(filterString)) {
+					double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+					if (confidence == 0.0) {
+						paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
+						chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 					}
-				} else {
-					chatMessageResponse.setMessage(textMsg.toString());
+					chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+				} else {
+					attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
+					List<String> columnNameList = getColumnNames(attributeList, paramMap);
+					List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList);
+					Set<String> options = new HashSet<>();
+					columnMap = columnDetail.get(0);
+					columnUniquenessMap = columnDetail.get(1);
+					for (int i = 1; i <= attributeList.size(); i++) {
+						attributeName = attributeList.get(i);
+						attributeType = paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_TYPE_SUFFIX, "").toString();
+						if (paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
+							if (i > 1) {
+								dialogFlowUtil.deleteContext("get_" + attributeList.get(i - 1) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+							}
+							dialogFlowUtil.setContext("get_" + attributeList.get(i));
+							textMsg = new StringBuilder("Which column should be mapped to " + attributeList.get(i) + " ?");
+							break;
+						}
+						paramType = attributeType.isEmpty() ?
+								columnMap.get(paramMap.get(attributeName).toString()) :
+								attributeType;
+						options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty());
+						if (options.size() == 0 && attributeType.isEmpty()) {
+							dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+							dialogFlowUtil.setContext("get_" + attributeList.get(i));
+							textMsg = new StringBuilder("It cannot be used as " + attributeList.get(i) + ". Please give a different column?");
+							break;
+						} else if (options.size() == 0 || (options.size() > 1 && attributeType.isEmpty())) {
+							dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
+							dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+							textMsg = new StringBuilder("It can be used as ");
+							textMsg.append(String.join(" or ", options));
+							textMsg.append("\n Which option do you need?");
+							break;
+						}
+						if (i == 1 && !attributeType.isEmpty() && IDAConst.INSTANCE_PARAM_TYPE_BINS.equals(attributeType.toLowerCase())) {
+							Value paramVal = (Value) paramMap.get(IDAConst.PARAMETER_TYPE_BIN_SIZE);
+							if ("date".equals(columnMap.get(paramMap.get(attributeName).toString()))) {
+								if (paramVal == null || !paramVal.hasStructValue()) {
+									dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
+									dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_DURATION);
+									textMsg = new StringBuilder("What should be the duration of each bin?");
+									break;
+								}
+							} else {
+								if (paramVal == null) {
+									dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
+									dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_SIZE);
+									textMsg = new StringBuilder("What should be the size of each bin?");
+									break;
+								}
+							}
+						}
+					}
+					if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
+						tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
+						getParameters(paramMap);
+						switch (vizType) {
+							case IDAConst.VIZ_TYPE_BAR_CHART:
+								createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
+								createBarGraphResponse();
+								chatMessageResponse.setMessage(IDAConst.BAR_GRAPH_LOADED);
+								chatMessageResponse.setUiAction(IDAConst.UIA_BARGRAPH);
+								break;
+							case IDAConst.VIZ_TYPE_BUBBLE_CHART:
+								createGraphData(IDAConst.BUBBLE_LABEL_PARAM, IDAConst.BUBBLE_SIZE_PARAM, paramMap);
+								createBubbleChartResponse(datasetName, tableName);
+								chatMessageResponse.setMessage(IDAConst.BC_LOADED);
+								chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
+								break;
+							default:
+								chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+								break;
+						}
+					} else {
+						chatMessageResponse.setMessage(textMsg.toString());
+						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+					}
 				}
 			}
 		} catch (Exception e) {
