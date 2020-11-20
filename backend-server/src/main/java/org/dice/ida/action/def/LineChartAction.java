@@ -65,7 +65,7 @@ public class LineChartAction implements Action {
 			columnNameList.add(dateColumn);
 			columnNameList.add(labelColumn);
 			columnNameList.add(valueColumn);
-			Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList);
+			Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList).get(0);
 			validateParamTypes(columnMap);
 			tableData = new DataUtil().getData(datasetName, tableName, columnNameList);	// extract data from file
 			setBinTypeAndLabels();	// Decide the label intervals for X-Axis

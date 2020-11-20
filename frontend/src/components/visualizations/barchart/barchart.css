@@ -11,3 +11,14 @@ div.tooltip {
   pointer-events: none;
   word-break: break-word;
 }
+
+.bargraph-container {
+  width: 1030px;
+  border: "1px solid black";
+  overflow: "hidden";
+}
+
+.tab-container {
+  max-width: 100%;
+  overflow-x: auto;
+}

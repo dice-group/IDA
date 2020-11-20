@@ -11,7 +11,8 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChatIcon from "@material-ui/icons/Chat";
 import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
-import { Fab, Typography } from "@material-ui/core";
+import { Fab, Hidden, Typography } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 
 import "./home.css";
 
@@ -60,15 +61,26 @@ export default function Home(props) {
       setNavBarClass("navbar-hidden");
     }
     setNavBarVisiblity(!navBarVisiblity);
-  }
+  };
   const toggleChatWindow = () => {
     setIsChatbotOpen(!isChatbotOpen);
+  };
+  const toggleNavWindow = () => {
+    setNavBarVisiblity(!navBarVisiblity);
+    if (!navBarVisiblity) {
+      setNavBarClass("");
+    } else {
+      setNavBarClass("navwindow-shown");
+    }
   }
   return (
     <>
       <CssBaseline />
       <AppBar>
         <Toolbar>
+          <Hidden mdUp>
+            <MenuIcon onClick={toggleNavWindow} />
+          </Hidden>
           <Typography variant="h6" className={classes.title} align="center">
             Intelligent Data Assistant
           </Typography>
@@ -95,13 +107,18 @@ export default function Home(props) {
                 setActiveTable={setActiveTable}
                 tabs={tabs}
                 setTabs={setTabs}
+                navBarVisiblity={navBarVisiblity}
+                setNavBarClass={setNavBarClass}
+                setNavBarVisiblity={setNavBarVisiblity}
               />
             </div>
-            <Fab size="small" color="primary" aria-label="toggle" className={"navbar-toggle-icon"} onClick={toggleNavBar}>
-              {
-                loaded && (navBarVisiblity ? <ChevronLeftIcon /> : <ChevronRightIcon />)
-              }
-            </Fab>
+            <Hidden mdDown>
+              <Fab size="small" color="primary" aria-label="toggle" className={"navbar-toggle-icon"} onClick={toggleNavBar}>
+                {
+                  loaded && (navBarVisiblity ? <ChevronLeftIcon /> : <ChevronRightIcon />)
+                }
+              </Fab>
+            </Hidden>
           </Grid>
           <Grid item className={"content"}>
             {loadTab(loaded)}
