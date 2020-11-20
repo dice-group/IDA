@@ -7,8 +7,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Checkbox from "@material-ui/core/Checkbox";
+import Chip from '@material-ui/core/Chip';
 
 import "./linechart.css";
+import { Hidden } from "@material-ui/core";
 
 export default class IDALineChart extends Component {
     margin = {
@@ -51,22 +53,19 @@ export default class IDALineChart extends Component {
 
     drawLineChart() {
         const self = this;
-        d3.select("#" + this.containerId).append("svg")
-            .attr("height", this.height)
-            .attr("width", this.axisLabelOffset)
-            .append("text")
-            .attr("class", "y label")
-            .attr("text-anchor", "end")
-            .attr("y", 4)
-            .attr("x", this.width / -4)
-            .attr("dy", ".75em")
-            .attr("transform", "rotate(-90)")
-            .text(this.graphData.yAxisLabel);
 
         const svg = d3.select("#" + this.containerId)
             .append("svg")
             .attr("width", this.width)
             .attr("height", this.height);
+
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("x", 0 - (this.height / 2))
+            .attr("y", 10)
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text(this.graphData.yAxisLabel);
 
         d3.select("#" + this.containerId).append("svg")
             .attr("height", this.axisLabelOffset)
@@ -197,33 +196,56 @@ export default class IDALineChart extends Component {
     render() {
         return <>
             <Grid container>
-                <Grid item xs={9}>
-                    <div className="linechart-container" id={this.containerId}></div>
-                </Grid>
-                <Grid item xs={3}>
-                    <div>
-                        <List component="nav" dense={true} aria-label="graph legend" className="line-chart-legend">
+                <Hidden mdUp>
+                    <Grid item xs={12}>
+                        <div className="m-2">
                             {
                                 this.data.series.map((line) => (
-                                    <ListItem key={line.label} button onClick={(event) => this.handleListItemClick(event, line.label)}>
-                                        <ListItemAvatar>
-                                            <div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(line.label) }}></div>
-                                        </ListItemAvatar>
-                                        <ListItemText primary={line.label} />
-                                        <ListItemSecondaryAction>
-                                            <Checkbox
-                                                edge="end"
-                                                onChange={(event) => this.handleListItemClick(event, line.label)}
-                                                checked={this.state.selectedIndex.indexOf(line.label) >= 0}
-                                                color="default"
-                                            />
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
+                                    <Chip
+                                        key={line.label}
+                                        size="small"
+                                        avatar={<span className="legend-item-sm-icon mr-1" style={{ backgroundColor: this.colorFunction(line.label) }} />}
+                                        label={line.label}
+                                        onClick={(event) => this.handleListItemClick(event, line.label)}
+                                        className={{
+                                            "mr-2 mt-2": true,
+                                            "not-shown": this.state.selectedIndex.indexOf(line.label) < 0
+                                        }}
+                                    />
                                 ))
                             }
-                        </List>
-                    </div>
+                        </div>
+                    </Grid>
+                </Hidden>
+                <Grid item md={9} className="tab-container">
+                    <div className="linechart-container" id={this.containerId}></div>
                 </Grid>
+                <Hidden mdDown>
+                    <Grid item md={3}>
+                        <div>
+                            <List component="nav" dense={true} aria-label="graph legend" className="line-chart-legend">
+                                {
+                                    this.data.series.map((line) => (
+                                        <ListItem key={line.label} button onClick={(event) => this.handleListItemClick(event, line.label)}>
+                                            <ListItemAvatar>
+                                                <div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(line.label) }}></div>
+                                            </ListItemAvatar>
+                                            <ListItemText primary={line.label} />
+                                            <ListItemSecondaryAction>
+                                                <Checkbox
+                                                    edge="end"
+                                                    onChange={(event) => this.handleListItemClick(event, line.label)}
+                                                    checked={this.state.selectedIndex.indexOf(line.label) >= 0}
+                                                    color="default"
+                                                />
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                    ))
+                                }
+                            </List>
+                        </div>
+                    </Grid>
+                </Hidden>
             </Grid>
         </>;
     }
