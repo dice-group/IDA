@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.dialogflow.v2.SessionsSettings;
+import com.google.cloud.dialogflow.v2beta1.ContextsSettings;
+import com.google.cloud.dialogflow.v2beta1.SessionsSettings;
 import org.dice.ida.constant.IDAConst;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +35,7 @@ import java.util.Properties;
 public class IDAChatbotUtil {
 
 	private static Map<String, String> props;
+	private static Credentials idaCredentials;
 
 	/**
 	 * Method to read the application properties file and store it in a map as class member.
@@ -42,7 +44,7 @@ public class IDAChatbotUtil {
 	 * @throws IOException when file does not exist
 	 */
 	private static void readProperties() throws IOException {
-		props = new HashMap<String, String>();
+		props = new HashMap<>();
 		Properties prop = new Properties();
 		InputStream input = new FileInputStream(IDAChatbotUtil.class.getClassLoader().getResource("application.properties").getPath());
 		prop.load(input);
@@ -63,7 +65,7 @@ public class IDAChatbotUtil {
 		Map<String, String> credentials;
 		String credentialsFilePath = props.get("dialogflow.credentials.path");
 		String jsonString = new String(Files.readAllBytes(Paths.get(IDAChatbotUtil.class.getClassLoader().getResource(credentialsFilePath).getPath())));
-		credentials = objectMapper.readValue(jsonString, new TypeReference<Map<String, String>>() {
+		credentials = objectMapper.readValue(jsonString, new TypeReference<>() {
 		});
 		return credentials;
 	}
@@ -71,9 +73,26 @@ public class IDAChatbotUtil {
 	/**
 	 * Method to create a session settings object from the dialogflow auth credentials
 	 *
+	 * @throws IOException - when credential file does not exist
+	 * @throws NoSuchAlgorithmException - wrong encryption algorithm
+	 * @throws InvalidKeySpecException - wrong credential key
+	 *
 	 * @return Dialogflow session settings to create the session
 	 */
 	public static SessionsSettings getSessionSettings() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		createCredentials();
+		return SessionsSettings.newBuilder()
+				.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
+	}
+
+	/**
+	 * Method to create Dialogflow credential object
+	 *
+	 * @throws IOException - when credential file does not exist
+	 * @throws NoSuchAlgorithmException - wrong encryption algorithm
+	 * @throws InvalidKeySpecException - wrong credential key
+	 */
+	private static void createCredentials() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		readProperties();
 		Map<String, String> credentialsMap = readCredentials();
 			/*
@@ -88,14 +107,27 @@ public class IDAChatbotUtil {
 		KeyFactory kf = KeyFactory.getInstance(IDAConst.CRED_PRIVATE_KEY_TYPE);
 		PrivateKey rsaPrivateKey = kf.generatePrivate(keySpec);
 
-		Credentials idaCredentials = ServiceAccountCredentials.newBuilder()
+		idaCredentials = ServiceAccountCredentials.newBuilder()
 				.setProjectId(props.get(IDAConst.CRED_PATH_KEY))
 				.setPrivateKeyId(credentialsMap.get(IDAConst.CRED_PRIVATE_KEY_ID))
 				.setPrivateKey(rsaPrivateKey)
 				.setClientEmail(credentialsMap.get(IDAConst.CRED_CLIENT_EMAIL))
 				.setClientId(credentialsMap.get(IDAConst.CRED_CLIENT_ID))
 				.setTokenServerUri(URI.create(credentialsMap.get(IDAConst.CRED_TOKEN_URI))).build();
-		return SessionsSettings.newBuilder()
+	}
+
+	/**
+	 * Method to create a context settings object from the dialogflow auth credentials
+	 *
+	 *  @throws IOException - when credential file does not exist
+	 * 	@throws NoSuchAlgorithmException - wrong encryption algorithm
+	 * 	@throws InvalidKeySpecException - wrong credential key
+	 *
+	 *  @return Dialogflow context settings for context management
+	 */
+	public static ContextsSettings getContextsSettings() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException{
+		createCredentials();
+		return ContextsSettings.newBuilder()
 				.setCredentialsProvider(FixedCredentialsProvider.create(idaCredentials)).build();
 	}
 }

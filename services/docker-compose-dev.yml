@@ -13,6 +13,10 @@ services:
       - "../backend-server/src:/build/backend-server/src"
       - "../backend-server/target:/build/backend-server/target"
       - "~/ida-local-logs:/usr/local/tomcat/logs"
+    environment:
+      - FUSEKI_URL=http://fuseki:3030/
+      - FUSEKI_USER=admin
+      - FUSEKI_PW=$FUSEKI_PW
     networks:
       - ida-net
   ida-frontend:
@@ -23,5 +27,17 @@ services:
     stdin_open: true
     networks:
       - ida-net
+  fuseki:
+    image: $REGISTRY/ida/fuseki-server:$VERSION
+    ports:
+      - 3030:3030
+    environment:
+      - ADMIN_PASSWORD=$FUSEKI_PW
+    volumes:
+      - fuseki-storage:/fuseki
+    networks:
+      - ida-net
+volumes:
+  fuseki-storage:
 networks:
   ida-net:

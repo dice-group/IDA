@@ -30,6 +30,9 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     expandedNodes.indexOf(activeDSName + "_visualizations") < 0 && expandedNodes.push(activeDSName + "_visualizations");
     props.setExpandedNodeId(expandedNodes);
     props.setSelectedNodeId(activeDSName + "_" + name + "_" + (vizCount + 1));
+    if (window.matchMedia("(max-width: 991px)").matches) {
+        props.setIsChatbotOpen(false);
+    }
 }
 
 export default function IDAChatbotActionHandler(props, actionCode, payload) {
@@ -85,6 +88,9 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             props.setActiveDS(metaData.dsName);
             props.setSelectedNodeId(children[0].id);
             props.setLoaded(true);
+            if (window.matchMedia("(max-width: 991px)").matches) {
+                props.setIsChatbotOpen(false);
+            }
             break;
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_BARGRAPH: {
@@ -93,6 +99,10 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_BUBBLECHART: {
             addVisualizationEntry(props, payload.bubbleChartData, "Bubble Chart", "bubblechart", payload.activeDS);
+            break;
+        }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_LINECHART: {
+            addVisualizationEntry(props, payload.lineChartData, "Line Chart", "linechart", payload.activeDS);
             break;
         }
         default:

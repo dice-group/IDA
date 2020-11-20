@@ -47,6 +47,14 @@ export default function IDANavbar(props) {
         props.setActiveTable("");
       }
       props.setActiveDS(selectedNode.dsName);
+      if (window.matchMedia("(max-width: 991px)").matches) {
+        props.setNavBarVisiblity(!props.navBarVisiblity);
+        if (!props.navBarVisiblity) {
+          props.setNavBarClass("");
+        } else {
+          props.setNavBarClass("navwindow-shown");
+        }
+      }
     }
   };
 
