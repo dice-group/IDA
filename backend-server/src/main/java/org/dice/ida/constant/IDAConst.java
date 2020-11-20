@@ -256,6 +256,20 @@ public interface IDAConst {
 	/**
 	 * Clustering Parameters
 	 */
+	public static final String K_MEAN_CLUSTERING = "Kmeans";
+	public static final String GET_NUM_CLUSTER = "getNumCluster";
 	public static final String NUMBER_OF_CLUSTER = "num_cluster";
+	public static final String GET_INIT_METHOD = "getInitMethod";
+	public static final String INIT_METHOD = "init_method";
+	public static final String GET_MAX_ITERATION = "getMaxIteration";
+	public static final String MAX_ITERATION = "max_iteration";
+	public static final String GET_REPLACE_MISSING_VALUES = "getReplaceMissingValues";
+	public static final String IS_REPLACE_MISSING_VALUE = "isreplacemissing";
+	public static final String GET_NUM_EXECUTION_SLOT = "getNumExecutionSlot";
+	public static final String NUM_OF_SLOT = "num_slot";
+	public static final String GET_RANDOM_SEED = "getRandomSeed";
+	public static final String RANDOM_SEED = "random_seed";
+
+
 
 }
