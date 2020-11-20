@@ -39,7 +39,7 @@ export default class ChatBot extends Component {
         "activeDS": this.props.activeDS,
         "activeTable": this.props.activeTable
       };
-      axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", obj, {withCredentials: true,})
+      axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", obj, { withCredentials: true, })
         .then(response => {
           outerscope._sendMessage(response.data.message);
           const actionCode = response.data.uiAction;

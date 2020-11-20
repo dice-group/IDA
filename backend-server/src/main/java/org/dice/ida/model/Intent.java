@@ -7,6 +7,8 @@ public enum Intent {
     HELP("help", IDAConst.UAC_NRMLMSG),
     UPLOAD_DATASET("upload-dataset", IDAConst.UAC_UPLDDTMSG),
     LOAD_DATASET("load-dataset", IDAConst.UIA_LOADDS),
+    LIST_DATASET("list-dataset", IDAConst.UAC_NRMLMSG),
+	LIST_VISUALIZATION("list-visualization", IDAConst.UAC_NRMLMSG),
     SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NRMLMSG),
 	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
 	BARCHART("bar_chart",IDAConst.UIA_BARGRAPH),
