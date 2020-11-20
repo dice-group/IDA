@@ -161,6 +161,7 @@ public class VisualizeAction implements Action {
 							default:
 								chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+								break;
 						}
 					} else {
 						chatMessageResponse.setMessage(textMsg.toString());
