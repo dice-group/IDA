@@ -1,29 +1,57 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 
 import "./barchart.css";
 import { IDA_CONSTANTS } from "../../constants";
+import { Grid, Fab } from "@material-ui/core";
 
 export default class IDABarGraph extends Component {
   margin = {
     top: 20,
     right: 0,
     bottom: 100,
-    left: 60
+    left: 100
   };
   height = 700;
   width = 1000;
   graphData = {};
   containerId = "";
+  originalGraphData = {};
 
   constructor(props) {
     super(props);
     this.containerId = props.nodeId;
     this.graphData = props.data;
+    this.originalGraphData = JSON.parse(JSON.stringify(this.graphData));
+    this.state = {
+      sortMode: ""
+    };
   }
 
   componentDidMount() {
     this.graphData && this.graphData.items && this.drawBarGraph();
+  }
+
+  sortGraphItems(sortMode) {
+    document.getElementById(this.containerId).innerHTML = "";
+    if (sortMode === this.state.sortMode) {
+      this.setState({
+        sortMode: ""
+      });
+      this.graphData = this.originalGraphData;
+    } else {
+      if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC) {
+        this.graphData.items.sort((a, b) => a.y > b.y ? 1 : a.y < b.y ? -1 : 0);
+      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC) {
+        this.graphData.items.sort((a, b) => a.y > b.y ? -1 : a.y < b.y ? 1 : 0);
+      }
+      this.setState({
+        sortMode: sortMode
+      });
+    }
+    this.drawBarGraph();
   }
 
   drawBarGraph() {
@@ -33,20 +61,8 @@ export default class IDABarGraph extends Component {
       item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
     });
 
-    /**
-     * append y-axis label
-     */
-    d3.select("#" + this.containerId).append("svg")
-      .attr("height", this.height)
-      .attr("width", 30)
-      .append("text")
-      .attr("class", "y label")
-      .attr("text-anchor", "end")
-      .attr("y", 4)
-      .attr("x", this.width / -4)
-      .attr("dy", ".75em")
-      .attr("transform", "rotate(-90)")
-      .text(this.graphData.yAxisLabel);
+    // Every bar will be of static width 25px
+    this.width = this.graphData.items.length * 25;
 
     /**
      * append placeholder for the barchart
@@ -55,6 +71,18 @@ export default class IDABarGraph extends Component {
       .append("svg")
       .attr("height", this.height)
       .attr("width", this.width);
+
+
+    /**
+    * append y-axis label
+    */
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", 0 - (this.height / 2))
+      .attr("y", 10)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text(this.graphData.yAxisLabel);
 
     /**
      * append x-axis label
@@ -65,7 +93,7 @@ export default class IDABarGraph extends Component {
       .append("text")
       .text(this.graphData.xAxisLabel)
       .attr("text-anchor", "middle")
-      .attr("x", this.width / 2)
+      .attr("x", 515)
       .attr("y", 25);
 
     /**
@@ -80,7 +108,7 @@ export default class IDABarGraph extends Component {
      */
     const scaleX = d3.scaleBand()
       .domain(this.graphData.items.map(d => d.x))
-      .range([this.margin.left, this.width - this.margin.right])
+      .range([this.margin.left, this.width])
       .padding(0.1);
 
     const div = d3.select("body").append("div")
@@ -140,9 +168,24 @@ export default class IDABarGraph extends Component {
   }
 
   render() {
-    return <div className="tab-container">
-      <div className="bargraph-container" id={this.containerId}>
-      </div>
-    </div>;
+    return <Grid>
+      <Grid item xs={12}>
+        <div className="text-center pt-2 pb-2">
+          <span className="mr-3">
+            Sort the bars:
+          </span>
+          <Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC)}>
+            <TrendingUpIcon />
+          </Fab>
+          <Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC)}>
+            <TrendingDownIcon />
+          </Fab>
+        </div>
+      </Grid>
+      <Grid item xs={12}>
+        <div className="bargraph-container" id={this.containerId}>
+        </div>
+      </Grid>
+    </Grid>;
   }
 }
