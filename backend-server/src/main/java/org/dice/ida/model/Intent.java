@@ -10,8 +10,9 @@ public enum Intent {
     LIST_DATASET("list-dataset", IDAConst.UAC_NRMLMSG),
 	LIST_VISUALIZATION("list-visualization", IDAConst.UAC_NRMLMSG),
     SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NRMLMSG),
-    BAR_GRAPH("bar-graph", IDAConst.UIA_BARGRAPH),
-    BUBBLE_CHART("bubble-chart", IDAConst.UIA_BUBBLECHART),
+	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
+	BARCHART("bar_chart",IDAConst.UIA_BARGRAPH),
+	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
     private final String key;

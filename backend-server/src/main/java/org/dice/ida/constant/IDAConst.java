@@ -1,4 +1,8 @@
 package org.dice.ida.constant;
+
+import java.text.DateFormatSymbols;
+import java.util.*;
+
 /**
  * This interface consists of all the constant values across IDA
  * @author Nikit
@@ -19,6 +23,8 @@ public interface IDAConst {
 	public static final int UIA_BARGRAPH = 1005;
 	//Load bubble chart
 	public static final int UIA_BUBBLECHART = 1006;
+	// Draw line chart
+	public static  final int UIA_LINECHART = 1007;
 
 	/**
 	 *  Pre-defined action codes
@@ -35,7 +41,7 @@ public interface IDAConst {
 	 */
 	public static final String BOT_LANGUAGE = "en-US";
 	public static final String UNK_INTENT_COUNT = "unknownIntentCount";
-	public static final String[] VISUALIZATIONS_LIST = {"Bar graph", "Bubble chart"};
+	public static final String[] VISUALIZATIONS_LIST = {"Bar chart", "Bubble chart", "Line chart"};
 
 	/**
 	 * IDA response
@@ -56,6 +62,7 @@ public interface IDAConst {
 	public static final String PARAM_INTENT_DETECTION_CONFIDENCE = "intent_detection_confidence";
 	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
 	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
+	public static final String INTENT_NAME = "intentname";
 
 	// Metadata File name Pattern
 	public static final String DSMD_FILE_PATTERN = "dsmd\\.[jJ][sS][oO][nN]$";
@@ -121,4 +128,127 @@ public interface IDAConst {
 	// Db utils
 	public  static final String NULL_VALUE_IDENTIFIER = "UNKNOWN";
 	public static final String QUESTION_MARK_SYMBOL = "?";
+
+	/**
+	 * parameter validation constants
+	 */
+	public static final String FILE_DETAILS_ATTR = "filesMd";
+	public static final String FILE_NAME_ATTR = "fileName";
+	public static final String COLUMN_DETAILS_ATTR = "fileColMd";
+	public static final String COLUMN_NAME_ATTR = "colAttr";
+	public static final String COLUMN_TYPE_ATTR = "colType";
+	public static final String COLUMN_UNIQUE_ATTR = "isUnique";
+	public static final String TABLE_DOES_NOT_EXIST_MSG = "Selected table does not exist";
+
+	/**
+	 * Line chart constants
+	 */
+	public static final String LINE_CHART_PARAM_DATE_COL = "date_column";
+	public static final String LINE_CHART_PARAM_LABEL_COL = "line_label_column";
+	public static final String LINE_CHART_PARAM_VALUE_COL = "line_value_column";
+	public static final String INVALID_DATE_COLUMN_MSG = " is not a date column";
+	public static final String INVALID_NUMERIC_COLUMN_MSG = " is not a numeric column";
+
+	/**
+	 * Column data types
+	 */
+	public static final String COLUMN_TYPE_NOMINAL = "string";
+	public static final String COLUMN_TYPE_NUMERIC = "numeric";
+	public static final String COLUMN_TYPE_DATE = "date";
+	public static final String[] DATE_PATTERNS = {"dd/MM/yyyy", "dd MMM", "MMM YYYY", "dd/MM/yyyy HH:mm:ss", "dd-MMM-yyyy", "MMMM-yyyy", "YYYY"};
+	public static final String LABEL_TYPE_DATE = "day";
+	public static final String LABEL_TYPE_MONTH = "month";
+	public static final String LABEL_TYPE_YEAR = "year";
+	public static final String COUNT_OF_PREFIX = "Count of ";
+	public static final String LINE_CHART_DESC_PREFIX = "Line chart for ";
+	public static final String LINE_CHART_PROPERTY_NAME = "lineChartData";
+
+	/**
+	 * Prefixes for SPARQL queries
+	 */
+	public static final String IDA_SPARQL_PREFIX = "prefix dc: <http://purl.org/dc/elements/1.1/>\n" +
+			"prefix owl: <http://www.w3.org/2002/07/owl#>\n" +
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+			"prefix xml: <http://www.w3.org/XML/1998/namespace>\n" +
+			"prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+			"prefix ivoc: <https://www.upb.de/ida/viz/ontology/class/> \n" +
+			"prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+			"prefix ivodp: <https://www.upb.de/ida/viz/ontology/data-property/> \n" +
+			"prefix ivoop: <https://www.upb.de/ida/viz/ontology/object-property/> \n" +
+			"prefix instance: <https://www.upb.de/ida/viz/data/instance/> \n" +
+			"prefix parameter: <https://www.upb.de/ida/viz/data/parameter/> \n" +
+			"prefix reference: <https://www.upb.de/ida/viz/data/reference/> \n" +
+			"prefix information: <https://www.upb.de/ida/viz/data/information/> \n" +
+			"prefix visualization: <https://www.upb.de/ida/viz/data/visualization/> \n" +
+			"prefix instance_param: <https://www.upb.de/ida/viz/data/instance_param/> \n" +
+			"prefix representation_tree: <https://www.upb.de/ida/viz/data/representation_tree/> \n" +
+			"prefix representational_type: <https://www.upb.de/ida/viz/data/representational_type/> \n" +
+			"prefix representation_tree_node: <https://www.upb.de/ida/viz/data/representation_tree_node/>\n";
+	public static final String TRANSFORMATION_LABEL = "Transformation";
+	public static final String INSTANCE_PARAM_TYPE_KEY = "type";
+	public static final String INSTANCE_PARAM_TRANS_TYPE_KEY = "trans_type";
+	public static final String INSTANCE_PARAM_TYPE_UNIQUE = "unique";
+	public static final String INSTANCE_PARAM_TYPE_NON_UNIQUE = "non unique";
+	public static final String INSTANCE_PARAM_TYPE_NOT_REQUIRED = "not required";
+	public static final String INSTANCE_PARAM_TYPE_BINS = "bins";
+	public static final String TRANSFORMATION_TYPE_AVG = "average";
+	public static final String TRANSFORMATION_TYPE_SUM = "sum of";
+	public static final String TRANSFORMATION_TYPE_COUNT = "count of";
+
+	public static final Map<String, List<String>> PARAM_TYPE_TREE = new HashMap<>() {{
+		put("numeric", new ArrayList<>() {
+			{
+				add("numeric");
+				add("bins");
+				add("unique");
+				add("non unique");
+				add("sum of");
+				add("average");
+			}
+		});
+		put("date", new ArrayList<>() {
+			{
+				add("date");
+				add("bins");
+				add("unique");
+				add("non unique");
+			}
+		});
+		put("string", new ArrayList<>() {
+			{
+				add("string");
+				add("unique");
+				add("non unique");
+			}
+		});
+	}};
+	public static final List<String> MONTHS_LIST = Arrays.asList(new DateFormatSymbols().getMonths());
+	public static final String COMPARATOR_TYPE_DOUBLE = "doubleString";
+	public static final String COMPARATOR_TYPE_DATE = "dateString";
+	public static final String COMPARATOR_TYPE_MONTH = "monthYearString";
+	public static final String COMPARATOR_TYPE_YEAR = "yearString";
+	public static final String COMPARATOR_TYPE_DOUBLE_BIN = "doubleBin";
+	public static final String COMPARATOR_TYPE_DATE_BIN = "dateBin";
+	public static final String COMPARATOR_TYPE_UNKNOWN = "unknown";
+
+	String VIZ_TYPE_BAR_CHART = "bar_chart";
+	String VIZ_TYPE_BUBBLE_CHART = "bubble_chart";
+	String BUBBLE_LABEL_PARAM = "Bubble_Label";
+	String BUBBLE_SIZE_PARAM = "Bubble_Size";
+	String X_AXIS_PARAM = "X-Axis";
+	String Y_AXIS_PARAM = "Y-Axis";
+
+	public static final String PARAMETER_TYPE_BIN_SIZE = "bin_size";
+	public static final String PARAMETER_TYPE_DURATION_UNIT = "unit";
+	public static final String PARAMETER_TYPE_DURATION_SIZE = "amount";
+	public static final String CONTEXT_GET_BIN_SIZE = "get_bin_size";
+	public static final String CONTEXT_GET_BIN_DURATION = "get_bin_duration";
+	public static final String DURATION_TYPE_WEEK = "wk";
+	public static final String DURATION_TYPE_MONTH = "mo";
+	public static final String DURATION_TYPE_YEAR = "yr";
+	public static final String LABEL_PATTERN_DATE = "dd-MMM-yyyy";
+	public static final String LABEL_PATTERN_MONTH = "MMMM-yyyy";
+	public static final String LABEL_PATTERN_YEAR = "yyyy";
+	public static final String ATTRIBUTE_TYPE_SUFFIX = "_type";
+
 }

@@ -1,13 +1,13 @@
 package org.dice.ida.action.process;
 
+import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.Action;
 import org.dice.ida.action.def.ListDataSetsAction;
 import org.dice.ida.action.def.ListVisualizationsAction;
 import org.dice.ida.action.def.LoadDataSetAction;
-import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.SuggestVisualization;
-import org.dice.ida.action.def.BarGraphAction;
-import org.dice.ida.action.def.BubbleChartAction;
+import org.dice.ida.action.def.LineChartAction;
+import org.dice.ida.action.def.VisualizeAction;
 import org.dice.ida.action.def.DefaultAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +45,12 @@ public class ActionMappingHelper {
 			case SUGGEST_VISUALIZATION:
 				action = appContext.getBean(SuggestVisualization.class);
 				break;
-			case BAR_GRAPH:
-				action = new BarGraphAction();
+			case LINE_CHART:
+				action = new LineChartAction();
 				break;
-			case BUBBLE_CHART:
-				action = new BubbleChartAction();
+			case BARCHART:
+			case BUBBLECHART:
+				action = appContext.getBean(VisualizeAction.class);
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);
