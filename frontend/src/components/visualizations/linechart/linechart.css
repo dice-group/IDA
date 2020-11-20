@@ -30,3 +30,7 @@ div.tooltip {
   height: 20px;
   border-radius: 50%;
 }
+
+.linechart-container {
+  border: 1px solid black;
+}
