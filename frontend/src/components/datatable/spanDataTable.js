@@ -55,10 +55,10 @@ export default function SpanningTable(props) {
                 {table.metaData.map(
                   (tableMd, j) => (
                     <Grid container spacing={3} key={j}>
-                      <Grid container item xs={12} sm={6} md={4} lg={2}>
+                      <Grid container item xs={6} md={4} lg={2}>
                         {tableMd.key}:
                       </Grid>
-                      <Grid container item xs={12} sm={6} md={8} lg={10}>
+                      <Grid container item xs={6} md={8} lg={10}>
                         {tableMd.value}
                       </Grid>
                     </Grid>
