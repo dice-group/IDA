@@ -44,42 +44,56 @@ public class LineChartAction implements Action {
 	private final Map<String, Map<String, Double>> chartData = new HashMap<>();
 
 	/**
-	 *
-	 * @param paramMap - parameters from dialogflow
+	 * @param paramMap            - parameters from dialogflow
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
-		Map<String, Object> payload = chatMessageResponse.getPayload();
-		String datasetName = payload.get("activeDS").toString();
-		String tableName = payload.get("activeTable").toString();
-		dateColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_DATE_COL).toString();
-		labelColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_LABEL_COL).toString();
-		valueColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_VALUE_COL).toString();
-		try {
-			if (ValidatorUtil.isStringEmpty(dateColumn) || ValidatorUtil.isStringEmpty(labelColumn) || ValidatorUtil.isStringEmpty(valueColumn)) {
-				SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
-				return;
+		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
+			Map<String, Object> payload = chatMessageResponse.getPayload();
+			String datasetName = payload.get("activeDS").toString();
+			String tableName = payload.get("activeTable").toString();
+			dateColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_DATE_COL).toString();
+			labelColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_LABEL_COL).toString();
+			valueColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_VALUE_COL).toString();
+			String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
+
+			if (ValidatorUtil.isStringEmpty(filterString)) {
+				double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+				if (confidence == 0.0) {
+					paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
+					chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+				}
+				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			} else {
+				try {
+					if (ValidatorUtil.isStringEmpty(dateColumn) || ValidatorUtil.isStringEmpty(labelColumn) || ValidatorUtil.isStringEmpty(valueColumn)) {
+						SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
+						return;
+					}
+					List<String> columnNameList = new ArrayList<>();
+					columnNameList.add(dateColumn);
+					columnNameList.add(labelColumn);
+					columnNameList.add(valueColumn);
+					Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList).get(0);
+					validateParamTypes(columnMap);
+					tableData = new DataUtil().getData(datasetName, tableName, columnNameList, filterString);    // extract data from file
+					setBinTypeAndLabels();    // Decide the label intervals for X-Axis
+					createChartData();    // Create data for the chart based on intervals
+					payload.put(IDAConst.LINE_CHART_PROPERTY_NAME, createLineChartData());
+					chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
+					chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+				} catch (IDAException ex) {
+					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+					chatMessageResponse.setMessage(ex.getMessage());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+					chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+				}
 			}
-			List<String> columnNameList = new ArrayList<>();
-			columnNameList.add(dateColumn);
-			columnNameList.add(labelColumn);
-			columnNameList.add(valueColumn);
-			Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList).get(0);
-			validateParamTypes(columnMap);
-			tableData = new DataUtil().getData(datasetName, tableName, columnNameList, "all");	// extract data from file
-			setBinTypeAndLabels();	// Decide the label intervals for X-Axis
-			createChartData();	// Create data for the chart based on intervals
-			payload.put(IDAConst.LINE_CHART_PROPERTY_NAME, createLineChartData());
-			chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
-			chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
-		} catch (IDAException ex) {
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			chatMessageResponse.setMessage(ex.getMessage());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 		}
 	}
 
@@ -100,7 +114,6 @@ public class LineChartAction implements Action {
 	/**
 	 * Method to create the X-Axis labels and intervals based on the size of data
 	 * Eg: Days when data is small, Months when data is spread across many months, Years when data is spread across years
-	 *
 	 */
 	private void setBinTypeAndLabels() {
 		Calendar calendar = Calendar.getInstance();
@@ -152,7 +165,6 @@ public class LineChartAction implements Action {
 
 	/**
 	 * Method to create the data for each lines based on the bin type.
-	 *
 	 */
 	private void createChartData() {
 		Map<String, Double> labelData;
@@ -215,7 +227,7 @@ public class LineChartAction implements Action {
 		List<Date> dateLabels = xAxisLabels.stream().map(l -> {
 			try {
 				return DateUtils.parseDate(l, IDAConst.DATE_PATTERNS);
-			}catch (ParseException e) {
+			} catch (ParseException e) {
 				System.out.println("Date parse exception:" + l);
 			}
 			return new Date();
@@ -250,7 +262,7 @@ public class LineChartAction implements Action {
 	/**
 	 * Method to create the label for the graph based on the bin type for a given date string
 	 *
-	 * @param type - type of the binning (date, month, or year)
+	 * @param type       - type of the binning (date, month, or year)
 	 * @param dateString - date in string format
 	 * @return - Label to be used on the graph
 	 * @throws ParseException - Exception when a date is not in correct format

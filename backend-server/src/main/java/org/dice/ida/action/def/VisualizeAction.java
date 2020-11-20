@@ -157,6 +157,10 @@ public class VisualizeAction implements Action {
 								createBubbleChartResponse(datasetName, tableName);
 								chatMessageResponse.setMessage(IDAConst.BC_LOADED);
 								chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
+								break;
+							default:
+								chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 						}
 					} else {
 						chatMessageResponse.setMessage(textMsg.toString());
