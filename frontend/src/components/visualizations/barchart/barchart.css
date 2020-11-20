@@ -13,12 +13,11 @@ div.tooltip {
 }
 
 .bargraph-container {
-  width: 1030px;
-  border: "1px solid black";
-  overflow: "hidden";
+  width: 100%;
+  border: 1px solid black;
+  overflow-x: auto;
 }
 
 .tab-container {
-  max-width: 100%;
-  overflow-x: auto;
+  width: 100%;
 }
