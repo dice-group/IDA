@@ -30,3 +30,24 @@ div.tooltip {
   height: 20px;
   border-radius: 50%;
 }
+
+.tab-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.linechart-container {
+  max-width: 100%;
+  border: 1px solid black;
+  overflow-x: auto;
+}
+
+.legend-item-sm-icon {
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 50%;
+}
+
+.not-shown .MuiChip-label {
+  text-decoration: line-through;
+}

@@ -13,5 +13,7 @@ export const IDA_CONSTANTS = {
         PDAC_UPLDDT: 2002,
         PDAC_VWDTS: 2003
     },
-    UNKNOWN_LABEL: "UNKNOWN"
+    UNKNOWN_LABEL: "UNKNOWN",
+    SORT_MODE_ASC: "asc",
+    SORT_MODE_DESC: "desc"
 };

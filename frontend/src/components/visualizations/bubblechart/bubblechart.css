@@ -1,7 +1,7 @@
 .bubblechart-container {
-  width: 1000px;
-  border: "1px solid black";
-  overflow: "hidden";
+  width: 100%;
+  border: 1px solid black;
+  overflow: hidden;
 }
 
 .tab-container {
