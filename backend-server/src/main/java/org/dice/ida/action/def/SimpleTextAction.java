@@ -17,7 +17,7 @@ public class SimpleTextAction implements Action {
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp) {
 		Map<String, Object> sessionMap = sessionUtil.getSessionMap();
 
-		int unknownIntentCount = 0;
+		int unknownIntentCount = 0; // counter for how many times IDA could not understand User
 
 		if (paramMap.get(IDAConst.PARAM_INTENT) == Intent.UNKNOWN) {
 			if (! sessionMap.containsKey(IDAConst.UNK_INTENT_COUNT)) {
@@ -29,6 +29,7 @@ public class SimpleTextAction implements Action {
 		}
 
 		if (unknownIntentCount > 0 && unknownIntentCount % 2 == 0) {
+			// If IDA could not understand user twice it will show help message automatically!
 			paramMap.put(IDAConst.PARAM_TEXT_MSG, IDAConst.BOT_HELP);
 		}
 

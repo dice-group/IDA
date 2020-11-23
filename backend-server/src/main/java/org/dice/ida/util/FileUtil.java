@@ -52,6 +52,10 @@ public class FileUtil {
 
 	}
 
+	/**
+	 * A simple method which reads available datasets and return them
+	 * @return - An ArrayList object containing names of available datasets
+	 */
 	public ArrayList<String> getListOfDatasets() {
 		return datasetsList;
 	}
