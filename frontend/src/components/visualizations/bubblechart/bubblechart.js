@@ -64,7 +64,7 @@ export default class IDABubbleGraph extends Component {
         .text(d => (d.data.description + ':  ' + d.value));
 
       const zoom = d3.zoom()
-        .scaleExtent([0.5, 5])
+        .scaleExtent([0.1, Infinity])
         .on('zoom', (event) => {
         	// we want to drag all the bubbles so we put transform on top_group
 			top_group.attr('transform', event.transform);
