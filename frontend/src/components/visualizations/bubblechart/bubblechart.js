@@ -37,9 +37,12 @@ export default class IDABubbleGraph extends Component {
       const svg = d3.select("#" + this.containerId)
         .append("svg")
         .attr("height", this.height)
-        .attr("width", this.width);
+        .attr("width", "100%");
 
-      const entry = svg.selectAll("g")
+      // Top level group to facilitate zoom and drag functionality
+	  const top_group = svg.append("g");
+
+      const entry = top_group.selectAll("g")
         .data(root.leaves())
         .join("g")
         .attr("transform", d => `translate(${d.x + 1},${d.y + 1})`);
@@ -61,8 +64,11 @@ export default class IDABubbleGraph extends Component {
         .text(d => (d.data.description + ':  ' + d.value));
 
       const zoom = d3.zoom()
-        .scaleExtent([0.1, 10])
-        .on('zoom', function (event) { svg.attr('transform', event.transform); });
+        .scaleExtent([0.1, Infinity])
+        .on('zoom', (event) => {
+        	// we want to drag all the bubbles so we put transform on top_group
+			top_group.attr('transform', event.transform);
+        });
       svg.call(zoom);
     }
   }
