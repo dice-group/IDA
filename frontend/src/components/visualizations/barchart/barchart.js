@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import * as d3 from "d3";
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import attachTooltip from "../../utilfunction";
 import "./barchart.css";
 import { IDA_CONSTANTS } from "../../constants";
 import { Grid, Fab } from "@material-ui/core";
@@ -26,8 +25,7 @@ export default class IDABarGraph extends Component {
     this.graphData = props.data;
     this.originalGraphData = JSON.parse(JSON.stringify(this.graphData));
     this.state = {
-      sortMode: "",
-      param:""
+      sortMode: ""
     };
   }
 
@@ -142,7 +140,6 @@ export default class IDABarGraph extends Component {
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(scaleX).tickSizeOuter(0))
       .selectAll("text")
-      .data(this.graphData.items)
       .attr("x", -10)
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
