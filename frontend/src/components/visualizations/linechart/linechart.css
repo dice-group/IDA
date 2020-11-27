@@ -39,7 +39,7 @@ div.tooltip {
 .linechart-container {
   max-width: 100%;
   border: 1px solid black;
-  overflow-x: auto;
+  overflow: scroll;
 }
 
 .legend-item-sm-icon {
