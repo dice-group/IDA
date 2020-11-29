@@ -7,5 +7,9 @@ public class TextUtil {
 		LevenshteinDistance d = new LevenshteinDistance();
 		return d.apply(first.toLowerCase(), second.toLowerCase()) <= 1;
 	}
+	public static boolean isDoubleString(String value)
+	{
+		return value.matches("^[-+]?[0-9]*\\.?[0-9]*$");
+	}
 
 }

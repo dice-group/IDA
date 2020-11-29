@@ -13,11 +13,10 @@ import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.RDFUtil;
 import org.dice.ida.util.ValidatorUtil;
+import org.dice.ida.util.TextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.google.protobuf.Value;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -417,19 +416,27 @@ public class VisualizeAction implements Action {
 		double max = values.get(values.size() - 1);
 		double binVal;
 		double intervalBegin;
+		String valueString;
 		for (double i = min; i < max; i += binSize) {
 			graphItems.put(i + " - " + (i + binSize - 1), 0.0);
 			labelCounts.put(i + " - " + (i + binSize - 1), 1);
 		}
 		for (Map<String, String> entry : tableData) {
 			try {
-				binVal = Double.parseDouble(entry.get(xAxisColumn));
-				intervalBegin = binVal - (binVal % binSize);
-				xValue = intervalBegin + " - " + (intervalBegin + binSize - 1);
+				valueString = entry.get(xAxisColumn);
+				if (TextUtil.isDoubleString(valueString)) {
+					binVal = Double.parseDouble(valueString);
+					intervalBegin = binVal - (binVal % binSize);
+					xValue = intervalBegin + " - " + (intervalBegin + binSize - 1);
+					updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
+				} else if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER)) {
+					xValue = entry.get(xAxisColumn);
+					updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
+				}
 			} catch (NumberFormatException ex) {
-				xValue = entry.get(xAxisColumn);
+				ex.printStackTrace();
 			}
-			updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
+
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
 			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
