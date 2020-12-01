@@ -140,6 +140,7 @@ export default class IDABarGraph extends Component {
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(scaleX).tickSizeOuter(0))
       .selectAll("text")
+      .data(this.graphData.items)
       .attr("x", -10)
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
