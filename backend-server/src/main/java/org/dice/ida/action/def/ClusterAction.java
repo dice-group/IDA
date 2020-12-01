@@ -1,6 +1,8 @@
 package org.dice.ida.action.def;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.Value;
 import org.dice.ida.constant.IDAConst;
@@ -16,6 +18,7 @@ import weka.clusterers.EM;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -32,6 +35,8 @@ import java.util.HashMap;
 public class ClusterAction implements Action {
 
 	Map<String, Object> sessionMap;
+	Map<String, Object> payload;
+	FileUtil fileUtil;
 	@Autowired
 	private DialogFlowUtil dialogFlowUtil;
 	private StringBuilder textMsg;
@@ -42,6 +47,7 @@ public class ClusterAction implements Action {
 	private String clusterMethod;
 	private String paramtertoChange;
 	private String paramValue = "";
+	private int numCluster;
 	private Map<String, String> multiParmaValue;
 	@Autowired
 	private SessionUtil sessionUtil;
@@ -49,9 +55,10 @@ public class ClusterAction implements Action {
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
 		try {
+			fileUtil = new FileUtil();
 			textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 			if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
-				Map<String, Object> payload = chatMessageResponse.getPayload();
+				payload = chatMessageResponse.getPayload();
 				datasetName = payload.get("activeDS").toString();
 				tableName = payload.get("activeTable").toString();
 				multiParmaValue = null;
@@ -64,35 +71,54 @@ public class ClusterAction implements Action {
 				if (!clusterMethod.isEmpty() && parameterChangeChoice.isEmpty()) {
 					//clusterer = getClusterer(clusterMethod);
 					if (clusterMethod.equals("getColumnList")) {
-
 						if (verifynApplyFilter(paramMap.get("column_List"))) {
 							textMsg.append("Okay! Here is the list clustering algorithm currently offered by IDA .\n" +
 									"- Kmean\n" +
 									"Which algorithm would you like to use for clustering?");
 						}
-
 					} else {
 						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters\n\n");
 						showParamList();
-
 						textMsg.append("\nWould you like to change any parameter?");
 					}
 				} else if (!paramtertoChange.isEmpty()) {
-
 					getnsetNewParamValue();
 				}
 				if (parameterChangeChoice.equals("no")) {
-					textMsg = new StringBuilder("Here is your clustered data\n");
+					loadClusteredData();
+					chatMessageResponse.setPayload(payload);
+					textMsg = new StringBuilder("Your clustered data is loaded.\n");
+					chatMessageResponse.setUiAction(IDAConst.UIA_CLUSTER);
+				} else {
+					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 				}
-
 				chatMessageResponse.setMessage(textMsg.toString());
-				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 			}
-
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void loadClusteredData() throws Exception {
+		SimpleKMeans model = new SimpleKMeans();
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode clusteredData = mapper.createArrayNode();
+		model.setNumClusters(numCluster);
+		model.buildClusterer(data);
+		ArrayList<Map> dsData = fileUtil.getDatasetContent(datasetName);
+		for (Map file : dsData) {
+			if (file.get("name").toString().equalsIgnoreCase(tableName)) {
+				ArrayNode fileData = (ArrayNode) file.get("data");
+				for (int i = 0; i < fileData.size(); i++) {
+					JsonNode row = fileData.get(i);
+					((ObjectNode) row).put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
+					clusteredData.add(row);
+					payload.put("clusteredData", clusteredData);
+				}
+			}
+		}
+
+
 	}
 
 	private boolean verifynApplyFilter(Object column_list) throws IOException {
@@ -100,7 +126,6 @@ public class ClusterAction implements Action {
 		boolean columnExist = true;
 		Value paramVal = (Value) column_list;
 		paramVal.getListValue().getValuesList().forEach(str -> columnList.add(str.getStringValue()));
-
 		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
 		CSVLoader loader = new CSVLoader();
 		loader.setSource(new File(path));
@@ -121,11 +146,9 @@ public class ClusterAction implements Action {
 							columnExist = false;
 						}
 					}
-
 				}
 			}
 			if (columnExist) {
-
 				int numAttribute = data.numAttributes();
 				for (int i = 0; i < numAttribute; i++) {
 					String name = data.attribute(i).name();
@@ -137,7 +160,6 @@ public class ClusterAction implements Action {
 				}
 			}
 		}
-
 		return columnExist;
 	}
 
@@ -145,7 +167,7 @@ public class ClusterAction implements Action {
 		EM em = new EM();
 		//em.setNumFolds(10);
 		em.buildClusterer(data);
-		int numCluster = em.numberOfClusters();
+		numCluster = em.numberOfClusters();
 		switch (clusterMethod) {
 			case IDAConst.K_MEAN_CLUSTERING:
 				sessionMap.put(IDAConst.K_MEAN_CLUSTERING, new KmeansAttribute(new SimpleKMeans(), numCluster));
