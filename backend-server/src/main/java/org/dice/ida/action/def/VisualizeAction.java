@@ -403,7 +403,7 @@ public class VisualizeAction implements Action {
 	 * @param yAxisColumnType - type of secondary parameter
 	 * @param labelCounts     - map of labels to its counts
 	 */
-	private void processBinsForNumericLabels(int binSize, String xAxisColumn, String yAxisColumn, String yAxisColumnType, Map<String, Integer> labelCounts) {
+	private void processBinsForNumericLabels(int binSize, String xAxisColumn, String yAxisColumn, String yAxisColumnType, Map<String, Integer> labelCounts) throws NumberFormatException {
 		String xValue;
 		List<Double> values = tableData.stream().map(e -> {
 			try {
@@ -422,7 +422,6 @@ public class VisualizeAction implements Action {
 			labelCounts.put(i + " - " + (i + binSize - 1), 1);
 		}
 		for (Map<String, String> entry : tableData) {
-			try {
 				valueString = entry.get(xAxisColumn);
 				if (TextUtil.isDoubleString(valueString)) {
 					binVal = Double.parseDouble(valueString);
@@ -433,10 +432,6 @@ public class VisualizeAction implements Action {
 					xValue = entry.get(xAxisColumn);
 					updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 				}
-			} catch (NumberFormatException ex) {
-				ex.printStackTrace();
-			}
-
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
 			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
