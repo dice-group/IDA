@@ -13,10 +13,10 @@ public class KmeansAttribute {
 	private int RandomNumberSeed;
 	private SimpleKMeans simpleKMeans;
 
-	public KmeansAttribute(SimpleKMeans simpleKMeans)
+	public KmeansAttribute(SimpleKMeans simpleKMeans, int numcluster)
 	{
 		this.simpleKMeans = simpleKMeans;
-		this.NumberOfCluster = simpleKMeans.getNumClusters();
+		this.NumberOfCluster = numcluster;
 		this.IntitializeMethod = simpleKMeans.getInitializationMethod().getSelectedTag().getReadable();
 		this.MaxIterations = simpleKMeans.getMaxIterations();
 		this.ReplaceMissingValues = simpleKMeans.getDontReplaceMissingValues();

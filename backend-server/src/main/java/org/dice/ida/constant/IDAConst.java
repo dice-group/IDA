@@ -25,6 +25,8 @@ public interface IDAConst {
 	public static final int UIA_BUBBLECHART = 1006;
 	// Draw line chart
 	public static  final int UIA_LINECHART = 1007;
+	//Load clustered dara
+	public static final int UIA_CLUSTER = 1008;
 
 	/**
 	 *  Pre-defined action codes
