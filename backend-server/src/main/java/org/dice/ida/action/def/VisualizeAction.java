@@ -57,7 +57,7 @@ public class VisualizeAction implements Action {
 	private Map<String, String> parameterTypeMap;
 	private Map<String, Object> payload;
 	private Map<String, Double> graphItems;
-	private Comparator<String> comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
+	private Comparator<String> comparator;
 	private StringBuilder textMsg;
 
 	/**
@@ -143,6 +143,7 @@ public class VisualizeAction implements Action {
 						}
 					}
 					if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
+						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
 						tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
 						getParameters(paramMap);
 						switch (vizType) {
@@ -163,6 +164,7 @@ public class VisualizeAction implements Action {
 								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 								break;
 						}
+						dialogFlowUtil.resetContext();
 					} else {
 						chatMessageResponse.setMessage(textMsg.toString());
 						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
