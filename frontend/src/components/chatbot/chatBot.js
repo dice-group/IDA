@@ -71,9 +71,6 @@ export default class ChatBot extends Component {
   render() {
     return (
       <div className={this.props.detail.length ? "" : "no-data"}>
-        {/* <Launcher
-         
-        /> */}
         <ChatApp   agentProfile={{
             teamName: "IDA-ChatBot",
             imageUrl: "",
