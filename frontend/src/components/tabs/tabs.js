@@ -72,7 +72,7 @@ export default function ScrollableTabsButtonAuto(props) {
       case "linechart":
         return <IDALineChart data={tab.data} nodeId={tab.id} />;
       case "clustering":
-        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id} />
+        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id} />;
       default:
         return null;
     }

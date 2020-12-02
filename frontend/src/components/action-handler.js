@@ -35,7 +35,7 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     }
 }
 
-function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
+function addAnalysisEntry(props, analysisData, label, name, activeDSName, columns) {
     const treeData = props.detail;
     const activeDS = treeData.find((node) => node.id === activeDSName);
     const analysisChildren = activeDS.children.find((c) => c.id === activeDSName + "_analyses");
@@ -55,7 +55,7 @@ function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
         type: name,
         data: analysisData,
         fileName: label + " " + (analysisCount + 1),
-        columns: Object.keys(analysisData[0]).map(k => ({ colAttr: k, colName: k }))
+        columns: columns
     };
     analysis.children.push(analysisNode);
     const tabs = props.tabs;
@@ -142,7 +142,8 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             break;
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
-            addAnalysisEntry(props, payload.clusteredData, "Clustering", "clustering", payload.activeDS);
+            const columns = Object.keys(analysisData[0]).map((k) => ({ colAttr: k, colName: k }))
+            addAnalysisEntry(props, payload.clusteredData, "Clustering", "clustering", payload.activeDS, columns);
             break;
         }
         default:
