@@ -35,6 +35,42 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     }
 }
 
+function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
+    const treeData = props.detail;
+    const activeDS = treeData.find((node) => node.id === activeDSName);
+    const analysisChildren = activeDS.children.find((c) => c.id === activeDSName + "_analyses");
+    const analysis = analysisChildren || {
+        id: activeDSName + "_analyses",
+        name: "Analyses",
+        type: "parent",
+        children: []
+    };
+    if (!analysisChildren) {
+        activeDS.children.push(analysis);
+    }
+    const analysisCount = analysis.children.filter((c) => c.type === name).length;
+    const analysisNode = {
+        id: activeDSName + "_" + name + "_" + (analysisCount + 1),
+        name: label + " " + (analysisCount + 1),
+        type: name,
+        data: analysisData,
+        fileName: label + " " + (analysisCount + 1),
+        columns: Object.keys(analysisData[0]).map(k => ({ colAttr: k, colName: k }))
+    };
+    analysis.children.push(analysisNode);
+    const tabs = props.tabs;
+    tabs.push(analysisNode);
+    props.setTabs(tabs);
+    props.setDetails(treeData);
+    const expandedNodes = props.expandedNodeId;
+    expandedNodes.indexOf(activeDSName + "_analyses") < 0 && expandedNodes.push(activeDSName + "_analyses");
+    props.setExpandedNodeId(expandedNodes);
+    props.setSelectedNodeId(activeDSName + "_" + name + "_" + (analysisCount + 1));
+    if (window.matchMedia("(max-width: 991px)").matches) {
+        props.setIsChatbotOpen(false);
+    }
+}
+
 export default function IDAChatbotActionHandler(props, actionCode, payload) {
     switch (actionCode) {
         case IDA_CONSTANTS.UI_ACTION_CODES.UIA_LOADDS: {
@@ -103,6 +139,10 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_LINECHART: {
             addVisualizationEntry(props, payload.lineChartData, "Line Chart", "linechart", payload.activeDS);
+            break;
+        }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
+            addAnalysisEntry(props, payload.clusteredData, "Clustering", "clustering", payload.activeDS);
             break;
         }
         default:
