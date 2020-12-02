@@ -139,7 +139,9 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             break;
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
-            addAnalysisEntry(props, payload.clusteredData, "Clustering", "clustering", payload.activeDS);
+            const clusteredData = payload.clusteredData;
+            clusteredData.sort((a, b) => parseInt(a.Cluster) > parseInt(b.Cluster) ? 1 : parseInt(a.Cluster) < parseInt(b.Cluster) ? -1 : 0);
+            addAnalysisEntry(props, clusteredData, "Clustering", "clustering", payload.activeDS);
             break;
         }
         default:
