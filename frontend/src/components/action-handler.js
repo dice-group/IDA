@@ -1,5 +1,14 @@
 import { IDA_CONSTANTS } from "./constants";
 
+function updateActiveTab(props, expandedNodes, parentSuffix, nodeId, activeDSName) {
+    expandedNodes.indexOf(activeDSName + parentSuffix) < 0 && expandedNodes.push(activeDSName + parentSuffix);
+    props.setExpandedNodeId(expandedNodes);
+    props.setSelectedNodeId(nodeId);
+    if (window.matchMedia("(max-width: 991px)").matches) {
+        props.setIsChatbotOpen(false);
+    }
+}
+
 function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     const treeData = props.detail;
     const activeDS = treeData.find((node) => node.id === activeDSName);
@@ -26,7 +35,7 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     tabs.push(vizNode);
     props.setTabs(tabs);
     props.setDetails(treeData);
-    updateActiveTab(props, props.expandedNodeId, "_visualizations", vizNode.id, activeDSName)
+    updateActiveTab(props, props.expandedNodeId, "_visualizations", vizNode.id, activeDSName);
 }
 
 function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
@@ -56,16 +65,7 @@ function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
     tabs.push(analysisNode);
     props.setTabs(tabs);
     props.setDetails(treeData);
-    updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName)
-}
-
-function updateActiveTab(props, expandedNodes, parentSuffix, nodeId, activeDSName) {
-    expandedNodes.indexOf(activeDSName + parentSuffix) < 0 && expandedNodes.push(activeDSName + parentSuffix);
-    props.setExpandedNodeId(expandedNodes);
-    props.setSelectedNodeId(nodeId);
-    if (window.matchMedia("(max-width: 991px)").matches) {
-        props.setIsChatbotOpen(false);
-    }
+    updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName);
 }
 
 export default function IDAChatbotActionHandler(props, actionCode, payload) {
