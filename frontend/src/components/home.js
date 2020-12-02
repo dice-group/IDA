@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ChatBot from "./chatbot/chatBot";
-import ChatApp from "./ChatBotComp/chatbotcomp";
+
 import IDANavbar from "./navbar/navbar";
 import TabsWrappedLabel from "./tabs/tabs";
 import AppBar from "@material-ui/core/AppBar";
@@ -142,7 +142,7 @@ export default function Home(props) {
           isChatbotOpen={isChatbotOpen}
           setIsChatbotOpen={setIsChatbotOpen}
         />
-      <ChatApp />
+        
       </div>
     </>
   );

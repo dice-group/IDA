@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Launcher } from "react-chat-window";
+// import { Launcher } from "react-chat-window";
+import ChatApp from "../ChatBotComp/chatbotcomp";
 import { IDA_CONSTANTS } from "../constants";
 import IDAChatbotActionHandler from "./../action-handler";
 import "./chatbot.css";
@@ -70,8 +71,10 @@ export default class ChatBot extends Component {
   render() {
     return (
       <div className={this.props.detail.length ? "" : "no-data"}>
-        <Launcher
-          agentProfile={{
+        {/* <Launcher
+         
+        /> */}
+        <ChatApp   agentProfile={{
             teamName: "IDA-ChatBot",
             imageUrl: "",
             className: ""
@@ -80,8 +83,7 @@ export default class ChatBot extends Component {
           messageList={this.state.messageList}
           showEmoji={false}
           isOpen={this.props.isChatbotOpen}
-          handleClick={this.handleClick.bind(this)}
-        />
+          handleClick={this.handleClick.bind(this)}/>
       </div>
     );
   }

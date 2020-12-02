@@ -1,16 +1,23 @@
 import React from "react";
 // import ReactDOM from "react-dom";
+// import axios from "axios";
 import "./chatbotcomp.css";
-
+// import { IDA_CONSTANTS } from "../constants";
+// import IDAChatbotActionHandler from "./../action-handler";
 export default class ChatApp extends React.Component {
-    state = {
-        title: 'IDA chatbot',
-        messages: [
-            { sender: 'user', message: 'Hi', key: 1 },
-            { sender: 'ida', message: 'Hi', key: 1 }
-        ]
-    }
+    constructor(props){
+        super(props)
+            this.state = {
+                title: 'IDA chatbot',
+                messages: [
+                    { sender: 'user', message: 'Hi', key: 1 },
+                    { sender: 'ida', message: 'Hi', key: 1 }
+                 ],
+            }
+}
 
+
+  
     richTextFormatter(text) {
 
         text = text.replace(/[&<>"']/g, function ($0) {
@@ -49,6 +56,7 @@ export default class ChatApp extends React.Component {
 
     render() {
         return (
+            // <div className={this.props.detail.length ? "" : "no-data"}>
             <div className ="chatbox" >
                 <div className ="chatbox-title">{this.state.title}</div>
                 <div className="chatbox-chat-area">
@@ -76,7 +84,6 @@ export default class ChatApp extends React.Component {
                     </div>
                 </div>
             </div>
-        
         )
     }
 }
