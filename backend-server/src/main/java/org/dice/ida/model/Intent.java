@@ -13,6 +13,7 @@ public enum Intent {
 	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
 	BARCHART("bar_chart",IDAConst.UIA_BARGRAPH),
 	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
+	CLUSTERING("clustering",IDAConst.UAC_NRMLMSG),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
     private final String key;
