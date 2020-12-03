@@ -15,9 +15,12 @@ import org.dice.ida.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import weka.clusterers.EM;
+import weka.clusterers.RandomizableClusterer;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.StringToNominal;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,15 +98,15 @@ public class ClusterAction implements Action {
 				chatMessageResponse.setMessage(textMsg.toString());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		}
 	}
 
 	private void loadClusteredData() throws Exception {
-		SimpleKMeans model = new SimpleKMeans();
+		RandomizableClusterer model = getClusterModel();
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode clusteredData = mapper.createArrayNode();
-		model.setNumClusters(numCluster);
 		model.buildClusterer(data);
 		ArrayList<Map> dsData = fileUtil.getDatasetContent(datasetName);
 		for (Map file : dsData) {
@@ -117,8 +120,22 @@ public class ClusterAction implements Action {
 				}
 			}
 		}
+	}
 
+	private RandomizableClusterer getClusterModel() throws Exception {
+		RandomizableClusterer clusterer;
+		switch (clusterMethod) {
+			case IDAConst.K_MEAN_CLUSTERING:
 
+				SimpleKMeans simpleKMeans = new SimpleKMeans();
+				simpleKMeans.setNumClusters(numCluster);
+				clusterer = simpleKMeans;
+				break;
+			default:
+				clusterer = new SimpleKMeans();
+
+		}
+		return clusterer;
 	}
 
 	private boolean verifynApplyFilter(Object column_list) throws IOException {
@@ -165,7 +182,7 @@ public class ClusterAction implements Action {
 
 	private void showParamList() throws Exception {
 		EM em = new EM();
-		//em.setNumFolds(10);
+		filterStringAttribyte();
 		em.buildClusterer(data);
 		numCluster = em.numberOfClusters();
 		switch (clusterMethod) {
@@ -173,6 +190,24 @@ public class ClusterAction implements Action {
 				sessionMap.put(IDAConst.K_MEAN_CLUSTERING, new KmeansAttribute(new SimpleKMeans(), numCluster));
 				sessionUtil.setSessionMap(sessionMap);
 				showKmeansParamList();
+		}
+	}
+
+	private void filterStringAttribyte() throws Exception {
+		StringToNominal filter = new StringToNominal();
+		StringBuilder columnsRange = new StringBuilder();
+		for (int i = 0; i < data.numAttributes(); i++) {
+			if (data.attribute(i).isString()) {
+				columnsRange.append(i + 1).append(",");
+
+			}
+		}
+		if (!columnsRange.toString().isEmpty()) {
+			if (columnsRange.lastIndexOf(",") == columnsRange.length() - 1)
+				columnsRange.deleteCharAt(columnsRange.length() - 1);
+			filter.setAttributeRange(columnsRange.toString());
+			filter.setInputFormat(data);
+			data = Filter.useFilter(data, filter);
 		}
 	}
 
