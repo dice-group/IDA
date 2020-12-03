@@ -3,6 +3,7 @@ import axios from "axios";
 import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
 import IDAChatbotActionHandler from "../action-handler";
+import LinearWithValueLabel from "../progress/progress";
 
 export default class ChatApp extends React.Component {
 
@@ -127,6 +128,7 @@ export default class ChatApp extends React.Component {
                         </div>
 
                         <div className="chat-area-input" >
+                            <LinearWithValueLabel value={this.state.progressValue} />
                             <input type="text" placeholder="Enter your message .." onKeyUp={this.messageSend} value={this.state.newValue} />
                         </div>
                     </div>
