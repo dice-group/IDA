@@ -1,5 +1,14 @@
 import { IDA_CONSTANTS } from "./constants";
 
+function updateActiveTab(props, expandedNodes, parentSuffix, nodeId, activeDSName) {
+    expandedNodes.indexOf(activeDSName + parentSuffix) < 0 && expandedNodes.push(activeDSName + parentSuffix);
+    props.setExpandedNodeId(expandedNodes);
+    props.setSelectedNodeId(nodeId);
+    if (window.matchMedia("(max-width: 991px)").matches) {
+        props.setIsChatbotOpen(false);
+    }
+}
+
 function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     const treeData = props.detail;
     const activeDS = treeData.find((node) => node.id === activeDSName);
@@ -26,10 +35,11 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     tabs.push(vizNode);
     props.setTabs(tabs);
     props.setDetails(treeData);
-    updateActiveTab(props, props.expandedNodeId, "_visualizations", vizNode.id, activeDSName)
+    props.setActiveTableData(null);
+    updateActiveTab(props, props.expandedNodeId, "_visualizations", vizNode.id, activeDSName);
 }
 
-function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
+function addAnalysisEntry(props, analysisData, label, name, activeDSName, tableName) {
     const treeData = props.detail;
     const activeDS = treeData.find((node) => node.id === activeDSName);
     const analysisChildren = activeDS.children.find((c) => c.id === activeDSName + "_analyses");
@@ -48,24 +58,19 @@ function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
         name: label + " " + (analysisCount + 1),
         type: name,
         data: analysisData,
-        fileName: label + " " + (analysisCount + 1),
-        columns: Object.keys(analysisData[0]).map((k) => ({ colAttr: k, colName: k }))
+        fileName: tableName,
+        columns: Object.keys(analysisData[0]).map((k) => ({ colAttr: k, colName: k })),
+        dsName: activeDSName
     };
     analysis.children.push(analysisNode);
     const tabs = props.tabs;
     tabs.push(analysisNode);
     props.setTabs(tabs);
     props.setDetails(treeData);
-    updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName)
-}
-
-function updateActiveTab(props, expandedNodes, parentSuffix, nodeId, activeDSName) {
-    expandedNodes.indexOf(activeDSName + parentSuffix) < 0 && expandedNodes.push(activeDSName + parentSuffix);
-    props.setExpandedNodeId(expandedNodes);
-    props.setSelectedNodeId(nodeId);
-    if (window.matchMedia("(max-width: 991px)").matches) {
-        props.setIsChatbotOpen(false);
-    }
+    props.setActiveTable(tableName);
+    props.setActiveDS(activeDSName);
+    props.setActiveTableData(analysisData);
+    updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName);
 }
 
 export default function IDAChatbotActionHandler(props, actionCode, payload) {
@@ -121,6 +126,7 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             props.setActiveDS(metaData.dsName);
             props.setSelectedNodeId(children[0].id);
             props.setLoaded(true);
+            props.setActiveTableData(null);
             if (window.matchMedia("(max-width: 991px)").matches) {
                 props.setIsChatbotOpen(false);
             }
@@ -139,7 +145,9 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
             break;
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
-            addAnalysisEntry(props, payload.clusteredData, "Clustering", "clustering", payload.activeDS);
+            const clusteredData = payload.clusteredData;
+            clusteredData.sort((a, b) => parseInt(a.Cluster, 10) > parseInt(b.Cluster, 10) ? 1 : parseInt(a.Cluster, 10) < parseInt(b.Cluster, 10) ? -1 : 0);
+            addAnalysisEntry(props, clusteredData, "Clustering", "clustering", payload.activeDS, payload.activeTable);
             break;
         }
         default:

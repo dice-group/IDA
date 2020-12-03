@@ -2,6 +2,7 @@ package org.dice.ida.action.def;
 
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.vizsuggest.VizSuggestOrchestrator;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 @Component
 public class SuggestVisualization implements Action {
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
 		try {
 			Map<String, Object> payload = chatMessageResponse.getPayload();
 			if (payload.get("activeDS") == null || payload.get("activeTable") == null) {

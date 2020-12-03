@@ -105,7 +105,7 @@ public class ValidatorUtil {
 	 * @param columnList - List of column names to be validated (provided as parameters to the visualization)
 	 * @throws IDAException - Throws exception with a message based on the failed scenario
 	 */
-	public static List<Map<String, String>> areParametersValid(String dsName, String tableName, List<String> columnList) throws IDAException {
+	public static List<Map<String, String>> areParametersValid(String dsName, String tableName, List<String> columnList, boolean fromTemporaryData) throws IDAException {
 		if (isStringEmpty(dsName)) {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
@@ -133,6 +133,11 @@ public class ValidatorUtil {
 							columns.add(columnName.toLowerCase());
 							columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
 							columnUniquenessMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_UNIQUE_ATTR).asText());
+						}
+						if(fromTemporaryData) {
+							columns.add("cluster");
+							columnTypeMap.put("Cluster", "numeric");
+							columnUniquenessMap.put("Cluster", "false");
 						}
 						for (String column : columnList) {
 							if (!columns.contains(column.toLowerCase())) {

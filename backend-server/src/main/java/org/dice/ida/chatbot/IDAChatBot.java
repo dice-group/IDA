@@ -84,7 +84,7 @@ public class IDAChatBot {
 
 			AutowireCapableBeanFactory factory = appContext.getAutowireCapableBeanFactory();
 			ActionExecutor actionExecutor = factory.getBean(ActionExecutor.class, queryResult);
-			actionExecutor.processAction(messageResponse);
+			actionExecutor.processAction(messageResponse, userMessage);
 		} catch (Exception ex) {
 			messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
 			messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);

@@ -3,7 +3,9 @@ package org.dice.ida.action.def;
 import org.apache.http.ParseException;
 import org.apache.http.client.utils.DateUtils;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.LableComparator;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
@@ -65,7 +67,7 @@ public class VisualizeAction implements Action {
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
 		try {
 			textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 			if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
@@ -77,6 +79,7 @@ public class VisualizeAction implements Action {
 				String attributeType;
 				String attributeName;
 				String paramType;
+				boolean onTemporaryData = message.isTemporaryData();
 				String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 
 				if (ValidatorUtil.isStringEmpty(filterString)) {
@@ -91,7 +94,7 @@ public class VisualizeAction implements Action {
 				} else {
 					attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
 					List<String> columnNameList = getColumnNames(attributeList, paramMap);
-					List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList);
+					List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
 					Set<String> options = new HashSet<>();
 					columnMap = columnDetail.get(0);
 					columnUniquenessMap = columnDetail.get(1);
@@ -144,7 +147,11 @@ public class VisualizeAction implements Action {
 					}
 					if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
 						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
-						tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
+						if (onTemporaryData) {
+							tableData = message.getActiveTableData();
+						} else {
+							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
+						}
 						getParameters(paramMap);
 						switch (vizType) {
 							case IDAConst.VIZ_TYPE_BAR_CHART:
@@ -171,8 +178,14 @@ public class VisualizeAction implements Action {
 					}
 				}
 			}
+		} catch (IDAException ex) {
+			ex.printStackTrace();
+			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			chatMessageResponse.setMessage(ex.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
+			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 		}
 	}
 

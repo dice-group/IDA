@@ -56,8 +56,13 @@ export default function ScrollableTabsButtonAuto(props) {
   const value = props.selectedNodeId || data.id;
   const handleChange = (event, newValue) => {
     props.setSelectedNodeId(newValue);
-    const selectedTab = tabs.find((tab) => tab.id === newValue && tab.type === "table") || {};
-    props.setActiveTable(selectedTab.name || "");
+    const selectedTab = tabs.find((tab) => tab.id === newValue && (tab.type === "table" || tab.type === "clustering")) || {};
+    props.setActiveTable(selectedTab.fileName || "");
+    if (selectedTab.type === "clustering") {
+      props.setActiveTableData(selectedTab.data);
+    } else {
+      props.setActiveTableData(null);
+    }
   };
   const renderData = (tab) => {
     switch (tab.type) {
