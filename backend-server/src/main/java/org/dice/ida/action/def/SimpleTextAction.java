@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.Intent;
 import org.dice.ida.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class SimpleTextAction implements Action {
 	private SessionUtil sessionUtil;
 
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage message) {
 		Map<String, Object> sessionMap = sessionUtil.getSessionMap();
 
 		int unknownIntentCount = 0; // counter for how many times IDA could not understand User

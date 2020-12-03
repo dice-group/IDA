@@ -37,7 +37,9 @@ export default class ChatBot extends Component {
         "timestamp": "",
         "senderName": "user",
         "activeDS": this.props.activeDS,
-        "activeTable": this.props.activeTable
+        "activeTable": this.props.activeTable,
+        "activeTableData": this.props.activeTableData,
+        "temporaryData": this.props.activeTableData ? true : false
       };
       axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", obj, { withCredentials: true, })
         .then(response => {

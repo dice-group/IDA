@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.Value;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.clustering.KmeansAttribute;
 import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.FileUtil;
@@ -53,7 +54,7 @@ public class ClusterAction implements Action {
 	private SessionUtil sessionUtil;
 
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
 		try {
 			fileUtil = new FileUtil();
 			textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());

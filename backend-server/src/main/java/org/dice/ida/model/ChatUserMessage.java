@@ -1,6 +1,8 @@
 package org.dice.ida.model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class ChatUserMessage {
 
@@ -10,6 +12,24 @@ public class ChatUserMessage {
 	private String activeDS;
 	private String activeTable;
 	private Date timestamp;
+	private List<Map<String, String>> activeTableData;
+	private boolean temporaryData;
+
+	public List<Map<String, String>> getActiveTableData() {
+		return activeTableData;
+	}
+
+	public void setActiveTableData(List<Map<String, String>> activeTableData) {
+		this.activeTableData = activeTableData;
+	}
+
+	public boolean isTemporaryData() {
+		return temporaryData;
+	}
+
+	public void setTemporaryData(boolean temporaryData) {
+		this.temporaryData = temporaryData;
+	}
 
 	public ChatUserMessage() {
 	}

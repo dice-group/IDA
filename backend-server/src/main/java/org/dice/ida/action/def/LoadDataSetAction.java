@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.util.FileUtil;
 import org.springframework.stereotype.Component;
 import org.dice.ida.model.ChatMessageResponse;
@@ -12,7 +13,7 @@ public class LoadDataSetAction implements Action {
 
 
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage message) {
 		try {
 			FileUtil fileUtil = new FileUtil();
 			// Check if datasetName is provided

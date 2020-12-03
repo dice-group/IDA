@@ -4,6 +4,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.linechart.LineChartData;
 import org.dice.ida.model.linechart.LineChartItem;
 import org.dice.ida.util.DataUtil;
@@ -48,11 +49,12 @@ public class LineChartAction implements Action {
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 			Map<String, Object> payload = chatMessageResponse.getPayload();
 			String datasetName = payload.get("activeDS").toString();
 			String tableName = payload.get("activeTable").toString();
+			boolean onTemporaryData = message.isTemporaryData();
 			dateColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_DATE_COL).toString();
 			labelColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_LABEL_COL).toString();
 			valueColumn = paramMap.get(IDAConst.LINE_CHART_PARAM_VALUE_COL).toString();
@@ -77,9 +79,13 @@ public class LineChartAction implements Action {
 					columnNameList.add(dateColumn);
 					columnNameList.add(labelColumn);
 					columnNameList.add(valueColumn);
-					Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList).get(0);
+					Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData).get(0);
 					validateParamTypes(columnMap);
-					tableData = new DataUtil().getData(datasetName, tableName, columnNameList, filterString);    // extract data from file
+					if (onTemporaryData) {
+						tableData = message.getActiveTableData();
+					} else {
+						tableData = new DataUtil().getData(datasetName, tableName, columnNameList, filterString);    // extract data from file
+					}
 					setBinTypeAndLabels();    // Decide the label intervals for X-Axis
 					createChartData();    // Create data for the chart based on intervals
 					payload.put(IDAConst.LINE_CHART_PROPERTY_NAME, createLineChartData());
@@ -173,7 +179,7 @@ public class LineChartAction implements Action {
 		double value;
 		String dateKey;
 		for (Map<String, String> row : tableData) {
-			date = row.get(dateColumn);
+			date = row.get(dateColumn).trim();
 			label = row.get(labelColumn);
 			value = 0.0;
 			try {
@@ -269,7 +275,7 @@ public class LineChartAction implements Action {
 	 */
 	private String extractDateKey(String type, String dateString) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
-		Date date = DateUtils.parseDateStrictly(dateString, IDAConst.DATE_PATTERNS);
+		Date date = DateUtils.parseDateStrictly(dateString.trim(), IDAConst.DATE_PATTERNS);
 		calendar.setTime(date);
 		switch (type) {
 			case IDAConst.LABEL_TYPE_MONTH:

@@ -2,6 +2,7 @@ package org.dice.ida.action.def;
 
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 @Component
 public class ListVisualizationsAction implements Action {
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage userMessage) {
 		String[] vs_list = IDAConst.VISUALIZATIONS_LIST;
 
 		int list_size = vs_list.length;
