@@ -10,7 +10,6 @@ const useStyles = makeStyles({
 });
 
 export default function IDALinearProgress(props) {
-	console.log(props);
     const classes = useStyles();
     const [progress, setProgress] = React.useState(0);
     React.useEffect(() => {

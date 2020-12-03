@@ -6,11 +6,13 @@
 }
 
 .chatbox {
+    background: #fff;
     border: solid 1px #ccc;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     width: 370px;
     position: absolute;
+    z-index: 2000;
     top: 80px;
     left: 50%;
     margin-left: -200px;
@@ -22,6 +24,7 @@
     border-bottom: solid 1px #ccc;
     background-color: #4e8cff;
     color: #fff;
+    cursor: move;
 }
 
 

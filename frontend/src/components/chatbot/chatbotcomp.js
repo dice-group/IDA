@@ -4,6 +4,7 @@ import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
 import IDAChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
+import Draggable from "react-draggable";
 
 export default class ChatApp extends React.Component {
 
@@ -110,6 +111,7 @@ export default class ChatApp extends React.Component {
     render() {
         return (
             <div className={this.props.detail.length ? "" : "no-data"}  >
+				<Draggable handle=".chatbox-title">
                 <div className="chatbox" >
                     <div className="chatbox-title">{this.state.title}</div>
                     <div className="chatbox-chat-area">
@@ -136,6 +138,7 @@ export default class ChatApp extends React.Component {
                         </div>
                     </div>
                 </div>
+				</Draggable>
             </div>
 
         )
