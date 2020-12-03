@@ -3,7 +3,7 @@ import axios from "axios";
 import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
 import IDAChatbotActionHandler from "../action-handler";
-import LinearWithValueLabel from "../progress/progress";
+import IDALinearProgress from "../progress/progress";
 
 export default class ChatApp extends React.Component {
 
@@ -12,6 +12,7 @@ export default class ChatApp extends React.Component {
         this.state = {
             title: 'IDA chatbot',
             iterator: -1,
+			hideProgress: true,
             messages: [{
                 sender: "them",
                 type: "text",
@@ -45,7 +46,6 @@ export default class ChatApp extends React.Component {
     }
 
     messageSend = (e) => {
-        console.log("Message Handler")
         let msgs = [...this.state.messages],
             user_msgs = msgs.filter(v => v.sender === 'user');
 
@@ -53,7 +53,6 @@ export default class ChatApp extends React.Component {
          * Section to manage new message from the user
          */
         if (e.keyCode === 13 && e.target.value !== '') {
-            console.log("Key Up Handler")
             let msg = {
                 sender: 'user', message: e.target.value, key: Math.random(), timestamp: "",
                 senderName: "user",
@@ -63,6 +62,7 @@ export default class ChatApp extends React.Component {
             msgs = [...msgs, msg];
             this.setState({
                 messages: msgs,
+				hideProgress: false,
                 iterator: msgs.filter(v => v.sender === 'user').length - 1
             });
             e.target.value = ''
@@ -75,10 +75,13 @@ export default class ChatApp extends React.Component {
                     IDAChatbotActionHandler(this.props, actionCode, payload);
 
                 })
-                .catch((err) => {
-                    console.log("error");
+                .catch(err => {
                     console.log(err);
-                });
+                }).finally(() => {
+                	this.setState({
+						hideProgress: true
+					})
+				});
 
         }
 
@@ -128,7 +131,7 @@ export default class ChatApp extends React.Component {
                         </div>
 
                         <div className="chat-area-input" >
-                            <LinearWithValueLabel value={this.state.progressValue} />
+                            <IDALinearProgress hide={this.state.hideProgress}/>
                             <input type="text" placeholder="Enter your message .." onKeyUp={this.messageSend} value={this.state.newValue} />
                         </div>
                     </div>

@@ -10,6 +10,10 @@
   z-index: 1200;
 }
 
+.hide-progress-bar {
+  visibility: hidden;
+}
+
 @media (min-width: 992px) {
   .no-data .sc-chat-window {
     right: 43%;
@@ -19,3 +23,4 @@
     max-height: 80vh;
   }
 }
+
