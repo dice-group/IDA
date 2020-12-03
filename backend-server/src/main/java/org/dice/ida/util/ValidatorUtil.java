@@ -127,13 +127,7 @@ public class ValidatorUtil {
 					if(columnList != null && !columnList.isEmpty()) {
 						JsonNode columnDetails = fileDetails.get(i).get(IDAConst.COLUMN_DETAILS_ATTR);
 						List<String> columns = new ArrayList<>();
-						String columnName;
-						for (int j = 0; j < columnDetails.size(); j++) {
-							columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
-							columns.add(columnName.toLowerCase());
-							columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
-							columnUniquenessMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_UNIQUE_ATTR).asText());
-						}
+						updateColumnDetailMaps(columnDetails, columnTypeMap, columnUniquenessMap, columns);
 						if(fromTemporaryData) {
 							columns.add("cluster");
 							columnTypeMap.put("Cluster", "numeric");
@@ -156,6 +150,16 @@ public class ValidatorUtil {
 			}};
 		} catch (IOException ex) {
 			throw new IDAException(IDAConst.TABLE_DOES_NOT_EXIST_MSG);
+		}
+	}
+
+	private static void updateColumnDetailMaps(JsonNode columnDetails, Map<String, String> columnTypeMap, Map<String, String> columnUniquenessMap, List<String> columns) {
+		String columnName;
+		for (int j = 0; j < columnDetails.size(); j++) {
+			columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
+			columns.add(columnName.toLowerCase());
+			columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
+			columnUniquenessMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_UNIQUE_ATTR).asText());
 		}
 	}
 }
