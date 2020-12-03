@@ -1,5 +1,14 @@
 import { IDA_CONSTANTS } from "./constants";
 
+function updateActiveTab(props, expandedNodes, parentSuffix, nodeId, activeDSName) {
+    expandedNodes.indexOf(activeDSName + parentSuffix) < 0 && expandedNodes.push(activeDSName + parentSuffix);
+    props.setExpandedNodeId(expandedNodes);
+    props.setSelectedNodeId(nodeId);
+    if (window.matchMedia("(max-width: 991px)").matches) {
+        props.setIsChatbotOpen(false);
+    }
+}
+
 function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     const treeData = props.detail;
     const activeDS = treeData.find((node) => node.id === activeDSName);
@@ -26,13 +35,37 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     tabs.push(vizNode);
     props.setTabs(tabs);
     props.setDetails(treeData);
-    const expandedNodes = props.expandedNodeId;
-    expandedNodes.indexOf(activeDSName + "_visualizations") < 0 && expandedNodes.push(activeDSName + "_visualizations");
-    props.setExpandedNodeId(expandedNodes);
-    props.setSelectedNodeId(activeDSName + "_" + name + "_" + (vizCount + 1));
-    if (window.matchMedia("(max-width: 991px)").matches) {
-        props.setIsChatbotOpen(false);
+    updateActiveTab(props, props.expandedNodeId, "_visualizations", vizNode.id, activeDSName);
+}
+
+function addAnalysisEntry(props, analysisData, label, name, activeDSName) {
+    const treeData = props.detail;
+    const activeDS = treeData.find((node) => node.id === activeDSName);
+    const analysisChildren = activeDS.children.find((c) => c.id === activeDSName + "_analyses");
+    const analysis = analysisChildren || {
+        id: activeDSName + "_analyses",
+        name: "Analyses",
+        type: "parent",
+        children: []
+    };
+    if (!analysisChildren) {
+        activeDS.children.push(analysis);
     }
+    const analysisCount = analysis.children.filter((c) => c.type === name).length;
+    const analysisNode = {
+        id: activeDSName + "_" + name + "_" + (analysisCount + 1),
+        name: label + " " + (analysisCount + 1),
+        type: name,
+        data: analysisData,
+        fileName: label + " " + (analysisCount + 1),
+        columns: Object.keys(analysisData[0]).map((k) => ({ colAttr: k, colName: k }))
+    };
+    analysis.children.push(analysisNode);
+    const tabs = props.tabs;
+    tabs.push(analysisNode);
+    props.setTabs(tabs);
+    props.setDetails(treeData);
+    updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName);
 }
 
 export default function IDAChatbotActionHandler(props, actionCode, payload) {
@@ -103,6 +136,12 @@ export default function IDAChatbotActionHandler(props, actionCode, payload) {
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_LINECHART: {
             addVisualizationEntry(props, payload.lineChartData, "Line Chart", "linechart", payload.activeDS);
+            break;
+        }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
+            const clusteredData = payload.clusteredData;
+            clusteredData.sort((a, b) => parseInt(a.Cluster, 10) > parseInt(b.Cluster, 10) ? 1 : parseInt(a.Cluster, 10) < parseInt(b.Cluster, 10) ? -1 : 0);
+            addAnalysisEntry(props, clusteredData, "Clustering", "clustering", payload.activeDS);
             break;
         }
         default:

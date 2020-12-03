@@ -41,7 +41,7 @@ function TabHeader(props) {
   return (
     <div>
       <Grid container alignItems="flex-start">
-        <Tab {...newProps} title={props.label}/>
+        <Tab {...newProps} title={props.label} />
         <IconButton onClick={() => removeTab(props.value)}>
           <CloseIcon />
         </IconButton>
@@ -71,6 +71,8 @@ export default function ScrollableTabsButtonAuto(props) {
         return <IDABubbleGraph data={tab.data} nodeId={tab.id} />;
       case "linechart":
         return <IDALineChart data={tab.data} nodeId={tab.id} />;
+      case "clustering":
+        return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id} />;
       default:
         return null;
     }
