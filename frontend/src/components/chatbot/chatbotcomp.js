@@ -136,8 +136,8 @@ export default class ChatApp extends React.Component {
                                         return (
                                         	<div>
                                             <div className="agent" key={Math.random()}>
-                                                <div className="msg" key={Math.random()}>{val.message}</div>
-                                                <div className="agent-pic" key={Math.random()}></div>
+                                                <div className="msg" key={Math.random()} dangerouslySetInnerHTML={{__html: val.message }} />
+                                                <div className="agent-pic" key={Math.random()} />
                                             </div>
 											</div>
                                         )
