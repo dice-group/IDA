@@ -38,6 +38,7 @@ public class ActionExecutor {
 		paramMap = createParamMap(queryResult);
 		paramMap.put(IDAConst.PARAM_INTENT, intent);
 		paramMap.put(IDAConst.INTENT_NAME, intent.getKey());
+		paramMap.put(IDAConst.FULL_INTENT_NAME,queryResult.getIntent().getDisplayName());
 		this.action = mappingHelper.fetchActionInstance(intent.getKey());
 	}
 

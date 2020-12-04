@@ -25,6 +25,8 @@ public interface IDAConst {
 	public static final int UIA_BUBBLECHART = 1006;
 	// Draw line chart
 	public static  final int UIA_LINECHART = 1007;
+	//Load clustered dara
+	public static final int UIA_CLUSTER = 1008;
 
 	/**
 	 *  Pre-defined action codes
@@ -63,6 +65,7 @@ public interface IDAConst {
 	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
 	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
 	public static final String INTENT_NAME = "intentname";
+	public static final String FULL_INTENT_NAME = "fullintentname";
 
 	// Metadata File name Pattern
 	public static final String DSMD_FILE_PATTERN = "dsmd\\.[jJ][sS][oO][nN]$";
@@ -250,5 +253,24 @@ public interface IDAConst {
 	public static final String LABEL_PATTERN_MONTH = "MMMM-yyyy";
 	public static final String LABEL_PATTERN_YEAR = "yyyy";
 	public static final String ATTRIBUTE_TYPE_SUFFIX = "_type";
+
+	/**
+	 * Clustering Parameters
+	 */
+	public static final String K_MEAN_CLUSTERING = "Kmeans";
+	public static final String FARTHEST_FIRST = "FarthestFirst";
+	public static final String GET_NUM_CLUSTER = "getNumCluster";
+	public static final String NUMBER_OF_CLUSTER = "num_cluster";
+	public static final String GET_INIT_METHOD = "getInitMethod";
+		public static final String INIT_METHOD = "init_method";
+	public static final String GET_MAX_ITERATION = "getMaxIteration";
+	public static final String MAX_ITERATION = "max_iteration";
+	public static final String GET_REPLACE_MISSING_VALUES = "getReplaceMissingValues";
+	public static final String IS_REPLACE_MISSING_VALUE = "isreplacemissing";
+	public static final String GET_NUM_EXECUTION_SLOT = "getNumExecutionSlot";
+	public static final String NUM_OF_SLOT = "num_slot";
+	public static final String GET_RANDOM_SEED = "getRandomSeed";
+	public static final String RANDOM_SEED = "random_seed";
+	public static final String GET_MULTI_PARAM = "getMultiParam";
 
 }

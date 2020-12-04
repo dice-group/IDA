@@ -9,6 +9,7 @@ import org.dice.ida.action.def.SuggestVisualization;
 import org.dice.ida.action.def.LineChartAction;
 import org.dice.ida.action.def.VisualizeAction;
 import org.dice.ida.action.def.DefaultAction;
+import org.dice.ida.action.def.ClusterAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -51,6 +52,9 @@ public class ActionMappingHelper {
 			case BARCHART:
 			case BUBBLECHART:
 				action = appContext.getBean(VisualizeAction.class);
+				break;
+			case CLUSTERING:
+				action = appContext.getBean(ClusterAction.class);
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);
