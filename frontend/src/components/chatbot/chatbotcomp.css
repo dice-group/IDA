@@ -8,8 +8,6 @@
 .chatbox {
     background: #fff;
     border: solid 1px #ccc;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
     width: 370px;
     position: absolute;
     z-index: 2000;
@@ -88,20 +86,22 @@
 }
 
 .chatbox-chat-area .chat-area-msgs .user {
+  float: left;
+  margin-left: 10px;
+}
+
+.chatbox-chat-area .chat-area-msgs .user .msg {
     background-color: #4e8cff;
     color: #fff;
-    margin-left: 10px;
     border-radius: 5px;
     padding: 15px;
     width: 250px;
-    margin-bottom: 15px;
     position: relative;
-    float: left;
     overflow-wrap: break-word;
 
 }
 
-.chatbox-chat-area .chat-area-msgs .user:before {
+.chatbox-chat-area .chat-area-msgs .user .msg:before {
     content: "";
     width: 0px;
     height: 0px;
@@ -110,4 +110,16 @@
     position: absolute;
     left: -7px;
     top: 4px;
+}
+
+.chatbox-chat-area .chat-area-msgs .user .time {
+  color: #444;
+  font-size: 12px;
+  margin-top:4px;
+  margin-bottom: 7px;
+  visibility: hidden;
+}
+
+.chatbox-chat-area .chat-area-msgs .user .msg:hover ~ .time {
+  visibility: visible;
 }

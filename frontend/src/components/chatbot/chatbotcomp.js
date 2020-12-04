@@ -5,6 +5,10 @@ import { IDA_CONSTANTS } from "../constants";
 import IDAChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
 import Draggable from "react-draggable";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import IconButton from "@material-ui/core/IconButton";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 export default class ChatApp extends React.Component {
 
@@ -55,7 +59,10 @@ export default class ChatApp extends React.Component {
          */
         if (e.keyCode === 13 && e.target.value !== '') {
             let msg = {
-                sender: 'user', message: e.target.value, key: Math.random(), timestamp: "",
+                sender: 'user',
+				message: e.target.value,
+				key: Math.random(),
+				timestamp: Date.now(),
                 senderName: "user",
                 activeDS: this.props.activeDS,
                 activeTable: this.props.activeTable
@@ -119,13 +126,20 @@ export default class ChatApp extends React.Component {
                             {
                                 this.state.messages.map(val => {
                                     if (val.sender === 'user') {
-                                        return <div className="user" key={Math.random()}>{val.message}</div>
+										return (
+											<div className="user">
+												<div className="msg" key={Math.random()}>{val.message}</div>
+												<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
+											</div>
+										)
                                     } else {
                                         return (
+                                        	<div>
                                             <div className="agent" key={Math.random()}>
                                                 <div className="msg" key={Math.random()}>{val.message}</div>
                                                 <div className="agent-pic" key={Math.random()}></div>
                                             </div>
+											</div>
                                         )
                                     }
                                 })
