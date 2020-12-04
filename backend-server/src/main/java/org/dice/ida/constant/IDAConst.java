@@ -258,6 +258,7 @@ public interface IDAConst {
 	 * Clustering Parameters
 	 */
 	public static final String K_MEAN_CLUSTERING = "Kmeans";
+	public static final String FARTHEST_FIRST = "FarthestFirst";
 	public static final String GET_NUM_CLUSTER = "getNumCluster";
 	public static final String NUMBER_OF_CLUSTER = "num_cluster";
 	public static final String GET_INIT_METHOD = "getInitMethod";
