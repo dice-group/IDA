@@ -8,6 +8,7 @@ import com.google.protobuf.Value;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.model.clustering.FarthestFirstAttribute;
 import org.dice.ida.model.clustering.KmeansAttribute;
 import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.FileUtil;
@@ -16,9 +17,13 @@ import org.dice.ida.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import weka.clusterers.EM;
+import weka.clusterers.FarthestFirst;
+import weka.clusterers.RandomizableClusterer;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.StringToNominal;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +40,9 @@ import java.util.HashMap;
 @Component
 public class ClusterAction implements Action {
 
-	Map<String, Object> sessionMap;
-	Map<String, Object> payload;
-	FileUtil fileUtil;
+	private Map<String, Object> sessionMap;
+	private Map<String, Object> payload;
+	private FileUtil fileUtil;
 	@Autowired
 	private DialogFlowUtil dialogFlowUtil;
 	private StringBuilder textMsg;
@@ -70,12 +75,15 @@ public class ClusterAction implements Action {
 				String parameterChangeChoice = getParameterChangeChoice(fullIntentName);
 				paramtertoChange = getParameterToChange(fullIntentName);
 				if (!clusterMethod.isEmpty() && parameterChangeChoice.isEmpty()) {
-					//clusterer = getClusterer(clusterMethod);
 					if (clusterMethod.equals("getColumnList")) {
 						if (verifynApplyFilter(paramMap.get("column_List"))) {
 							textMsg.append("Okay! Here is the list clustering algorithm currently offered by IDA .\n" +
 									"- Kmean\n" +
-									"Which algorithm would you like to use for clustering?");
+									"- Farthest First\n" +
+									"Which algorithm would you like to use for clustering?\n");
+							if(checkforNominalAttribute())
+								textMsg.append("\n").append("Warning : Too many nomimal attributes selected, clustering might take longer then expected");
+
 						}
 					} else {
 						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters\n\n");
@@ -96,15 +104,15 @@ public class ClusterAction implements Action {
 				chatMessageResponse.setMessage(textMsg.toString());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		}
 	}
 
 	private void loadClusteredData() throws Exception {
-		SimpleKMeans model = new SimpleKMeans();
+		RandomizableClusterer model = getClusterModel();
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode clusteredData = mapper.createArrayNode();
-		model.setNumClusters(numCluster);
 		model.buildClusterer(data);
 		ArrayList<Map> dsData = fileUtil.getDatasetContent(datasetName);
 		for (Map file : dsData) {
@@ -112,14 +120,36 @@ public class ClusterAction implements Action {
 				ArrayNode fileData = (ArrayNode) file.get("data");
 				for (int i = 0; i < fileData.size(); i++) {
 					JsonNode row = fileData.get(i);
-					((ObjectNode) row).put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
+					try {
+						((ObjectNode) row).put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
+					} catch (Exception e) {
+						//Continue with loop skipping the data row
+					}
 					clusteredData.add(row);
 					payload.put("clusteredData", clusteredData);
 				}
 			}
 		}
+	}
 
-
+	private RandomizableClusterer getClusterModel() throws Exception {
+		RandomizableClusterer clusterer;
+		switch (clusterMethod) {
+			case IDAConst.K_MEAN_CLUSTERING:
+				SimpleKMeans simpleKMeans = new SimpleKMeans();
+				simpleKMeans.setNumClusters(numCluster);
+				clusterer = simpleKMeans;
+				break;
+			case IDAConst.FARTHEST_FIRST:
+				FarthestFirst farthestFirst = new FarthestFirst();
+				farthestFirst.setNumClusters(numCluster);
+				clusterer = farthestFirst;
+				break;
+			default:
+				clusterer = new SimpleKMeans();
+				break;
+		}
+		return clusterer;
 	}
 
 	private boolean verifynApplyFilter(Object column_list) throws IOException {
@@ -164,16 +194,35 @@ public class ClusterAction implements Action {
 		return columnExist;
 	}
 
-	private void showParamList() throws Exception {
-		EM em = new EM();
-		//em.setNumFolds(10);
-		em.buildClusterer(data);
-		numCluster = em.numberOfClusters();
-		switch (clusterMethod) {
-			case IDAConst.K_MEAN_CLUSTERING:
-				sessionMap.put(IDAConst.K_MEAN_CLUSTERING, new KmeansAttribute(new SimpleKMeans(), numCluster));
-				sessionUtil.setSessionMap(sessionMap);
-				showKmeansParamList();
+	private boolean checkforNominalAttribute() {
+		boolean check = false;
+		int num_nominal = 0 ;
+		for (int i =0 ; i < data.numAttributes();i++)
+		{
+			if(data.attribute(i).isString()||data.attribute(i).isNominal())
+			{
+				num_nominal++;
+			}
+		}
+		if(((double)num_nominal/(double)data.numAttributes()>.7))
+			check = true;
+		return check;
+	}
+
+	private void filterStringAttribyte() throws Exception {
+		StringToNominal filter = new StringToNominal();
+		StringBuilder columnsRange = new StringBuilder();
+		for (int i = 0; i < data.numAttributes(); i++) {
+			if (data.attribute(i).isString()) {
+				columnsRange.append(i + 1).append(",");
+			}
+		}
+		if (!columnsRange.toString().isEmpty()) {
+			if (columnsRange.lastIndexOf(",") == columnsRange.length() - 1)
+				columnsRange.deleteCharAt(columnsRange.length() - 1);
+			filter.setAttributeRange(columnsRange.toString());
+			filter.setInputFormat(data);
+			data = Filter.useFilter(data, filter);
 		}
 	}
 
@@ -182,9 +231,52 @@ public class ClusterAction implements Action {
 			case IDAConst.K_MEAN_CLUSTERING:
 				getnSetKmeanParam();
 				break;
-
-
+			case IDAConst.FARTHEST_FIRST:
+				getnSetFarthestFirstParam();
+				break;
+			default:
+				break;
 		}
+	}
+
+	private void getnSetFarthestFirstParam() {
+		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
+		switch (paramtertoChange) {
+			case IDAConst.GET_NUM_CLUSTER:
+				paramValue = paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString();
+				if (!paramValue.isEmpty()) {
+					farthestFirstAttribute.setNumberOfCluster(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+				}
+				break;
+			case IDAConst.GET_RANDOM_SEED:
+				paramValue = paramMap.get(IDAConst.RANDOM_SEED).toString();
+				if (!paramValue.isEmpty()) {
+					farthestFirstAttribute.setRandomNumberSeed(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+				}
+				break;
+			case IDAConst.GET_MULTI_PARAM:
+				multiParmaValue = getFarthestFirstMultiParam();
+				if (!multiParmaValue.get(IDAConst.NUMBER_OF_CLUSTER).isEmpty())
+					farthestFirstAttribute.setNumberOfCluster(getNumericValue(multiParmaValue.get(IDAConst.NUMBER_OF_CLUSTER)));
+				if (!multiParmaValue.get(IDAConst.RANDOM_SEED).isEmpty())
+					farthestFirstAttribute.setRandomNumberSeed(getNumericValue(multiParmaValue.get(IDAConst.RANDOM_SEED)));
+				break;
+			default:
+				break;
+		}
+		if (!paramValue.isEmpty() || multiParmaValue != null) {
+			sessionMap.put(IDAConst.FARTHEST_FIRST, farthestFirstAttribute);
+			sessionUtil.setSessionMap(sessionMap);
+			textMsg = new StringBuilder("Value Changed!! Would you like to change another parameter");
+			dialogFlowUtil.setContext("clustering-FarthestFirst-followup");
+		}
+	}
+
+	private Map<String, String> getFarthestFirstMultiParam() {
+		Map<String, String> farthestFirstMultiParam = new HashMap<>();
+		farthestFirstMultiParam.put(IDAConst.NUMBER_OF_CLUSTER, paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString());
+		farthestFirstMultiParam.put(IDAConst.RANDOM_SEED, paramMap.get(IDAConst.RANDOM_SEED).toString());
+		return farthestFirstMultiParam;
 	}
 
 	private void getnSetKmeanParam() {
@@ -241,9 +333,13 @@ public class ClusterAction implements Action {
 				if (!multiParmaValue.get(IDAConst.IS_REPLACE_MISSING_VALUE).isEmpty())
 					kmeansAttribute.setReplaceMissingValues(Boolean.parseBoolean(multiParmaValue.get(IDAConst.IS_REPLACE_MISSING_VALUE)));
 				break;
-
-
+			default:
+				break;
 		}
+		setKmeanParam(kmeansAttribute);
+	}
+
+	private void setKmeanParam(KmeansAttribute kmeansAttribute) {
 		if (!paramValue.isEmpty() || multiParmaValue != null) {
 			sessionMap.put(IDAConst.K_MEAN_CLUSTERING, kmeansAttribute);
 			sessionUtil.setSessionMap(sessionMap);
@@ -260,7 +356,6 @@ public class ClusterAction implements Action {
 		kmeanMultiParam.put(IDAConst.NUM_OF_SLOT, paramMap.get(IDAConst.NUM_OF_SLOT).toString());
 		kmeanMultiParam.put(IDAConst.RANDOM_SEED, paramMap.get(IDAConst.RANDOM_SEED).toString());
 		kmeanMultiParam.put(IDAConst.IS_REPLACE_MISSING_VALUE, paramMap.get(IDAConst.IS_REPLACE_MISSING_VALUE).toString());
-
 		return kmeanMultiParam;
 
 	}
@@ -277,6 +372,27 @@ public class ClusterAction implements Action {
 		return fullIntentName.contains(" - ") ? fullIntentName.split(" - ")[1] : "";
 	}
 
+	private void showParamList() throws Exception {
+		EM em = new EM();
+		filterStringAttribyte();
+		em.buildClusterer(data);
+		numCluster = em.numberOfClusters();
+		switch (clusterMethod) {
+			case IDAConst.K_MEAN_CLUSTERING:
+				sessionMap.put(IDAConst.K_MEAN_CLUSTERING, new KmeansAttribute(new SimpleKMeans(), numCluster));
+				sessionUtil.setSessionMap(sessionMap);
+				showKmeansParamList();
+				break;
+			case IDAConst.FARTHEST_FIRST:
+				sessionMap.put(IDAConst.FARTHEST_FIRST, new FarthestFirstAttribute(new FarthestFirst(), numCluster));
+				sessionUtil.setSessionMap(sessionMap);
+				showFarthestFirstParamList();
+				break;
+			default:
+				break;
+		}
+	}
+
 	private void showKmeansParamList() {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
 		textMsg.append("Number of Clusters(N) = ").append(kmeansAttribute.getNumberOfCluster()).append("\n");
@@ -285,6 +401,12 @@ public class ClusterAction implements Action {
 		textMsg.append("Replace missing values(M) = ").append(kmeansAttribute.getReplaceMissingValues()).append("\n");
 		textMsg.append("No. of execution slots(E) = ").append(kmeansAttribute.getNumOfExecutionSlots()).append("\n");
 		textMsg.append("Random number seed(S) = ").append(kmeansAttribute.getRandomNumberSeed()).append("\n");
+	}
+
+	private void showFarthestFirstParamList() {
+		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
+		textMsg.append("Number of Clusters(N) = ").append(farthestFirstAttribute.getNumberOfCluster()).append("\n");
+		textMsg.append("Random number seed(S) = ").append(farthestFirstAttribute.getRandomNumberSeed()).append("\n");
 	}
 
 	private int getNumericValue(String paramValue) {
