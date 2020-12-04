@@ -102,15 +102,15 @@ export default class ChatApp extends React.Component {
                 // up arrow key
                 this.setState({
                     iterator: this.state.iterator > 0 ? this.state.iterator - 1 : this.state.iterator,
-                    newValue: user_msgs[this.state.iterator].message
                 })
+				e.target.value = user_msgs[this.state.iterator].message;
             } else if (e.keyCode === 40) {
                 // down arrow key
                 const iter = user_msgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator
                 this.setState({
-                    iterator: iter,
-                    newValue: user_msgs[iter].message
+                    iterator: iter
                 })
+				e.target.value = user_msgs[iter].message;
             }
         }
     }
@@ -148,7 +148,7 @@ export default class ChatApp extends React.Component {
 
                         <div className="chat-area-input" >
                             <IDALinearProgress hide={this.state.hideProgress}/>
-                            <input type="text" placeholder="Enter your message .." onKeyUp={this.messageSend} value={this.state.newValue} />
+                            <input type="text" placeholder="Enter your message .." onKeyUp={this.messageSend} />
                         </div>
                     </div>
                 </div>
