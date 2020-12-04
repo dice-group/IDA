@@ -79,7 +79,10 @@ public class ClusterAction implements Action {
 							textMsg.append("Okay! Here is the list clustering algorithm currently offered by IDA .\n" +
 									"- Kmean\n" +
 									"- Farthest First\n" +
-									"Which algorithm would you like to use for clustering?");
+									"Which algorithm would you like to use for clustering?\n");
+							if(checkforNominalAttribute())
+								textMsg.append("\n").append("Warning : Too many nomimal attributes selected, clustering might take longer then expected");
+
 						}
 					} else {
 						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters\n\n");
@@ -143,6 +146,7 @@ public class ClusterAction implements Action {
 				break;
 			default:
 				clusterer = new SimpleKMeans();
+				break;
 		}
 		return clusterer;
 	}
@@ -187,6 +191,21 @@ public class ClusterAction implements Action {
 			}
 		}
 		return columnExist;
+	}
+
+	private boolean checkforNominalAttribute() {
+		boolean check = false;
+		int num_nominal = 0 ;
+		for (int i =0 ; i < data.numAttributes();i++)
+		{
+			if(data.attribute(i).isString()||data.attribute(i).isNominal())
+			{
+				num_nominal++;
+			}
+		}
+		if(((double)num_nominal/(double)data.numAttributes()>.7))
+			check = true;
+		return check;
 	}
 
 	private void filterStringAttribyte() throws Exception {
@@ -313,6 +332,8 @@ public class ClusterAction implements Action {
 				if (!multiParmaValue.get(IDAConst.IS_REPLACE_MISSING_VALUE).isEmpty())
 					kmeansAttribute.setReplaceMissingValues(Boolean.parseBoolean(multiParmaValue.get(IDAConst.IS_REPLACE_MISSING_VALUE)));
 				break;
+			default:
+				break;
 		}
 		setKmeanParam(kmeansAttribute);
 	}
@@ -366,7 +387,8 @@ public class ClusterAction implements Action {
 				sessionUtil.setSessionMap(sessionMap);
 				showFarthestFirstParamList();
 				break;
-
+			default:
+				break;
 		}
 	}
 
