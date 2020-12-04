@@ -23,6 +23,7 @@ import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToNominal;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -38,9 +39,9 @@ import java.util.HashMap;
 @Component
 public class ClusterAction implements Action {
 
-	Map<String, Object> sessionMap;
-	Map<String, Object> payload;
-	FileUtil fileUtil;
+	private Map<String, Object> sessionMap;
+	private Map<String, Object> payload;
+	private FileUtil fileUtil;
 	@Autowired
 	private DialogFlowUtil dialogFlowUtil;
 	private StringBuilder textMsg;
@@ -77,7 +78,7 @@ public class ClusterAction implements Action {
 						if (verifynApplyFilter(paramMap.get("column_List"))) {
 							textMsg.append("Okay! Here is the list clustering algorithm currently offered by IDA .\n" +
 									"- Kmean\n" +
-									"- Farthest First\n"+
+									"- Farthest First\n" +
 									"Which algorithm would you like to use for clustering?");
 						}
 					} else {
@@ -115,7 +116,11 @@ public class ClusterAction implements Action {
 				ArrayNode fileData = (ArrayNode) file.get("data");
 				for (int i = 0; i < fileData.size(); i++) {
 					JsonNode row = fileData.get(i);
-					((ObjectNode) row).put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
+					try {
+						((ObjectNode) row).put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
+					} catch (Exception e) {
+						//Continue with loop skipping the data row
+					}
 					clusteredData.add(row);
 					payload.put("clusteredData", clusteredData);
 				}
@@ -138,7 +143,6 @@ public class ClusterAction implements Action {
 				break;
 			default:
 				clusterer = new SimpleKMeans();
-
 		}
 		return clusterer;
 	}
@@ -191,7 +195,6 @@ public class ClusterAction implements Action {
 		for (int i = 0; i < data.numAttributes(); i++) {
 			if (data.attribute(i).isString()) {
 				columnsRange.append(i + 1).append(",");
-
 			}
 		}
 		if (!columnsRange.toString().isEmpty()) {
@@ -211,8 +214,8 @@ public class ClusterAction implements Action {
 			case IDAConst.FARTHEST_FIRST:
 				getnSetFarthestFirstParam();
 				break;
-
-
+			default:
+				break;
 		}
 	}
 
@@ -238,6 +241,8 @@ public class ClusterAction implements Action {
 				if (!multiParmaValue.get(IDAConst.RANDOM_SEED).isEmpty())
 					farthestFirstAttribute.setRandomNumberSeed(getNumericValue(multiParmaValue.get(IDAConst.RANDOM_SEED)));
 				break;
+			default:
+				break;
 		}
 		if (!paramValue.isEmpty() || multiParmaValue != null) {
 			sessionMap.put(IDAConst.FARTHEST_FIRST, farthestFirstAttribute);
@@ -245,7 +250,6 @@ public class ClusterAction implements Action {
 			textMsg = new StringBuilder("Value Changed!! Would you like to change another parameter");
 			dialogFlowUtil.setContext("clustering-FarthestFirst-followup");
 		}
-
 	}
 
 	private Map<String, String> getFarthestFirstMultiParam() {
@@ -309,9 +313,11 @@ public class ClusterAction implements Action {
 				if (!multiParmaValue.get(IDAConst.IS_REPLACE_MISSING_VALUE).isEmpty())
 					kmeansAttribute.setReplaceMissingValues(Boolean.parseBoolean(multiParmaValue.get(IDAConst.IS_REPLACE_MISSING_VALUE)));
 				break;
-
-
 		}
+		setKmeanParam(kmeansAttribute);
+	}
+
+	private void setKmeanParam(KmeansAttribute kmeansAttribute) {
 		if (!paramValue.isEmpty() || multiParmaValue != null) {
 			sessionMap.put(IDAConst.K_MEAN_CLUSTERING, kmeansAttribute);
 			sessionUtil.setSessionMap(sessionMap);
