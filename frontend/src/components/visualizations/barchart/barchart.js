@@ -40,12 +40,17 @@ export default class IDABarGraph extends Component {
       this.setState({
         sortMode: ""
       });
-      this.graphData = this.originalGraphData;
+      this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
     } else {
-      if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC) {
+      if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_Y) {
         this.graphData.items.sort((a, b) => a.y > b.y ? 1 : a.y < b.y ? -1 : 0);
-      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC) {
+      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC_Y) {
         this.graphData.items.sort((a, b) => a.y > b.y ? -1 : a.y < b.y ? 1 : 0);
+      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_X) {
+        this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
+      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC_X) {
+        this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
+        this.graphData.items.reverse();
       }
       this.setState({
         sortMode: sortMode
@@ -62,7 +67,7 @@ export default class IDABarGraph extends Component {
     });
 
     // Every bar will be of static width 25px
-    this.width = this.graphData.items.length * 25;
+    this.width = Math.max(this.graphData.items.length * 25, this.width);
 
     /**
      * append placeholder for the barchart
@@ -170,16 +175,30 @@ export default class IDABarGraph extends Component {
   render() {
     return <Grid>
       <Grid item xs={12}>
-        <div className="text-center pt-2 pb-2">
-          <span className="mr-3">
+        <div className="text-center pt-2 pb-2 row align-items-center">
+          <span className="text-right col-6">
             Sort the bars:
           </span>
-          <Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC)}>
-            <TrendingUpIcon />
-          </Fab>
-          <Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC)}>
-            <TrendingDownIcon />
-          </Fab>
+          <div className="col-6 text-left row">
+            <div>
+              <Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC_Y ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC_Y)}>
+                <TrendingUpIcon />
+              </Fab>
+              <Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC_Y ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC_Y)}>
+                <TrendingDownIcon />
+              </Fab>
+              <div className="mt-2 text-center">Y-Axis</div>
+            </div>
+            <div className="ml-md-4">
+              <Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC_X ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC_X)}>
+                <TrendingUpIcon />
+              </Fab>
+              <Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC_X ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC_X)}>
+                <TrendingDownIcon />
+              </Fab>
+              <div className="mt-2 text-center">X-Axis</div>
+            </div>
+          </div>
         </div>
       </Grid>
       <Grid item xs={12}>

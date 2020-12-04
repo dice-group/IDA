@@ -59,7 +59,7 @@ public class VisualizeAction implements Action {
 	private Map<String, String> parameterTypeMap;
 	private Map<String, Object> payload;
 	private Map<String, Double> graphItems;
-	private Comparator<String> comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
+	private Comparator<String> comparator;
 	private StringBuilder textMsg;
 
 	/**
@@ -101,6 +101,7 @@ public class VisualizeAction implements Action {
 						} else {
 							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
 						}
+						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
 						getParameters(paramMap);
 						switch (vizType) {
 							case IDAConst.VIZ_TYPE_BAR_CHART:
@@ -120,6 +121,7 @@ public class VisualizeAction implements Action {
 								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 								break;
 						}
+						dialogFlowUtil.resetContext();
 					} else {
 						chatMessageResponse.setMessage(textMsg.toString());
 						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
