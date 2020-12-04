@@ -99,4 +99,21 @@ public class DialogFlowUtil {
 		contextsClient.createContext(session, context);
 
 	}
+
+	/**
+	 * Method to reset all the active contexts at the end of a conversation
+	 */
+	public void resetContext() {
+		try (ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings())) {
+			// Set the session name using the sessionId (UUID) and projectId (my-project-id)
+			SessionName session = SessionName.of(projectId, idaChatBot.fetchDfSessionId());
+
+			// Performs the list contexts request
+			for (Context context : contextsClient.listContexts(session).iterateAll()) {
+				contextsClient.deleteContext(context.getName());
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }
