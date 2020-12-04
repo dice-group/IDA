@@ -23,7 +23,6 @@ import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToNominal;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -57,6 +56,10 @@ public class ClusterAction implements Action {
 	@Autowired
 	private SessionUtil sessionUtil;
 
+	/**
+	 * @param paramMap            - parameters from dialogflow
+	 * @param chatMessageResponse - API response object
+	 */
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
 		try {
@@ -108,6 +111,9 @@ public class ClusterAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to load clustered data into the payload
+	 */
 	private void loadClusteredData() throws Exception {
 		RandomizableClusterer model = getClusterModel();
 		ObjectMapper mapper = new ObjectMapper();
@@ -131,6 +137,11 @@ public class ClusterAction implements Action {
 		}
 	}
 
+	/**
+	 * Method return weka clusterer object based on user selection
+	 *
+	 * @return Weka Clusterer object
+	 */
 	private RandomizableClusterer getClusterModel() throws Exception {
 		RandomizableClusterer clusterer;
 		switch (clusterMethod) {
@@ -151,6 +162,11 @@ public class ClusterAction implements Action {
 		return clusterer;
 	}
 
+	/**
+	 * Apply filter to the data instance based on inputs provided by User
+	 *
+	 * @return true if selected columns are present in the table
+	 * */
 	private boolean verifynApplyFilter(Object column_list) throws IOException {
 		ArrayList<String> columnList = new ArrayList<>();
 		boolean columnExist = true;
@@ -193,6 +209,11 @@ public class ClusterAction implements Action {
 		return columnExist;
 	}
 
+	/**
+	 * Method to check for too many nominal attribute selection.
+	 *
+	 * @return true if too many nominal attributes are selected
+	 */
 	private boolean checkforNominalAttribute() {
 		boolean check = false;
 		int num_nominal = 0 ;
@@ -208,6 +229,9 @@ public class ClusterAction implements Action {
 		return check;
 	}
 
+	/**
+	 * Method to filter and convert string attributes to nominal.
+	 */
 	private void filterStringAttribyte() throws Exception {
 		StringToNominal filter = new StringToNominal();
 		StringBuilder columnsRange = new StringBuilder();
@@ -225,6 +249,9 @@ public class ClusterAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to change parameters set by user for clustering alogorithm
+	 */
 	private void getnsetNewParamValue() {
 		switch (clusterMethod) {
 			case IDAConst.K_MEAN_CLUSTERING:
@@ -238,6 +265,9 @@ public class ClusterAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to change parameters for Farthest First clustering algorithm
+	 */
 	private void getnSetFarthestFirstParam() {
 		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
 		switch (paramtertoChange) {
@@ -271,6 +301,11 @@ public class ClusterAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to change multiple parameters for Farthest First clustering algorithm
+	 *
+	 * @return Map of attributes for Farthest First algorithm
+	 */
 	private Map<String, String> getFarthestFirstMultiParam() {
 		Map<String, String> farthestFirstMultiParam = new HashMap<>();
 		farthestFirstMultiParam.put(IDAConst.NUMBER_OF_CLUSTER, paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString());
@@ -278,6 +313,9 @@ public class ClusterAction implements Action {
 		return farthestFirstMultiParam;
 	}
 
+	/**
+	 * Method to change parameters for K-mean clustering algorithm
+	 */
 	private void getnSetKmeanParam() {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
 		switch (paramtertoChange) {
@@ -338,6 +376,9 @@ public class ClusterAction implements Action {
 		setKmeanParam(kmeansAttribute);
 	}
 
+	/**
+	 * Method to add parameters of K-mean clusterer to Session Map
+	 */
 	private void setKmeanParam(KmeansAttribute kmeansAttribute) {
 		if (!paramValue.isEmpty() || multiParmaValue != null) {
 			sessionMap.put(IDAConst.K_MEAN_CLUSTERING, kmeansAttribute);
@@ -347,6 +388,11 @@ public class ClusterAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to change multiple parameters for K-mean clustering algorithm
+	 *
+	 * @return Map of attributes for K-mean clustering algorithm
+	 */
 	private Map<String, String> getKmeanMultiParam() {
 		Map<String, String> kmeanMultiParam = new HashMap<>();
 		kmeanMultiParam.put(IDAConst.NUMBER_OF_CLUSTER, paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString());
@@ -359,18 +405,39 @@ public class ClusterAction implements Action {
 
 	}
 
+	/**
+	 * Extract parameter name from full intent name
+	 *
+	 * @param fullIntentName - Full intent name
+	 * @return - parameter name
+	 */
 	private String getParameterToChange(String fullIntentName) {
 		return fullIntentName.contains(" - ") && fullIntentName.split(" - ").length > 3 ? fullIntentName.split(" - ")[3] : "";
 	}
 
+	/**
+	 * Extract parameter change choice from full intent name
+	 *
+	 * @param fullIntentName - Full intent name
+	 * @return - parameter change choice
+	 */
 	private String getParameterChangeChoice(String fullIntentName) {
 		return fullIntentName.contains(" - ") && fullIntentName.split(" - ").length > 2 ? fullIntentName.split(" - ")[2] : "";
 	}
 
+	/**
+	 * Extract clustering algorithm name from full intent name
+	 *
+	 * @param fullIntentName - Full intent name
+	 * @return - clustering algorithm name
+	 */
 	private String getClusterMethod(String fullIntentName) {
 		return fullIntentName.contains(" - ") ? fullIntentName.split(" - ")[1] : "";
 	}
 
+	/**
+	 * Method to show default and suggested parameter list
+	 */
 	private void showParamList() throws Exception {
 		EM em = new EM();
 		filterStringAttribyte();
@@ -392,6 +459,9 @@ public class ClusterAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to show parameter list for K-mean clustering algorithm
+	 */
 	private void showKmeansParamList() {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
 		textMsg.append("Number of Clusters(N) = ").append(kmeansAttribute.getNumberOfCluster()).append("\n");
@@ -402,12 +472,21 @@ public class ClusterAction implements Action {
 		textMsg.append("Random number seed(S) = ").append(kmeansAttribute.getRandomNumberSeed()).append("\n");
 	}
 
+	/**
+	 * Method to show parameter list for Farthest First clustering algorithm
+	 */
 	private void showFarthestFirstParamList() {
 		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
 		textMsg.append("Number of Clusters(N) = ").append(farthestFirstAttribute.getNumberOfCluster()).append("\n");
 		textMsg.append("Random number seed(S) = ").append(farthestFirstAttribute.getRandomNumberSeed()).append("\n");
 	}
 
+	/**
+	 * Convert numeric param values from String to integer
+	 *
+	 * @param paramValue - parameter value in string
+	 * @return - integer value of paramter
+	 */
 	private int getNumericValue(String paramValue) {
 
 		return Integer.parseInt(paramValue.split(":")[1].split("\\.")[0].trim());
