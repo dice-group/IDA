@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import ChatBot from "./chatbot/chatBot";
+// import ChatBot from "./chatbot/chatBot";
+import ChatApp from "./chatbot/chatbotcomp";
 import IDANavbar from "./navbar/navbar";
 import TabsWrappedLabel from "./tabs/tabs";
 import AppBar from "@material-ui/core/AppBar";
@@ -109,6 +110,7 @@ export default function Home(props) {
                 setTabs={setTabs}
                 navBarVisiblity={navBarVisiblity}
                 setNavBarClass={setNavBarClass}
+                isOpen={isChatbotOpen}
                 setNavBarVisiblity={setNavBarVisiblity}
               />
             </div>
@@ -124,7 +126,7 @@ export default function Home(props) {
             {loadTab(loaded)}
           </Grid>
         </Grid>
-        <ChatBot
+        <ChatApp
           setDetails={setDetails}
           setSelectedNodeId={setSelectedNodeId}
           detail={detail}
@@ -141,6 +143,7 @@ export default function Home(props) {
           isChatbotOpen={isChatbotOpen}
           setIsChatbotOpen={setIsChatbotOpen}
         />
+
       </div>
     </>
   );
