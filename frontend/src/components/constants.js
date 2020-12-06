@@ -14,9 +14,11 @@ export const IDA_CONSTANTS = {
         PDAC_VWDTS: 2003
     },
     UNKNOWN_LABEL: "UNKNOWN",
-    SORT_MODE_ASC: "asc",
-    SORT_MODE_DESC: "desc",
     ERROR_MESSAGE: "Something went wrong. Please try again!",
     TIMEOUT_MESSAGE: "Sorry, it looks like that request has crossed the allowed time limit of 3 minutes. Please optimize your task.",
-    GATEWAY_TIMEOUT_STATUS: 504
+    GATEWAY_TIMEOUT_STATUS: 504,
+    SORT_MODE_ASC_Y: "asc_y",
+    SORT_MODE_DESC_Y: "desc_y",
+    SORT_MODE_ASC_X: "asc_x",
+    SORT_MODE_DESC_X: "desc_x"
 };
