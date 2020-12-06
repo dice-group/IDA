@@ -49,13 +49,12 @@ export default class ChatApp extends React.Component {
     }
 
     messageSend = (e) => {
-        let msgs = [...this.state.messages],
-            userMsgs = msgs.filter((v) => v.sender === "user");
+        let msgs = [...this.state.messages];
 
         /**
          * Section to manage new message from the user
          */
-        if (e.keyCode === 13 && e.target.value !== "") {
+        if (e.keyCode === 13 && e.target.value.trim() !== "") {
             let msg = {
                 sender: "user",
                 message: e.target.value,
@@ -72,27 +71,36 @@ export default class ChatApp extends React.Component {
                 iterator: msgs.filter((v) => v.sender === "user").length - 1
             });
             e.target.value = "";
-
-            axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
-                .then((response) => {
-                    this._sendMessage(response.data.message);
-                    const actionCode = response.data.uiAction;
-                    const payload = response.data.payload;
-                    idaChatbotActionHandler(this.props, actionCode, payload);
-                })
-                .catch((err) => {
-                    if (err.response && err.response.status && err.response.status === IDA_CONSTANTS.GATEWAY_TIMEOUT_STATUS) {
-                        this._sendMessage(IDA_CONSTANTS.TIMEOUT_MESSAGE);
-                    } else {
-                        this._sendMessage(IDA_CONSTANTS.ERROR_MESSAGE);
-                    }
-                }).finally(() => {
-                    this.setState({
-                        hideProgress: true
-                    });
-                });
+            this.processMessage(msg);
+        } else {
+            this.msgIterator(e);
         }
+    }
 
+    processMessage = (msg) => {
+        axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
+            .then((response) => {
+                this._sendMessage(response.data.message);
+                const actionCode = response.data.uiAction;
+                const payload = response.data.payload;
+                idaChatbotActionHandler(this.props, actionCode, payload);
+            })
+            .catch((err) => {
+                if (err.response && err.response.status && err.response.status === IDA_CONSTANTS.GATEWAY_TIMEOUT_STATUS) {
+                    this._sendMessage(IDA_CONSTANTS.TIMEOUT_MESSAGE);
+                } else {
+                    this._sendMessage(IDA_CONSTANTS.ERROR_MESSAGE);
+                }
+            }).finally(() => {
+                this.setState({
+                    hideProgress: true
+                });
+            });
+    }
+
+    msgIterator = (e) => {
+        let msgs = [...this.state.messages];
+        let userMsgs = msgs.filter((v) => v.sender === "user");
         /***
          * Section to manage mesaages iteration
          */
@@ -165,7 +173,7 @@ export default class ChatApp extends React.Component {
                 {/* </Draggable> */}
             </div>
 
-        )
+        );
     }
 }
 
