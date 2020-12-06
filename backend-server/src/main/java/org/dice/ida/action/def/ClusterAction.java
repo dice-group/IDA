@@ -100,6 +100,7 @@ public class ClusterAction implements Action {
 					chatMessageResponse.setPayload(payload);
 					textMsg = new StringBuilder("Your clustered data is loaded.\n");
 					chatMessageResponse.setUiAction(IDAConst.UIA_CLUSTER);
+					dialogFlowUtil.resetContext();
 				} else {
 					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 				}

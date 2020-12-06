@@ -5,13 +5,13 @@ import java.util.*;
 
 /**
  * This interface consists of all the constant values across IDA
- * @author Nikit
  *
+ * @author Nikit
  */
 public interface IDAConst {
 
 	/**
-	 *  UI action codes
+	 * UI action codes
 	 */
 	// Load message normally
 	public static final int UAC_NRMLMSG = 1001;
@@ -24,12 +24,12 @@ public interface IDAConst {
 	//Load bubble chart
 	public static final int UIA_BUBBLECHART = 1006;
 	// Draw line chart
-	public static  final int UIA_LINECHART = 1007;
+	public static final int UIA_LINECHART = 1007;
 	//Load clustered dara
 	public static final int UIA_CLUSTER = 1008;
 
 	/**
-	 *  Pre-defined action codes
+	 * Pre-defined action codes
 	 */
 	// Know more button
 	public static final int PDAC_KNWMR = 2001;
@@ -39,7 +39,7 @@ public interface IDAConst {
 	public static final int PDAC_VWDTS = 2003;
 
 	/**
-	 *  Chatbot constants
+	 * Chatbot constants
 	 */
 	public static final String BOT_LANGUAGE = "en-US";
 	public static final String UNK_INTENT_COUNT = "unknownIntentCount";
@@ -94,18 +94,18 @@ public interface IDAConst {
 	public static final String BC_TWO = "two";
 	public static final String BC_FIRST_COL = "first_col";
 	public static final String BC_SECOND_COL = "second_col";
- 	public static final String BC_LOADED = "Bubble chart has been loaded";
- 	public static final String BC_INVALID_COL = "Provided column name was incorrect, it does not exist on the loaded table!";
- 	public static final String BC_INVALID_FIRST_COL = "Provided first column name was incorrect, it does not exist on the loaded table!";
- 	public static final String BC_INVALID_SECOND_COL = "Provided second column name was incorrect, it does not exist on the loaded table!";
- 	public static final String BC_NOT_NUM_SECOND_COL = "Provided second column was not numerical! try again please";
- 	public static final String BC_INCORRECT_COL = "Provided column name was incorrect! please tell the column name again?";
+	public static final String BC_LOADED = "Bubble chart has been loaded";
+	public static final String BC_INVALID_COL = "Provided column name was incorrect, it does not exist on the loaded table!";
+	public static final String BC_INVALID_FIRST_COL = "Provided first column name was incorrect, it does not exist on the loaded table!";
+	public static final String BC_INVALID_SECOND_COL = "Provided second column name was incorrect, it does not exist on the loaded table!";
+	public static final String BC_NOT_NUM_SECOND_COL = "Provided second column was not numerical! try again please";
+	public static final String BC_INCORRECT_COL = "Provided column name was incorrect! please tell the column name again?";
 
 	/**
 	 * Bar graph parameters thresholds
 	 */
 	public static final int X_PARAM_MAX_COUNT_OF_VALUES = 50;
-	public static final double  X_PARAM_UNIQUENESS_PROBABILITY = 100.0;
+	public static final double X_PARAM_UNIQUENESS_PROBABILITY = 100.0;
 	public static final double Y_PARAM_UNIQUENESS_MIN_PROBABILITY = 90.0;
 	public static final double X_PARAM_MIN_DUPLICATE_RATIO = 30.0;
 
@@ -129,7 +129,7 @@ public interface IDAConst {
 	public static final String CRED_PRIVATE_KEY_TYPE = "RSA";
 
 	// Db utils
-	public  static final String NULL_VALUE_IDENTIFIER = "UNKNOWN";
+	public static final String NULL_VALUE_IDENTIFIER = "UNKNOWN";
 	public static final String QUESTION_MARK_SYMBOL = "?";
 
 	/**
@@ -262,7 +262,7 @@ public interface IDAConst {
 	public static final String GET_NUM_CLUSTER = "getNumCluster";
 	public static final String NUMBER_OF_CLUSTER = "num_cluster";
 	public static final String GET_INIT_METHOD = "getInitMethod";
-		public static final String INIT_METHOD = "init_method";
+	public static final String INIT_METHOD = "init_method";
 	public static final String GET_MAX_ITERATION = "getMaxIteration";
 	public static final String MAX_ITERATION = "max_iteration";
 	public static final String GET_REPLACE_MISSING_VALUES = "getReplaceMissingValues";
@@ -273,4 +273,6 @@ public interface IDAConst {
 	public static final String RANDOM_SEED = "random_seed";
 	public static final String GET_MULTI_PARAM = "getMultiParam";
 
+	public static final long TIMEOUT_LIMIT = 180000;
+	public static final String TIMEOUT_MSG = "Sorry, it looks like that request has crossed the allowed time limit of " + (TIMEOUT_LIMIT / 60000) + " minutes. Please optimize your task.";
 }
