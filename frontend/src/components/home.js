@@ -140,7 +140,7 @@ export default function Home(props) {
           tabs={tabs}
           setTabs={setTabs}
           setNavBarClass={setNavBarClass}
-
+          isChatbotOpen={isChatbotOpen}
           setIsChatbotOpen={setIsChatbotOpen}
         />
 

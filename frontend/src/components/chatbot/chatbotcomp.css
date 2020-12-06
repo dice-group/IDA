@@ -1,91 +1,108 @@
-.clearfix::after {
-    content: " ";
-    display: block;
-    height: 0;
-    clear: both;
+.chatbox-container.hidden {
+  display: none;
 }
 
 .chatbox {
-    background: #fff;
-    border: solid 1px #ccc;
-    width: 370px;
-    position: absolute;
-    z-index: 2000;
-    top: 80px;
-    left: 50%;
-    margin-left: 460px;
-    box-shadow: 0px 7px 40px 2px rgba(148, 149, 150, 0.3);
-    z-index: 1200;
+  background: #fff;
+  border: solid 1px #ccc;
+  z-index: 2000;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .chatbox .chatbox-title {
-    padding: 15px;
-    border-bottom: solid 1px #ccc;
-    background-color: #4e8cff;
-    color: #fff;
-    cursor: move;
+  border-bottom: solid 1px #ccc;
+  background-color: #4e8cff;
+  color: #fff;
+  height: 65px;
 }
- .makeStyles-root-6 {
-    margin-left: -18px
+
+.chatbox .chatbox-title .chat-window-title {
+  font-size: 16px;
+}
+
+.chatbox .chatbox-title .chatbot-close {
+  cursor: pointer;
+}
+
+.makeStyles-root-6 {
+  margin-left: -18px;
+}
+
+.chatbox .chatbox-chat-area {
+  position: absolute;
+  top: 0;
+  margin-top: 65px;
+  height: calc(100% - 65px);
+  width: 100%;
+}
+
+.chatbox-chat-area .chat-area-input {
+  box-shadow: 0 -5px 20px 0 rgba(150, 165, 190, 0.4);
+  position: absolute;
+  bottom: 10px;
+  height: 55px;
+  width: 100%;
+  padding-left: 10px;
 }
 
 .chatbox-chat-area .chat-area-input input {
-    width: 92%;
-    padding: 15px;
-    display: block;
-    border: none;
-    outline: none;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
 }
 
 .chatbox-chat-area .chat-area-msgs {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    border-bottom: solid 1px #ccc;
-    height: 500px;
-    overflow-y: scroll;
-    transition: background-color 0.3s;
+  position: absolute;
+  top: 0;
+  padding: 15px 15px 15px 15px;
+  height: calc(100% - 65px);
+  overflow-y: auto;
+  width: 100%;
 }
 
 .chatbox-chat-area .chat-area-msgs a:link,
 .chatbox-chat-area .chat-area-msgs a:visited {
-    color: #fff;
+  color: #fff;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent {
-    float: right;
-    margin-right: 10px;
-    overflow-wrap: break-word;
-    display: flex;
+  float: right;
+  margin-right: 10px;
+  overflow-wrap: break-word;
+  display: flex;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent .msg {
-    display: inline-block;
-    background-color: #ecebef;
-    margin-right: 10px;
-    border-radius: 5px;
-    padding: 15px;
-    width: 250px;
-    margin-bottom: 15px;
-    position: relative;
+  background-color: #ecebef;
+  margin-right: 10px;
+  border-radius: 5px;
+  padding: 15px;
+  width: 200px;
+  margin-bottom: 15px;
+  position: relative;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent .msg:after {
-    content: "";
-    width: 0px;
-    height: 0px;
-    border-right: 7px solid transparent;
-    border-top: 10px solid #ececec;
-    position: absolute;
-    right: -7px;
-    top: 4px;
+  content: "";
+  width: 0px;
+  height: 0px;
+  border-right: 7px solid transparent;
+  border-top: 10px solid #ececec;
+  position: absolute;
+  right: -7px;
+  top: 4px;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent .agent-pic {
-    width: 35px;
-    height: 35px;
-    border: solid 6px #4e8cff;
-    border-radius: 50%;
-    display: inline-block;
+  width: 35px;
+  height: 35px;
+  border: solid 6px #4e8cff;
+  border-radius: 50%;
 }
 
 .chatbox-chat-area .chat-area-msgs .user {
@@ -94,45 +111,62 @@
 }
 
 .chatbox-chat-area .chat-area-msgs .user .msg {
-    background-color: #4e8cff;
-    color: #fff;
-    border-radius: 5px;
-    padding: 15px;
-    width: 250px;
-    position: relative;
-    overflow-wrap: break-word;
-
+  background-color: #4e8cff;
+  color: #fff;
+  border-radius: 5px;
+  padding: 15px;
+  width: 200px;
+  position: relative;
+  overflow-wrap: break-word;
 }
 
 .chatbox-chat-area .chat-area-msgs .user .msg:before {
-    content: "";
-    width: 0px;
-    height: 0px;
-    border-left: 7px solid transparent;
-    border-top: 10px solid #4e8cff;
-    position: absolute;
-    left: -7px;
-    top: 4px;
+  content: "";
+  width: 0px;
+  height: 0px;
+  border-left: 7px solid transparent;
+  border-top: 10px solid #4e8cff;
+  position: absolute;
+  left: -7px;
+  top: 4px;
 }
 
+.chatbox-chat-area .chat-area-msgs .agent .time,
 .chatbox-chat-area .chat-area-msgs .user .time {
   color: #444;
   font-size: 12px;
-  margin-top:4px;
+  margin-top: 4px;
   margin-bottom: 7px;
   visibility: hidden;
 }
 
+.chatbox-chat-area .chat-area-msgs .agent .msg:hover ~ .time,
 .chatbox-chat-area .chat-area-msgs .user .msg:hover ~ .time {
   visibility: visible;
 }
 
 @media (min-width: 992px) {
-  .no-data .chatbox {
-    right: 50%;
+  .chatbox {
+    position: absolute;
+    top: unset;
+    left: unset;
+    top: 80px;
+    width: 370px;
+    max-height: 85vh;
+    height: 85vh;
+    border-radius: 10px;
   }
-
-  .chatbox{
-    max-height: 80vh;
+  .with-data .chatbox {
+    right: 20px;
+  }
+  .no-data .chatbox {
+    right: 45%;
+  }
+  .chatbox .chatbox-chat-area,
+  .chatbox-chat-area .chat-area-input {
+    border-radius: 0 0 10px 10px;
+  }
+  .chatbox .chatbox-title {
+    border-radius: 10px 10px 0 0;
   }
 }

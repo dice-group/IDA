@@ -15,5 +15,8 @@ export const IDA_CONSTANTS = {
     },
     UNKNOWN_LABEL: "UNKNOWN",
     SORT_MODE_ASC: "asc",
-    SORT_MODE_DESC: "desc"
+    SORT_MODE_DESC: "desc",
+    ERROR_MESSAGE: "Something went wrong. Please try again!",
+    TIMEOUT_MESSAGE: "Sorry, it looks like that request has crossed the allowed time limit of 3 minutes. Please optimize your task.",
+    GATEWAY_TIMEOUT_STATUS: 504
 };
