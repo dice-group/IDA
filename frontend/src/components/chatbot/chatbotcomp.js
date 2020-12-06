@@ -14,7 +14,7 @@ export default class ChatApp extends React.Component {
         this.state = {
             title: "IDA chatbot",
             iterator: -1,
-            hideProgress: true,
+            hideProgress: false,
             hideBot: false,
             messages: [{
                 sender: "them",
@@ -72,9 +72,8 @@ export default class ChatApp extends React.Component {
             });
             e.target.value = "";
             this.processMessage(msg);
-        } else if ((e.keyCode === 38 || e.keyCode === 40) && this.state.iterator !== -1) {
-            this.msgIterator(e);
         }
+        this.msgIterator(e);
     }
 
     processMessage = (msg) => {
@@ -105,13 +104,13 @@ export default class ChatApp extends React.Component {
          * Section to manage mesaages iteration
          */
         // only update and iterate values if iterator has been updated i.e. user has send atleast one message
-        if (e.keyCode === 38) {
+        if (this.state.iterator !== -1 && e.keyCode === 38) {
             // up arrow key
             this.setState({
                 iterator: this.state.iterator > 0 ? this.state.iterator - 1 : this.state.iterator,
             });
             target.value = userMsgs[this.state.iterator].message;
-        } else if (e.keyCode === 40) {
+        } else if (this.state.iterator !== -1 && e.keyCode === 40) {
             // down arrow key
             const iter = userMsgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator;
             this.setState({
