@@ -14,7 +14,7 @@ export default class ChatApp extends React.Component {
         this.state = {
             title: "IDA chatbot",
             iterator: -1,
-            hideProgress: false,
+            hideProgress: true,
             hideBot: false,
             messages: [{
                 sender: "them",
@@ -50,6 +50,7 @@ export default class ChatApp extends React.Component {
 
     messageSend = (e) => {
         let msgs = [...this.state.messages];
+        const userMsgs = this.state.messages.filter((v) => v.sender === "user");
 
         /**
          * Section to manage new message from the user
@@ -73,7 +74,7 @@ export default class ChatApp extends React.Component {
             e.target.value = "";
             this.processMessage(msg);
         }
-        this.msgIterator(e);
+        this.msgIterator(e, userMsgs);
     }
 
     processMessage = (msg) => {
@@ -97,9 +98,8 @@ export default class ChatApp extends React.Component {
             });
     }
 
-    msgIterator = (e) => {
+    msgIterator = (e, userMsgs) => {
         let target = e.target;
-        let userMsgs = this.state.messages.filter((v) => v.sender === "user");
         /***
          * Section to manage mesaages iteration
          */
