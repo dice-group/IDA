@@ -4,78 +4,74 @@ import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
 import IDAChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
-import Draggable from "react-draggable";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import IconButton from "@material-ui/core/IconButton";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Grid } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 export default class ChatApp extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            title: 'IDA chatbot',
+            title: "IDA chatbot",
             iterator: -1,
             hideProgress: true,
+            hideBot: false,
             messages: [{
                 sender: "them",
                 type: "text",
                 key: 1,
                 message: "Hello, Welcome to IDA. How may I help you?"
-
             }],
             changeCSS: {},
             selectClick: [],
             pyld: [],
             action: "1004",
             msg: [],
-
-        }
+            closeImg: { cursor: "pointer", float: "right", marginTop: "5px", width: "40px", height: "40px", display: "inline-flex" }
+        };
     }
+
+
     _sendMessage(text) {
         this.setState({
             messages: [...this.state.messages, {
                 sender: text.sender,
                 type: "text",
                 key: text.key,
-                message: text,
+                message: text
             }]
-        })
-        console.log(this.state.messages)
+        });
     }
 
     componentDidUpdate(_prevProps, _prevState) {
-        const msgs = document.getElementById('chat-area-msgs');
+        const msgs = document.getElementById("chat-area-msgs");
         msgs.scrollTop = msgs.scrollHeight;
     }
 
     messageSend = (e) => {
         let msgs = [...this.state.messages],
-            user_msgs = msgs.filter(v => v.sender === 'user');
+            user_msgs = msgs.filter(v => v.sender === "user");
 
         /**
          * Section to manage new message from the user
          */
-        if (e.keyCode === 13 && e.target.value !== '') {
+        if (e.keyCode === 13 && e.target.value !== "") {
             let msg = {
-                sender: 'user',
+                sender: "user",
                 message: e.target.value,
                 key: Math.random(),
                 timestamp: Date.now(),
                 senderName: "user",
                 activeDS: this.props.activeDS,
-                activeTable: this.props.activeTable,
-                activeTableData: this.props.activeTableData,
-                temporaryData: this.props.activeTableData ? true : false
+                activeTable: this.props.activeTable
             }
             msgs = [...msgs, msg];
             this.setState({
                 messages: msgs,
                 hideProgress: false,
-                iterator: msgs.filter(v => v.sender === 'user').length - 1
+                iterator: msgs.filter(v => v.sender === "user").length - 1
             });
-            e.target.value = ''
+            e.target.value = ""
 
             axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
                 .then(response => {
@@ -83,16 +79,19 @@ export default class ChatApp extends React.Component {
                     const actionCode = response.data.uiAction;
                     const payload = response.data.payload;
                     IDAChatbotActionHandler(this.props, actionCode, payload);
-
                 })
                 .catch(err => {
                     console.log(err);
+                    if (err.response && err.response.status && err.response.status === IDA_CONSTANTS.GATEWAY_TIMEOUT_STATUS) {
+                        this._sendMessage(IDA_CONSTANTS.TIMEOUT_MESSAGE);
+                    } else {
+                        this._sendMessage(IDA_CONSTANTS.ERROR_MESSAGE);
+                    }
                 }).finally(() => {
                     this.setState({
                         hideProgress: true
-                    })
+                    });
                 });
-
         }
 
         /***
@@ -117,44 +116,54 @@ export default class ChatApp extends React.Component {
         }
     }
 
+    handlebutton = () => {
+        this.props.setIsChatbotOpen(!this.props.isChatbotOpen);
+    }
+
     render() {
         return (
-            <div className={this.props.detail.length ? "" : "no-data"}  >
-                <Draggable handle=".chatbox-title">
-                    <div className="chatbox" >
-                        <div className="chatbox-title">{this.state.title}</div>
-                        <div className="chatbox-chat-area">
-                            <div className="chat-area-msgs clearfix" id='chat-area-msgs'>
-                                {
-                                    this.state.messages.map(val => {
-                                        if (val.sender === 'user') {
-                                            return (
-                                                <div className="user">
-                                                    <div className="msg" key={Math.random()}>{val.message}</div>
-                                                    <div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
-                                                </div>
-                                            )
-                                        } else {
-                                            return (
-                                                <div>
-                                                    <div className="agent" key={Math.random()}>
-                                                        <div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
-                                                        <div className="agent-pic" key={Math.random()} />
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-                                    })
-                                }
-                            </div>
-
-                            <div className="chat-area-input" >
-                                <IDALinearProgress hide={this.state.hideProgress} />
-                                <input type="text" placeholder="Enter your message .." onKeyUp={this.messageSend} />
-                            </div>
+            <div className={`chatbox-container ${this.props.detail.length ? "with-data" : "no-data"} ${this.props.isChatbotOpen ? "" : "hidden"}`}>
+                {/* <Draggable handle=".chatbox-title"> */}
+                <div className="chatbox">
+                    <Grid className="chatbox-title" container direction="row" alignItems="center">
+                        <Grid item xs={10} className="pl-3">
+                            <span className="chat-window-title">
+                                {this.state.title}
+                            </span>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <CloseIcon onClick={this.handlebutton.bind(this)} className="chatbot-close" />
+                        </Grid>
+                    </Grid>
+                    <div className="chatbox-chat-area">
+                        <div className="chat-area-msgs" id="chat-area-msgs">
+                            {
+                                this.state.messages.map((val, i) => {
+                                    if (val.sender === "user") {
+                                        return (
+                                            <div className="user" key={i}>
+                                                <div className="msg" key={Math.random()}>{val.message}</div>
+                                                <div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div className="agent" key={Math.random()}>
+                                                <div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
+                                                <div className="agent-pic" key={Math.random()} />
+                                            </div>
+                                        )
+                                    }
+                                })
+                            }
+                        </div>
+                        <div className="chat-area-input" >
+                            <IDALinearProgress hide={this.state.hideProgress} />
+                            <input type="text" placeholder="Enter your message .." onKeyUp={this.messageSend} />
                         </div>
                     </div>
-                </Draggable>
+                </div>
+                {/* </Draggable> */}
             </div>
 
         )
