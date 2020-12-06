@@ -105,7 +105,7 @@ public class ValidatorUtil {
 	 * @param columnList - List of column names to be validated (provided as parameters to the visualization)
 	 * @throws IDAException - Throws exception with a message based on the failed scenario
 	 */
-	public static List<Map<String, String>> areParametersValid(String dsName, String tableName, List<String> columnList) throws IDAException {
+	public static List<Map<String, String>> areParametersValid(String dsName, String tableName, List<String> columnList, boolean fromTemporaryData) throws IDAException {
 		if (isStringEmpty(dsName)) {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
@@ -127,12 +127,11 @@ public class ValidatorUtil {
 					if(columnList != null && !columnList.isEmpty()) {
 						JsonNode columnDetails = fileDetails.get(i).get(IDAConst.COLUMN_DETAILS_ATTR);
 						List<String> columns = new ArrayList<>();
-						String columnName;
-						for (int j = 0; j < columnDetails.size(); j++) {
-							columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
-							columns.add(columnName.toLowerCase());
-							columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
-							columnUniquenessMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_UNIQUE_ATTR).asText());
+						updateColumnDetailMaps(columnDetails, columnTypeMap, columnUniquenessMap, columns);
+						if(fromTemporaryData) {
+							columns.add("cluster");
+							columnTypeMap.put("Cluster", "numeric");
+							columnUniquenessMap.put("Cluster", "false");
 						}
 						for (String column : columnList) {
 							if (!columns.contains(column.toLowerCase())) {
@@ -151,6 +150,16 @@ public class ValidatorUtil {
 			}};
 		} catch (IOException ex) {
 			throw new IDAException(IDAConst.TABLE_DOES_NOT_EXIST_MSG);
+		}
+	}
+
+	private static void updateColumnDetailMaps(JsonNode columnDetails, Map<String, String> columnTypeMap, Map<String, String> columnUniquenessMap, List<String> columns) {
+		String columnName;
+		for (int j = 0; j < columnDetails.size(); j++) {
+			columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
+			columns.add(columnName.toLowerCase());
+			columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
+			columnUniquenessMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_UNIQUE_ATTR).asText());
 		}
 	}
 }

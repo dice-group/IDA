@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.util.FileUtil;
 import org.dice.ida.util.ValidatorUtil;
@@ -22,7 +23,7 @@ import weka.core.converters.CSVLoader;
 public class BarGraphAction implements Action {
 
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
 
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 			try {

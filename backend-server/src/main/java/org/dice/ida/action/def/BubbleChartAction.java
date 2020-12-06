@@ -6,6 +6,7 @@ import java.util.Map;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.AttributeSummary;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.DataSummary;
 import org.dice.ida.util.FileUtil;
 import org.dice.ida.util.MetaFileReader;
@@ -25,7 +26,7 @@ import static java.util.stream.Collectors.toList;
 
 public class BubbleChartAction implements Action {
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 			try {
 				Map<String, Object> payload = chatMessageResponse.getPayload();

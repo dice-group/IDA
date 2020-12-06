@@ -40,6 +40,7 @@ export default function Home(props) {
   const [activeTable, setActiveTable] = useState("");
   const [tabs, setTabs] = useState([]);
   const [isChatbotOpen, setIsChatbotOpen] = useState(true);
+  const [activeTableData, setActiveTableData] = useState(null);
   const loadTab = (loaded) => {
     if (loaded && tabs.length) {
       return <TabsWrappedLabel
@@ -50,6 +51,7 @@ export default function Home(props) {
         setActiveTable={setActiveTable}
         tabs={tabs}
         setTabs={setTabs}
+        setActiveTableData={setActiveTableData}
       />
     }
   }
@@ -112,6 +114,7 @@ export default function Home(props) {
                 setNavBarClass={setNavBarClass}
                 isOpen={isChatbotOpen}
                 setNavBarVisiblity={setNavBarVisiblity}
+                setActiveTableData={setActiveTableData}
               />
             </div>
             <Hidden mdDown>
@@ -142,6 +145,8 @@ export default function Home(props) {
           setNavBarClass={setNavBarClass}
           isChatbotOpen={isChatbotOpen}
           setIsChatbotOpen={setIsChatbotOpen}
+          activeTableData={activeTableData}
+          setActiveTableData={setActiveTableData}
         />
 
       </div>

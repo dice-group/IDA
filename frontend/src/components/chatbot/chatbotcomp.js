@@ -63,7 +63,9 @@ export default class ChatApp extends React.Component {
                 timestamp: Date.now(),
                 senderName: "user",
                 activeDS: this.props.activeDS,
-                activeTable: this.props.activeTable
+                activeTable: this.props.activeTable,
+                activeTableData: this.props.activeTableData,
+                temporaryData: this.props.activeTableData ? true : false
             };
             msgs = [...msgs, msg];
             this.setState({

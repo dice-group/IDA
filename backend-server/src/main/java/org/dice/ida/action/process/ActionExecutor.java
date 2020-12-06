@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import org.dice.ida.action.def.Action;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
+import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -64,8 +65,8 @@ public class ActionExecutor {
 		return paramMap;
 	}
 
-	public void processAction(ChatMessageResponse resp) {
-		action.performAction(paramMap, resp);
+	public void processAction(ChatMessageResponse resp, ChatUserMessage message) {
+		action.performAction(paramMap, resp, message);
 	}
 
 }
