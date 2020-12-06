@@ -35,7 +35,7 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     }
 }
 
-export default function IDAChatbotActionHandler(props, actionCode, payload) {
+export default function idaChatbotActionHandler(props, actionCode, payload) {
     switch (actionCode) {
         case IDA_CONSTANTS.UI_ACTION_CODES.UIA_LOADDS: {
             const metaData = payload.dsMd || {};

@@ -87,10 +87,10 @@
   position: relative;
 }
 
-.chatbox-chat-area .chat-area-msgs .agent .msg:after {
+.chatbox-chat-area .chat-area-msgs .agent .msg::after {
   content: "";
-  width: 0px;
-  height: 0px;
+  width: 0;
+  height: 0;
   border-right: 7px solid transparent;
   border-top: 10px solid #ececec;
   position: absolute;
@@ -120,10 +120,10 @@
   overflow-wrap: break-word;
 }
 
-.chatbox-chat-area .chat-area-msgs .user .msg:before {
+.chatbox-chat-area .chat-area-msgs .user .msg::before {
   content: "";
-  width: 0px;
-  height: 0px;
+  width: 0;
+  height: 0;
   border-left: 7px solid transparent;
   border-top: 10px solid #4e8cff;
   position: absolute;
@@ -148,7 +148,6 @@
 @media (min-width: 992px) {
   .chatbox {
     position: absolute;
-    top: unset;
     left: unset;
     top: 80px;
     width: 370px;
@@ -156,16 +155,20 @@
     height: 85vh;
     border-radius: 10px;
   }
+
   .with-data .chatbox {
     right: 20px;
   }
+
   .no-data .chatbox {
     right: 45%;
   }
+
   .chatbox .chatbox-chat-area,
   .chatbox-chat-area .chat-area-input {
     border-radius: 0 0 10px 10px;
   }
+
   .chatbox .chatbox-title {
     border-radius: 10px 10px 0 0;
   }

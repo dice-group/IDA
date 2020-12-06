@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
-import IDAChatbotActionHandler from "../action-handler";
+import idaChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
 import { Grid } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -10,7 +10,7 @@ import CloseIcon from "@material-ui/icons/Close";
 export default class ChatApp extends React.Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             title: "IDA chatbot",
             iterator: -1,
@@ -50,7 +50,7 @@ export default class ChatApp extends React.Component {
 
     messageSend = (e) => {
         let msgs = [...this.state.messages],
-            user_msgs = msgs.filter(v => v.sender === "user");
+            userMsgs = msgs.filter((v) => v.sender === "user");
 
         /**
          * Section to manage new message from the user
@@ -64,24 +64,23 @@ export default class ChatApp extends React.Component {
                 senderName: "user",
                 activeDS: this.props.activeDS,
                 activeTable: this.props.activeTable
-            }
+            };
             msgs = [...msgs, msg];
             this.setState({
                 messages: msgs,
                 hideProgress: false,
-                iterator: msgs.filter(v => v.sender === "user").length - 1
+                iterator: msgs.filter((v) => v.sender === "user").length - 1
             });
-            e.target.value = ""
+            e.target.value = "";
 
             axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
-                .then(response => {
+                .then((response) => {
                     this._sendMessage(response.data.message);
                     const actionCode = response.data.uiAction;
                     const payload = response.data.payload;
-                    IDAChatbotActionHandler(this.props, actionCode, payload);
+                    idaChatbotActionHandler(this.props, actionCode, payload);
                 })
-                .catch(err => {
-                    console.log(err);
+                .catch((err) => {
                     if (err.response && err.response.status && err.response.status === IDA_CONSTANTS.GATEWAY_TIMEOUT_STATUS) {
                         this._sendMessage(IDA_CONSTANTS.TIMEOUT_MESSAGE);
                     } else {
@@ -103,15 +102,15 @@ export default class ChatApp extends React.Component {
                 // up arrow key
                 this.setState({
                     iterator: this.state.iterator > 0 ? this.state.iterator - 1 : this.state.iterator,
-                })
-                e.target.value = user_msgs[this.state.iterator].message;
+                });
+                e.target.value = userMsgs[this.state.iterator].message;
             } else if (e.keyCode === 40) {
                 // down arrow key
-                const iter = user_msgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator
+                const iter = userMsgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator;
                 this.setState({
                     iterator: iter
-                })
-                e.target.value = user_msgs[iter].message;
+                });
+                e.target.value = userMsgs[this.state.iterator].message;
             }
         }
     }
@@ -145,14 +144,14 @@ export default class ChatApp extends React.Component {
                                                 <div className="msg" key={Math.random()}>{val.message}</div>
                                                 <div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
                                             </div>
-                                        )
+                                        );
                                     } else {
                                         return (
                                             <div className="agent" key={Math.random()}>
                                                 <div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
                                                 <div className="agent-pic" key={Math.random()} />
                                             </div>
-                                        )
+                                        );
                                     }
                                 })
                             }
