@@ -72,7 +72,7 @@ export default class ChatApp extends React.Component {
             });
             e.target.value = "";
             this.processMessage(msg);
-        } else {
+        } else if ((e.keyCode === 38 || e.keyCode === 40) && this.state.iterator !== -1) {
             this.msgIterator(e);
         }
     }
@@ -99,27 +99,26 @@ export default class ChatApp extends React.Component {
     }
 
     msgIterator = (e) => {
-        let msgs = [...this.state.messages];
-        let userMsgs = msgs.filter((v) => v.sender === "user");
+        let target = e.target;
+        let userMsgs = this.state.messages.filter((v) => v.sender === "user");
         /***
          * Section to manage mesaages iteration
          */
-        if (this.state.iterator !== -1) {
-            // only update and iterate values if iterator has been updated i.e. user has send atleast one message
-            if (e.keyCode === 38) {
-                // up arrow key
-                this.setState({
-                    iterator: this.state.iterator > 0 ? this.state.iterator - 1 : this.state.iterator,
-                });
-                e.target.value = userMsgs[this.state.iterator].message;
-            } else if (e.keyCode === 40) {
-                // down arrow key
-                const iter = userMsgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator;
-                this.setState({
-                    iterator: iter
-                });
-                e.target.value = userMsgs[this.state.iterator].message;
-            }
+        // only update and iterate values if iterator has been updated i.e. user has send atleast one message
+        if (e.keyCode === 38) {
+            // up arrow key
+            this.setState({
+                iterator: this.state.iterator > 0 ? this.state.iterator - 1 : this.state.iterator,
+            });
+            target.value = userMsgs[this.state.iterator].message;
+        } else if (e.keyCode === 40) {
+            // down arrow key
+            const iter = userMsgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator;
+            this.setState({
+                iterator: iter
+            }, () => {
+                target.value = userMsgs[this.state.iterator].message;
+            });
         }
     }
 
