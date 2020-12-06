@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -74,91 +74,110 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function CustomizedTables(props) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(props.noPagination ? 0 : 5);
-  const [rowsPerPageList, setRowsPerPageList] = useState([]);
-  const tableData = props.data;
-  const tableId = props.nodeId;
-  const keysName = props.columns.map((col) => {
-    return {
-      "key": col.colAttr,
-      "label": col.colName
+export default class CustomizedTables extends Component {
+  tableData = null;
+  tableId = "";
+  keysName = [];
+  seletedItem = null;
+  emptyRows = 0;
+  noPagination;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      page: 0,
+      rowsPerPage: props.noPagination ? 0 : 5,
+      rowsPerPageList: [],
     };
-  });
-  let seletedItem = tableData;
-  useEffect(() => {
-    if (tableId && document.getElementById(tableId)) {
-      const rowHeight = document.getElementById(tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
-      if(rowHeight) {
+    this.noPagination = props.noPagination;
+    this.tableData = props.data;
+    this.tableId = props.nodeId;
+    this.keysName = props.columns.map((col) => {
+      return {
+        "key": col.colAttr,
+        "label": col.colName
+      };
+    });
+    this.seletedItem = this.tableData;
+    this.emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.seletedItem.length - this.state.page * this.state.rowsPerPage);
+  }
+
+  componentDidMount() {
+    if (this.tableId && document.getElementById(this.tableId)) {
+      const rowHeight = document.getElementById(this.tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
+      if (rowHeight) {
         const defaultRowsPerPage = Math.floor((window.innerHeight * 0.65) / rowHeight);
-        setRowsPerPage(defaultRowsPerPage);
-        setRowsPerPageList([defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 3, defaultRowsPerPage * 4, defaultRowsPerPage * 5]);
+        this.setState({
+          rowsPerPage: defaultRowsPerPage,
+          rowsPerPageList: [defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 3, defaultRowsPerPage * 4, defaultRowsPerPage * 5]
+        });
       }
     }
-  }, [tableId]);
+  }
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, seletedItem.length - page * rowsPerPage);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  handleChangePage(event, newPage) {
+    this.setState({
+      page: newPage
+    });
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage: parseInt(event.target.value, 10)
+    });
   };
 
-
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="ida table" id={tableId}>
-        <TableHead >
-          <TableRow >
-            {keysName.map((row, index) => (
-              <TableCell align="left" key={index}>{row["label"]}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? seletedItem.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : seletedItem
-          ).map((row, index) => (
-            <TableRow key={index} component="tr" className="ida-table-row">
-              {keysName.map((colName, index) => (
-                <TableCell align="left" component="th" scope="row" key={index} >{row[colName["key"]]}</TableCell>
+  render() {
+    return (
+      <TableContainer component={Paper}>
+        <Table aria-label="ida table" id={this.tableId}>
+          <TableHead >
+            <TableRow >
+              {this.keysName.map((row, index) => (
+                <TableCell align="left" key={index}>{row["label"]}</TableCell>
               ))}
             </TableRow>
-          ))}
+          </TableHead>
+          <TableBody>
+            {(this.state.rowsPerPage > 0
+              ? this.seletedItem.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+              : this.seletedItem
+            ).map((row, index) => (
+              <TableRow key={index} component="tr" className="ida-table-row">
+                {this.keysName.map((colName, index) => (
+                  <TableCell align="left" component="th" scope="row" key={index} >{row[colName["key"]]}</TableCell>
+                ))}
+              </TableRow>
+            ))}
 
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 50 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-        </TableBody>
-        {
-          props.noPagination ? null : <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={rowsPerPageList}
-                colSpan={keysName.length}
-                count={seletedItem.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: { "aria-label": "rows per page" },
-                  native: true,
-                }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        }
-      </Table>
-    </TableContainer>
-
-  );
+            {this.emptyRows > 0 && (
+              <TableRow style={{ height: 50 * this.emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+          {
+            this.noPagination ? null : <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={this.state.rowsPerPageList}
+                  colSpan={this.keysName.length}
+                  count={this.seletedItem.length}
+                  rowsPerPage={this.state.rowsPerPage}
+                  page={this.state.page}
+                  SelectProps={{
+                    inputProps: { "aria-label": "rows per page" },
+                    native: true,
+                  }}
+                  onChangePage={this.handleChangePage.bind(this)}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage.bind(this)}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          }
+        </Table>
+      </TableContainer>
+    );
+  }
 }
