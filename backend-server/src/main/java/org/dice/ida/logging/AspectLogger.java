@@ -31,7 +31,6 @@ public class AspectLogger {
 
 	/**
 	 * Creates the point cut for the MessageRestController
-	 *
 	 */
 	@Pointcut("execution(* org.dice.ida.controller.MessageController.*(..))")
 	public void controller() {
@@ -41,6 +40,7 @@ public class AspectLogger {
 
 	/**
 	 * Method to log the Request to Message Rest Controller
+	 *
 	 * @param joinPoint
 	 */
 	@Before("controller()")
@@ -53,6 +53,7 @@ public class AspectLogger {
 
 	/**
 	 * Method to log the exceptions
+	 *
 	 * @param joinPoint
 	 * @param exception
 	 */
@@ -65,22 +66,28 @@ public class AspectLogger {
 		log.error(logMessage.toString(), exception);
 	}
 
-	/** Method to log the responses
+	/**
+	 * Method to log the responses
+	 *
 	 * @param joinPoint
 	 * @param retVal
 	 */
 	@AfterReturning(pointcut = "controller()", returning = "retVal")
-	public void logAfterReturningMethod(JoinPoint  joinPoint, Object retVal) {
+	public void logAfterReturningMethod(JoinPoint joinPoint, Object retVal) {
 		StringBuffer logMessage = new StringBuffer();
 		logMessage.append("[RESPONSE] - ");
 		commonMsgBody(joinPoint, logMessage);
 		logMessage.append(" [RETURN VALUE]: ");
-		ChatMessageResponse returnBean = (ChatMessageResponse) retVal;
-		if(returnBean.getUiAction() == IDAConst.UIA_LOADDS) {
-			// We dont want to log full dataset content so that's why
-			logMessage.append("[DATASET CONTENT]");
+		if (retVal instanceof ChatMessageResponse) {
+			ChatMessageResponse returnBean = (ChatMessageResponse) retVal;
+			if (returnBean.getUiAction() == IDAConst.UIA_LOADDS) {
+				// We dont want to log full dataset content so that's why
+				logMessage.append("[DATASET CONTENT]");
+			} else {
+				logMessage.append(retVal.toString());
+			}
 		} else {
-			logMessage.append(retVal.toString());
+			logMessage.append("Unknown return value");
 		}
 		log.info(logMessage.toString());
 	}
