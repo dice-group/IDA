@@ -89,7 +89,7 @@ export default function Home(props) {
 			  Intelligent Data Science Chatbot
           </Typography>
 			<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/" target="_blank">
-				<IconButton style={{ color: '#fff', marginRight: '10px' }} aria-label="info about the project">
+				<IconButton style={{ color: "#fff", marginRight: "10px" }} aria-label="info about the project">
 					<InfoIcon />
 				</IconButton>
 			</a>

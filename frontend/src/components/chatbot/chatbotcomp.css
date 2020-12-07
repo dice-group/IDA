@@ -43,7 +43,7 @@
 .chatbox-chat-area .chat-area-input {
   box-shadow: 0 -5px 20px 0 rgba(150, 165, 190, 0.4);
   position: absolute;
-  bottom: 10px;
+  bottom: -6px;
   height: 55px;
   width: 100%;
 }
@@ -154,7 +154,7 @@
     width: 400px;
     max-height: 85vh;
     height: 85vh;
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
   }
 
   .with-data .chatbox {
