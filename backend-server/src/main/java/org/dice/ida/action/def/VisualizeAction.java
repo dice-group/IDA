@@ -15,6 +15,7 @@ import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.RDFUtil;
 import org.dice.ida.util.ValidatorUtil;
+import org.dice.ida.util.TextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -387,14 +388,15 @@ public class VisualizeAction implements Action {
 			labelCounts.put(i + " - " + (i + binSize - 1), 1);
 		}
 		for (Map<String, String> entry : tableData) {
-			try {
-				binVal = Double.parseDouble(entry.get(xAxisColumn));
+			String valueString = entry.get(xAxisColumn);
+			if (TextUtil.isDoubleString(valueString)) {
+				binVal = Double.parseDouble(valueString);
 				intervalBegin = binVal - (binVal % binSize);
 				xValue = intervalBegin + " - " + (intervalBegin + binSize - 1);
-			} catch (NumberFormatException ex) {
-				xValue = entry.get(xAxisColumn);
+				updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
+			} else if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER)) {
+				updateGraphItemList(valueString, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 			}
-			updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
 			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
@@ -447,13 +449,15 @@ public class VisualizeAction implements Action {
 		}
 		labelCounts.putAll(initializeGraphItemsForDateBins(localMin, max, binType, binSize, formatter));
 		for (Map<String, String> entry : tableData) {
+			String valueString = entry.get(xAxisColumn);
 			try {
-				calendar.setTime(DateUtils.parseDate(entry.get(xAxisColumn), IDAConst.DATE_PATTERNS));
+				calendar.setTime(DateUtils.parseDate(valueString, IDAConst.DATE_PATTERNS));
 				xValue = getBinLabelFromDate(binType, calendar, binSize, localMin, formatter);
+				updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 			} catch (ParseException | NullPointerException ex) {
-				xValue = entry.get(xAxisColumn);
+				if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER))
+					updateGraphItemList(valueString, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 			}
-			updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
 			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
