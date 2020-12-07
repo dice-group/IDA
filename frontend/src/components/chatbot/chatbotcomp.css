@@ -17,7 +17,7 @@
   border-bottom: solid 1px #ccc;
   background-color: #4e8cff;
   color: #fff;
-  height: 65px;
+  height: 55px;
 }
 
 .chatbox .chatbox-title .chat-window-title {
@@ -82,8 +82,8 @@
   margin-right: 10px;
   border-radius: 5px;
   padding: 15px;
-  width: 200px;
-  margin-bottom: 15px;
+  max-width: 270px;
+  min-width: 75px;
   position: relative;
 }
 
@@ -115,7 +115,8 @@
   color: #fff;
   border-radius: 5px;
   padding: 15px;
-  width: 200px;
+  max-width: 270px;
+  min-width: 75px;
   position: relative;
   overflow-wrap: break-word;
 }

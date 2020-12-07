@@ -11,8 +11,9 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChatIcon from "@material-ui/icons/Chat";
+import InfoIcon from "@material-ui/icons/Info";
 import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
-import { Fab, Hidden, Typography } from "@material-ui/core";
+import { Fab, Hidden, Typography, IconButton } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 
 import "./home.css";
@@ -85,13 +86,17 @@ export default function Home(props) {
             <MenuIcon onClick={toggleNavWindow} />
           </Hidden>
           <Typography variant="h6" className={classes.title} align="center">
-            Intelligent Data Assistant
+			  Intelligent Data Science Chatbot
           </Typography>
+			<IconButton color="default" aria-label="info about the project" onClick={() => { window.open('https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/', '_blank') }}>
+				<InfoIcon />
+			</IconButton>
           <Fab size="small" color="default" aria-label="toggle" className={classes.chatbotToggleIcon} onClick={toggleChatWindow}>
             {
               isChatbotOpen ? <SpeakerNotesOffIcon /> : <ChatIcon />
             }
           </Fab>
+
         </Toolbar>
       </AppBar>
       <Toolbar />
