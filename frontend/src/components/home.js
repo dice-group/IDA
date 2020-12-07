@@ -85,7 +85,7 @@ export default function Home(props) {
             <MenuIcon onClick={toggleNavWindow} />
           </Hidden>
           <Typography variant="h6" className={classes.title} align="center">
-            Intelligent Data Assistant
+			  Intelligent Data Science Chatbot
           </Typography>
           <Fab size="small" color="default" aria-label="toggle" className={classes.chatbotToggleIcon} onClick={toggleChatWindow}>
             {
