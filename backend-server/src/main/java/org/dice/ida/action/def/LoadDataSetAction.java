@@ -29,7 +29,7 @@ public class LoadDataSetAction implements Action {
 					resp.setPayload(dataMap);
 					resp.setUiAction(IDAConst.UIA_LOADDS);
 				} else {
-					paramMap.put(IDAConst.PARAM_TEXT_MSG, datasetName + IDAConst.DS_DOES_NOT_EXIST_MSG);
+					paramMap.put("'"+IDAConst.PARAM_TEXT_MSG+"'", datasetName + IDAConst.DS_DOES_NOT_EXIST_MSG);
 					resp.setUiAction(IDAConst.UAC_NRMLMSG);
 				}
 				setLoadDatasetResponse(paramMap, resp);

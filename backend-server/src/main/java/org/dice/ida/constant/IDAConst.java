@@ -62,8 +62,8 @@ public interface IDAConst {
 	public static final String PARAM_DATASET_NAME = "datasetname";
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
 	public static final String PARAM_INTENT_DETECTION_CONFIDENCE = "intent_detection_confidence";
-	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
-	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
+	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table.";
+	public static final String DS_DOES_NOT_EXIST_MSG = " dataset does not exist. <br> You can ask to \"list all datasets\" to confirm if your dataset is present.";
 	public static final String INTENT_NAME = "intentname";
 	public static final String FULL_INTENT_NAME = "fullintentname";
 
