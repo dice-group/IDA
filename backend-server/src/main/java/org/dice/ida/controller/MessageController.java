@@ -7,6 +7,8 @@ import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.util.DialogFlowUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +18,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.slf4j.Logger;
 
 /**
  * Rest controller to handle the normal chat messages from the client
@@ -34,6 +37,10 @@ public class MessageController {
 	private ChatMessageResponse response;
 	@Autowired
 	private DialogFlowUtil dialogFlowUtil;
+
+	@Autowired
+	@Qualifier("chat-logger")
+	private Logger chatLog;
 
 	/**
 	 * Method to check the availability of the rest service
@@ -57,7 +64,12 @@ public class MessageController {
 	public Callable<ChatMessageResponse> handleMessage(@RequestBody ChatUserMessage message) throws Exception {
 		activeDS = message.getActiveDS();
 		activeTable = message.getActiveTable();
-		return () -> idaChatBot.processMessage(message);
+		return () -> {
+			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t user message:\t" + message.getMessage());
+			ChatMessageResponse response = idaChatBot.processMessage(message);
+			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage());
+			return response;
+		};
 	}
 
 	@ExceptionHandler(AsyncRequestTimeoutException.class)
