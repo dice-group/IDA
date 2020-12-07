@@ -37,7 +37,7 @@ export default class ChatApp extends React.Component {
     showMessage(text, time) {
         this.setState({
             messages: [...this.state.messages, {
-                sender: 'them',
+                sender: "them",
                 type: "text",
                 key: Math.random(),
                 message: text,
