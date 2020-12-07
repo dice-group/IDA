@@ -35,7 +35,7 @@
 .chatbox .chatbox-chat-area {
   position: absolute;
   top: 0;
-  margin-top: 65px;
+  margin-top: 55px;
   height: calc(100% - 65px);
   width: 100%;
 }
