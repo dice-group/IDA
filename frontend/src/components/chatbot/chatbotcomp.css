@@ -82,7 +82,7 @@
   margin-right: 10px;
   border-radius: 5px;
   padding: 15px;
-  width: 200px;
+  width: 230px;
   margin-bottom: 15px;
   position: relative;
 }
@@ -115,7 +115,7 @@
   color: #fff;
   border-radius: 5px;
   padding: 15px;
-  width: 200px;
+  width: 230px;
   position: relative;
   overflow-wrap: break-word;
 }
@@ -150,7 +150,7 @@
     position: absolute;
     left: unset;
     top: 80px;
-    width: 370px;
+    width: 400px;
     max-height: 85vh;
     height: 85vh;
     border-radius: 10px;

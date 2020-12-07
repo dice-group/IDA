@@ -8,6 +8,7 @@ import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.util.FileUtil;
 import org.springframework.stereotype.Component;
 import org.dice.ida.model.ChatMessageResponse;
+
 @Component
 public class LoadDataSetAction implements Action {
 
@@ -29,7 +30,7 @@ public class LoadDataSetAction implements Action {
 					resp.setPayload(dataMap);
 					resp.setUiAction(IDAConst.UIA_LOADDS);
 				} else {
-					paramMap.put("'"+IDAConst.PARAM_TEXT_MSG+"'", datasetName + IDAConst.DS_DOES_NOT_EXIST_MSG);
+					paramMap.put(IDAConst.PARAM_TEXT_MSG, "'<b>" + datasetName + "</b>'" + IDAConst.DS_DOES_NOT_EXIST_MSG);
 					resp.setUiAction(IDAConst.UAC_NRMLMSG);
 				}
 				setLoadDatasetResponse(paramMap, resp);
