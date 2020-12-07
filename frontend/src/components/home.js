@@ -88,9 +88,11 @@ export default function Home(props) {
           <Typography variant="h6" className={classes.title} align="center">
 			  Intelligent Data Science Chatbot
           </Typography>
-			<IconButton color="default" aria-label="info about the project" onClick={() => { window.open('https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/', '_blank') }}>
-				<InfoIcon />
-			</IconButton>
+			<a href="ttps://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/" target="_blank">
+				<IconButton style={{ color: '#fff', marginRight: '10px' }} aria-label="info about the project">
+					<InfoIcon />
+				</IconButton>
+			</a>
           <Fab size="small" color="default" aria-label="toggle" className={classes.chatbotToggleIcon} onClick={toggleChatWindow}>
             {
               isChatbotOpen ? <SpeakerNotesOffIcon /> : <ChatIcon />
