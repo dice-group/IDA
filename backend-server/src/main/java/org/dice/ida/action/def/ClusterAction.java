@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.Value;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.clustering.FarthestFirstAttribute;
@@ -24,11 +25,18 @@ import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToNominal;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -84,13 +92,16 @@ public class ClusterAction implements Action {
 							textMsg.append("<li>Kmean</li><li>Farthest First</li></ul>");
 							textMsg.append("<br/>Which algorithm would you like to use?");
 							if(checkforNominalAttribute())
-								textMsg.append("<br/><br/>Warning : Too many nominal attributes selected, clustering might take longer then expected");
+								textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT/60000) + " minutes</b>, the process will be terminated.");
 
 						}
 					} else {
 						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters<br/>");
 						showParamList();
 						textMsg.append("<br/>Would you like to change any parameter?");
+						textMsg.append("<br/>Would you like to change any parameter?");
+						if (checkforNominalAttribute())
+							textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT/60000) + " minutes</b>, the process will be terminated.");
 					}
 				} else if (!paramtertoChange.isEmpty()) {
 					getnsetNewParamValue();
@@ -98,7 +109,7 @@ public class ClusterAction implements Action {
 				if (parameterChangeChoice.equals("no")) {
 					loadClusteredData();
 					chatMessageResponse.setPayload(payload);
-					textMsg = new StringBuilder("Your clustered data is loaded.\n");
+					textMsg = new StringBuilder("Your clustered data is loaded.");
 					chatMessageResponse.setUiAction(IDAConst.UIA_CLUSTER);
 					dialogFlowUtil.resetContext();
 				} else {
@@ -167,15 +178,15 @@ public class ClusterAction implements Action {
 	 * Apply filter to the data instance based on inputs provided by User
 	 *
 	 * @return true if selected columns are present in the table
-	 * */
-	private boolean verifynApplyFilter(Object column_list) throws IOException {
+	 */
+	private boolean verifynApplyFilter(Object column_list) throws Exception {
 		ArrayList<String> columnList = new ArrayList<>();
 		boolean columnExist = true;
 		Value paramVal = (Value) column_list;
 		paramVal.getListValue().getValuesList().forEach(str -> columnList.add(str.getStringValue()));
 		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
 		CSVLoader loader = new CSVLoader();
-		loader.setSource(new File(path));
+		loader.setSource(getDataReadyForClustering(path));
 		data = loader.getDataSet();
 		if (!columnList.get(0).equalsIgnoreCase("All")) {
 			ObjectNode metaData = new FileUtil().getDatasetMetaData(datasetName);
@@ -217,15 +228,13 @@ public class ClusterAction implements Action {
 	 */
 	private boolean checkforNominalAttribute() {
 		boolean check = false;
-		int num_nominal = 0 ;
-		for (int i =0 ; i < data.numAttributes();i++)
-		{
-			if(data.attribute(i).isString()||data.attribute(i).isNominal())
-			{
+		int num_nominal = 0;
+		for (int i = 0; i < data.numAttributes(); i++) {
+			if (data.attribute(i).isString() || data.attribute(i).isNominal()) {
 				num_nominal++;
 			}
 		}
-		if(((double)num_nominal/(double)data.numAttributes()>.7))
+		if (((double) num_nominal / (double) data.numAttributes() > .7))
 			check = true;
 		return check;
 	}
@@ -441,6 +450,7 @@ public class ClusterAction implements Action {
 	 */
 	private void showParamList() throws Exception {
 		EM em = new EM();
+		em.setNumFolds(5);
 		filterStringAttribyte();
 		em.buildClusterer(data);
 		numCluster = em.numberOfClusters();
@@ -494,4 +504,47 @@ public class ClusterAction implements Action {
 
 	}
 
+	private File getDataReadyForClustering(String path) throws IDAException, IOException {
+		List<Map<String, String>> dataMap = new FileUtil().convertToMap(new File(path));
+		Set<String> keys = dataMap.get(0).keySet();
+		Set<String> numericKeys = dataMap.get(0).keySet();
+		List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, new ArrayList<>(keys), false);
+		Map<String, String> columnMap = columnDetail.get(0);
+		Map<String, Map<String, String>> indicesMap = new HashMap<>();
+		keys = keys.stream().filter(i -> !columnMap.get(i).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
+		numericKeys = numericKeys.stream().filter(i -> columnMap.get(i).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
+		Map<String, String> wordToIndexMap;
+		List<String> entriesLst;
+		for (String key : keys) {
+			entriesLst = dataMap.stream().map(r -> r.get(key)).distinct().collect(Collectors.toList());
+			wordToIndexMap = IntStream.range(0, entriesLst.size())
+					.boxed()
+					.collect(Collectors.toMap(entriesLst::get, Object::toString));
+			indicesMap.put(key, wordToIndexMap);
+		}
+		File tempFile = File.createTempFile("temp", "csv");
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+		StringBuilder csvString = new StringBuilder();
+		List<String> rowString = new ArrayList<>(dataMap.get(0).keySet());
+		csvString.append(String.join(",", rowString)).append("\n");
+		for (Map<String, String> row : dataMap) {
+			rowString = new ArrayList<>();
+			for (String key : row.keySet()) {
+				if (numericKeys.contains(key)) {
+					try{
+						rowString.add(String.valueOf(Integer.parseInt(row.get(key))));
+					} catch (Exception ex) {
+						rowString.add("");
+					}
+				} else {
+					rowString.add("'" + row.get(key) + "'");
+				}
+			}
+			csvString.append(String.join(",", rowString)).append("\n");
+		}
+		writer.write(csvString.toString());
+		writer.close();
+		tempFile.deleteOnExit();
+		return tempFile;
+	}
 }
