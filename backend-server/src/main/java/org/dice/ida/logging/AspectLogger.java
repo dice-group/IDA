@@ -10,6 +10,7 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AspectLogger {
 
 	@Autowired
+	@Qualifier("logger")
 	private Logger log;
 
 	@Autowired
