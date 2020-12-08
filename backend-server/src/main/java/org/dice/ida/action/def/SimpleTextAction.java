@@ -32,6 +32,8 @@ public class SimpleTextAction implements Action {
 		if (unknownIntentCount > 0 && unknownIntentCount % 2 == 0) {
 			// If IDA could not understand user twice it will show help message automatically!
 			paramMap.put(IDAConst.PARAM_TEXT_MSG, IDAConst.BOT_HELP);
+			// Reset the counter
+			sessionMap.put(IDAConst.UNK_INTENT_COUNT, 0);
 		}
 
 		setSimpleTextResponse(paramMap, resp);

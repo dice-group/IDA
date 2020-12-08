@@ -15,6 +15,7 @@ import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.RDFUtil;
 import org.dice.ida.util.ValidatorUtil;
+import org.dice.ida.util.TextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -158,14 +159,14 @@ public class VisualizeAction implements Action {
 					dialogFlowUtil.deleteContext("get_" + attributeList.get(i - 1) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 				}
 				dialogFlowUtil.setContext("get_" + attributeList.get(i));
-				textMsg = new StringBuilder("Which column should be mapped to " + attributeList.get(i) + " ?");
+				textMsg = new StringBuilder("Which column values should be mapped to " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
 				break;
 			}
 			paramType = attributeType.isEmpty() ?
 					columnMap.get(paramMap.get(attributeName).toString()) :
 					attributeType;
 			options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty());
-			if (createResponseForUser(options, i, attributeName, attributeType, paramMap)) {
+			if (createResponseForUser(options, i, attributeName, attributeType, paramMap, paramType)) {
 				break;
 			}
 		}
@@ -182,23 +183,38 @@ public class VisualizeAction implements Action {
 	 * @param paramMap      - parameter map from dialogflow
 	 * @return - true if response is ready and false otherwise
 	 */
-	private boolean createResponseForUser(Set<String> options, int i, String attributeName, String attributeType, Map<String, Object> paramMap) {
+	private boolean createResponseForUser(Set<String> options, int i, String attributeName, String attributeType, Map<String, Object> paramMap, String paramType) {
+		String columnName = paramMap.get(attributeName).toString();
 		if (options.size() == 0 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 			dialogFlowUtil.setContext("get_" + attributeList.get(i));
-			textMsg = new StringBuilder("It cannot be used as " + attributeList.get(i) + ". Please give a different column?");
+			textMsg = new StringBuilder(columnName + " cannot be used as " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + ". Please give a different column?");
 			return true;
 		} else if (options.size() == 0) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
 			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-			textMsg = new StringBuilder("It cannot be used as " + attributeType + ". Please provide correct type.");
+			textMsg = new StringBuilder(attributeType + " cannot be used as " + attributeType + ". Please provide correct type.");
 			return true;
 		} else if (options.size() > 1 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
 			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-			textMsg = new StringBuilder("It can be used as ");
-			textMsg.append(String.join(" or ", options));
-			textMsg.append("\n Which option do you need?");
+			textMsg = new StringBuilder(columnName + " can be used as:<br>");
+			textMsg.append("<ul>");
+			for (String t : options) {
+				textMsg.append("<li><b>").append(t).append("</b> - ");
+				if (IDAConst.INSTANCE_PARAM_TYPE_BINS.equalsIgnoreCase(t)) {
+					textMsg.append(IDAConst.PARAM_TYPE_EG_MAP.get(paramType));
+				} else if(IDAConst.TRANSFORMATION_TYPES.contains(t)){
+					textMsg.append(IDAConst.TRANSFORMATION_EG_MAP.get(t));
+				}else {
+					textMsg.append(IDAConst.PARAM_TYPE_NON_BIN);
+				}
+				textMsg.append("</li>");
+			}
+			textMsg.append("</ul><br/>");
+			textMsg.append("\n Which option do you need (");
+			textMsg.append(String.join(" / ", options));
+			textMsg.append(")?");
 			return true;
 		}
 		if (i == 1 && !attributeType.isEmpty() && IDAConst.INSTANCE_PARAM_TYPE_BINS.equals(attributeType.toLowerCase())) {
@@ -207,14 +223,14 @@ public class VisualizeAction implements Action {
 				if (paramVal == null || !paramVal.hasStructValue()) {
 					dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
 					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_DURATION);
-					textMsg = new StringBuilder("What should be the duration of each bin?");
+					textMsg = new StringBuilder("What should be the duration of each bin?<br/>Eg: 1 week, 2 weeks, 3 months");
 					return true;
 				}
 			} else {
 				if (paramVal == null) {
 					dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
 					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_SIZE);
-					textMsg = new StringBuilder("What should be the size of each bin?");
+					textMsg = new StringBuilder("What should be the size of each bin?<br/>Eg: 10, 25, 15, twenty, twelve");
 					return true;
 				}
 			}
@@ -387,14 +403,15 @@ public class VisualizeAction implements Action {
 			labelCounts.put(i + " - " + (i + binSize - 1), 1);
 		}
 		for (Map<String, String> entry : tableData) {
-			try {
-				binVal = Double.parseDouble(entry.get(xAxisColumn));
+			String valueString = entry.get(xAxisColumn);
+			if (TextUtil.isDoubleString(valueString)) {
+				binVal = Double.parseDouble(valueString);
 				intervalBegin = binVal - (binVal % binSize);
 				xValue = intervalBegin + " - " + (intervalBegin + binSize - 1);
-			} catch (NumberFormatException ex) {
-				xValue = entry.get(xAxisColumn);
+				updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
+			} else if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER)) {
+				updateGraphItemList(valueString, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 			}
-			updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
 			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
@@ -447,13 +464,15 @@ public class VisualizeAction implements Action {
 		}
 		labelCounts.putAll(initializeGraphItemsForDateBins(localMin, max, binType, binSize, formatter));
 		for (Map<String, String> entry : tableData) {
+			String valueString = entry.get(xAxisColumn);
 			try {
-				calendar.setTime(DateUtils.parseDate(entry.get(xAxisColumn), IDAConst.DATE_PATTERNS));
+				calendar.setTime(DateUtils.parseDate(valueString, IDAConst.DATE_PATTERNS));
 				xValue = getBinLabelFromDate(binType, calendar, binSize, localMin, formatter);
+				updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 			} catch (ParseException | NullPointerException ex) {
-				xValue = entry.get(xAxisColumn);
+				if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER))
+					updateGraphItemList(valueString, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 			}
-			updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts);
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
 			graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));

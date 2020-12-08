@@ -20,7 +20,9 @@ export default class ChatApp extends React.Component {
                 sender: "them",
                 type: "text",
                 key: 1,
-                message: "Hello, Welcome to IDA. How may I help you?"
+                message: "Hello, Welcome to IDA. How may I help you?",
+				timestamp: Date.now()
+
             }],
             changeCSS: {},
             selectClick: [],
@@ -32,13 +34,14 @@ export default class ChatApp extends React.Component {
     }
 
 
-    _sendMessage(text) {
+    showMessage(text, time) {
         this.setState({
             messages: [...this.state.messages, {
-                sender: text.sender,
+                sender: "them",
                 type: "text",
-                key: text.key,
-                message: text
+                key: Math.random(),
+                message: text,
+				timestamp: time
             }]
         });
     }
@@ -68,7 +71,7 @@ export default class ChatApp extends React.Component {
                 activeDS: this.props.activeDS,
                 activeTable: this.props.activeTable,
                 activeTableData: this.props.activeTableData,
-                temporaryData: this.props.activeTableData ? true : false
+                temporaryData: !!this.props.activeTableData
             };
             msgs = [...msgs, msg];
             this.setState({
@@ -85,16 +88,16 @@ export default class ChatApp extends React.Component {
     processMessage = (msg) => {
         axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
             .then((response) => {
-                this._sendMessage(response.data.message);
+                this.showMessage(response.data.message, response.data.timestamp);
                 const actionCode = response.data.uiAction;
                 const payload = response.data.payload;
                 idaChatbotActionHandler(this.props, actionCode, payload);
             })
             .catch((err) => {
                 if (err.response && err.response.status && err.response.status === IDA_CONSTANTS.GATEWAY_TIMEOUT_STATUS) {
-                    this._sendMessage(IDA_CONSTANTS.TIMEOUT_MESSAGE);
+                    this.showMessage(IDA_CONSTANTS.TIMEOUT_MESSAGE, Date.now());
                 } else {
-                    this._sendMessage(IDA_CONSTANTS.ERROR_MESSAGE);
+                    this.showMessage(IDA_CONSTANTS.ERROR_MESSAGE, Date.now());
                 }
             }).finally(() => {
                 this.setState({
@@ -159,7 +162,10 @@ export default class ChatApp extends React.Component {
                                     } else {
                                         return (
                                             <div className="agent" key={Math.random()}>
-                                                <div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
+												<div>
+                                                	<div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
+                                                	<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
+												</div>
                                                 <div className="agent-pic" key={Math.random()} />
                                             </div>
                                         );

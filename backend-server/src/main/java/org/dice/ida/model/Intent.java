@@ -14,6 +14,7 @@ public enum Intent {
 	BARCHART("bar_chart",IDAConst.UIA_BARGRAPH),
 	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
 	CLUSTERING("clustering",IDAConst.UAC_NRMLMSG),
+	NEXT_STEPS("next-steps", IDAConst.UAC_NRMLMSG),
 	CLEAR("clear_context", IDAConst.UAC_NRMLMSG),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
