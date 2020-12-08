@@ -46,6 +46,9 @@ export default class ChatApp extends React.Component {
     componentDidUpdate(_prevProps, _prevState) {
         const msgs = document.getElementById("chat-area-msgs");
         msgs.scrollTop = msgs.scrollHeight;
+        if (this.props.isChatbotOpen) {
+            document.getElementById("chat-input").focus();
+        }
     }
 
     messageSend = (e) => {
@@ -166,7 +169,7 @@ export default class ChatApp extends React.Component {
                         </div>
                         <div className="chat-area-input" >
                             <IDALinearProgress hide={this.state.hideProgress} />
-                            <input type="text" placeholder="Enter your message .." onKeyUp={this.messageSend} />
+                            <input type="text" id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} autoFocus={true} />
                         </div>
                     </div>
                 </div>
