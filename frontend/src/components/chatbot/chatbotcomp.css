@@ -6,7 +6,7 @@
   background: #fff;
   border: solid 1px #ccc;
   z-index: 2000;
-  width: 100%;
+  width: 370px;
   height: 100%;
   position: fixed;
   top: 0;
@@ -17,7 +17,7 @@
   border-bottom: solid 1px #ccc;
   background-color: #4e8cff;
   color: #fff;
-  height: 65px;
+  height: 55px;
 }
 
 .chatbox .chatbox-title .chat-window-title {
@@ -35,7 +35,7 @@
 .chatbox .chatbox-chat-area {
   position: absolute;
   top: 0;
-  margin-top: 65px;
+  margin-top: 55px;
   height: calc(100% - 65px);
   width: 100%;
 }
@@ -43,7 +43,7 @@
 .chatbox-chat-area .chat-area-input {
   box-shadow: 0 -5px 20px 0 rgba(150, 165, 190, 0.4);
   position: absolute;
-  bottom: 10px;
+  bottom: -6px;
   height: 55px;
   width: 100%;
 }
@@ -82,8 +82,8 @@
   margin-right: 10px;
   border-radius: 5px;
   padding: 15px;
-  width: 200px;
-  margin-bottom: 15px;
+  max-width: 270px;
+  min-width: 90px;
   position: relative;
 }
 
@@ -115,7 +115,8 @@
   color: #fff;
   border-radius: 5px;
   padding: 15px;
-  width: 200px;
+  max-width: 270px;
+  min-width: 90px;
   position: relative;
   overflow-wrap: break-word;
 }
@@ -153,7 +154,7 @@
     width: 370px;
     max-height: 85vh;
     height: 85vh;
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
   }
 
   .with-data .chatbox {
