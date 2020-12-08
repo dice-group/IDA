@@ -80,18 +80,17 @@ public class ClusterAction implements Action {
 				if (!clusterMethod.isEmpty() && parameterChangeChoice.isEmpty()) {
 					if (clusterMethod.equals("getColumnList")) {
 						if (verifynApplyFilter(paramMap.get("column_List"))) {
-							textMsg.append("Okay! Here is the list clustering algorithm currently offered by IDA .\n" +
-									"- Kmean\n" +
-									"- Farthest First\n" +
-									"Which algorithm would you like to use for clustering?\n");
+							textMsg.append("Okay! Here is the list algorithms you can use,<br/><ul>");
+							textMsg.append("<li>Kmean</li><li>Farthest First</li></ul>");
+							textMsg.append("<br/>Which algorithm would you like to use?");
 							if(checkforNominalAttribute())
-								textMsg.append("\n").append("Warning : Too many nomimal attributes selected, clustering might take longer then expected");
+								textMsg.append("<br/><br/>Warning : Too many nominal attributes selected, clustering might take longer then expected");
 
 						}
 					} else {
-						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters\n\n");
+						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters<br/>");
 						showParamList();
-						textMsg.append("\nWould you like to change any parameter?");
+						textMsg.append("<br/>Would you like to change any parameter?");
 					}
 				} else if (!paramtertoChange.isEmpty()) {
 					getnsetNewParamValue();
@@ -466,12 +465,12 @@ public class ClusterAction implements Action {
 	 */
 	private void showKmeansParamList() {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
-		textMsg.append("Number of Clusters(N) = ").append(kmeansAttribute.getNumberOfCluster()).append("\n");
-		textMsg.append("Intitialize Method(P) = ").append(kmeansAttribute.getIntitializeMethod()).append("\n");
-		textMsg.append("Max No. of iterations(I) = ").append(kmeansAttribute.getMaxIterations()).append("\n");
-		textMsg.append("Replace missing values(M) = ").append(kmeansAttribute.getReplaceMissingValues()).append("\n");
-		textMsg.append("No. of execution slots(E) = ").append(kmeansAttribute.getNumOfExecutionSlots()).append("\n");
-		textMsg.append("Random number seed(S) = ").append(kmeansAttribute.getRandomNumberSeed()).append("\n");
+		textMsg.append("<ul><li>Number of Clusters(N) = ").append(kmeansAttribute.getNumberOfCluster());
+		textMsg.append("</li><li>Intitialize Method(P) = ").append(kmeansAttribute.getIntitializeMethod());
+		textMsg.append("</li><li>Max No. of iterations(I) = ").append(kmeansAttribute.getMaxIterations());
+		textMsg.append("</li><li>Replace missing values(M) = ").append(kmeansAttribute.getReplaceMissingValues());
+		textMsg.append("</li><li>No. of execution slots(E) = ").append(kmeansAttribute.getNumOfExecutionSlots());
+		textMsg.append("</li><li>Random number seed(S) = ").append(kmeansAttribute.getRandomNumberSeed()).append("</li></ul>");
 	}
 
 	/**
@@ -479,8 +478,8 @@ public class ClusterAction implements Action {
 	 */
 	private void showFarthestFirstParamList() {
 		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
-		textMsg.append("Number of Clusters(N) = ").append(farthestFirstAttribute.getNumberOfCluster()).append("\n");
-		textMsg.append("Random number seed(S) = ").append(farthestFirstAttribute.getRandomNumberSeed()).append("\n");
+		textMsg.append("<ul><li>Number of Clusters(N) = ").append(farthestFirstAttribute.getNumberOfCluster());
+		textMsg.append("</li><li>Random number seed(S) = ").append(farthestFirstAttribute.getRandomNumberSeed()).append("</li></ul>");
 	}
 
 	/**
