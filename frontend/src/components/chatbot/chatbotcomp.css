@@ -7,14 +7,13 @@
   border: solid 1px #ccc;
   z-index: 2000;
   width: 370px;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
+  height: 600px;
+  position: absolute;
+  top: 80px;
+  left: 35%;
 }
 
 .chatbox .chatbox-title {
-  border-bottom: solid 1px #ccc;
   background-color: #4e8cff;
   color: #fff;
   height: 55px;
@@ -28,46 +27,13 @@
   cursor: pointer;
 }
 
-.makeStyles-root-6 {
-  margin-left: -18px;
-}
-
 .chatbox .chatbox-chat-area {
-  position: absolute;
-  top: 0;
-  margin-top: 55px;
-  height: calc(100% - 65px);
-  width: 100%;
-}
-
-.chatbox-chat-area .chat-area-input {
-  box-shadow: 0 -5px 20px 0 rgba(150, 165, 190, 0.4);
-  position: absolute;
-  bottom: -6px;
-  height: 55px;
-  width: 100%;
-}
-
-.chatbox-chat-area .chat-area-input input {
-  padding-left: 10px;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
 }
 
 .chatbox-chat-area .chat-area-msgs {
-  position: absolute;
-  top: 0;
-  padding: 15px 15px 15px 15px;
-  height: calc(100% - 65px);
-  overflow-y: auto;
-  width: 100%;
-}
-
-.chatbox-chat-area .chat-area-msgs a:link,
-.chatbox-chat-area .chat-area-msgs a:visited {
-  color: #fff;
+  padding-top: 10px;
+  height: 480px;
+  overflow-y: scroll;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent {
@@ -144,31 +110,15 @@
   visibility: visible;
 }
 
-@media (min-width: 992px) {
-  .chatbox {
-    position: absolute;
-    left: unset;
-    top: 80px;
-    width: 400px;
-    max-height: 85vh;
-    height: 85vh;
-    border-radius: 10px 10px 0 0;
-  }
+.chatbox-chat-area .chat-area-input {
+  height: 55px;
+}
 
-  .with-data .chatbox {
-    right: 20px;
-  }
-
-  .no-data .chatbox {
-    right: 45%;
-  }
-
-  .chatbox .chatbox-chat-area,
-  .chatbox-chat-area .chat-area-input {
-    border-radius: 0 0 10px 10px;
-  }
-
-  .chatbox .chatbox-title {
-    border-radius: 10px 10px 0 0;
-  }
+.chatbox-chat-area .chat-area-input input {
+  box-shadow: 0 -10px 20px -5px rgba(150, 165, 190, 0.4);
+  padding-left: 10px;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
 }
