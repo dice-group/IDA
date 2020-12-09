@@ -138,16 +138,14 @@ export default class ChatApp extends React.Component {
             <div className={`chatbox-container ${this.props.detail.length ? "with-data" : "no-data"} ${this.props.isChatbotOpen ? "" : "hidden"}`}>
                 {/* <Draggable handle=".chatbox-title"> */}
                 <div className="chatbox">
-                    <Grid className="chatbox-title" container alignItems="center">
-                        <Grid item xs={10} className="pl-3">
-                            <span className="chat-window-title">
-                                {this.state.title}
-                            </span>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <CloseIcon onClick={this.handlebutton.bind(this)} className="chatbot-close" />
-                        </Grid>
-                    </Grid>
+                    <div className="chatbox-title">
+						<div className="chat-window-title">
+							{this.state.title}
+						</div>
+						<div>
+							<CloseIcon onClick={this.handlebutton.bind(this)} className="chatbot-close" />
+						</div>
+                    </div>
                     <div className="chatbox-chat-area">
                         <div className="chat-area-msgs" id="chat-area-msgs">
                             {
