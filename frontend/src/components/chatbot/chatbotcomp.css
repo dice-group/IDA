@@ -83,7 +83,6 @@
   border-radius: 5px;
   padding: 15px;
   max-width: 270px;
-  min-width: 90px;
   position: relative;
 }
 
@@ -116,7 +115,6 @@
   border-radius: 5px;
   padding: 15px;
   max-width: 270px;
-  min-width: 90px;
   position: relative;
   overflow-wrap: break-word;
 }

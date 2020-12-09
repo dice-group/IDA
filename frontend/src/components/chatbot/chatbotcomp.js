@@ -154,20 +154,24 @@ export default class ChatApp extends React.Component {
                                 this.state.messages.map((val, i) => {
                                     if (val.sender === "user") {
                                         return (
-                                            <div className="user" key={i}>
-                                                <div className="msg" key={Math.random()}>{val.message}</div>
-                                                <div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
-                                            </div>
+                                        	<div className="clearfix">
+												<div className="user" key={i}>
+													<div className="msg" key={Math.random()}>{val.message}</div>
+													<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
+												</div>
+											</div>
                                         );
                                     } else {
                                         return (
-                                            <div className="agent" key={Math.random()}>
-												<div>
-                                                	<div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
-                                                	<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
+											<div className="clearfix">
+												<div className="agent" key={Math.random()}>
+													<div>
+														<div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
+														<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
+													</div>
+													<div className="agent-pic" key={Math.random()} />
 												</div>
-                                                <div className="agent-pic" key={Math.random()} />
-                                            </div>
+											</div>
                                         );
                                     }
                                 })
