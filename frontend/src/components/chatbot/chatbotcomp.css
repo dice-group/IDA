@@ -4,7 +4,6 @@
 
 .chatbox {
   background: #fff;
-  border: solid 1px #ccc;
   z-index: 2000;
   width: 370px;
   height: 600px;
@@ -15,6 +14,8 @@
 
 .chatbox .chatbox-title {
   background-color: #4e8cff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   color: #fff;
   height: 55px;
 }
@@ -28,6 +29,8 @@
 }
 
 .chatbox .chatbox-chat-area {
+  border: solid 1px #ccc;
+  height: 545px;
 }
 
 .chatbox-chat-area .chat-area-msgs {
@@ -111,7 +114,7 @@
 }
 
 .chatbox-chat-area .chat-area-input {
-  height: 55px;
+  height: 59px;
 }
 
 .chatbox-chat-area .chat-area-input input {
