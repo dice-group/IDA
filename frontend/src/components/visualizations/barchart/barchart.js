@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import * as d3 from "d3";
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-
 import "./barchart.css";
 import { IDA_CONSTANTS } from "../../constants";
 import { Grid, Fab } from "@material-ui/core";
@@ -116,10 +115,6 @@ export default class IDABarGraph extends Component {
       .range([this.margin.left, this.width])
       .padding(0.1);
 
-    const div = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
     /**
      * append the bar graph to SVG
      */
@@ -135,10 +130,12 @@ export default class IDABarGraph extends Component {
       .attr("fill", "#4f8bff")
 
 
+
     bar
       .append("title")
       .style("visibility", "visible")
       .text(d => { return d.x + ": " + d.y; });
+
 
 
 
@@ -155,7 +152,9 @@ export default class IDABarGraph extends Component {
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
       .style("text-anchor", "end")
+
       .attr("value", (d) => {
+
         return d.xLabel + ": " + d.y
       })
       .style("fill", (d) => {
@@ -168,6 +167,7 @@ export default class IDABarGraph extends Component {
       .append("title")
       .style("visibility", "visible")
       .text(d => { return d.xLabel + ": " + d.y; });
+
 
     /**
    * append y-axis to the graph
