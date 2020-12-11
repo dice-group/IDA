@@ -123,46 +123,51 @@ export default class IDABarGraph extends Component {
     /**
      * append the bar graph to SVG
      */
-    svg.append("g")
+    let bar = svg.append("g")
       .selectAll("rect")
       .data(this.graphData.items)
       .enter()
       .append("rect")
       .attr("x", (d) => scaleX(d.x))
       .attr("y", (d) => scaleY(d.y))
-      .attr("value", (d) => d.xLabel + ": " + d.y)
       .attr("width", scaleX.bandwidth())
       .attr("height", (d, i) => scaleY(0) - scaleY(d.y))
       .attr("fill", "#4f8bff")
-      .attr("class", "tooltip")
-      .on("mouseover", function (d) {
-        div.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div.html(d.currentTarget.getAttribute("value"))
-          .style("left", (d.pageX) + "px")
-          .style("top", (d.pageY - 28) + "px");
-      })
-      .on("mouseout", function (d) {
-        div.transition()
-          .duration(500)
-          .style("opacity", 0);
-      });
+
+
+    bar
+      .append("title")
+      .style("visibility", "visible")
+      .text(d => { return d.x + ": " + d.y; });
+
+
 
     /**
      * append x-axis to the graph
      */
-    svg.append("g")
+
+    let label = svg.append("g")
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(scaleX).tickSizeOuter(0))
       .selectAll("text")
+      .data(this.graphData.items)
       .attr("x", -10)
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
       .style("text-anchor", "end")
-      .style("fill", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000")
+      .attr("value", (d) => {
+        return d.xLabel + ": " + d.y
+      })
+      .style("fill", (d) => {
+        return d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000";
+      })
       .style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
       .attr("class", "x-axis-label");
+
+    label
+      .append("title")
+      .style("visibility", "visible")
+      .text(d => { return d.xLabel + ": " + d.y; });
 
     /**
    * append y-axis to the graph
