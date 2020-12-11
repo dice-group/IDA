@@ -273,7 +273,7 @@ public interface IDAConst {
 	public static final String RANDOM_SEED = "random_seed";
 	public static final String GET_MULTI_PARAM = "getMultiParam";
 
-	public static final long TIMEOUT_LIMIT = 180000;
+	public static final long TIMEOUT_LIMIT = 300000;
 	public static final String TIMEOUT_MSG = "Sorry, it looks like that request has crossed the allowed time limit of " + (TIMEOUT_LIMIT / 60000) + " minutes. Please optimize your task.";
 	public static final Map<String, String> PARAM_NAME_MAP = new HashMap<>() {{
 		put("X-Axis", "X-Axis");

@@ -128,15 +128,17 @@ export default class IDABarGraph extends Component {
       .attr("width", scaleX.bandwidth())
       .attr("height", (d, i) => scaleY(0) - scaleY(d.y))
       .attr("fill", "#4f8bff")
-      
-      
-      bar
-         .append("title")
-         .style("visibility", "visible")
-         .text(d =>  {return d.x + ": " + d.y ;});
 
-    
-  
+
+
+    bar
+      .append("title")
+      .style("visibility", "visible")
+      .text(d => { return d.x + ": " + d.y; });
+
+
+
+
     /**
      * append x-axis to the graph
      */
@@ -150,7 +152,9 @@ export default class IDABarGraph extends Component {
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
       .style("text-anchor", "end")
-      .attr("value", (d) =>  {
+
+      .attr("value", (d) => {
+
         return d.xLabel + ": " + d.y
       })
       .style("fill", (d) => {
@@ -159,10 +163,11 @@ export default class IDABarGraph extends Component {
       .style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
       .attr("class", "x-axis-label");
 
-      label
-         .append("title")
-         .style("visibility", "visible")
-         .text(d =>  {return d.xLabel + ": " + d.y ;});
+    label
+      .append("title")
+      .style("visibility", "visible")
+      .text(d => { return d.xLabel + ": " + d.y; });
+
 
     /**
    * append y-axis to the graph
