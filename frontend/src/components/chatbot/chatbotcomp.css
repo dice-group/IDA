@@ -10,6 +10,11 @@
   position: absolute;
   top: 80px;
   left: 35%;
+  transition: box-shadow 0.2s;
+}
+
+.chatbox.drag {
+  box-shadow: 0 0 20px #ccc;
 }
 
 .chatbox .chatbox-title {
@@ -20,6 +25,7 @@
   height: 55px;
   display: flex;
   padding: 15px;
+  cursor: move;
 }
 
 .chatbox .chatbox-title .chat-window-title {

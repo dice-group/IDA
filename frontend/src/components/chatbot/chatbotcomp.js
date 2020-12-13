@@ -4,8 +4,8 @@ import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
 import idaChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
-import { Grid } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import Draggable from 'react-draggable';
 
 export default class ChatApp extends React.Component {
 
@@ -29,7 +29,7 @@ export default class ChatApp extends React.Component {
             pyld: [],
             action: "1004",
             msg: [],
-            closeImg: { cursor: "pointer", float: "right", marginTop: "5px", width: "40px", height: "40px", display: "inline-flex" }
+			beingDragged: false
         };
     }
 
@@ -133,11 +133,19 @@ export default class ChatApp extends React.Component {
         this.props.setIsChatbotOpen(!this.props.isChatbotOpen);
     }
 
-    render() {
+	dragStart = () => {
+		this.setState({beingDragged: true});
+	}
+
+	dragEnd = () => {
+		this.setState({beingDragged: false});
+	}
+
+	render() {
         return (
             <div className={`chatbox-container ${this.props.detail.length ? "with-data" : "no-data"} ${this.props.isChatbotOpen ? "" : "hidden"}`}>
-                {/* <Draggable handle=".chatbox-title"> */}
-                <div className="chatbox">
+				<Draggable handle=".chatbox-title" bounds={'#root'} onStart={this.dragStart} onStop={this.dragEnd}>
+                <div className={`chatbox ${this.state.beingDragged ? "drag" : ""}`} id="chatbox">
                     <div className="chatbox-title">
 						<div className="chat-window-title">
 							{this.state.title}
@@ -151,10 +159,11 @@ export default class ChatApp extends React.Component {
                             {
                                 this.state.messages.map((val, i) => {
                                     if (val.sender === "user") {
+                                    	console.log(val.message)
                                         return (
                                         	<div className="clearfix">
 												<div className="user" key={i}>
-													<div className="msg" key={Math.random()}>{val.message}</div>
+													<div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
 													<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
 												</div>
 											</div>
@@ -181,7 +190,7 @@ export default class ChatApp extends React.Component {
                         </div>
                     </div>
                 </div>
-                {/* </Draggable> */}
+            </Draggable>
             </div>
 
         );
