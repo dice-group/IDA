@@ -13,7 +13,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChatIcon from "@material-ui/icons/Chat";
 import InfoIcon from "@material-ui/icons/Info";
 import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
-import { Fab, Hidden, Typography, IconButton, Box } from "@material-ui/core";
+import { Fab, Hidden, Typography, IconButton, Zoom } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 
 import "./home.css";
@@ -90,9 +90,21 @@ export default function Home(props) {
 				</IconButton>
 			</a>
 			  <IconButton size="small" style={{ color: "#fff" }} aria-label="toggle" onClick={toggleChatWindow}>
-				{
-				  isChatbotOpen ? <SpeakerNotesOffIcon /> : <ChatIcon />
-				}
+				  {
+					  isChatbotOpen ? (
+						  <Zoom in={isChatbotOpen} mountOnEnter unmountOnExit>
+							  <SpeakerNotesOffIcon />
+						  </Zoom>
+					  ) : null
+				  }
+				  {
+					  !isChatbotOpen ? (
+						  <Zoom direction="left" in={!isChatbotOpen} mountOnEnter unmountOnExit>
+							  <ChatIcon />
+						  </Zoom>
+					  ) : null
+				  }
+
 			  </IconButton>
 
         </Toolbar>
