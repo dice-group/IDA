@@ -2,6 +2,7 @@ package org.dice.ida.model;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.dice.ida.serializer.ChatMsgRespSerializer;
@@ -26,6 +27,15 @@ public class ChatMessageResponse {
 	private Map<String, Object> payload;
 	private Date timestamp;
 	private int errCode;
+	private List<String> activeContexts;
+
+	public List<String> getActiveContexts() {
+		return activeContexts;
+	}
+
+	public void setActiveContexts(List<String> activeContexts) {
+		this.activeContexts = activeContexts;
+	}
 
 	public ChatMessageResponse() {
 		//Setting timestamp by default at creation

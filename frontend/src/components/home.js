@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 // import ChatBot from "./chatbot/chatBot";
@@ -15,6 +15,8 @@ import InfoIcon from "@material-ui/icons/Info";
 import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
 import { Fab, Hidden, Typography, IconButton } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import Popover from "@material-ui/core/Popover";
+import CopyrightIcon from "@material-ui/icons/Copyright";
 
 import "./home.css";
 
@@ -42,6 +44,9 @@ export default function Home(props) {
   const [tabs, setTabs] = useState([]);
   const [isChatbotOpen, setIsChatbotOpen] = useState(true);
   const [activeTableData, setActiveTableData] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const buttonRef = useRef(null);
+  const [contexts, setContexts] = useState([]);
   const loadTab = (loaded) => {
     if (loaded && tabs.length) {
       return <TabsWrappedLabel
@@ -76,7 +81,16 @@ export default function Home(props) {
     } else {
       setNavBarClass("navwindow-shown");
     }
-  }
+  };
+  const getAnchorEl = () => {
+    return anchorEl;
+  };
+  const handleContextPopover = () => {
+    setAnchorEl(buttonRef.current);
+  };
+  const handleContextPopoverClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <>
       <CssBaseline />
@@ -86,19 +100,44 @@ export default function Home(props) {
             <MenuIcon onClick={toggleNavWindow} />
           </Hidden>
           <Typography variant="h6" className={classes.title} align="center">
-			  Intelligent Data Science Chatbot
+            Intelligent Data Science Chatbot
           </Typography>
-			<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/" target="_blank">
-				<IconButton style={{ color: "#fff", marginRight: "10px" }} aria-label="info about the project">
-					<InfoIcon />
-				</IconButton>
-			</a>
+          <CopyrightIcon className="context-icon" ref={buttonRef} onClick={handleContextPopover} />
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={getAnchorEl()}
+            onClose={handleContextPopoverClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <div>
+              <ul>
+                {
+                  contexts.map(
+                    (context, index) => (
+                      <li key={index}>{context}</li>
+                    )
+                  )
+                }
+              </ul>
+            </div>
+          </Popover>
+          <a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/" target="_blank">
+            <IconButton style={{ color: "#fff", marginRight: "10px" }} aria-label="info about the project">
+              <InfoIcon />
+            </IconButton>
+          </a>
           <Fab size="small" color="default" aria-label="toggle" className={classes.chatbotToggleIcon} onClick={toggleChatWindow}>
             {
               isChatbotOpen ? <SpeakerNotesOffIcon /> : <ChatIcon />
             }
           </Fab>
-
         </Toolbar>
       </AppBar>
       <Toolbar />
@@ -154,6 +193,7 @@ export default function Home(props) {
           setIsChatbotOpen={setIsChatbotOpen}
           activeTableData={activeTableData}
           setActiveTableData={setActiveTableData}
+          setContexts={setContexts}
         />
 
       </div>
