@@ -91,6 +91,7 @@ export default class ChatApp extends React.Component {
                 this.showMessage(response.data.message, response.data.timestamp);
                 const actionCode = response.data.uiAction;
                 const payload = response.data.payload;
+                this.props.setContexts(response.data.activeContexts || []);
                 idaChatbotActionHandler(this.props, actionCode, payload);
             })
             .catch((err) => {

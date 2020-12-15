@@ -10,6 +10,7 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.Intent;
+import org.dice.ida.util.DialogFlowUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
@@ -24,6 +25,8 @@ import com.google.protobuf.Value;
 public class ActionExecutor {
 	@Autowired
 	private ActionMappingHelper mappingHelper;
+	@Autowired
+	private DialogFlowUtil dialogFlowUtil;
 	private Action action;
 	private Map<String, Object> paramMap;
 	private QueryResult queryResult;
@@ -67,6 +70,7 @@ public class ActionExecutor {
 
 	public void processAction(ChatMessageResponse resp, ChatUserMessage message) {
 		action.performAction(paramMap, resp, message);
+		resp.setActiveContexts(dialogFlowUtil.getActiveContextList());
 	}
 
 }
