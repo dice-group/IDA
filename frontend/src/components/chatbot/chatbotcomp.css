@@ -134,3 +134,29 @@
   border: none;
   outline: none;
 }
+
+@media (max-width: 576px) {
+  .chatbox {
+    left: 0;
+    top: 70px;
+    background: #fff;
+    width: 100%;
+    height: 90%;
+  }
+
+  .chatbox .chatbox-chat-area {
+    height: 91%;
+  }
+
+  .chatbox-chat-area .chat-area-msgs {
+    height: 455px;
+  }
+
+  .chatbox-chat-area .chat-area-input input {
+    box-shadow: 0 -10px 20px -5px rgba(150, 165, 190, 0.4);
+    padding-left: 10px;
+    width: 100%;
+    outline: none;
+    border-top: solid 1px #ccc;
+  }
+}

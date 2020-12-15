@@ -151,11 +151,11 @@ export default class ChatApp extends React.Component {
 							{this.state.title}
 						</div>
 						<div>
-							<CloseIcon onClick={this.handlebutton.bind(this)} className="chatbot-close" />
+							<CloseIcon onClick={this.handlebutton} className="chatbot-close" />
 						</div>
                     </div>
-                    <div className="chatbox-chat-area">
-                        <div className="chat-area-msgs" id="chat-area-msgs">
+                    <div className="chatbox-chat-area clearfix">
+                        <div className="chat-area-msgs clearfix" id="chat-area-msgs">
                             {
                                 this.state.messages.map((val, i) => {
                                     if (val.sender === "user") {
@@ -184,9 +184,9 @@ export default class ChatApp extends React.Component {
                                 })
                             }
                         </div>
-                        <div className="chat-area-input" >
+                        <div className="chat-area-input clearfix" >
                             <IDALinearProgress hide={this.state.hideProgress} />
-                            <input type="text" id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} autoFocus={true} />
+                            <input type="text" id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} />
                         </div>
                     </div>
                 </div>
