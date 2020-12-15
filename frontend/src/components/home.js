@@ -16,7 +16,7 @@ import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
 import { Fab, Hidden, Typography, IconButton } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import Popover from "@material-ui/core/Popover";
-import CopyrightIcon from '@material-ui/icons/Copyright';
+import CopyrightIcon from "@material-ui/icons/Copyright";
 
 import "./home.css";
 
