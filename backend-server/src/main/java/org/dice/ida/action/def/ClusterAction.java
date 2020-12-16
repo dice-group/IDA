@@ -98,7 +98,6 @@ public class ClusterAction implements Action {
 						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters<br/>");
 						showParamList();
 						textMsg.append("<br/>Would you like to change any parameter?");
-						textMsg.append("<br/>Would you like to change any parameter?");
 						if (checkforNominalAttribute())
 							textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT/60000) + " minutes</b>, the process will be terminated.");
 					}
@@ -158,12 +157,20 @@ public class ClusterAction implements Action {
 		switch (clusterMethod) {
 			case IDAConst.K_MEAN_CLUSTERING:
 				SimpleKMeans simpleKMeans = new SimpleKMeans();
-				simpleKMeans.setNumClusters(numCluster);
+				KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
+				simpleKMeans.setNumClusters(kmeansAttribute.getNumberOfCluster());
+				simpleKMeans.setNumExecutionSlots(kmeansAttribute.getNumOfExecutionSlots());
+				simpleKMeans.setSeed(kmeansAttribute.getRandomNumberSeed());
+				simpleKMeans.setMaxIterations(kmeansAttribute.getMaxIterations());
+				simpleKMeans.setDontReplaceMissingValues(kmeansAttribute.getReplaceMissingValues());
+				simpleKMeans.setInitializationMethod(kmeansAttribute.getInitializeMethod());
 				clusterer = simpleKMeans;
 				break;
 			case IDAConst.FARTHEST_FIRST:
 				FarthestFirst farthestFirst = new FarthestFirst();
-				farthestFirst.setNumClusters(numCluster);
+				FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
+				farthestFirst.setNumClusters(farthestFirstAttribute.getNumberOfCluster());
+				farthestFirst.setSeed(farthestFirstAttribute.getRandomNumberSeed());
 				clusterer = farthestFirst;
 				break;
 			default:
@@ -283,13 +290,13 @@ public class ClusterAction implements Action {
 			case IDAConst.GET_NUM_CLUSTER:
 				paramValue = paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString();
 				if (!paramValue.isEmpty()) {
-					farthestFirstAttribute.setNumberOfCluster(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					farthestFirstAttribute.setNumberOfCluster(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_RANDOM_SEED:
 				paramValue = paramMap.get(IDAConst.RANDOM_SEED).toString();
 				if (!paramValue.isEmpty()) {
-					farthestFirstAttribute.setRandomNumberSeed(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					farthestFirstAttribute.setRandomNumberSeed(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_MULTI_PARAM:
@@ -331,19 +338,19 @@ public class ClusterAction implements Action {
 			case IDAConst.GET_NUM_CLUSTER:
 				paramValue = paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setNumberOfCluster(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setNumberOfCluster(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_INIT_METHOD:
 				paramValue = paramMap.get(IDAConst.INIT_METHOD).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setIntitializeMethod(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setInitializeMethod(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_MAX_ITERATION:
 				paramValue = paramMap.get(IDAConst.MAX_ITERATION).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setMaxIterations(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setMaxIterations(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_REPLACE_MISSING_VALUES:
@@ -355,13 +362,13 @@ public class ClusterAction implements Action {
 			case IDAConst.GET_NUM_EXECUTION_SLOT:
 				paramValue = paramMap.get(IDAConst.NUM_OF_SLOT).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setNumOfExecutionSlots(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setNumOfExecutionSlots(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_RANDOM_SEED:
 				paramValue = paramMap.get(IDAConst.RANDOM_SEED).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setRandomNumberSeed(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setRandomNumberSeed(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_MULTI_PARAM:
@@ -371,7 +378,7 @@ public class ClusterAction implements Action {
 				if (!multiParmaValue.get(IDAConst.MAX_ITERATION).isEmpty())
 					kmeansAttribute.setMaxIterations(getNumericValue(multiParmaValue.get(IDAConst.MAX_ITERATION)));
 				if (!multiParmaValue.get(IDAConst.INIT_METHOD).isEmpty())
-					kmeansAttribute.setIntitializeMethod(getNumericValue(multiParmaValue.get(IDAConst.INIT_METHOD)));
+					kmeansAttribute.setInitializeMethod(getNumericValue(multiParmaValue.get(IDAConst.INIT_METHOD)));
 				if (!multiParmaValue.get(IDAConst.NUM_OF_SLOT).isEmpty())
 					kmeansAttribute.setNumOfExecutionSlots(getNumericValue(multiParmaValue.get(IDAConst.NUM_OF_SLOT)));
 				if (!multiParmaValue.get(IDAConst.RANDOM_SEED).isEmpty())
@@ -475,7 +482,7 @@ public class ClusterAction implements Action {
 	private void showKmeansParamList() {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
 		textMsg.append("<ul><li>Number of Clusters(N) = ").append(kmeansAttribute.getNumberOfCluster());
-		textMsg.append("</li><li>Intitialize Method(P) = ").append(kmeansAttribute.getIntitializeMethod());
+		textMsg.append("</li><li>Intitialize Method(P) = ").append(kmeansAttribute.getInitializeMethod().getSelectedTag().getReadable());
 		textMsg.append("</li><li>Max No. of iterations(I) = ").append(kmeansAttribute.getMaxIterations());
 		textMsg.append("</li><li>Replace missing values(M) = ").append(kmeansAttribute.getReplaceMissingValues());
 		textMsg.append("</li><li>No. of execution slots(E) = ").append(kmeansAttribute.getNumOfExecutionSlots());
