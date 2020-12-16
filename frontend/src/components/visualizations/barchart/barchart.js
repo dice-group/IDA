@@ -120,7 +120,7 @@ export default class IDABarGraph extends Component {
      */
     let bar = svg.append("g")
       .selectAll("rect")
-      .data(this.graphData.items)
+      .data(this.originalGraphData.items)
       .enter()
       .append("rect")
       .attr("x", (d) => scaleX(d.x))
@@ -136,9 +136,6 @@ export default class IDABarGraph extends Component {
       .style("visibility", "visible")
       .text(d => { return d.x + ": " + d.y; });
 
-
-
-
     /**
      * append x-axis to the graph
      */
@@ -147,26 +144,25 @@ export default class IDABarGraph extends Component {
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(scaleX).tickSizeOuter(0))
       .selectAll("text")
-      .data(this.graphData.items)
+      .data(this.originalGraphData.items)
       .attr("x", -10)
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
       .style("text-anchor", "end")
 
       .attr("value", (d) => {
-
-        return d.xLabel + ": " + d.y
+        return d.x + ": " + d.y
       })
       .style("fill", (d) => {
         return d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000";
       })
       .style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
       .attr("class", "x-axis-label");
-
+    console.log("graphdata", this.originalGraphData)
     label
       .append("title")
       .style("visibility", "visible")
-      .text(d => { return d.xLabel + ": " + d.y; });
+      .text(d => { return d.x + ": " + d.y; });
 
 
     /**
