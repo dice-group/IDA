@@ -158,7 +158,7 @@ export default class IDABarGraph extends Component {
       })
       .style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
       .attr("class", "x-axis-label");
-    console.log("graphdata", this.originalGraphData)
+
     label
       .append("title")
       .style("visibility", "visible")
