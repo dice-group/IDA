@@ -121,8 +121,6 @@ public class FileUtil {
 		ArrayList<Map> resMap = new ArrayList<>();
 		Map<String, Object> datasetMap;
 		String path = dsPathMap.get(keyword.toLowerCase());
-		ObjectReader reader = new ObjectMapper().reader();
-
 		if (path != null) {
 			File dir = new File(fetchSysFilePath(path));
 			File[] directoryListing = dir.listFiles();
@@ -132,7 +130,7 @@ public class FileUtil {
 					// Do something with child
 					if (child.getName().matches(IDAConst.CSV_FILE_PATTERN)) {
 						datasetMap.put("name", child.getName());
-						datasetMap.put("data", reader.readTree(printJson(child)));
+						datasetMap.put("data", new DataUtil().getDataSet(keyword, child.getName()));
 						resMap.add(datasetMap);
 					}
 				}
@@ -218,7 +216,7 @@ public class FileUtil {
 
 	/**
 	 * Method to read data of a column of csv
-	 * @param datasetContenMap
+	 * @param datasetContentMap
 	 * 		You can get it from getDatasetContent method
 	 * @param columnName
 	 * @return ArrayList of column data
