@@ -21,11 +21,9 @@ const IDATheme = createMuiTheme({
 
 ReactDOM.render(
 
-  <React.StrictMode>
-    <ThemeProvider theme={IDATheme}>
-      <App />
-    </ThemeProvider>
-  </React.StrictMode>,
+  <ThemeProvider theme={IDATheme}>
+    <App />
+  </ThemeProvider>,
   document.getElementById("root")
 );
 

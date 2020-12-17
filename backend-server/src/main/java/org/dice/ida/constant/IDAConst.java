@@ -249,7 +249,7 @@ public interface IDAConst {
 	public static final String DURATION_TYPE_WEEK = "wk";
 	public static final String DURATION_TYPE_MONTH = "mo";
 	public static final String DURATION_TYPE_YEAR = "yr";
-	public static final String LABEL_PATTERN_DATE = "dd-MMM-yyyy";
+	public static final String LABEL_PATTERN_DATE = "dd-MM-yy";
 	public static final String LABEL_PATTERN_MONTH = "MMMM-yyyy";
 	public static final String LABEL_PATTERN_YEAR = "yyyy";
 	public static final String ATTRIBUTE_TYPE_SUFFIX = "_type";

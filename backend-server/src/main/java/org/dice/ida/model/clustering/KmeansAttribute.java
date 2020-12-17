@@ -11,7 +11,7 @@ import weka.core.SelectedTag;
 public class KmeansAttribute {
 
 	private int NumberOfCluster;
-	private String IntitializeMethod;
+	private SelectedTag InitializeMethod;
 	private int MaxIterations;
 	private Boolean ReplaceMissingValues;
 	private int NumOfExecutionSlots;
@@ -28,7 +28,7 @@ public class KmeansAttribute {
 	{
 		this.simpleKMeans = simpleKMeans;
 		this.NumberOfCluster = numcluster;
-		this.IntitializeMethod = simpleKMeans.getInitializationMethod().getSelectedTag().getReadable();
+		this.InitializeMethod = simpleKMeans.getInitializationMethod();
 		this.MaxIterations = simpleKMeans.getMaxIterations();
 		this.ReplaceMissingValues = simpleKMeans.getDontReplaceMissingValues();
 		this.NumOfExecutionSlots = simpleKMeans.getNumExecutionSlots();
@@ -58,17 +58,17 @@ public class KmeansAttribute {
 	 *
 	 * @return initialization method
 	 */
-	public String getIntitializeMethod() {
-		return IntitializeMethod;
+	public SelectedTag getInitializeMethod() {
+		return InitializeMethod;
 	}
 
 	/**
 	 * Set the initialization method
 	 *
-	 * @param intitializeMethod Initialization Method
+	 * @param initializeMethod Initialization Method
 	 */
-	public void setIntitializeMethod(int intitializeMethod) {
-		new SelectedTag(intitializeMethod, simpleKMeans.getInitializationMethod().getTags()).getSelectedTag().getReadable();
+	public void setInitializeMethod(int initializeMethod) {
+		InitializeMethod = new SelectedTag(initializeMethod, simpleKMeans.getInitializationMethod().getTags());
 	}
 
 	/**

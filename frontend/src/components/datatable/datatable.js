@@ -103,16 +103,18 @@ export default class CustomizedTables extends Component {
   }
 
   componentDidMount() {
-    if (this.tableId && document.getElementById(this.tableId)) {
-      const rowHeight = document.getElementById(this.tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
-      if (rowHeight) {
-        const defaultRowsPerPage = Math.floor((window.innerHeight * 0.65) / rowHeight);
-        this.setState({
-          rowsPerPage: defaultRowsPerPage,
-          rowsPerPageList: [defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 3, defaultRowsPerPage * 4, defaultRowsPerPage * 5]
-        });
+    setTimeout(() => {
+      if (this.tableId && document.getElementById(this.tableId)) {
+        const rowHeight = document.getElementById(this.tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
+        if (rowHeight) {
+          const defaultRowsPerPage = Math.floor((window.innerHeight * 0.65) / rowHeight);
+          this.setState({
+            rowsPerPage: defaultRowsPerPage,
+            rowsPerPageList: [defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 3, defaultRowsPerPage * 4, defaultRowsPerPage * 5]
+          });
+        }
       }
-    }
+    }, 100);
   }
 
   handleChangePage(event, newPage) {
