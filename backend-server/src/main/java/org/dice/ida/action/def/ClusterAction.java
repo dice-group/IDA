@@ -127,16 +127,16 @@ public class ClusterAction implements Action {
 	private void loadClusteredData() throws Exception {
 		RandomizableClusterer model = getClusterModel();
 		ObjectMapper mapper = new ObjectMapper();
-		ArrayNode clusteredData = mapper.createArrayNode();
+		List<Map<String,String>> clusteredData = new ArrayList<Map<String, String>>();
 		model.buildClusterer(data);
 		ArrayList<Map> dsData = fileUtil.getDatasetContent(datasetName);
 		for (Map file : dsData) {
 			if (file.get("name").toString().equalsIgnoreCase(tableName)) {
-				ArrayNode fileData = (ArrayNode) file.get("data");
+				ArrayList fileData = (ArrayList) file.get("data");
 				for (int i = 0; i < fileData.size(); i++) {
-					JsonNode row = fileData.get(i);
+					HashMap<String,String> row = (HashMap<String, String>) fileData.get(i);
 					try {
-						((ObjectNode) row).put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
+						 row.put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
 					} catch (Exception e) {
 						//Continue with loop skipping the data row
 					}
@@ -456,7 +456,6 @@ public class ClusterAction implements Action {
 	 */
 	private void showParamList() throws Exception {
 		EM em = new EM();
-		em.setNumFolds(5);
 		filterStringAttribyte();
 		em.buildClusterer(data);
 		numCluster = em.numberOfClusters();
@@ -538,12 +537,12 @@ public class ClusterAction implements Action {
 			for (String key : row.keySet()) {
 				if (numericKeys.contains(key)) {
 					try{
-						rowString.add(String.valueOf(Integer.parseInt(row.get(key))));
+						rowString.add(String.valueOf(Double.parseDouble(row.get(key).replaceAll(",","."))));
 					} catch (Exception ex) {
 						rowString.add("");
 					}
 				} else {
-					rowString.add("'" + row.get(key) + "'");
+					rowString.add("\"" + row.get(key) + "\"");
 				}
 			}
 			csvString.append(String.join(",", rowString)).append("\n");
