@@ -73,7 +73,6 @@ public class LineChartAction implements Action {
 				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 			} else {
-				
 				if (ValidatorUtil.isStringEmpty(dateColumn) || ValidatorUtil.isStringEmpty(labelColumn) || ValidatorUtil.isStringEmpty(valueColumn)) {
 					SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 					return;
