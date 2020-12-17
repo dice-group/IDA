@@ -147,28 +147,4 @@ public class DialogFlowUtil {
 		return null;
 	}
 
-	/**
-	 * Method to get the list of active context names
-	 *
-	 * @return - List of context names
-	 */
-	public List<String> getActiveContextList() {
-		List<String> contextList = new ArrayList<>();
-		try (ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings())) {
-			// Set the session name using the sessionId (UUID) and projectId (my-project-id)
-			SessionName session = SessionName.of(projectId, idaChatBot.fetchDfSessionId());
-			String contextName;
-
-			// Performs the list contexts request
-			for (Context context : contextsClient.listContexts(session).iterateAll()) {
-				contextName = context.getName();
-				contextName = contextName.substring(contextName.lastIndexOf("/") + 1);
-				contextList.add(contextName);
-			}
-			return contextList;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return null;
-	}
 }
