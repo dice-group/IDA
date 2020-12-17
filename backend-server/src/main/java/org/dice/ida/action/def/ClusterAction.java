@@ -457,7 +457,6 @@ public class ClusterAction implements Action {
 	 */
 	private void showParamList() throws Exception {
 		EM em = new EM();
-		em.setNumFolds(5);
 		filterStringAttribyte();
 		em.buildClusterer(data);
 		numCluster = em.numberOfClusters();
