@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.Value;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.clustering.FarthestFirstAttribute;
@@ -24,11 +25,18 @@ import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToNominal;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -80,18 +88,18 @@ public class ClusterAction implements Action {
 				if (!clusterMethod.isEmpty() && parameterChangeChoice.isEmpty()) {
 					if (clusterMethod.equals("getColumnList")) {
 						if (verifynApplyFilter(paramMap.get("column_List"))) {
-							textMsg.append("Okay! Here is the list clustering algorithm currently offered by IDA .\n" +
-									"- Kmean\n" +
-									"- Farthest First\n" +
-									"Which algorithm would you like to use for clustering?\n");
+							textMsg.append("Okay! Here is the list algorithms you can use,<br/><ul>");
+							textMsg.append("<li>Kmean</li><li>Farthest First</li></ul>");
+							textMsg.append("<br/>Which algorithm would you like to use?");
 							if(checkforNominalAttribute())
-								textMsg.append("\n").append("Warning : Too many nomimal attributes selected, clustering might take longer then expected");
-
+								textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT/60000) + " minutes</b>, the process will be terminated.");
 						}
 					} else {
-						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters\n\n");
+						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters<br/>");
 						showParamList();
-						textMsg.append("\nWould you like to change any parameter?");
+						textMsg.append("<br/>Would you like to change any parameter?");
+						if (checkforNominalAttribute())
+							textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT/60000) + " minutes</b>, the process will be terminated.");
 					}
 				} else if (!paramtertoChange.isEmpty()) {
 					getnsetNewParamValue();
@@ -99,7 +107,7 @@ public class ClusterAction implements Action {
 				if (parameterChangeChoice.equals("no")) {
 					loadClusteredData();
 					chatMessageResponse.setPayload(payload);
-					textMsg = new StringBuilder("Your clustered data is loaded.\n");
+					textMsg = new StringBuilder("Your clustered data is loaded.");
 					chatMessageResponse.setUiAction(IDAConst.UIA_CLUSTER);
 					dialogFlowUtil.resetContext();
 				} else {
@@ -119,16 +127,16 @@ public class ClusterAction implements Action {
 	private void loadClusteredData() throws Exception {
 		RandomizableClusterer model = getClusterModel();
 		ObjectMapper mapper = new ObjectMapper();
-		ArrayNode clusteredData = mapper.createArrayNode();
+		List<Map<String,String>> clusteredData = new ArrayList<Map<String, String>>();
 		model.buildClusterer(data);
 		ArrayList<Map> dsData = fileUtil.getDatasetContent(datasetName);
 		for (Map file : dsData) {
 			if (file.get("name").toString().equalsIgnoreCase(tableName)) {
-				ArrayNode fileData = (ArrayNode) file.get("data");
+				ArrayList fileData = (ArrayList) file.get("data");
 				for (int i = 0; i < fileData.size(); i++) {
-					JsonNode row = fileData.get(i);
+					HashMap<String,String> row = (HashMap<String, String>) fileData.get(i);
 					try {
-						((ObjectNode) row).put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
+						 row.put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
 					} catch (Exception e) {
 						//Continue with loop skipping the data row
 					}
@@ -149,12 +157,20 @@ public class ClusterAction implements Action {
 		switch (clusterMethod) {
 			case IDAConst.K_MEAN_CLUSTERING:
 				SimpleKMeans simpleKMeans = new SimpleKMeans();
-				simpleKMeans.setNumClusters(numCluster);
+				KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
+				simpleKMeans.setNumClusters(kmeansAttribute.getNumberOfCluster());
+				simpleKMeans.setNumExecutionSlots(kmeansAttribute.getNumOfExecutionSlots());
+				simpleKMeans.setSeed(kmeansAttribute.getRandomNumberSeed());
+				simpleKMeans.setMaxIterations(kmeansAttribute.getMaxIterations());
+				simpleKMeans.setDontReplaceMissingValues(kmeansAttribute.getReplaceMissingValues());
+				simpleKMeans.setInitializationMethod(kmeansAttribute.getInitializeMethod());
 				clusterer = simpleKMeans;
 				break;
 			case IDAConst.FARTHEST_FIRST:
 				FarthestFirst farthestFirst = new FarthestFirst();
-				farthestFirst.setNumClusters(numCluster);
+				FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
+				farthestFirst.setNumClusters(farthestFirstAttribute.getNumberOfCluster());
+				farthestFirst.setSeed(farthestFirstAttribute.getRandomNumberSeed());
 				clusterer = farthestFirst;
 				break;
 			default:
@@ -168,15 +184,15 @@ public class ClusterAction implements Action {
 	 * Apply filter to the data instance based on inputs provided by User
 	 *
 	 * @return true if selected columns are present in the table
-	 * */
-	private boolean verifynApplyFilter(Object column_list) throws IOException {
+	 */
+	private boolean verifynApplyFilter(Object column_list) throws Exception {
 		ArrayList<String> columnList = new ArrayList<>();
 		boolean columnExist = true;
 		Value paramVal = (Value) column_list;
 		paramVal.getListValue().getValuesList().forEach(str -> columnList.add(str.getStringValue()));
 		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
 		CSVLoader loader = new CSVLoader();
-		loader.setSource(new File(path));
+		loader.setSource(getDataReadyForClustering(path));
 		data = loader.getDataSet();
 		if (!columnList.get(0).equalsIgnoreCase("All")) {
 			ObjectNode metaData = new FileUtil().getDatasetMetaData(datasetName);
@@ -218,15 +234,13 @@ public class ClusterAction implements Action {
 	 */
 	private boolean checkforNominalAttribute() {
 		boolean check = false;
-		int num_nominal = 0 ;
-		for (int i =0 ; i < data.numAttributes();i++)
-		{
-			if(data.attribute(i).isString()||data.attribute(i).isNominal())
-			{
+		int num_nominal = 0;
+		for (int i = 0; i < data.numAttributes(); i++) {
+			if (data.attribute(i).isString() || data.attribute(i).isNominal()) {
 				num_nominal++;
 			}
 		}
-		if(((double)num_nominal/(double)data.numAttributes()>.7))
+		if (((double) num_nominal / (double) data.numAttributes() > .7))
 			check = true;
 		return check;
 	}
@@ -276,13 +290,13 @@ public class ClusterAction implements Action {
 			case IDAConst.GET_NUM_CLUSTER:
 				paramValue = paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString();
 				if (!paramValue.isEmpty()) {
-					farthestFirstAttribute.setNumberOfCluster(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					farthestFirstAttribute.setNumberOfCluster(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_RANDOM_SEED:
 				paramValue = paramMap.get(IDAConst.RANDOM_SEED).toString();
 				if (!paramValue.isEmpty()) {
-					farthestFirstAttribute.setRandomNumberSeed(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					farthestFirstAttribute.setRandomNumberSeed(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_MULTI_PARAM:
@@ -324,19 +338,19 @@ public class ClusterAction implements Action {
 			case IDAConst.GET_NUM_CLUSTER:
 				paramValue = paramMap.get(IDAConst.NUMBER_OF_CLUSTER).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setNumberOfCluster(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setNumberOfCluster(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_INIT_METHOD:
 				paramValue = paramMap.get(IDAConst.INIT_METHOD).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setIntitializeMethod(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setInitializeMethod(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_MAX_ITERATION:
 				paramValue = paramMap.get(IDAConst.MAX_ITERATION).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setMaxIterations(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setMaxIterations(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_REPLACE_MISSING_VALUES:
@@ -348,13 +362,13 @@ public class ClusterAction implements Action {
 			case IDAConst.GET_NUM_EXECUTION_SLOT:
 				paramValue = paramMap.get(IDAConst.NUM_OF_SLOT).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setNumOfExecutionSlots(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setNumOfExecutionSlots(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_RANDOM_SEED:
 				paramValue = paramMap.get(IDAConst.RANDOM_SEED).toString();
 				if (!paramValue.isEmpty()) {
-					kmeansAttribute.setRandomNumberSeed(Integer.parseInt(paramValue.split(":")[1].substring(1, 2)));
+					kmeansAttribute.setRandomNumberSeed(getNumericValue(paramValue));
 				}
 				break;
 			case IDAConst.GET_MULTI_PARAM:
@@ -364,7 +378,7 @@ public class ClusterAction implements Action {
 				if (!multiParmaValue.get(IDAConst.MAX_ITERATION).isEmpty())
 					kmeansAttribute.setMaxIterations(getNumericValue(multiParmaValue.get(IDAConst.MAX_ITERATION)));
 				if (!multiParmaValue.get(IDAConst.INIT_METHOD).isEmpty())
-					kmeansAttribute.setIntitializeMethod(getNumericValue(multiParmaValue.get(IDAConst.INIT_METHOD)));
+					kmeansAttribute.setInitializeMethod(getNumericValue(multiParmaValue.get(IDAConst.INIT_METHOD)));
 				if (!multiParmaValue.get(IDAConst.NUM_OF_SLOT).isEmpty())
 					kmeansAttribute.setNumOfExecutionSlots(getNumericValue(multiParmaValue.get(IDAConst.NUM_OF_SLOT)));
 				if (!multiParmaValue.get(IDAConst.RANDOM_SEED).isEmpty())
@@ -466,12 +480,12 @@ public class ClusterAction implements Action {
 	 */
 	private void showKmeansParamList() {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
-		textMsg.append("Number of Clusters(N) = ").append(kmeansAttribute.getNumberOfCluster()).append("\n");
-		textMsg.append("Intitialize Method(P) = ").append(kmeansAttribute.getIntitializeMethod()).append("\n");
-		textMsg.append("Max No. of iterations(I) = ").append(kmeansAttribute.getMaxIterations()).append("\n");
-		textMsg.append("Replace missing values(M) = ").append(kmeansAttribute.getReplaceMissingValues()).append("\n");
-		textMsg.append("No. of execution slots(E) = ").append(kmeansAttribute.getNumOfExecutionSlots()).append("\n");
-		textMsg.append("Random number seed(S) = ").append(kmeansAttribute.getRandomNumberSeed()).append("\n");
+		textMsg.append("<ul><li>Number of Clusters(N) = ").append(kmeansAttribute.getNumberOfCluster());
+		textMsg.append("</li><li>Intitialize Method(P) = ").append(kmeansAttribute.getInitializeMethod().getSelectedTag().getReadable());
+		textMsg.append("</li><li>Max No. of iterations(I) = ").append(kmeansAttribute.getMaxIterations());
+		textMsg.append("</li><li>Replace missing values(M) = ").append(kmeansAttribute.getReplaceMissingValues());
+		textMsg.append("</li><li>No. of execution slots(E) = ").append(kmeansAttribute.getNumOfExecutionSlots());
+		textMsg.append("</li><li>Random number seed(S) = ").append(kmeansAttribute.getRandomNumberSeed()).append("</li></ul>");
 	}
 
 	/**
@@ -479,8 +493,8 @@ public class ClusterAction implements Action {
 	 */
 	private void showFarthestFirstParamList() {
 		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
-		textMsg.append("Number of Clusters(N) = ").append(farthestFirstAttribute.getNumberOfCluster()).append("\n");
-		textMsg.append("Random number seed(S) = ").append(farthestFirstAttribute.getRandomNumberSeed()).append("\n");
+		textMsg.append("<ul><li>Number of Clusters(N) = ").append(farthestFirstAttribute.getNumberOfCluster());
+		textMsg.append("</li><li>Random number seed(S) = ").append(farthestFirstAttribute.getRandomNumberSeed()).append("</li></ul>");
 	}
 
 	/**
@@ -495,4 +509,47 @@ public class ClusterAction implements Action {
 
 	}
 
+	private File getDataReadyForClustering(String path) throws IDAException, IOException {
+		List<Map<String, String>> dataMap = new FileUtil().convertToMap(new File(path));
+		Set<String> keys = dataMap.get(0).keySet();
+		Set<String> numericKeys = dataMap.get(0).keySet();
+		List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, new ArrayList<>(keys), false);
+		Map<String, String> columnMap = columnDetail.get(0);
+		Map<String, Map<String, String>> indicesMap = new HashMap<>();
+		keys = keys.stream().filter(i -> !columnMap.get(i).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
+		numericKeys = numericKeys.stream().filter(i -> columnMap.get(i).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
+		Map<String, String> wordToIndexMap;
+		List<String> entriesLst;
+		for (String key : keys) {
+			entriesLst = dataMap.stream().map(r -> r.get(key)).distinct().collect(Collectors.toList());
+			wordToIndexMap = IntStream.range(0, entriesLst.size())
+					.boxed()
+					.collect(Collectors.toMap(entriesLst::get, Object::toString));
+			indicesMap.put(key, wordToIndexMap);
+		}
+		File tempFile = File.createTempFile("temp", "csv");
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+		StringBuilder csvString = new StringBuilder();
+		List<String> rowString = new ArrayList<>(dataMap.get(0).keySet());
+		csvString.append(String.join(",", rowString)).append("\n");
+		for (Map<String, String> row : dataMap) {
+			rowString = new ArrayList<>();
+			for (String key : row.keySet()) {
+				if (numericKeys.contains(key)) {
+					try{
+						rowString.add(String.valueOf(Double.parseDouble(row.get(key).replaceAll(",","."))));
+					} catch (Exception ex) {
+						rowString.add("");
+					}
+				} else {
+					rowString.add("\"" + row.get(key) + "\"");
+				}
+			}
+			csvString.append(String.join(",", rowString)).append("\n");
+		}
+		writer.write(csvString.toString());
+		writer.close();
+		tempFile.deleteOnExit();
+		return tempFile;
+	}
 }

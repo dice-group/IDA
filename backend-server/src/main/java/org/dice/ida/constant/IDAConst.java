@@ -62,8 +62,8 @@ public interface IDAConst {
 	public static final String PARAM_DATASET_NAME = "datasetname";
 	public static final String PARAM_ALL_REQUIRED_PARAMS_PRESENT = "PARAM_ALL_REQUIRED_PARAMS_PRESENT";
 	public static final String PARAM_INTENT_DETECTION_CONFIDENCE = "intent_detection_confidence";
-	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table";
-	public static final String DS_DOES_NOT_EXIST_MSG = "dataset does not exist";
+	public static final String NO_VISUALIZATION_MSG = "No optimal visualization can be used for the selected table.";
+	public static final String DS_DOES_NOT_EXIST_MSG = " dataset does not exist. <br/><br/> You can ask to \"list all datasets\" to confirm if your dataset is present.";
 	public static final String INTENT_NAME = "intentname";
 	public static final String FULL_INTENT_NAME = "fullintentname";
 
@@ -249,7 +249,7 @@ public interface IDAConst {
 	public static final String DURATION_TYPE_WEEK = "wk";
 	public static final String DURATION_TYPE_MONTH = "mo";
 	public static final String DURATION_TYPE_YEAR = "yr";
-	public static final String LABEL_PATTERN_DATE = "dd-MMM-yyyy";
+	public static final String LABEL_PATTERN_DATE = "dd-MM-yy";
 	public static final String LABEL_PATTERN_MONTH = "MMMM-yyyy";
 	public static final String LABEL_PATTERN_YEAR = "yyyy";
 	public static final String ATTRIBUTE_TYPE_SUFFIX = "_type";
@@ -273,6 +273,29 @@ public interface IDAConst {
 	public static final String RANDOM_SEED = "random_seed";
 	public static final String GET_MULTI_PARAM = "getMultiParam";
 
-	public static final long TIMEOUT_LIMIT = 180000;
+	public static final long TIMEOUT_LIMIT = 300000;
 	public static final String TIMEOUT_MSG = "Sorry, it looks like that request has crossed the allowed time limit of " + (TIMEOUT_LIMIT / 60000) + " minutes. Please optimize your task.";
+	public static final Map<String, String> PARAM_NAME_MAP = new HashMap<>() {{
+		put("X-Axis", "X-Axis");
+		put("Y-Axis", "Y-Axis");
+		put("Bubble_Label", "label of the bubbles");
+		put("Bubble_Size", "size of the bubbles");
+	}};
+	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
+		put("numeric", "Group of N values");
+		put("date", "Group of N days, weeks, months or years");
+	}};
+	public static final List<String> TRANSFORMATION_TYPES = new ArrayList<>() {
+		{
+			add("Count Of");
+			add("Sum Of");
+			add("Average");
+		}
+	};
+	public static final Map<String, String> TRANSFORMATION_EG_MAP = new HashMap<>() {{
+		put("Count Of", "Count of rows");
+		put("Sum Of", "Sum of values");
+		put("Average", "Average of values");
+	}};
+	public static final String PARAM_TYPE_NON_BIN = "As it is";
 }

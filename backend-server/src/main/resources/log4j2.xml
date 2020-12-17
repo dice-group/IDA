@@ -7,13 +7,20 @@
 		<File name="File" fileName="logs/ida.log">
 			<PatternLayout pattern="%d{dd-MMM-yyyy HH:mm:ss} %-5level %c{1} %msg %n"/>
 		</File>
+		<File name="chat-log" fileName="logs/ida-chat.log">
+			<PatternLayout pattern="%d{dd-MMM-yyyy HH:mm:ss} %-5level %c{1} %msg %n"/>
+		</File>
 	</Appenders>
 
 	<Loggers>
-		<logger name="io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler" level="OFF"/> <!-- this logger logs all the dataset content and its enable by default so we disabled it -->
+		<logger name="io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler"
+				level="OFF"/> <!-- this logger logs all the dataset content and its enable by default so we disabled it -->
+		<Logger name="ida-chat-logger" additivity="false">
+			<AppenderRef ref="chat-log"/>
+		</Logger>
 		<Root level="debug">
-			<!-- <AppenderRef ref="Console" /> -->
-			<AppenderRef ref="File" />
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="File"/>
 		</Root>
 	</Loggers>
 </Configuration>

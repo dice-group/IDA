@@ -33,6 +33,7 @@ public class ChatMsgRespSerializer extends StdSerializer<ChatMessageResponse>{
 		gen.writeObjectField("payload", value.getPayload());
 		gen.writeObjectField("timestamp", value.getTimestamp());
 		gen.writeObjectField("errorCode", value.getErrCode());
+		gen.writeObjectField("activeContexts", value.getActiveContexts());
 		gen.writeEndObject();
 
 	}
