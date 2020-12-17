@@ -39,7 +39,7 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
     updateActiveTab(props, props.expandedNodeId, "_visualizations", vizNode.id, activeDSName);
 }
 
-function addAnalysisEntry(props, analysisData, label, name, activeDSName, tableName) {
+function addAnalysisEntry(props, analysisData, label, name, activeDSName, tableName, columns) {
     const treeData = props.detail;
     const activeDS = treeData.find((node) => node.id === activeDSName);
     const analysisChildren = activeDS.children.find((c) => c.id === activeDSName + "_analyses");
@@ -59,7 +59,7 @@ function addAnalysisEntry(props, analysisData, label, name, activeDSName, tableN
         type: name,
         data: analysisData,
         fileName: tableName,
-        columns: Object.keys(analysisData[0]).map((k) => ({ colAttr: k, colName: k })),
+        columns: columns.map((k) => ({ colAttr: k, colName: k })),
         dsName: activeDSName
     };
     analysis.children.push(analysisNode);
@@ -147,7 +147,7 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
             const clusteredData = payload.clusteredData;
             clusteredData.sort((a, b) => parseInt(a.Cluster, 10) > parseInt(b.Cluster, 10) ? 1 : parseInt(a.Cluster, 10) < parseInt(b.Cluster, 10) ? -1 : 0);
-            addAnalysisEntry(props, clusteredData, "Clustering", "clustering", payload.activeDS, payload.activeTable);
+            addAnalysisEntry(props, clusteredData, "Clustering", "clustering", payload.activeDS, payload.activeTable, payload.columns);
             break;
         }
         default:
