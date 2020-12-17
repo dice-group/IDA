@@ -18,6 +18,7 @@ export default class IDABarGraph extends Component {
   graphData = {};
   containerId = "";
   originalGraphData = {};
+  tooltip = null;
 
   constructor(props) {
     super(props);
@@ -27,11 +28,33 @@ export default class IDABarGraph extends Component {
     this.state = {
       sortMode: ""
     };
+    this.tooltip = document.createElement('div');
+    this.tooltip.setAttribute('class', 'tooltip');
+    document.body.appendChild(this.tooltip);
+
   }
 
   componentDidMount() {
     this.graphData && this.graphData.items && this.drawBarGraph();
+    var rects = document.querySelectorAll('[data-foo]');
+    console.log(rects)
+    rects.forEach(ele => {
+      ele.addEventListener("mouseover", (event) => {
+        this.tooltip.style.display = "block";
+        this.tooltip.style.position = "absolute";
+        this.tooltip.style.top = event.clientY + "px";
+        this.tooltip.style.left = event.clientX + "px";
+        // add the text node to the newly created div
+        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
+      });
+      ele.addEventListener("mouseout", () => {
+        setTimeout(() => {
+          this.tooltip.style.display = "none";
+        }, 2000)
+      });
+    });
   }
+
 
   sortGraphItems(sortMode) {
     document.getElementById(this.containerId).innerHTML = "";
@@ -120,7 +143,7 @@ export default class IDABarGraph extends Component {
      */
     let bar = svg.append("g")
       .selectAll("rect")
-      .data(this.originalGraphData.items)
+      .data(this.graphData.items)
       .enter()
       .append("rect")
       .attr("x", (d) => scaleX(d.x))
@@ -129,12 +152,10 @@ export default class IDABarGraph extends Component {
       .attr("height", (d, i) => scaleY(0) - scaleY(d.y))
       .attr("fill", "#4f8bff")
 
-
-
     bar
-      .append("title")
-      .style("visibility", "visible")
-      .text(d => { return d.x + ": " + d.y; });
+      // .append("title")
+      .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
+    // .text(d => { return d.xLabel + ": " + d.y; });
 
     /**
      * append x-axis to the graph
@@ -144,7 +165,7 @@ export default class IDABarGraph extends Component {
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(scaleX).tickSizeOuter(0))
       .selectAll("text")
-      .data(this.originalGraphData.items)
+      .data(this.graphData.items)
       .attr("x", -10)
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
@@ -160,9 +181,7 @@ export default class IDABarGraph extends Component {
       .attr("class", "x-axis-label");
 
     label
-      .append("title")
-      .style("visibility", "visible")
-      .text(d => { return d.x + ": " + d.y; });
+      .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
 
 
     /**
