@@ -1,6 +1,7 @@
 package org.dice.ida.action.def;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import org.dice.ida.constant.IDAConst;
@@ -26,52 +27,48 @@ import static java.util.stream.Collectors.toList;
 
 public class BubbleChartAction implements Action {
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws Exception {
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
-			try {
-				Map<String, Object> payload = chatMessageResponse.getPayload();
-				String datasetName = payload.get("activeDS").toString();
-				String tableName = payload.get("activeTable").toString();
-				String filterString = paramMap.containsKey(IDAConst.PARAM_FILTER_STRING) ? paramMap.get(IDAConst.PARAM_FILTER_STRING).toString() : "";
-				double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+			
+			Map<String, Object> payload = chatMessageResponse.getPayload();
+			String datasetName = payload.get("activeDS").toString();
+			String tableName = payload.get("activeTable").toString();
+			String filterString = paramMap.containsKey(IDAConst.PARAM_FILTER_STRING) ? paramMap.get(IDAConst.PARAM_FILTER_STRING).toString() : "";
+			double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
 
-				if (ValidatorUtil.isStringEmpty(filterString)) {
-					// If confidence is zero then it means provided filter was incorrect
-					if (confidence == 0.0) {
-						paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
-					}
-					SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
-				} else {
-					CSVLoader loader = new CSVLoader();
-					//Loads the File
-					String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
-					loader.setSource(new File(path));
-					Instances data = loader.getDataSet();
-
-					if (ValidatorUtil.isFilterRangeValid(filterString, data)) {
-
-						if (paramMap.containsKey(IDAConst.BC_ONE) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_COL_NAME).toString())) {
-							oneColumnManager(paramMap, chatMessageResponse, payload, datasetName, tableName, filterString, data);
-						}
-						else if (paramMap.containsKey(IDAConst.BC_TWO) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_FIRST_COL).toString()) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_SECOND_COL).toString())) {
-							twoColumnManager(paramMap, chatMessageResponse, payload, datasetName, tableName, filterString, data);
-						} else {
-							if (confidence == 0.0) {
-								paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.BC_INCORRECT_COL);
-							}
-							SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
-						}
-					} else {
-						// Provided data filter range was incorrect
-						chatMessageResponse.setMessage(IDAConst.INVALID_RANGE);
-						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-					}
+			if (ValidatorUtil.isStringEmpty(filterString)) {
+				// If confidence is zero then it means provided filter was incorrect
+				if (confidence == 0.0) {
+					paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
 				}
-			} catch (Exception e) {
-				chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-				e.printStackTrace();
+				SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
+			} else {
+				CSVLoader loader = new CSVLoader();
+				//Loads the File
+				String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+				loader.setSource(new File(path));
+				Instances data = loader.getDataSet();
+
+				if (ValidatorUtil.isFilterRangeValid(filterString, data)) {
+
+					if (paramMap.containsKey(IDAConst.BC_ONE) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_COL_NAME).toString())) {
+						oneColumnManager(paramMap, chatMessageResponse, payload, datasetName, tableName, filterString, data);
+					}
+					else if (paramMap.containsKey(IDAConst.BC_TWO) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_FIRST_COL).toString()) && !ValidatorUtil.isStringEmpty(paramMap.get(IDAConst.BC_SECOND_COL).toString())) {
+						twoColumnManager(paramMap, chatMessageResponse, payload, datasetName, tableName, filterString, data);
+					} else {
+						if (confidence == 0.0) {
+							paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.BC_INCORRECT_COL);
+						}
+						SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
+					}
+				} else {
+					// Provided data filter range was incorrect
+					chatMessageResponse.setMessage(IDAConst.INVALID_RANGE);
+					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+				}
 			}
+			
 		}
 	}
 

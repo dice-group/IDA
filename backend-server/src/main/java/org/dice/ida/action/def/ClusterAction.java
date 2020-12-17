@@ -1,10 +1,19 @@
 package org.dice.ida.action.def;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.protobuf.Value;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
@@ -17,6 +26,12 @@ import org.dice.ida.util.SessionUtil;
 import org.dice.ida.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.protobuf.Value;
+
 import weka.clusterers.EM;
 import weka.clusterers.FarthestFirst;
 import weka.clusterers.RandomizableClusterer;
@@ -25,18 +40,6 @@ import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToNominal;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 /**
@@ -69,57 +72,55 @@ public class ClusterAction implements Action {
 	/**
 	 * @param paramMap            - parameters from dialogflow
 	 * @param chatMessageResponse - API response object
+	 * @throws Exception 
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
-		try {
-			fileUtil = new FileUtil();
-			textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
-			if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
-				payload = chatMessageResponse.getPayload();
-				datasetName = payload.get("activeDS").toString();
-				tableName = payload.get("activeTable").toString();
-				multiParmaValue = null;
-				sessionMap = sessionUtil.getSessionMap();
-				this.paramMap = paramMap;
-				String fullIntentName = paramMap.get(IDAConst.FULL_INTENT_NAME).toString();
-				clusterMethod = getClusterMethod(fullIntentName);
-				String parameterChangeChoice = getParameterChangeChoice(fullIntentName);
-				paramtertoChange = getParameterToChange(fullIntentName);
-				if (!clusterMethod.isEmpty() && parameterChangeChoice.isEmpty()) {
-					if (clusterMethod.equals("getColumnList")) {
-						if (verifynApplyFilter(paramMap.get("column_List"))) {
-							textMsg.append("Okay! Here is the list algorithms you can use,<br/><ul>");
-							textMsg.append("<li>Kmean</li><li>Farthest First</li></ul>");
-							textMsg.append("<br/>Which algorithm would you like to use?");
-							if (checkforNominalAttribute())
-								textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT / 60000) + " minutes</b>, the process will be terminated.");
-						}
-					} else {
-						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters<br/>");
-						showParamList();
-						textMsg.append("<br/>Would you like to change any parameter?");
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws Exception {
+		
+		fileUtil = new FileUtil();
+		textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
+			payload = chatMessageResponse.getPayload();
+			datasetName = payload.get("activeDS").toString();
+			tableName = payload.get("activeTable").toString();
+			multiParmaValue = null;
+			sessionMap = sessionUtil.getSessionMap();
+			this.paramMap = paramMap;
+			String fullIntentName = paramMap.get(IDAConst.FULL_INTENT_NAME).toString();
+			clusterMethod = getClusterMethod(fullIntentName);
+			String parameterChangeChoice = getParameterChangeChoice(fullIntentName);
+			paramtertoChange = getParameterToChange(fullIntentName);
+			if (!clusterMethod.isEmpty() && parameterChangeChoice.isEmpty()) {
+				if (clusterMethod.equals("getColumnList")) {
+					if (verifynApplyFilter(paramMap.get("column_List"))) {
+						textMsg.append("Okay! Here is the list algorithms you can use,<br/><ul>");
+						textMsg.append("<li>Kmean</li><li>Farthest First</li></ul>");
+						textMsg.append("<br/>Which algorithm would you like to use?");
 						if (checkforNominalAttribute())
 							textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT / 60000) + " minutes</b>, the process will be terminated.");
 					}
-				} else if (!paramtertoChange.isEmpty()) {
-					getnsetNewParamValue();
-				}
-				if (parameterChangeChoice.equals("no")) {
-					loadClusteredData();
-					chatMessageResponse.setPayload(payload);
-					textMsg = new StringBuilder("Your clustered data is loaded.");
-					chatMessageResponse.setUiAction(IDAConst.UIA_CLUSTER);
-					dialogFlowUtil.resetContext();
 				} else {
-					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+					textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters<br/>");
+					showParamList();
+					textMsg.append("<br/>Would you like to change any parameter?");
+					if (checkforNominalAttribute())
+						textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT / 60000) + " minutes</b>, the process will be terminated.");
 				}
-				chatMessageResponse.setMessage(textMsg.toString());
+			} else if (!paramtertoChange.isEmpty()) {
+				getnsetNewParamValue();
 			}
-		} catch (Exception e) {
-			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			if (parameterChangeChoice.equals("no")) {
+				loadClusteredData();
+				chatMessageResponse.setPayload(payload);
+				textMsg = new StringBuilder("Your clustered data is loaded.");
+				chatMessageResponse.setUiAction(IDAConst.UIA_CLUSTER);
+				dialogFlowUtil.resetContext();
+			} else {
+				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			}
+			chatMessageResponse.setMessage(textMsg.toString());
 		}
+		
 	}
 
 	/**
@@ -283,8 +284,11 @@ public class ClusterAction implements Action {
 
 	/**
 	 * Method to change parameters set by user for clustering alogorithm
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	private void getnsetNewParamValue() {
+	private void getnsetNewParamValue() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		switch (clusterMethod) {
 			case IDAConst.K_MEAN_CLUSTERING:
 				getnSetKmeanParam();
@@ -299,8 +303,11 @@ public class ClusterAction implements Action {
 
 	/**
 	 * Method to change parameters for Farthest First clustering algorithm
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	private void getnSetFarthestFirstParam() {
+	private void getnSetFarthestFirstParam() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
 		switch (paramtertoChange) {
 			case IDAConst.GET_NUM_CLUSTER:
@@ -347,8 +354,11 @@ public class ClusterAction implements Action {
 
 	/**
 	 * Method to change parameters for K-mean clustering algorithm
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	private void getnSetKmeanParam() {
+	private void getnSetKmeanParam() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
 		switch (paramtertoChange) {
 			case IDAConst.GET_NUM_CLUSTER:
@@ -410,8 +420,11 @@ public class ClusterAction implements Action {
 
 	/**
 	 * Method to add parameters of K-mean clusterer to Session Map
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	private void setKmeanParam(KmeansAttribute kmeansAttribute) {
+	private void setKmeanParam(KmeansAttribute kmeansAttribute) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		if (!paramValue.isEmpty() || multiParmaValue != null) {
 			sessionMap.put(IDAConst.K_MEAN_CLUSTERING, kmeansAttribute);
 			sessionUtil.setSessionMap(sessionMap);

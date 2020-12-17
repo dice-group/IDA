@@ -1,20 +1,21 @@
 package org.dice.ida.logging;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.annotation.Aspect;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Component
 @Aspect
@@ -36,7 +37,7 @@ public class AspectLogger {
 	 */
 	@Pointcut("execution(* org.dice.ida.controller.MessageController.*(..))")
 	public void controller() {
-		//PointCut for MessageRestController
+		// PointCut for MessageRestController
 		log.info("[EXECUTION] controller execution started");
 	}
 
@@ -59,12 +60,17 @@ public class AspectLogger {
 	 * @param joinPoint
 	 * @param exception
 	 */
-	@AfterThrowing(pointcut = "execution(* org.dice.ida..*(..))", throwing = "exception")
+	@AfterThrowing(pointcut = "execution(* org.dice.ida.controller.MessageController.*(..))", throwing = "exception")
 	public void logAfterThrowingMethod(JoinPoint joinPoint, Exception exception) throws Throwable {
 		StringBuffer logMessage = new StringBuffer();
 		logMessage.append("[EXCEPTION] - ");
 		commonMsgBody(joinPoint, logMessage);
-		response.setErrCode(1);
+		response.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+		response.setUiAction(IDAConst.UAC_NRMLMSG);
+		if (exception instanceof IDAException) {
+			response.setMessage(exception.getMessage());
+		}
+
 		log.error(logMessage.toString(), exception);
 	}
 
@@ -95,8 +101,8 @@ public class AspectLogger {
 	}
 
 	/**
-	 * Method to provide basic logging elements for example Remote address,
-	 * method name and its parameter
+	 * Method to provide basic logging elements for example Remote address, method
+	 * name and its parameter
 	 *
 	 * @param joinPoint
 	 * @param logMessage

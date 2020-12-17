@@ -33,22 +33,26 @@ public class DialogFlowUtil {
 	 * Method to remove a context from list of active contexts
 	 *
 	 * @param contextString - context name
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public void deleteContext(String contextString) {
+	public void deleteContext(String contextString) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		String contextName = "projects/" + projectId + "/agent/sessions/" + idaChatBot.fetchDfSessionId() + "/contexts/" + contextString;
 		try (ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings())) {
 			contextsClient.deleteContext(contextName);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		} 
 	}
 
 	/**
 	 * Method to add a context to list of active contexts
 	 *
 	 * @param contextString - context name
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public void setContext(String contextString) {
+	public void setContext(String contextString) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		try (ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings())) {
 			// Set the session name using the sessionId (UUID) and projectID (my-project-id)
 			SessionName session = SessionName.of(projectId, idaChatBot.fetchDfSessionId());
@@ -68,8 +72,6 @@ public class DialogFlowUtil {
 
 			// Performs the create context request
 			contextsClient.createContext(session, context);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 
@@ -104,8 +106,11 @@ public class DialogFlowUtil {
 
 	/**
 	 * Method to reset all the active contexts at the end of a conversation
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public void resetContext() {
+	public void resetContext() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		try (ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings())) {
 			// Set the session name using the sessionId (UUID) and projectId (my-project-id)
 			SessionName session = SessionName.of(projectId, idaChatBot.fetchDfSessionId());
@@ -114,8 +119,6 @@ public class DialogFlowUtil {
 			for (Context context : contextsClient.listContexts(session).iterateAll()) {
 				contextsClient.deleteContext(context.getName());
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 

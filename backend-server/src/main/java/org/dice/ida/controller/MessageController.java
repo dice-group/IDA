@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
@@ -73,7 +76,7 @@ public class MessageController {
 	}
 
 	@ExceptionHandler(AsyncRequestTimeoutException.class)
-	public ChatMessageResponse handleAsyncRequestTimeoutException() {
+	public ChatMessageResponse handleAsyncRequestTimeoutException() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		response.setUiAction(IDAConst.UAC_NRMLMSG);
 		Map<String, Object> dataMap = response.getPayload();
 		dataMap.put("activeDS", activeDS);

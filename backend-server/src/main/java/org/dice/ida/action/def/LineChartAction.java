@@ -11,6 +11,7 @@ import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.ValidatorUtil;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.util.Comparator;
@@ -47,9 +48,11 @@ public class LineChartAction implements Action {
 	/**
 	 * @param paramMap            - parameters from dialogflow
 	 * @param chatMessageResponse - API response object
+	 * @throws IOException 
+	 * @throws IDAException 
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws IOException, IDAException {
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 			Map<String, Object> payload = chatMessageResponse.getPayload();
 			String datasetName = payload.get("activeDS").toString();
@@ -70,35 +73,28 @@ public class LineChartAction implements Action {
 				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 			} else {
-				try {
-					if (ValidatorUtil.isStringEmpty(dateColumn) || ValidatorUtil.isStringEmpty(labelColumn) || ValidatorUtil.isStringEmpty(valueColumn)) {
-						SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
-						return;
-					}
-					List<String> columnNameList = new ArrayList<>();
-					columnNameList.add(dateColumn);
-					columnNameList.add(labelColumn);
-					columnNameList.add(valueColumn);
-					Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData).get(0);
-					validateParamTypes(columnMap);
-					if (onTemporaryData) {
-						tableData = message.getActiveTableData();
-					} else {
-						tableData = new DataUtil().getData(datasetName, tableName, columnNameList, filterString,columnMap);    // extract data from file
-					}
-					setBinTypeAndLabels();    // Decide the label intervals for X-Axis
-					createChartData();    // Create data for the chart based on intervals
-					payload.put(IDAConst.LINE_CHART_PROPERTY_NAME, createLineChartData());
-					chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
-					chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
-				} catch (IDAException ex) {
-					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-					chatMessageResponse.setMessage(ex.getMessage());
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-					chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+				
+				if (ValidatorUtil.isStringEmpty(dateColumn) || ValidatorUtil.isStringEmpty(labelColumn) || ValidatorUtil.isStringEmpty(valueColumn)) {
+					SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
+					return;
 				}
+				List<String> columnNameList = new ArrayList<>();
+				columnNameList.add(dateColumn);
+				columnNameList.add(labelColumn);
+				columnNameList.add(valueColumn);
+				Map<String, String> columnMap = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData).get(0);
+				validateParamTypes(columnMap);
+				if (onTemporaryData) {
+					tableData = message.getActiveTableData();
+				} else {
+					tableData = new DataUtil().getData(datasetName, tableName, columnNameList, filterString,columnMap);    // extract data from file
+				}
+				setBinTypeAndLabels();    // Decide the label intervals for X-Axis
+				createChartData();    // Create data for the chart based on intervals
+				payload.put(IDAConst.LINE_CHART_PROPERTY_NAME, createLineChartData());
+				chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
+				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+				
 			}
 		}
 	}

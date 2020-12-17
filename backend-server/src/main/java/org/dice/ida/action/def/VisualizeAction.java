@@ -21,6 +21,9 @@ import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Value;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -66,78 +69,74 @@ public class VisualizeAction implements Action {
 	/**
 	 * @param paramMap            - parameters from dialogflow
 	 * @param chatMessageResponse - API response object
+	 * @throws IDAException 
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
-		try {
-			textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
-			if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
-				String vizType = paramMap.get(IDAConst.INTENT_NAME).toString();
-				payload = chatMessageResponse.getPayload();
-				instanceMap = new RDFUtil().getInstances(vizType);
-				String datasetName = payload.get("activeDS").toString();
-				String tableName = payload.get("activeTable").toString();
-				boolean onTemporaryData = message.isTemporaryData();
-				String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws IDAException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		
+		textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
+			String vizType = paramMap.get(IDAConst.INTENT_NAME).toString();
+			payload = chatMessageResponse.getPayload();
+			instanceMap = new RDFUtil().getInstances(vizType);
+			String datasetName = payload.get("activeDS").toString();
+			String tableName = payload.get("activeTable").toString();
+			boolean onTemporaryData = message.isTemporaryData();
+			String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 
-				if (ValidatorUtil.isStringEmpty(filterString)) {
-					double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
-					if (confidence == 0.0) {
-						paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
-						chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
-						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-					}
+			if (ValidatorUtil.isStringEmpty(filterString)) {
+				double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+				if (confidence == 0.0) {
+					paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
 					chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-				} else {
-					attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
-					List<String> columnNameList = getColumnNames(attributeList, paramMap);
-					List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
-					columnMap = columnDetail.get(0);
-					columnUniquenessMap = columnDetail.get(1);
-					Set<String> options = processParameters(paramMap);
-					if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
-						if (onTemporaryData) {
-							tableData = message.getActiveTableData();
-						} else {
-							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString, columnMap);
-						}
-						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
-						getParameters(paramMap);
-						switch (vizType) {
-							case IDAConst.VIZ_TYPE_BAR_CHART:
-								createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
-								createBarGraphResponse();
-								chatMessageResponse.setMessage(IDAConst.BAR_GRAPH_LOADED);
-								chatMessageResponse.setUiAction(IDAConst.UIA_BARGRAPH);
-								break;
-							case IDAConst.VIZ_TYPE_BUBBLE_CHART:
-								createGraphData(IDAConst.BUBBLE_LABEL_PARAM, IDAConst.BUBBLE_SIZE_PARAM, paramMap);
-								createBubbleChartResponse(datasetName, tableName);
-								chatMessageResponse.setMessage(IDAConst.BC_LOADED);
-								chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
-								break;
-							default:
-								chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-								chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-								break;
-						}
-						dialogFlowUtil.resetContext();
+				}
+				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			} else {
+				attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
+				List<String> columnNameList = getColumnNames(attributeList, paramMap);
+				List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
+				columnMap = columnDetail.get(0);
+				columnUniquenessMap = columnDetail.get(1);
+				Set<String> options = processParameters(paramMap);
+				if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
+					if (onTemporaryData) {
+						tableData = message.getActiveTableData();
 					} else {
-						chatMessageResponse.setMessage(textMsg.toString());
-						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+						tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString, columnMap);
 					}
+					comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
+					getParameters(paramMap);
+					switch (vizType) {
+						case IDAConst.VIZ_TYPE_BAR_CHART:
+							createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
+							createBarGraphResponse();
+							chatMessageResponse.setMessage(IDAConst.BAR_GRAPH_LOADED);
+							chatMessageResponse.setUiAction(IDAConst.UIA_BARGRAPH);
+							break;
+						case IDAConst.VIZ_TYPE_BUBBLE_CHART:
+							createGraphData(IDAConst.BUBBLE_LABEL_PARAM, IDAConst.BUBBLE_SIZE_PARAM, paramMap);
+							createBubbleChartResponse(datasetName, tableName);
+							chatMessageResponse.setMessage(IDAConst.BC_LOADED);
+							chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
+							break;
+						default:
+							chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+							chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+							break;
+					}
+					dialogFlowUtil.resetContext();
+				} else {
+					chatMessageResponse.setMessage(textMsg.toString());
+					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 				}
 			}
-		} catch (IDAException ex) {
-			ex.printStackTrace();
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			chatMessageResponse.setMessage(ex.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 		}
+		
 	}
 
 	/**
@@ -145,8 +144,11 @@ public class VisualizeAction implements Action {
 	 *
 	 * @param paramMap - param map from Dialogflow
 	 * @return - set of options possible for rendering the visualization based on user inputs
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	private Set<String> processParameters(Map<String, Object> paramMap) {
+	private Set<String> processParameters(Map<String, Object> paramMap) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		String attributeType;
 		String attributeName;
 		String paramType;
@@ -182,8 +184,11 @@ public class VisualizeAction implements Action {
 	 * @param attributeType - type of the attribute
 	 * @param paramMap      - parameter map from dialogflow
 	 * @return - true if response is ready and false otherwise
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	private boolean createResponseForUser(Set<String> options, int i, String attributeName, String attributeType, Map<String, Object> paramMap, String paramType) {
+	private boolean createResponseForUser(Set<String> options, int i, String attributeName, String attributeType, Map<String, Object> paramMap, String paramType) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		String columnName = paramMap.get(attributeName).toString();
 		if (options.size() == 0 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
