@@ -94,7 +94,6 @@ public class ClusterAction implements Action {
 							textMsg.append("<br/>Which algorithm would you like to use?");
 							if (checkforNominalAttribute())
 								textMsg.append("<br/><b>Warning</b> : If too many nominal attributes are selected, clustering might take longer than expected. If its taking longer than <b>" + (IDAConst.TIMEOUT_LIMIT / 60000) + " minutes</b>, the process will be terminated.");
-
 						}
 					} else {
 						textMsg = new StringBuilder("Okay!! Here is the list of default parameter and our suggested parameters<br/>");
