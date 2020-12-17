@@ -2,6 +2,7 @@ package org.dice.ida.controller;
 
 import org.dice.ida.chatbot.IDAChatBot;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.util.DialogFlowUtil;
@@ -44,6 +45,10 @@ public class MessageController {
 	@Autowired
 	@Qualifier("chat-logger")
 	private Logger chatLog;
+	
+	@Autowired
+	@Qualifier("logger")
+	private Logger log;
 
 	/**
 	 * Method to check the availability of the rest service
@@ -69,7 +74,21 @@ public class MessageController {
 		activeTable = message.getActiveTable();
 		return () -> {
 			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t user message:\t" + message.getMessage());
-			ChatMessageResponse response = idaChatBot.processMessage(message);
+			// this needs special exception handling as it an asynchronous call, out of scope for AOP
+			try {
+				idaChatBot.processMessage(message);
+			} catch(Exception e) {
+				StringBuffer logMessage = new StringBuffer();
+				logMessage.append("[EXCEPTION] - ");
+				log.error(logMessage.toString(), e);
+				if(e instanceof IDAException) {
+					response.setMessage(e.getMessage());
+				}
+				else{
+					response.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+				}
+				response.setUiAction(IDAConst.UAC_NRMLMSG);
+			}
 			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage());
 			return response;
 		};
