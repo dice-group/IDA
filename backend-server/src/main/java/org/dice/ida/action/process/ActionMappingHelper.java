@@ -2,6 +2,7 @@ package org.dice.ida.action.process;
 
 import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.Action;
+import org.dice.ida.action.def.CauseExceptionAction;
 import org.dice.ida.action.def.ListDataSetsAction;
 import org.dice.ida.action.def.ListVisualizationsAction;
 import org.dice.ida.action.def.LoadDataSetAction;
@@ -60,6 +61,9 @@ public class ActionMappingHelper {
 				break;
 			case CLEAR:
 				action = appContext.getBean(ClearConversationAction.class);
+				break;
+			case CAUSE_EXCEPTION:
+				action = appContext.getBean(CauseExceptionAction.class);
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);
