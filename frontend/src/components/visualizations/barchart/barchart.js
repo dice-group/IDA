@@ -36,23 +36,6 @@ export default class IDABarGraph extends Component {
 
   componentDidMount() {
     this.graphData && this.graphData.items && this.drawBarGraph();
-    var rects = document.querySelectorAll('[data-foo]');
-    console.log(rects)
-    rects.forEach(ele => {
-      ele.addEventListener("mouseover", (event) => {
-        this.tooltip.style.display = "block";
-        this.tooltip.style.position = "absolute";
-        this.tooltip.style.top = event.clientY + "px";
-        this.tooltip.style.left = event.clientX + "px";
-        // add the text node to the newly created div
-        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
-      });
-      ele.addEventListener("mouseout", () => {
-        setTimeout(() => {
-          this.tooltip.style.display = "none";
-        }, 2000)
-      });
-    });
   }
 
 
@@ -155,7 +138,16 @@ export default class IDABarGraph extends Component {
     bar
       // .append("title")
       .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
-    // .text(d => { return d.xLabel + ": " + d.y; });
+      .on("mouseover", (event) => {
+        this.tooltip.style.display = "block";
+        this.tooltip.style.position = "absolute";
+        this.tooltip.style.top = event.clientY + "px";
+        this.tooltip.style.left = event.clientX + "px";
+        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
+      })
+      .on("mouseout", () => {
+        this.tooltip.style.display = "none";
+      });
 
     /**
      * append x-axis to the graph
