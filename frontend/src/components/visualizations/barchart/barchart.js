@@ -174,6 +174,16 @@ export default class IDABarGraph extends Component {
 
     label
       .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
+      .on("mouseover", (event) => {
+        this.tooltip.style.display = "block";
+        this.tooltip.style.position = "absolute";
+        this.tooltip.style.top = event.clientY + "px";
+        this.tooltip.style.left = event.clientX + "px";
+        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
+      })
+      .on("mouseout", () => {
+        this.tooltip.style.display = "none";
+      });
 
 
     /**
