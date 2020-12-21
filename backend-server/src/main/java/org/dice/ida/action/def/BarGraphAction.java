@@ -23,10 +23,9 @@ import weka.core.converters.CSVLoader;
 public class BarGraphAction implements Action {
 
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws Exception {
 
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
-			try {
 				Map<String, Object> payload = chatMessageResponse.getPayload();
 				String datasetName = payload.get("activeDS").toString();
 				String tableName = payload.get("activeTable").toString();
@@ -82,10 +81,6 @@ public class BarGraphAction implements Action {
 					}
 					SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 				}
-			} catch (Exception e) {
-				chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			}
 		}
 	}
 }

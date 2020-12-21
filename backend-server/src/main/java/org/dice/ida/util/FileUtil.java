@@ -123,18 +123,16 @@ public class FileUtil {
 		String path = dsPathMap.get(keyword.toLowerCase());
 		ObjectReader reader = new ObjectMapper().reader();
 
-		if (path != null) {
-			File dir = new File(fetchSysFilePath(path));
-			File[] directoryListing = dir.listFiles();
-			if (directoryListing != null) {
-				for (File child : directoryListing) {
-					datasetMap = new HashMap<>();
-					// Do something with child
-					if (child.getName().matches(IDAConst.CSV_FILE_PATTERN)) {
-						datasetMap.put("name", child.getName());
-						datasetMap.put("data", reader.readTree(printJson(child)));
-						resMap.add(datasetMap);
-					}
+		File dir = new File(fetchSysFilePath(path));
+		File[] directoryListing = dir.listFiles();
+		if (directoryListing != null) {
+			for (File child : directoryListing) {
+				datasetMap = new HashMap<>();
+				// Do something with child
+				if (child.getName().matches(IDAConst.CSV_FILE_PATTERN)) {
+					datasetMap.put("name", child.getName());
+					datasetMap.put("data", reader.readTree(printJson(child)));
+					resMap.add(datasetMap);
 				}
 			}
 		}

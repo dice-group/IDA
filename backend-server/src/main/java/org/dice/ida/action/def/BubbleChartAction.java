@@ -26,9 +26,8 @@ import static java.util.stream.Collectors.toList;
 
 public class BubbleChartAction implements Action {
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws Exception {
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
-			try {
 				Map<String, Object> payload = chatMessageResponse.getPayload();
 				String datasetName = payload.get("activeDS").toString();
 				String tableName = payload.get("activeTable").toString();
@@ -67,11 +66,6 @@ public class BubbleChartAction implements Action {
 						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 					}
 				}
-			} catch (Exception e) {
-				chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-				e.printStackTrace();
-			}
 		}
 	}
 

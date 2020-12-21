@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.annotation.Aspect;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,10 @@ public class AspectLogger {
 		StringBuffer logMessage = new StringBuffer();
 		logMessage.append("[EXCEPTION] - ");
 		commonMsgBody(joinPoint, logMessage);
+		String message = (exception instanceof IDAException) ? exception.getMessage() : IDAConst.BOT_SOMETHING_WRONG;
 		response.setErrCode(1);
+		response.setUiAction(IDAConst.UAC_NRMLMSG);
+		response.setMessage(message);
 		log.error(logMessage.toString(), exception);
 	}
 
