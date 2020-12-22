@@ -2,7 +2,7 @@
 
 cd "${BASH_SOURCE%/*}" || exit
 
-### Check for logs dir, if not found create it
+### if logs folder does not exist then create it
 [ ! -d ~/ida-qa-logs ] && mkdir -p ~/ida-qa-logs
 
 version=$(cat VERSION)
