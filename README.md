@@ -19,4 +19,3 @@ To get everything up and running follow these steps:
 	2.  The IDA web interface should now be available at `http://127.0.0.1:8090/`.
 	3.  To stop and remove the running development stack run `docker stack rm ida-stack-dev`.
 
-Testing jenkins status
