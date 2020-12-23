@@ -11,15 +11,11 @@ import static org.junit.Assert.assertNotEquals;
 public class DbUtilsTests {
 	@Test
 	public void testmanageNullValues() {
-		System.out.println("*********************Test case*****************");
 		assertEquals(DbUtils.manageNullValues(null), IDAConst.NULL_VALUE_IDENTIFIER);
-		System.out.println("*********************Test case done*****************");
 	}
 
 	@Test
 	public void negTestmanageNullValues() {
-		System.out.println("*********************Test case*****************");
-		assertNotEquals(DbUtils.manageNullValues("test"), IDAConst.NULL_VALUE_IDENTIFIER);
-		System.out.println("*********************Test case done*****************");
+		assertNotEquals(DbUtils.manageNullValues(null), IDAConst.NULL_VALUE_IDENTIFIER);
 	}
 }
