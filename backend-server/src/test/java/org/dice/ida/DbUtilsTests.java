@@ -5,6 +5,7 @@ import org.dice.ida.util.DbUtils;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @SpringBootTest
 public class DbUtilsTests {
@@ -12,6 +13,13 @@ public class DbUtilsTests {
 	public void testmanageNullValues() {
 		System.out.println("*********************Test case*****************");
 		assertEquals(DbUtils.manageNullValues(null), IDAConst.NULL_VALUE_IDENTIFIER);
+		System.out.println("*********************Test case done*****************");
+	}
+
+	@Test
+	public void negTestmanageNullValues() {
+		System.out.println("*********************Test case*****************");
+		assertNotEquals(DbUtils.manageNullValues("test"), IDAConst.NULL_VALUE_IDENTIFIER);
 		System.out.println("*********************Test case done*****************");
 	}
 }
