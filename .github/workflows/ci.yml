@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 # Controls when the action will run. Triggers the workflow
 # on push or pull request for the master branch
@@ -28,11 +28,6 @@ jobs:
     - name: Build with Maven
       run: mvn clean install --file backend-server/pom.xml && mvn package --file backend-server/pom.xml
 
-
-name: CD
-
-# Controls when the action will run. Triggers the workflow
-# on push or pull request for the master branch
 on:
   pull_request:
     branches: [dev, master]
