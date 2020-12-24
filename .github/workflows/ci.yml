@@ -18,9 +18,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Copy Resources
       run: |
-            mkdir ./_work/IDA/IDA/backend-server/src/main/resources/datasets
-            cp -r ~/datasets/* ./_work/IDA/IDA/backend-server/src/main/resources/datasets/
-            cp ~/ida-chatbot-dialogflow.json ./_work/IDA/IDA/backend-server/src/main/resources/
+            mkdir backend-server/src/main/resources/datasets
+            cp -r ~/datasets/* backend-server/src/main/resources/datasets/
+            cp ~/ida-chatbot-dialogflow.json backend-server/src/main/resources/
     - name: Test
       run: mvn test --file backend-server/pom.xml
     - name: Build with Maven
