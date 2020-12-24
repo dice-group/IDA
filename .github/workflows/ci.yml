@@ -16,6 +16,10 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+    - name: Copy Resources
+      run: mkdir ./_work/IDA/IDA/backend-server/src/main/resources/datasets
+      run: cp -r ~/datasets/* ./_work/IDA/IDA/backend-server/src/main/resources/datasets/
+      run: cp ~/ida-chatbot-dialogflow.json ./_work/IDA/IDA/backend-server/src/main/resources/
     - name: Test
       run: mvn test --file backend-server/pom.xml
     - name: Build with Maven
