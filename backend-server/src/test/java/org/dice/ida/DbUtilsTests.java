@@ -16,6 +16,6 @@ public class DbUtilsTests {
 
 	@Test
 	public void negTestmanageNullValues() {
-		assertNotEquals(DbUtils.manageNullValues(null), IDAConst.NULL_VALUE_IDENTIFIER);
+		assertNotEquals(DbUtils.manageNullValues("test"), IDAConst.NULL_VALUE_IDENTIFIER);
 	}
 }

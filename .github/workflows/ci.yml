@@ -4,7 +4,7 @@ name: CI
 # on push or pull request for the master branch
 on:
   pull_request:
-    branches: [dev]
+    branches: [dev, master]
 
 # A workflow run is made up of one or more jobs
 # that can run sequentially or in parallel
@@ -16,6 +16,7 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+    # Copies the dialogflow credential file and datasets to the checked out repository
     - name: Copy Resources
       run: |
             mkdir backend-server/src/main/resources/datasets
