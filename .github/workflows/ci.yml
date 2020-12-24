@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI
 
 # Controls when the action will run. Triggers the workflow
 # on push or pull request for the master branch
