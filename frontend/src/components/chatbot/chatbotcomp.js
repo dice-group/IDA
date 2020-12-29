@@ -106,6 +106,47 @@ export default class ChatApp extends React.Component {
             });
     }
 
+	idaElementParser (msg) {
+		var text_arr = msg.trim().split(/(?=<ida.*?>)/);
+		let processed = text_arr;
+		if (text_arr.length > 1) {
+			processed = processed.reduce((acc, cur, i) => {
+				if (i === 1) {
+					acc = acc.trim().split(/(?<=<ida.*?>)/);
+				}
+				return acc.concat(cur.trim().split(/(?<=<ida.*?>)/));
+			})
+		}
+
+		processed = processed.map((token) => {
+			if (token.trim().startsWith('<ida')) {
+				const regex = /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|\s*\/?[>"']))+.)["']?/g;
+				const attrs_extract = token.match(regex);
+				const ele_extract = token.match(/<([^\s>]+)(\s|>)+/)[1];
+
+				let ida_btn = {name: ele_extract}
+
+				attrs_extract.forEach((e) => {
+					var attrs = e.split("=");
+					ida_btn[attrs[0]] = attrs[1].replaceAll(/\'|\"/g, "");
+				});
+
+				return ida_btn;
+			} else { return token.trim(); }
+		});
+		return processed instanceof Array ? processed : [processed];
+	}
+
+	idaElementRenderer (el) {
+    	const ida_eles = {
+    		'ida-btn': 'button'
+		}
+
+		return React.createElement(ida_eles[el.name], {
+			onClick: () => { this.messageSend({keyCode: 13, target: { value: el.msg }}) } // mimicking message sent from input field
+		}, el.value);
+	}
+
     msgIterator = (e, userMsgs) => {
         let target = e.target;
         /***
@@ -163,7 +204,7 @@ export default class ChatApp extends React.Component {
                                         return (
                                         	<div className="clearfix">
 												<div className="user" key={i}>
-													<div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
+													<div className="msg" key={Math.random()}> {val.message}</div>
 													<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
 												</div>
 											</div>
@@ -173,7 +214,15 @@ export default class ChatApp extends React.Component {
 											<div className="clearfix">
 												<div className="agent" key={Math.random()}>
 													<div>
-														<div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
+														<div className="msg" key={Math.random()}>{
+															this.idaElementParser(val.message).map(token => {
+																if (token instanceof Object) {
+																	return this.idaElementRenderer(token);
+																} else {
+																	return <span dangerouslySetInnerHTML={{ __html : token }} />
+																}
+															})
+														}</div>
 														<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
 													</div>
 													<div className="agent-pic" key={Math.random()} />

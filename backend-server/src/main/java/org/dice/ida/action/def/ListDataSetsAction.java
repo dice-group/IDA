@@ -21,9 +21,9 @@ public class ListDataSetsAction implements Action {
 			StringBuilder message = new StringBuilder();
 
 			if (datasetsSize == 1) {
-				message.append("I just have one \"");
+				message.append("I just have one <ida-btn msg='load covid19 dataset' value='");
 				message.append(datasets.get(0));
-				message.append("\" dataset right now!");
+				message.append("'> dataset right now!");
 			} else if (datasetsSize == 0) {
 				message.append("I don't have any dataset right now!");
 			} else {
