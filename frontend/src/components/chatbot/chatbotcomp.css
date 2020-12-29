@@ -2,6 +2,10 @@
   display: none;
 }
 
+.with-data .chatbox {
+  left: 75%;
+}
+
 .chatbox {
   background: #fff;
   z-index: 2000;
@@ -10,7 +14,7 @@
   position: absolute;
   top: 80px;
   left: 35%;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, left 0.5s;
 }
 
 .chatbox.drag {

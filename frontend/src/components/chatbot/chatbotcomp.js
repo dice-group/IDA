@@ -112,9 +112,9 @@ export default class ChatApp extends React.Component {
 		if (text_arr.length > 1) {
 			processed = processed.reduce((acc, cur, i) => {
 				if (i === 1) {
-					acc = acc.trim().split(/(?<=<ida.*?>)/);
+					acc = acc.split(/(?<=<ida.*?>)/);
 				}
-				return acc.concat(cur.trim().split(/(?<=<ida.*?>)/));
+				return acc.concat(cur.split(/(?<=<ida.*?>)/));
 			})
 		}
 
@@ -132,7 +132,7 @@ export default class ChatApp extends React.Component {
 				});
 
 				return ida_btn;
-			} else { return token.trim(); }
+			} else { return token; }
 		});
 		return processed instanceof Array ? processed : [processed];
 	}
