@@ -19,11 +19,11 @@ public class ListDataSetsAction implements Action {
 			int datasetsSize = datasets.size();
 
 			StringBuilder message = new StringBuilder();
+			String datasetName = "";
 
 			if (datasetsSize == 1) {
-				message.append("I just have one <ida-btn msg='load covid19 dataset' value='");
-				message.append(datasets.get(0));
-				message.append("'> dataset right now!");
+				datasetName = datasets.get(0);
+				message.append("I just have one <ida-btn msg='load " + datasetName + " dataset' value='" + datasetName + "'> dataset right now!");
 			} else if (datasetsSize == 0) {
 				message.append("I don't have any dataset right now!");
 			} else {
@@ -37,7 +37,8 @@ public class ListDataSetsAction implements Action {
 					} else if (i != 0) {
 						message.append(", ");
 					}
-					message.append(datasets.get(i));
+					datasetName = datasets.get(i);
+					message.append(" <ida-btn msg='load " + datasetName + " dataset' value='" + datasetName + "'> ");
 				}
 				message.append(" datasets.");
 			}
