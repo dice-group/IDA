@@ -100,7 +100,7 @@ public class VisualizeAction implements Action {
 						if (onTemporaryData) {
 							tableData = message.getActiveTableData();
 						} else {
-							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
+							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString, columnMap);
 						}
 						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
 						getParameters(paramMap);
@@ -496,19 +496,19 @@ public class VisualizeAction implements Action {
 		while (nextDate.isBefore(max)) {
 			switch (binType) {
 				case IDAConst.DURATION_TYPE_WEEK:
-					label = nextDate.format(formatter) + " - " + nextDate.plusWeeks(binSize).minusDays(1).format(formatter);
+					label = nextDate.format(formatter) + " to " + nextDate.plusWeeks(binSize).minusDays(1).format(formatter);
 					nextDate = nextDate.plusWeeks(binSize);
 					break;
 				case IDAConst.DURATION_TYPE_MONTH:
-					label = binSize == 1 ? nextDate.format(formatter) : nextDate.format(formatter) + " - " + nextDate.plusMonths(binSize).minusDays(1).format(formatter);
+					label = binSize == 1 ? nextDate.format(formatter) : nextDate.format(formatter) + " to " + nextDate.plusMonths(binSize).minusDays(1).format(formatter);
 					nextDate = nextDate.plusMonths(binSize);
 					break;
 				case IDAConst.DURATION_TYPE_YEAR:
-					label = binSize == 1 ? nextDate.format(formatter) : nextDate.format(formatter) + " - " + nextDate.plusYears(binSize).minusDays(1).format(formatter);
+					label = binSize == 1 ? nextDate.format(formatter) : nextDate.format(formatter) + " to " + nextDate.plusYears(binSize).minusDays(1).format(formatter);
 					nextDate = nextDate.plusYears(binSize);
 					break;
 				default:
-					label = nextDate.format(formatter) + " - " + nextDate.plusDays(binSize - 1).format(formatter);
+					label = nextDate.format(formatter) + " to " + nextDate.plusDays(binSize - 1).format(formatter);
 					nextDate = nextDate.plusDays(binSize);
 					break;
 			}
@@ -539,27 +539,27 @@ public class VisualizeAction implements Action {
 				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 				diff = ChronoUnit.WEEKS.between(localMin, binVal);
 				intervalBegin = localMin.plusWeeks((diff / binSize) * binSize);
-				xValue = intervalBegin.format(formatter) + " - " + intervalBegin.plusWeeks(binSize).minusDays(1).format(formatter);
+				xValue = intervalBegin.format(formatter) + " to " + intervalBegin.plusWeeks(binSize).minusDays(1).format(formatter);
 				break;
 			case IDAConst.DURATION_TYPE_MONTH:
 				calendar.set(Calendar.DAY_OF_MONTH, 1);
 				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 				diff = ChronoUnit.MONTHS.between(localMin, binVal);
 				intervalBegin = localMin.plusMonths((diff / binSize) * binSize);
-				xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " - " + intervalBegin.plusMonths(binSize).minusDays(1).format(formatter);
+				xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " to " + intervalBegin.plusMonths(binSize).minusDays(1).format(formatter);
 				break;
 			case IDAConst.DURATION_TYPE_YEAR:
 				calendar.set(Calendar.DAY_OF_YEAR, 1);
 				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 				diff = ChronoUnit.YEARS.between(localMin, binVal);
 				intervalBegin = localMin.plusYears((diff / binSize) * binSize);
-				xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " - " + intervalBegin.plusYears(binSize).minusDays(1).format(formatter);
+				xValue = binSize == 1 ? intervalBegin.format(formatter) : intervalBegin.format(formatter) + " to " + intervalBegin.plusYears(binSize).minusDays(1).format(formatter);
 				break;
 			default:
 				binVal = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 				diff = ChronoUnit.DAYS.between(localMin, binVal);
 				intervalBegin = localMin.plusDays((diff / binSize) * binSize);
-				xValue = intervalBegin.format(formatter) + " - " + intervalBegin.plusDays(binSize - 1).format(formatter);
+				xValue = intervalBegin.format(formatter) + " to " + intervalBegin.plusDays(binSize - 1).format(formatter);
 				break;
 		}
 		return xValue;
@@ -591,6 +591,7 @@ public class VisualizeAction implements Action {
 			if (IDAConst.TRANSFORMATION_TYPE_COUNT.equals(yAxisColumnType)) {
 				graphItems.put(xValue, graphItems.get(xValue) + 1.0);
 			} else {
+
 				graphItems.put(xValue, graphItems.get(xValue) + yValue);
 			}
 			labelCounts.put(xValue, labelCounts.get(xValue) + 1);

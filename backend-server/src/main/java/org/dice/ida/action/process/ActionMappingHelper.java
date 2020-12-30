@@ -29,6 +29,7 @@ public class ActionMappingHelper {
 		switch (intent) {
 			case GREETING:
 			case UNKNOWN:
+			case NEXT_STEPS:
 			case HELP:
 				action = appContext.getBean(SimpleTextAction.class);
 				break;

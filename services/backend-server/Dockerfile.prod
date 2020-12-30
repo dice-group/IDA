@@ -4,10 +4,12 @@ COPY backend-server/pom.xml backend-server/pom.xml
 COPY backend-server/src backend-server/src
 
 WORKDIR /build/backend-server
+RUN mvn dependency:go-offline
 RUN export GOOGLE_APPLICATION_CREDENTIALS="/build/backend-server/src/main/resources/ida-chatbot-dialogflow.json"
 RUN mvn package
 
 FROM tomcat:8.5.37-jre11
 EXPOSE 8080
 COPY --from=MAVEN_BUILD /build/backend-server/target/ida-ws.war /usr/local/tomcat/webapps
+COPY --from=MAVEN_BUILD /build/backend-server/target/classes/server.xml /usr/local/tomcat/conf/
 RUN /usr/local/tomcat/bin/catalina.sh start

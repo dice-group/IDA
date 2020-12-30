@@ -84,7 +84,7 @@ public class LineChartAction implements Action {
 					if (onTemporaryData) {
 						tableData = message.getActiveTableData();
 					} else {
-						tableData = new DataUtil().getData(datasetName, tableName, columnNameList, filterString);    // extract data from file
+						tableData = new DataUtil().getData(datasetName, tableName, columnNameList, filterString,columnMap);    // extract data from file
 					}
 					setBinTypeAndLabels();    // Decide the label intervals for X-Axis
 					createChartData();    // Create data for the chart based on intervals
