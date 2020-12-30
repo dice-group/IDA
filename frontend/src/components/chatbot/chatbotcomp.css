@@ -2,11 +2,6 @@
   display: none;
 }
 
-.with-data .chatbox {
-  left: calc(99% - 370px);
-  top: calc(100% - 600px)
-}
-
 .chatbox {
   background: #fff;
   z-index: 2000;
@@ -17,6 +12,12 @@
   left: 35%;
   transition: box-shadow 0.2s, left 0.5s;
 }
+
+.with-data .chatbox {
+  left: calc(99% - 370px);
+  top: calc(100% - 600px);
+}
+
 
 .chatbox.drag {
   box-shadow: 0 0 20px #ccc;
@@ -72,16 +73,16 @@
 .chatbox-chat-area .chat-area-msgs .agent .msg button {
   border: solid 1px #a79b9b;
   border-radius: 5px;
-  padding: 0px 4px;
-  background: #ffffff; /* Old browsers */
-  background: -moz-linear-gradient(top,  #ffffff 0%, #e5e5e5 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  #ffffff 0%,#e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+  padding: 0 4px;
+  background: #fff; /* Old browsers */
+  background: -moz-linear-gradient(top, #fff 0%, #e5e5e5 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #fff 0%,#e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #fff 0%,#e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#fff', endColorstr='#e5e5e5', GradientType=0); /* IE6-9 */
 }
 
 .chatbox-chat-area .chat-area-msgs .agent .msg button:hover {
-   box-shadow: 0 0 5px #ccc;
+  box-shadow: 0 0 5px #ccc;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent .msg::after {

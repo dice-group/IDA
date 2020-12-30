@@ -5,7 +5,7 @@ import { IDA_CONSTANTS } from "../constants";
 import idaChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
 import CloseIcon from "@material-ui/icons/Close";
-import Draggable from 'react-draggable';
+import Draggable from "react-draggable";
 
 export default class ChatApp extends React.Component {
 
@@ -108,43 +108,43 @@ export default class ChatApp extends React.Component {
     }
 
 	idaElementParser (msg) {
-		var text_arr = msg.trim().split(/(?=<ida.*?>)/);
-		let processed = text_arr;
-		if (text_arr.length > 1) {
+		var textArr = msg.trim().split(/(?=<ida.*?>)/);
+		let processed = textArr;
+		if (textArr.length > 1) {
 			processed = processed.reduce((acc, cur, i) => {
 				if (i === 1) {
 					acc = acc.split(/(?<=<ida.*?>)/);
 				}
 				return acc.concat(cur.split(/(?<=<ida.*?>)/));
-			})
+			});
 		}
 
 		processed = processed.map((token) => {
-			if (token.trim().startsWith('<ida')) {
+			if (token.trim().startsWith("<ida")) {
 				const regex = /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|\s*\/?[>"']))+.)["']?/g;
-				const attrs_extract = token.match(regex);
+				const attrsExtract = token.match(regex);
 				const ele_extract = token.match(/<([^\s>]+)(\s|>)+/)[1];
 
-				let ida_btn = {name: ele_extract}
+				let idaBtn = {name: ele_extract};
 
-				attrs_extract.forEach((e) => {
+				attrsExtract.forEach((e) => {
 					var attrs = e.split("=");
-					ida_btn[attrs[0]] = attrs[1].replaceAll(/\'|\"/g, "");
+					idaBtn[attrs[0]] = attrs[1].replaceAll(/\'|\"/g, "");
 				});
 
-				return ida_btn;
+				return idaBtn;
 			} else { return token; }
 		});
 		return processed instanceof Array ? processed : [processed];
 	}
 
 	idaElementRenderer (el) {
-    	const ida_eles = {
-    		'ida-btn': 'button'
-		}
+    	const idaEles = {
+    		"ida-btn": "button"
+    	};
 
-		return React.createElement(ida_eles[el.name], {
-			onClick: () => { this.messageSend({keyCode: 13, target: { value: el.msg }}) } // mimicking message sent from input field
+		return React.createElement(idaEles[el.name], {
+			onClick: () => { this.messageSend({keyCode: 13, target: { value: el.msg }}); } // mimicking message sent from input field
 		}, el.value);
 	}
 
@@ -186,7 +186,7 @@ export default class ChatApp extends React.Component {
 	render() {
         return (
             <div className={`chatbox-container ${this.props.detail.length ? "with-data" : "no-data"} ${this.props.isChatbotOpen ? "" : "hidden"}`}>
-				<Draggable handle=".chatbox-title" bounds={'#root'} onStart={this.dragStart} onStop={this.dragEnd}>
+				<Draggable handle=".chatbox-title" bounds={"#root"} onStart={this.dragStart} onStop={this.dragEnd}>
                 <div className={`chatbox ${this.state.beingDragged ? "drag" : ""}`} id="chatbox">
                     <div className="chatbox-title">
 						<div className="chat-window-title">
@@ -201,7 +201,6 @@ export default class ChatApp extends React.Component {
                             {
                                 this.state.messages.map((val, i) => {
                                     if (val.sender === "user") {
-                                    	console.log(val.message)
                                         return (
                                         	<div className="clearfix">
 												<div className="user" key={i}>
@@ -216,7 +215,7 @@ export default class ChatApp extends React.Component {
 												<div className="agent" key={Math.random()}>
 													<div>
 														<div className="msg" key={Math.random()}>{
-															this.idaElementParser(val.message).map(token => {
+															this.idaElementParser(val.message).map((token) => {
 																if (token instanceof Object) {
 																	return this.idaElementRenderer(token);
 																} else {
