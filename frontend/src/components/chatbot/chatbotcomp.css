@@ -3,7 +3,8 @@
 }
 
 .with-data .chatbox {
-  left: 75%;
+  left: calc(99% - 370px);
+  top: calc(100% - 600px)
 }
 
 .chatbox {
