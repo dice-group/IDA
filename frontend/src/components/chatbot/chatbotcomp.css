@@ -18,7 +18,6 @@
   top: calc(100% - 600px);
 }
 
-
 .chatbox.drag {
   box-shadow: 0 0 20px #ccc;
 }
@@ -76,8 +75,8 @@
   padding: 0 4px;
   background: #fff; /* Old browsers */
   background: -moz-linear-gradient(top, #fff 0%, #e5e5e5 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, #fff 0%,#e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, #fff 0%,#e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  background: -webkit-linear-gradient(top, #fff 0%, #e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #fff 0%, #e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:dximagetransform.microsoft.gradient(startColorstr='#fff', endColorstr='#e5e5e5', GradientType=0); /* IE6-9 */
 }
 

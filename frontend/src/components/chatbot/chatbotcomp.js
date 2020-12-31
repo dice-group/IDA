@@ -123,9 +123,9 @@ export default class ChatApp extends React.Component {
 			if (token.trim().startsWith("<ida")) {
 				const regex = /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|\s*\/?[>"']))+.)["']?/g;
 				const attrsExtract = token.match(regex);
-				const ele_extract = token.match(/<([^\s>]+)(\s|>)+/)[1];
+				const eleExtract = token.match(/<([^\s>]+)(\s|>)+/)[1];
 
-				let idaBtn = {name: ele_extract};
+				let idaBtn = {name: eleExtract};
 
 				attrsExtract.forEach((e) => {
 					var attrs = e.split("=");
@@ -219,7 +219,7 @@ export default class ChatApp extends React.Component {
 																if (token instanceof Object) {
 																	return this.idaElementRenderer(token);
 																} else {
-																	return <span dangerouslySetInnerHTML={{ __html : token }} />
+																	return <span dangerouslySetInnerHTML={{ __html : token }} />;
 																}
 															})
 														}</div>
