@@ -60,7 +60,7 @@ public class AspectLogger {
 	 * @param joinPoint
 	 * @param exception
 	 */
-	@AfterThrowing(pointcut = "execution(* org.dice.ida..*(..))", throwing = "exception")
+	@AfterThrowing(pointcut = "execution(* org.dice.ida.controller.MessageController.*(..))", throwing = "exception")
 	public void logAfterThrowingMethod(JoinPoint joinPoint, Exception exception) throws Throwable {
 		StringBuffer logMessage = new StringBuffer();
 		logMessage.append("[EXCEPTION] - ");
