@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import * as d3 from "d3";
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-
 import "./barchart.css";
 import { IDA_CONSTANTS } from "../../constants";
 import { Grid, Fab } from "@material-ui/core";
@@ -19,6 +18,7 @@ export default class IDABarGraph extends Component {
   graphData = {};
   containerId = "";
   originalGraphData = {};
+  tooltip = null;
 
   constructor(props) {
     super(props);
@@ -28,11 +28,16 @@ export default class IDABarGraph extends Component {
     this.state = {
       sortMode: ""
     };
+    this.tooltip = document.createElement('div');
+    this.tooltip.setAttribute('class', 'tooltip');
+    document.body.appendChild(this.tooltip);
+
   }
 
   componentDidMount() {
     this.graphData && this.graphData.items && this.drawBarGraph();
   }
+
 
   sortGraphItems(sortMode) {
     document.getElementById(this.containerId).innerHTML = "";
@@ -116,53 +121,70 @@ export default class IDABarGraph extends Component {
       .range([this.margin.left, this.width])
       .padding(0.1);
 
-    const div = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
     /**
      * append the bar graph to SVG
      */
-    svg.append("g")
+    let bar = svg.append("g")
       .selectAll("rect")
       .data(this.graphData.items)
       .enter()
       .append("rect")
       .attr("x", (d) => scaleX(d.x))
       .attr("y", (d) => scaleY(d.y))
-      .attr("value", (d) => d.xLabel + ": " + d.y)
       .attr("width", scaleX.bandwidth())
       .attr("height", (d, i) => scaleY(0) - scaleY(d.y))
       .attr("fill", "#4f8bff")
-      .attr("class", "tooltip")
-      .on("mouseover", function (d) {
-        div.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div.html(d.currentTarget.getAttribute("value"))
-          .style("left", (d.pageX) + "px")
-          .style("top", (d.pageY - 28) + "px");
+
+    bar
+      // .append("title")
+      .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
+      .on("mouseover", (event) => {
+        this.tooltip.style.display = "block";
+        this.tooltip.style.position = "absolute";
+        this.tooltip.style.top = event.clientY + "px";
+        this.tooltip.style.left = event.clientX + "px";
+        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
       })
-      .on("mouseout", function (d) {
-        div.transition()
-          .duration(500)
-          .style("opacity", 0);
+      .on("mouseout", () => {
+        this.tooltip.style.display = "none";
       });
 
     /**
      * append x-axis to the graph
      */
-    svg.append("g")
+
+    let label = svg.append("g")
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(scaleX).tickSizeOuter(0))
       .selectAll("text")
+      .data(this.graphData.items)
       .attr("x", -10)
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
       .style("text-anchor", "end")
-      .style("fill", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000")
+
+      .attr("value", (d) => {
+        return d.x + ": " + d.y
+      })
+      .style("fill", (d) => {
+        return d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000";
+      })
       .style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
       .attr("class", "x-axis-label");
+
+    label
+      .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
+      .on("mouseover", (event) => {
+        this.tooltip.style.display = "block";
+        this.tooltip.style.position = "absolute";
+        this.tooltip.style.top = event.clientY + "px";
+        this.tooltip.style.left = event.clientX + "px";
+        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
+      })
+      .on("mouseout", () => {
+        this.tooltip.style.display = "none";
+      });
+
 
     /**
    * append y-axis to the graph
