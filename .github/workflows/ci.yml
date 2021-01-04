@@ -30,6 +30,5 @@ jobs:
   code_coverage:
     name: Code Coverage
     steps:
-      - name: Codecov
       - uses: codecov/codecov-action@v1.1.1
     
