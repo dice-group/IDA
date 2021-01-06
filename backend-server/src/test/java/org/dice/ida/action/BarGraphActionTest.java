@@ -56,6 +56,51 @@ public class BarGraphActionTest {
 	}
 
 	@Test
+	void testBarGraphSteps() {
+		chatUserMessage = new ChatUserMessage();
+		chatMessageResponse = new ChatMessageResponse();
+		chatMessageResponse.setPayload(new HashMap<>() {{
+			put("activeDS", "covid19");
+			put("activeTable", "Patient_Data_Before_20-04-2020.csv");
+		}});
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put(IDAConst.INTENT_NAME, IDAConst.VIZ_TYPE_BAR_CHART);
+		paramMap.put("records-selection", "first 5");
+		paramMap.put("X-Axis", "Age Bracket");
+		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		assertEquals("Age Bracket can be used as:<br><ul><li><b>Bins</b> - Group of N values</li><li><b>Non Unique</b> - As it is</li></ul><br/>\n Which option do you need (Bins / Non Unique)?", chatMessageResponse.getMessage());
+		paramMap.put("X-Axis_type", "unique");
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		assertEquals("Age Bracket cannot be used as unique. Please provide correct type.", chatMessageResponse.getMessage());
+		paramMap.put("X-Axis_type", "bins");
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		assertEquals("What should be the size of each bin?<br/>Eg: 10, 25, 15, twenty, twelve", chatMessageResponse.getMessage());
+		paramMap.put("bin_size", Value.newBuilder().setNumberValue(10).build());
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		assertEquals("Which column values should be mapped to Y-Axis?", chatMessageResponse.getMessage());
+	}
+
+	@Test
+	void testBarGraphNonSuitableColumn() {
+		chatUserMessage = new ChatUserMessage();
+		chatMessageResponse = new ChatMessageResponse();
+		chatMessageResponse.setPayload(new HashMap<>() {{
+			put("activeDS", "covid19");
+			put("activeTable", "Case_Time_Series.csv");
+		}});
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put(IDAConst.INTENT_NAME, IDAConst.VIZ_TYPE_BAR_CHART);
+		paramMap.put("records-selection", "first 5");
+		paramMap.put("X-Axis", "Date");
+		paramMap.put("X-Axis_type", "unique");
+		paramMap.put("Y-Axis", "Date");
+		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		assertEquals("Date cannot be used as Y-Axis. Please give a different column?", chatMessageResponse.getMessage());
+	}
+
+	@Test
 	void testBarGraphNumBins() {
 		chatUserMessage = new ChatUserMessage();
 		chatMessageResponse = new ChatMessageResponse();
@@ -100,13 +145,15 @@ public class BarGraphActionTest {
 		paramMap.put("records-selection", "all");
 		paramMap.put("X-Axis", "Date Announced");
 		paramMap.put("X-Axis_type", "bins");
+		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		assertEquals("What should be the duration of each bin?<br/>Eg: 1 week, 2 weeks, 3 months", chatMessageResponse.getMessage());
 		Struct struct = Struct.newBuilder().putAllFields(new HashMap<>() {{
 			put("unit", Value.newBuilder().setStringValue("mo").build());
 			put("amount", Value.newBuilder().setNumberValue(1).build());
 		}}).build();
 		paramMap.put("bin_size", Value.newBuilder().setStructValue(struct).build());
 		paramMap.put("Y-Axis", "Date Announced");
-		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
 		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -146,6 +193,69 @@ public class BarGraphActionTest {
 		barGraphItemList.add(new BarGraphItem("22-03-20 to 04-04-20", 16094.0));
 		barGraphItemList.add(new BarGraphItem("05-04-20 to 18-04-20", 107431.581));
 		barGraphItemList.add(new BarGraphItem("08-03-20 to 21-03-20", 1606.0));
+		barGraphItemList.add(new BarGraphItem("UNKNOWN", 0.0));
+		assertNotNull(barGraphData);
+		assertEquals(barGraphData.getItems(), barGraphItemList);
+	}
+
+	@Test
+	void testBarGraphDateDayBins() {
+		chatUserMessage = new ChatUserMessage();
+		chatMessageResponse = new ChatMessageResponse();
+		chatMessageResponse.setPayload(new HashMap<>() {{
+			put("activeDS", "covid19");
+			put("activeTable", "ICMR_Tests_Datewise.csv");
+		}});
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put(IDAConst.INTENT_NAME, IDAConst.VIZ_TYPE_BAR_CHART);
+		paramMap.put("records-selection", "first 50");
+		paramMap.put("X-Axis", "Tested As Of");
+		paramMap.put("X-Axis_type", "bins");
+		Struct struct = Struct.newBuilder().putAllFields(new HashMap<>() {{
+			put("unit", Value.newBuilder().setStringValue("day").build());
+			put("amount", Value.newBuilder().setNumberValue(14).build());
+		}}).build();
+		paramMap.put("bin_size", Value.newBuilder().setStructValue(struct).build());
+		paramMap.put("Y-Axis", "Total Positive Cases");
+		paramMap.put("Y-Axis_type", "sum of");
+		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
+		List<BarGraphItem> barGraphItemList = new ArrayList<>();
+		barGraphItemList.add(new BarGraphItem("19-04-20 to 02-05-20", 62914.0));
+		barGraphItemList.add(new BarGraphItem("22-03-20 to 04-04-20", 16094.0));
+		barGraphItemList.add(new BarGraphItem("05-04-20 to 18-04-20", 107431.581));
+		barGraphItemList.add(new BarGraphItem("08-03-20 to 21-03-20", 1606.0));
+		barGraphItemList.add(new BarGraphItem("UNKNOWN", 0.0));
+		assertNotNull(barGraphData);
+		assertEquals(barGraphData.getItems(), barGraphItemList);
+	}
+
+	@Test
+	void testBarGraphDateYearBins() {
+		chatUserMessage = new ChatUserMessage();
+		chatMessageResponse = new ChatMessageResponse();
+		chatMessageResponse.setPayload(new HashMap<>() {{
+			put("activeDS", "covid19");
+			put("activeTable", "ICMR_Tests_Datewise.csv");
+		}});
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put(IDAConst.INTENT_NAME, IDAConst.VIZ_TYPE_BAR_CHART);
+		paramMap.put("records-selection", "all");
+		paramMap.put("X-Axis", "Tested As Of");
+		paramMap.put("X-Axis_type", "bins");
+		Struct struct = Struct.newBuilder().putAllFields(new HashMap<>() {{
+			put("unit", Value.newBuilder().setStringValue("yr").build());
+			put("amount", Value.newBuilder().setNumberValue(1).build());
+		}}).build();
+		paramMap.put("bin_size", Value.newBuilder().setStructValue(struct).build());
+		paramMap.put("Y-Axis", "Total Positive Cases");
+		paramMap.put("Y-Axis_type", "average");
+		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
+		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
+		List<BarGraphItem> barGraphItemList = new ArrayList<>();
+		barGraphItemList.add(new BarGraphItem("2020", 1205.420391025641));
 		barGraphItemList.add(new BarGraphItem("UNKNOWN", 0.0));
 		assertNotNull(barGraphData);
 		assertEquals(barGraphData.getItems(), barGraphItemList);
