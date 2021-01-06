@@ -3,10 +3,11 @@ package org.dice.ida.action;
 import org.dice.ida.action.def.ListVisualizationsAction;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class ListVisualizationsActionTest {
@@ -18,6 +19,6 @@ public class ListVisualizationsActionTest {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		ChatMessageResponse chatMessageResponse = new ChatMessageResponse();
 		listVisualizationsAction.performAction(null, chatMessageResponse, chatUserMessage);
-		Assertions.assertTrue(chatMessageResponse.getMessage().startsWith("I can draw "));
+		assertTrue(chatMessageResponse.getMessage().startsWith("I can draw "));
 	}
 }

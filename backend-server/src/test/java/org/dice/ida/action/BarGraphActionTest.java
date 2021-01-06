@@ -8,7 +8,6 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest
@@ -49,8 +51,8 @@ public class BarGraphActionTest {
 		barGraphItemList.add(new BarGraphItem("Delhi", 1.0));
 		barGraphItemList.add(new BarGraphItem("Kerala", 3.0));
 		barGraphItemList.add(new BarGraphItem("Telangana", 1.0));
-		Assertions.assertNotNull(barGraphData);
-		Assertions.assertEquals(barGraphData.getItems(), barGraphItemList);
+		assertNotNull(barGraphData);
+		assertEquals(barGraphData.getItems(), barGraphItemList);
 	}
 
 	@Test
@@ -81,8 +83,8 @@ public class BarGraphActionTest {
 		barGraphItemList.add(new BarGraphItem("50.0 - 59.0", 4.0));
 		barGraphItemList.add(new BarGraphItem("60.0 - 69.0", 1.0));
 		barGraphItemList.add(new BarGraphItem("UNKNOWN", 2.0));
-		Assertions.assertNotNull(barGraphData);
-		Assertions.assertEquals(barGraphData.getItems(), barGraphItemList);
+		assertNotNull(barGraphData);
+		assertEquals(barGraphData.getItems(), barGraphItemList);
 	}
 
 	@Test
@@ -112,8 +114,8 @@ public class BarGraphActionTest {
 		barGraphItemList.add(new BarGraphItem("February-2020", 2.0));
 		barGraphItemList.add(new BarGraphItem("March-2020", 1632.0));
 		barGraphItemList.add(new BarGraphItem("April-2020", 15729.0));
-		Assertions.assertNotNull(barGraphData);
-		Assertions.assertEquals(barGraphData.getItems(), barGraphItemList);
+		assertNotNull(barGraphData);
+		assertEquals(barGraphData.getItems(), barGraphItemList);
 	}
 
 	@Test
@@ -145,8 +147,8 @@ public class BarGraphActionTest {
 		barGraphItemList.add(new BarGraphItem("05-04-20 to 18-04-20", 107431.581));
 		barGraphItemList.add(new BarGraphItem("08-03-20 to 21-03-20", 1606.0));
 		barGraphItemList.add(new BarGraphItem("UNKNOWN", 0.0));
-		Assertions.assertNotNull(barGraphData);
-		Assertions.assertEquals(barGraphData.getItems(), barGraphItemList);
+		assertNotNull(barGraphData);
+		assertEquals(barGraphData.getItems(), barGraphItemList);
 	}
 
 	@Test
@@ -172,8 +174,8 @@ public class BarGraphActionTest {
 		barGraphItemList.add(new BarGraphItem("01 February ", 0.0));
 		barGraphItemList.add(new BarGraphItem("03 February ", 1.0));
 		barGraphItemList.add(new BarGraphItem("30 January ", 1.0));
-		Assertions.assertNotNull(barGraphData);
-		Assertions.assertEquals(barGraphData.getItems(), barGraphItemList);
+		assertNotNull(barGraphData);
+		assertEquals(barGraphData.getItems(), barGraphItemList);
 	}
 
 	@Test
@@ -185,7 +187,7 @@ public class BarGraphActionTest {
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("null");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
-		Assertions.assertEquals(IDAConst.INVALID_FILTER, chatMessageResponse.getMessage());
+		assertEquals(IDAConst.INVALID_FILTER, chatMessageResponse.getMessage());
 	}
 
 	@Test
@@ -202,6 +204,6 @@ public class BarGraphActionTest {
 		paramMap.put("X-Axis", "Population");
 		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
 		visualizeAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
-		Assertions.assertEquals("Population: " + IDAConst.BC_INVALID_COL, chatMessageResponse.getMessage());
+		assertEquals("Population: " + IDAConst.BC_INVALID_COL, chatMessageResponse.getMessage());
 	}
 }

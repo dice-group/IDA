@@ -8,7 +8,6 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class BubbleChartActionTest {
@@ -46,8 +48,8 @@ public class BubbleChartActionTest {
 		bubbleChartItemList.add(new BubbleChartItem("Delhi", "Delhi", 1.0));
 		bubbleChartItemList.add(new BubbleChartItem("Kerala", "Kerala", 3.0));
 		bubbleChartItemList.add(new BubbleChartItem("Telangana", "Telangana", 1.0));
-		Assertions.assertNotNull(bubbleChartData);
-		Assertions.assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
+		assertNotNull(bubbleChartData);
+		assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
 	}
 
 	@Test
@@ -78,8 +80,8 @@ public class BubbleChartActionTest {
 		bubbleChartItemList.add(new BubbleChartItem("50.0 - 59.0", "50.0 - 59.0", 4.0));
 		bubbleChartItemList.add(new BubbleChartItem("60.0 - 69.0", "60.0 - 69.0", 1.0));
 		bubbleChartItemList.add(new BubbleChartItem("UNKNOWN", "UNKNOWN", 2.0));
-		Assertions.assertNotNull(bubbleChartData);
-		Assertions.assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
+		assertNotNull(bubbleChartData);
+		assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
 	}
 
 	@Test
@@ -109,8 +111,8 @@ public class BubbleChartActionTest {
 		bubbleChartItemList.add(new BubbleChartItem("February-2020", "February-2020", 2.0));
 		bubbleChartItemList.add(new BubbleChartItem("March-2020", "March-2020", 1632.0));
 		bubbleChartItemList.add(new BubbleChartItem("April-2020", "April-2020", 15729.0));
-		Assertions.assertNotNull(bubbleChartData);
-		Assertions.assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
+		assertNotNull(bubbleChartData);
+		assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
 	}
 
 	@Test
@@ -136,8 +138,8 @@ public class BubbleChartActionTest {
 		bubbleChartItemList.add(new BubbleChartItem("01 February ", "01 February ", 0.0));
 		bubbleChartItemList.add(new BubbleChartItem("03 February ", "03 February ", 1.0));
 		bubbleChartItemList.add(new BubbleChartItem("30 January ", "30 January ", 1.0));
-		Assertions.assertNotNull(bubbleChartData);
-		Assertions.assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
+		assertNotNull(bubbleChartData);
+		assertEquals(bubbleChartData.getItems(), bubbleChartItemList);
 	}
 
 }

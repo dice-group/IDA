@@ -7,10 +7,12 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.linechart.LineChartData;
 import org.dice.ida.model.linechart.LineChartItem;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.*;
 
@@ -45,8 +47,8 @@ public class LineChartActionTest {
 		lineChartItemList.add(new LineChartItem("Telangana", Arrays.asList(0.0, 0.0, 0.0, 1.0, 0.0, 0.0)));
 		lineChartItemList.add(new LineChartItem("Rajasthan", Arrays.asList(0.0, 0.0, 0.0, 0.0, 1.0, 0.0)));
 		lineChartItemList.add(new LineChartItem("Kerala", Arrays.asList(1.0, 1.0, 1.0, 0.0, 0.0, 0.0)));
-		Assertions.assertNotNull(lineChartItemList);
-		Assertions.assertEquals(lineChartItemList, lineChartData.getLines());
+		assertNotNull(lineChartItemList);
+		assertEquals(lineChartItemList, lineChartData.getLines());
 	}
 
 	@Test
@@ -58,7 +60,7 @@ public class LineChartActionTest {
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("null");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
-		Assertions.assertEquals(IDAConst.INVALID_FILTER, chatMessageResponse.getMessage());
+		assertEquals(IDAConst.INVALID_FILTER, chatMessageResponse.getMessage());
 	}
 
 	@Test
@@ -77,6 +79,6 @@ public class LineChartActionTest {
 		paramMap.put(IDAConst.LINE_CHART_PARAM_VALUE_COL, "Detected State");
 		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
 		lineChartAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
-		Assertions.assertEquals("Tested As Of: " + IDAConst.BC_INVALID_COL, chatMessageResponse.getMessage());
+		assertEquals("Tested As Of: " + IDAConst.BC_INVALID_COL, chatMessageResponse.getMessage());
 	}
 }

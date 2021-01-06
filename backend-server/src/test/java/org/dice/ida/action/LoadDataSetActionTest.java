@@ -4,10 +4,13 @@ import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +31,7 @@ public class LoadDataSetActionTest {
 		paramMap.put(IDAConst.PARAM_DATASET_NAME, "null");
 		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
 		loadDataSetAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
-		Assertions.assertNull(chatMessageResponse.getPayload().get("dsData"));
+		assertNull(chatMessageResponse.getPayload().get("dsData"));
 	}
 
 	@Test
@@ -39,7 +42,7 @@ public class LoadDataSetActionTest {
 		paramMap.put(IDAConst.PARAM_DATASET_NAME, "");
 		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
 		loadDataSetAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
-		Assertions.assertEquals("This is a test", chatMessageResponse.getMessage());
+		assertEquals("This is a test", chatMessageResponse.getMessage());
 	}
 
 	@Test
@@ -50,7 +53,7 @@ public class LoadDataSetActionTest {
 		paramMap.put(IDAConst.PARAM_DATASET_NAME, "covid19");
 		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
 		loadDataSetAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
-		Assertions.assertNotNull(chatMessageResponse.getPayload().get("dsData"));
+		assertNotNull(chatMessageResponse.getPayload().get("dsData"));
 	}
 
 }

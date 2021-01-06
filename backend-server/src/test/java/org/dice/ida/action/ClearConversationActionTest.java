@@ -4,10 +4,11 @@ import org.dice.ida.action.def.ClearConversationAction;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.HashMap;
 
@@ -23,6 +24,6 @@ public class ClearConversationActionTest {
 		clearConversationAction.performAction(new HashMap<>() {{
 			put(IDAConst.PARAM_TEXT_MSG, "");
 		}}, chatMessageResponse, chatUserMessage);
-		Assertions.assertNull(chatMessageResponse.getActiveContexts());
+		assertNull(chatMessageResponse.getActiveContexts());
 	}
 }
