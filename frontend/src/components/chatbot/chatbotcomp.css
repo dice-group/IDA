@@ -6,11 +6,13 @@
   background: #fff;
   z-index: 2000;
   width: 370px;
-  height: 600px;
+  height: 90%;
   position: absolute;
   top: 80px;
   left: 35%;
   transition: box-shadow 0.2s, left 0.5s;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .with-data .chatbox {
@@ -43,12 +45,12 @@
 
 .chatbox .chatbox-chat-area {
   border: solid 1px #ccc;
-  height: 545px;
+  height: 94%;
 }
 
 .chatbox-chat-area .chat-area-msgs {
   padding-top: 10px;
-  height: 480px;
+  height: 92%;
   overflow-y: scroll;
 }
 
