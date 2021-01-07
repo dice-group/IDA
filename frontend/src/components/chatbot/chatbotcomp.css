@@ -138,6 +138,11 @@
   visibility: hidden;
 }
 
+.chatbox-chat-area .chat-area-msgs .agent .time {
+  float: right;
+  margin-right: 10px;
+}
+
 .chatbox-chat-area .chat-area-msgs .agent .msg:hover ~ .time,
 .chatbox-chat-area .chat-area-msgs .user .msg:hover ~ .time {
   visibility: visible;
