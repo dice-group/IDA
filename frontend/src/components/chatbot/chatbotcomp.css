@@ -15,7 +15,6 @@
 
 .with-data .chatbox {
   left: calc(99% - 370px);
-  top: calc(100% - 600px);
 }
 
 .chatbox.drag {
