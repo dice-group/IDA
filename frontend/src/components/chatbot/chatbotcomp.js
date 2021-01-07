@@ -236,7 +236,7 @@ export default class ChatApp extends React.Component {
                         </div>
                         <div className="chat-area-input clearfix" >
                             <IDALinearProgress hide={this.state.hideProgress} />
-                            <input type="text" id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} />
+							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} />
                         </div>
                     </div>
                 </div>
