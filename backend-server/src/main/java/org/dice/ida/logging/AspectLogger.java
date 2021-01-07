@@ -55,7 +55,8 @@ public class AspectLogger {
 	}
 
 	/**
-	 * Method to log the exceptions
+	 * Method to log exceptions from MessageController class's methods
+	 * except HandleMessage as that method has its own logging mechanism
 	 *
 	 * @param joinPoint
 	 * @param exception
