@@ -14,15 +14,35 @@ export default class IDABubbleGraph extends Component {
   width = 1000;
   graphData = {};
   containerId = "";
-
+  tooltip = null;
   constructor(props) {
     super(props);
     this.containerId = props.nodeId;
     this.graphData = props.data;
+    this.tooltip = document.createElement('div');
+    this.tooltip.setAttribute('class', 'tooltip');
+    document.body.appendChild(this.tooltip);
   }
 
   componentDidMount() {
     this.graphData && this.graphData.items && this.drawGraph();
+    var rects = document.querySelectorAll('[data-foo]');
+    console.log(rects)
+    rects.forEach(ele => {
+      ele.addEventListener("mouseover", (event) => {
+        this.tooltip.style.display = "block";
+        this.tooltip.style.position = "absolute";
+        this.tooltip.style.top = event.clientY + "px";
+        this.tooltip.style.left = event.clientX + "px";
+        // add the text node to the newly created div
+        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
+      });
+      ele.addEventListener("mouseout", () => {
+        setTimeout(() => {
+          this.tooltip.style.display = "none";
+        }, 2000)
+      });
+    });
   }
 
   drawGraph() {
@@ -40,7 +60,7 @@ export default class IDABubbleGraph extends Component {
         .attr("width", "100%");
 
       // Top level group to facilitate zoom and drag functionality
-	  const top_group = svg.append("g");
+      const top_group = svg.append("g");
 
       const entry = top_group.selectAll("g")
         .data(root.leaves())
@@ -50,7 +70,8 @@ export default class IDABubbleGraph extends Component {
       entry.append("circle")
         .attr("id", (d, i) => "clip" + i)
         .attr("r", d => d.r)
-        .attr("fill", d => "#4f8bff");
+        .attr("fill", d => "#4f8bff")
+        .attr("data-foo", d => (d.data.description + ':  ' + d.value))
 
       entry.append("text")
         .attr("dy", ".2em")
@@ -60,14 +81,11 @@ export default class IDABubbleGraph extends Component {
         .attr("font-size", (d) => d.r / 5)
         .attr("fill", "white");
 
-      entry.append("title")
-        .text(d => (d.data.description + ':  ' + d.value));
-
       const zoom = d3.zoom()
         .scaleExtent([0.1, Infinity])
         .on('zoom', (event) => {
-        	// we want to drag all the bubbles so we put transform on top_group
-			top_group.attr('transform', event.transform);
+          // we want to drag all the bubbles so we put transform on top_group
+          top_group.attr('transform', event.transform);
         });
       svg.call(zoom);
     }

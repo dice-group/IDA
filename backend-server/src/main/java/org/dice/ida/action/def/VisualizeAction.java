@@ -102,7 +102,7 @@ public class VisualizeAction implements Action {
 						if (onTemporaryData) {
 							tableData = message.getActiveTableData();
 						} else {
-							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString);
+							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString, columnMap);
 						}
 						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
 						getParameters(paramMap);
@@ -581,6 +581,7 @@ public class VisualizeAction implements Action {
 			if (IDAConst.TRANSFORMATION_TYPE_COUNT.equals(yAxisColumnType)) {
 				graphItems.put(xValue, graphItems.get(xValue) + 1.0);
 			} else {
+
 				graphItems.put(xValue, graphItems.get(xValue) + yValue);
 			}
 			labelCounts.put(xValue, labelCounts.get(xValue) + 1);

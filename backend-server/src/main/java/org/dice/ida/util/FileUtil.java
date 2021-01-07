@@ -216,7 +216,7 @@ public class FileUtil {
 
 	/**
 	 * Method to read data of a column of csv
-	 * @param datasetContenMap
+	 * @param datasetContentMap
 	 * 		You can get it from getDatasetContent method
 	 * @param columnName
 	 * @return ArrayList of column data

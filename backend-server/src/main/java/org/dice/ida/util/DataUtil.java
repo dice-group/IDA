@@ -1,5 +1,7 @@
 package org.dice.ida.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.dice.ida.constant.IDAConst;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,7 @@ public class DataUtil {
 	 * @return list of maps where each map represents a row of the table
 	 * @throws IOException - Exception when the dataset or table does not exist
 	 */
-	public List<Map<String, String>> getData(String datasetName, String tableName, List<String> columns, String filterText) throws IOException {
+	public List<Map<String, String>> getData(String datasetName, String tableName, List<String> columns, String filterText, Map<String,String> columnMap ) throws IOException {
 		List<Map<String, String>> extractedData = new ArrayList<>();
 		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
 		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
@@ -57,7 +59,48 @@ public class DataUtil {
 			Map<String, String> dataRow = new HashMap<>();
 			for (String column : columns) {
 				// Getting data only from required columns
-				dataRow.put(column, DbUtils.manageNullValues(fileData.get(i).get(column)));
+				String columnValue = fileData.get(i).get(column);
+				if(columnMap.get(column).equalsIgnoreCase("Numeric"))
+					dataRow.put(column, DbUtils.manageNullValues(columnValue.replaceAll(",",".")));
+				else
+					dataRow.put(column, DbUtils.manageNullValues(columnValue));
+			}
+			extractedData.add(dataRow);
+		}
+		return extractedData;
+
+	}
+	public List<Map<String, String>> getDataSet(String datasetName, String tableName) throws IOException {
+		Map<String, String> columnTypeMap = new HashMap<>();
+		List<String> columns = new ArrayList<>();
+		List<Map<String, String>> extractedData = new ArrayList<>();
+		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
+		ObjectNode metaData = new FileUtil().getDatasetMetaData(datasetName);
+		JsonNode fileDetails = metaData.get(IDAConst.FILE_DETAILS_ATTR);
+		for (int i = 0; i < fileDetails.size(); i++) {
+			if (tableName.equals(fileDetails.get(i).get(IDAConst.FILE_NAME_ATTR).asText()))
+			{
+				JsonNode columnDetails = fileDetails.get(i).get(IDAConst.COLUMN_DETAILS_ATTR);
+				String columnName;
+				for (int j = 0; j < columnDetails.size(); j++) {
+					columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
+					columns.add(columnName);
+					columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
+				}
+			}
+		}
+
+
+		for (int  i = 0; i < fileData.size(); i++) {
+			Map<String, String> dataRow = new HashMap<>();
+			for (String column : columns) {
+				// Getting data only from required columns
+				String columnValue = fileData.get(i).get(column);
+				if(columnTypeMap.get(column).equalsIgnoreCase("Numeric"))
+					dataRow.put(column, (columnValue.replaceAll(",",".")));
+				else
+					dataRow.put(column, (columnValue));
 			}
 			extractedData.add(dataRow);
 		}
