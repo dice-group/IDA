@@ -1,6 +1,5 @@
 package org.dice.ida.action.def;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.dice.ida.model.ChatMessageResponse;

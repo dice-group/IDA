@@ -76,15 +76,17 @@ public class MessageController {
 			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t user message:\t" + message.getMessage());
 			try {
 				idaChatBot.processMessage(message);
-			} catch(Exception e) {
+			} catch(IDAException e) {
 				StringBuffer logMessage = new StringBuffer();
 				logMessage.append("[EXCEPTION] - ");
 				log.error(logMessage.toString(), e);
-				if(e instanceof IDAException) {
-					response.setMessage(e.getMessage());
-				} else {
-					response.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-				}
+				response.setMessage(e.getMessage());
+				response.setUiAction(IDAConst.UAC_NRMLMSG);
+			} catch (Exception e) {
+				StringBuffer logMessage = new StringBuffer();
+				logMessage.append("[EXCEPTION] - ");
+				log.error(logMessage.toString(), e);
+				response.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 				response.setUiAction(IDAConst.UAC_NRMLMSG);
 			}
 			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage());
