@@ -148,10 +148,6 @@
   visibility: visible;
 }
 
-.chatbox-chat-area .chat-area-input {
-  height: 59px;
-}
-
 .chatbox-chat-area .chat-area-input textarea {
   box-shadow: 0 -10px 20px -5px rgba(150, 165, 190, 0.4);
   padding-left: 10px;

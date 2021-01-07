@@ -23,7 +23,7 @@ public class ListDataSetsAction implements Action {
 
 			if (datasetsSize == 1) {
 				datasetName = datasets.get(0);
-				message.append("I just have one <ida-btn msg='load " + datasetName + " dataset' value='" + datasetName + "'> dataset right now!");
+				message.append("I just have one <ida-btn msg='load " + datasetName + " dataset' value='" + datasetName + "' style='default'> dataset right now!");
 			} else if (datasetsSize == 0) {
 				message.append("I don't have any dataset right now!");
 			} else {
@@ -38,7 +38,7 @@ public class ListDataSetsAction implements Action {
 						message.append(", ");
 					}
 					datasetName = datasets.get(i);
-					message.append(" <ida-btn msg='load " + datasetName + " dataset' value='" + datasetName + "'> ");
+					message.append(" <ida-btn msg='load " + datasetName + " dataset' value='" + datasetName + "' style='default'> ");
 				}
 				message.append(" datasets.");
 			}
