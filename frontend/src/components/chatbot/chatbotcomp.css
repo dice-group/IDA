@@ -70,7 +70,7 @@
   position: relative;
 }
 
-.chatbox-chat-area .chat-area-msgs .agent .msg button {
+.chatbox-chat-area .chat-area-msgs .agent .msg button.default {
   border: solid 1px #a79b9b;
   border-radius: 5px;
   padding: 0 4px;

@@ -144,7 +144,8 @@ export default class ChatApp extends React.Component {
     	};
 
 		return React.createElement(idaEles[el.name], {
-			onClick: () => { this.messageSend({keyCode: 13, target: { value: el.msg }}); } // mimicking message sent from input field
+			onClick: () => { this.messageSend({keyCode: 13, target: { value: el.msg }}); }, // mimicking message sent from input field
+			className: el.style
 		}, el.value);
 	}
 
