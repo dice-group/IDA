@@ -13,6 +13,9 @@
   transition: box-shadow 0.2s, left 0.5s;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  border: solid 1px #ccc;
+  display: flex;
+  flex-direction: column;
 }
 
 .with-data .chatbox {
@@ -44,13 +47,12 @@
 }
 
 .chatbox .chatbox-chat-area {
-  border: solid 1px #ccc;
-  height: 94%;
+  height: 86%;
 }
 
 .chatbox-chat-area .chat-area-msgs {
   padding-top: 10px;
-  height: 92%;
+  height: 100%;
   overflow-y: scroll;
 }
 
@@ -148,11 +150,15 @@
   visibility: visible;
 }
 
-.chatbox-chat-area .chat-area-input textarea {
+.chat-area-input {
+  flex-grow: 1;
+}
+
+.chat-area-input textarea {
   box-shadow: 0 -10px 20px -5px rgba(150, 165, 190, 0.4);
   padding-left: 10px;
   width: 100%;
-  height: 100%;
+  height: 91%;
   border: none;
   outline: none;
   resize: none;
