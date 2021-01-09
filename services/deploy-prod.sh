@@ -3,7 +3,7 @@
 cd "${BASH_SOURCE%/*}" || exit
 
 ### if logs folder does not exist then create it
-[ ! -d ~/ida-prod-logs ] && mkdir -p ~/ida-prod-logs
+[ ! -d ida-prod-logs ] && mkdir -p ida-prod-logs
 
 version=$(cat VERSION)
 registry=${REGISTRY:-localhost:5000}
