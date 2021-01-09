@@ -2,9 +2,6 @@
 
 cd "${BASH_SOURCE%/*}" || exit
 
-### if logs folder does not exist then create it
-[ ! -d ida-qa-logs ] && mkdir -p ida-qa-logs
-
 version=$(cat VERSION)
 registry=${REGISTRY:-localhost:5000}
 
@@ -20,6 +17,10 @@ function build_container() {
         fi
     fi
 }
+
+### if logs folder does not exist then create it
+[ ! -d ida-qa-logs ] && mkdir ida-qa-logs
+
 
 build_container nginx .. -f frontend/Dockerfile.prod
 build_container backend-server .. -f backend-server/Dockerfile.prod
