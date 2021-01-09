@@ -2,6 +2,7 @@ package org.dice.ida.controller;
 
 import org.dice.ida.chatbot.IDAChatBot;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.util.DialogFlowUtil;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
@@ -42,6 +46,10 @@ public class MessageController {
 	@Qualifier("chat-logger")
 	private Logger chatLog;
 
+	@Autowired
+	@Qualifier("logger")
+	private Logger log;
+
 	/**
 	 * Method to check the availability of the rest service
 	 *
@@ -66,14 +74,28 @@ public class MessageController {
 		activeTable = message.getActiveTable();
 		return () -> {
 			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t user message:\t" + message.getMessage());
-			ChatMessageResponse response = idaChatBot.processMessage(message);
+			try {
+				idaChatBot.processMessage(message);
+			} catch(IDAException e) {
+				StringBuffer logMessage = new StringBuffer();
+				logMessage.append("[EXCEPTION] - ");
+				log.error(logMessage.toString(), e);
+				response.setMessage(e.getMessage());
+				response.setUiAction(IDAConst.UAC_NRMLMSG);
+			} catch (Exception e) {
+				StringBuffer logMessage = new StringBuffer();
+				logMessage.append("[EXCEPTION] - ");
+				log.error(logMessage.toString(), e);
+				response.setMessage(IDAConst.BOT_SOMETHING_WRONG);
+				response.setUiAction(IDAConst.UAC_NRMLMSG);
+			}
 			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage());
 			return response;
 		};
 	}
 
 	@ExceptionHandler(AsyncRequestTimeoutException.class)
-	public ChatMessageResponse handleAsyncRequestTimeoutException() {
+	public ChatMessageResponse handleAsyncRequestTimeoutException() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		response.setUiAction(IDAConst.UAC_NRMLMSG);
 		Map<String, Object> dataMap = response.getPayload();
 		dataMap.put("activeDS", activeDS);
