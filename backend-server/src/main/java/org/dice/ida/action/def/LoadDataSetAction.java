@@ -14,33 +14,29 @@ public class LoadDataSetAction implements Action {
 
 
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage message) {
-		try {
-			FileUtil fileUtil = new FileUtil();
-			// Check if datasetName is provided
-			String datasetName = paramMap.get(IDAConst.PARAM_DATASET_NAME).toString();
-			if (datasetName != null && !datasetName.isEmpty()) {
-				if (fileUtil.datasetExists(datasetName)) {
-					Map<String, Object> dataMap = resp.getPayload();
-					dataMap.put("label", datasetName);
-					dataMap.put("dsName", datasetName);
-					dataMap.put("activeTable", ""); // its required for visualization suggestions
-					dataMap.put("dsMd", fileUtil.getDatasetMetaData(datasetName));
-					dataMap.put("dsData", fileUtil.getDatasetContent(datasetName));
-					resp.setPayload(dataMap);
-					resp.setUiAction(IDAConst.UIA_LOADDS);
-				} else {
-					paramMap.put(IDAConst.PARAM_TEXT_MSG, "'<b>" + datasetName + "</b>'" + IDAConst.DS_DOES_NOT_EXIST_MSG);
-					resp.setUiAction(IDAConst.UAC_NRMLMSG);
-				}
-				setLoadDatasetResponse(paramMap, resp);
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage message) throws IOException {
+		FileUtil fileUtil = new FileUtil();
+		// Check if datasetName is provided
+		String datasetName = paramMap.get(IDAConst.PARAM_DATASET_NAME).toString();
+		if (datasetName != null && !datasetName.isEmpty()) {
+			if (fileUtil.datasetExists(datasetName)) {
+				Map<String, Object> dataMap = resp.getPayload();
+				dataMap.put("label", datasetName);
+				dataMap.put("dsName", datasetName);
+				dataMap.put("activeTable", ""); // its required for visualization suggestions
+				dataMap.put("dsMd", fileUtil.getDatasetMetaData(datasetName));
+				dataMap.put("dsData", fileUtil.getDatasetContent(datasetName));
+				resp.setPayload(dataMap);
+				resp.setUiAction(IDAConst.UIA_LOADDS);
 			} else {
-				// Forward the message from the chatbot to the user
-				SimpleTextAction.setSimpleTextResponse(paramMap, resp);
+				paramMap.put(IDAConst.PARAM_TEXT_MSG, "'<b>" + datasetName + "</b>'" + IDAConst.DS_DOES_NOT_EXIST_MSG);
+				resp.setUiAction(IDAConst.UAC_NRMLMSG);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			setLoadDatasetResponse(paramMap, resp);
+		} else {
+			// Forward the message from the chatbot to the user
+			SimpleTextAction.setSimpleTextResponse(paramMap, resp);
+			}
 	}
 
 	public void setLoadDatasetResponse(Map<String, Object> paramMap, ChatMessageResponse resp) {
