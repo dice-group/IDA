@@ -6,17 +6,18 @@ import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.util.FileUtil;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
 @Component
 public class ListDataSetsAction implements Action {
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage userMessage) throws IOException {
-		FileUtil fileUtil = new FileUtil();
-		ArrayList<String> datasets = fileUtil.getListOfDatasets();
-		int datasetsSize = datasets.size();
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage userMessage) {
+		try {
+			FileUtil fileUtil = new FileUtil();
+			ArrayList<String> datasets = fileUtil.getListOfDatasets();
+			int datasetsSize = datasets.size();
+
 			StringBuilder message = new StringBuilder();
 			String datasetName = "";
 
@@ -39,11 +40,13 @@ public class ListDataSetsAction implements Action {
 					datasetName = datasets.get(i);
 					message.append(" <ida-btn msg='load " + datasetName + " dataset' value='" + datasetName + "' style='default'> ");
 				}
-				message.append(datasets.get(i));
+				message.append(" datasets.");
 			}
-			message.append(" datasets.");
+			resp.setMessage(message.toString());
+			resp.setUiAction(IDAConst.UAC_NRMLMSG);
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-		resp.setMessage(message.toString());
-		resp.setUiAction(IDAConst.UAC_NRMLMSG);
 	}
 }
+
