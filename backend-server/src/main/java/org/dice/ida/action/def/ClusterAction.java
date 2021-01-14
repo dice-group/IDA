@@ -126,7 +126,7 @@ public class ClusterAction implements Action {
 		ObjectMapper mapper = new ObjectMapper();
 		List<Map<String, String>> clusteredData = new ArrayList<>();
 		model.buildClusterer(data);
-		ArrayList<Map> dsData = fileUtil.getDatasetContent(datasetName+"dfd");
+		ArrayList<Map> dsData = fileUtil.getDatasetContent(datasetName);
 		for (Map file : dsData) {
 			if (file.get("name").toString().equalsIgnoreCase(tableName)) {
 				ArrayList fileData = (ArrayList) file.get("data");
