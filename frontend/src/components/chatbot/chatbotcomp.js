@@ -192,9 +192,9 @@ export default class ChatApp extends React.Component {
 		return (
 			<div
 				className={`chatbox-container ${this.props.detail.length ? "with-data" : "no-data"} ${this.props.isChatbotOpen ? "" : "hidden"}`}>
-				<Draggable handle=".chatbox-title" bounds={"#root"} onStart={this.dragStart} onStop={this.dragEnd}>
+				<Draggable handle=".draggable" bounds={"#root"} onStart={this.dragStart} onStop={this.dragEnd}>
 					<div className={`chatbox ${this.state.beingDragged ? "drag" : ""}`} id="chatbox">
-						<div className="chatbox-title">
+						<div className={`chatbox-title ${this.props.detail.length ? "draggable" : ""}`}>
 							<div className="chat-window-title">
 								{this.state.title}
 							</div>

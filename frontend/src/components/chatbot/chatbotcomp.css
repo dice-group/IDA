@@ -26,6 +26,10 @@
   box-shadow: 0 0 20px #ccc;
 }
 
+.draggable {
+  cursor: move;
+}
+
 .chatbox .chatbox-title {
   background-color: #4e8cff;
   border-top-left-radius: 5px;
@@ -34,7 +38,6 @@
   height: 55px;
   display: flex;
   padding: 15px;
-  cursor: move;
 }
 
 .chatbox .chatbox-title .chat-window-title {
