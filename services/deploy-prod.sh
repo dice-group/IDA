@@ -18,9 +18,6 @@ function build_container() {
     fi
 }
 
-### if logs folder does not exist then create it
-[ ! -d ida-prod-logs ] && mkdir ida-prod-logs
-
 build_container nginx .. -f frontend/Dockerfile.prod
 build_container backend-server .. -f backend-server/Dockerfile.prod
 build_container fuseki-server .. -f Dockerfile.fuseki
