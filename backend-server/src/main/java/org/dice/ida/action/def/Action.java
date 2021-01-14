@@ -6,5 +6,5 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 
 public interface Action {
-	void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage message);
+	void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage message) throws Exception;
 }

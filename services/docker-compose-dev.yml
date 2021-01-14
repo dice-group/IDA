@@ -12,7 +12,7 @@ services:
     volumes:
       - "../backend-server/src:/build/backend-server/src"
       - "../backend-server/target:/build/backend-server/target"
-      - "~/ida-local-logs:/usr/local/tomcat/logs"
+      - "~/ida-local-logs:/build/backend-server/logs"
     environment:
       - FUSEKI_URL=http://fuseki:3030/
       - FUSEKI_USER=admin

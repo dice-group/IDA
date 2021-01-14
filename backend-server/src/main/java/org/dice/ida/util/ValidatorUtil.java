@@ -105,7 +105,7 @@ public class ValidatorUtil {
 	 * @param columnList - List of column names to be validated (provided as parameters to the visualization)
 	 * @throws IDAException - Throws exception with a message based on the failed scenario
 	 */
-	public static List<Map<String, String>> areParametersValid(String dsName, String tableName, List<String> columnList, boolean fromTemporaryData) throws IDAException {
+	public static List<Map<String, String>> areParametersValid(String dsName, String tableName, List<String> columnList, boolean fromTemporaryData) throws IDAException, IOException {
 		if (isStringEmpty(dsName)) {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
@@ -115,7 +115,6 @@ public class ValidatorUtil {
 		if (isStringEmpty(tableName)) {
 			throw new IDAException(IDAConst.BOT_SELECT_TABLE);
 		}
-		try {
 			Map<String, String> columnTypeMap = new HashMap<>();
 			Map<String, String> columnUniquenessMap = new HashMap<>();
 			boolean tableExists = false;
@@ -148,9 +147,6 @@ public class ValidatorUtil {
 				add(columnTypeMap);
 				add(columnUniquenessMap);
 			}};
-		} catch (IOException ex) {
-			throw new IDAException(IDAConst.TABLE_DOES_NOT_EXIST_MSG);
-		}
 	}
 
 	private static void updateColumnDetailMaps(JsonNode columnDetails, Map<String, String> columnTypeMap, Map<String, String> columnUniquenessMap, List<String> columns) {

@@ -40,7 +40,7 @@ public class BarGraphVisualizer {
 	private DataSummary DS;
 
 	public BarGraphVisualizer(String xAxis, String yAxis, String dsName,
-							  String tableName, String filterText, Instances data) {
+							  String tableName, String filterText, Instances data) throws Exception {
 		this.xAxisLabel = xAxis;
 		this.yAxisLabel = yAxis;
 		this.tableName = tableName;
@@ -51,12 +51,7 @@ public class BarGraphVisualizer {
 		this.data = FilterUtil.filterData(data, filterText);
 
 		this.dataSetName = dsName;
-		try {
-			DS = new MetaFileReader().createDataSummary(dataSetName, tableName);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		DS = new MetaFileReader().createDataSummary(dataSetName, tableName);
 	}
 
 	public BarGraphData createBarGraph() {

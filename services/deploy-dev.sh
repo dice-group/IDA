@@ -2,9 +2,8 @@
 
 cd "${BASH_SOURCE%/*}" || exit
 
-### For local development remove old logs first
-[ -d ~/ida-local-logs ] && rm -rf ~/ida-local-logs
-mkdir -p ~/ida-local-logs
+### if logs folder does not exist then create it
+[ ! -d ~/ida-local-logs ] && mkdir -p ~/ida-local-logs
 
 version=$(cat VERSION)
 registry=${REGISTRY:-localhost:5000}

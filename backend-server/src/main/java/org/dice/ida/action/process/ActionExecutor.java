@@ -68,7 +68,7 @@ public class ActionExecutor {
 		return paramMap;
 	}
 
-	public void processAction(ChatMessageResponse resp, ChatUserMessage message) {
+	public void processAction(ChatMessageResponse resp, ChatUserMessage message) throws Exception {
 		action.performAction(paramMap, resp, message);
 		resp.setActiveContexts(dialogFlowUtil.getActiveContextList());
 	}
