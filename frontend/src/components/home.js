@@ -98,6 +98,7 @@ export default function Home(props) {
 					<Typography variant="h6" className={classes.title} align="center">
 						Intelligent Data Science Chatbot
 					</Typography>
+					<CopyrightIcon className="context-icon" ref={buttonRef} onClick={handleContextPopover} />
 					<Popover
 						open={Boolean(anchorEl)}
 						anchorEl={getAnchorEl()}
