@@ -98,6 +98,31 @@ export default function Home(props) {
 					<Typography variant="h6" className={classes.title} align="center">
 						Intelligent Data Science Chatbot
 					</Typography>
+					<Popover
+						open={Boolean(anchorEl)}
+						anchorEl={getAnchorEl()}
+						onClose={handleContextPopoverClose}
+						anchorOrigin={{
+							vertical: "bottom",
+							horizontal: "center",
+						}}
+						transformOrigin={{
+							vertical: "top",
+							horizontal: "center",
+						}}
+					>
+						<div>
+							<ul>
+								{
+									contexts.map(
+										(context, index) => (
+											<li key={index}>{context}</li>
+										)
+									)
+								}
+							</ul>
+						</div>
+					</Popover>
 					<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/"
 					   target="_blank">
 						<IconButton style={{color: "#fff", marginRight: "10px"}} aria-label="info about the project">
