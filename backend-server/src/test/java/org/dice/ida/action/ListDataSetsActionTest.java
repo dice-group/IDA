@@ -1,8 +1,9 @@
 package org.dice.ida.action;
 
-import org.dice.ida.action.def.ListDataSetsAction;
+import org.dice.ida.controller.MessageController;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,13 +13,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 public class ListDataSetsActionTest {
 	@Autowired
-	private ListDataSetsAction listDataSetsAction;
+	private MessageController messageController;
+	@Autowired
+	private SessionUtil sessionUtil;
 
 	@Test
-	void testListDataSets() {
+	void testListDataSets() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
-		ChatMessageResponse chatMessageResponse = new ChatMessageResponse();
-		listDataSetsAction.performAction(null, chatMessageResponse, chatUserMessage);
+		chatUserMessage.setMessage("list all datasets");
+		ChatMessageResponse chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		assertTrue(chatMessageResponse.getMessage().startsWith("I have total "));
+		sessionUtil.resetSessionId();
 	}
 }

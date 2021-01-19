@@ -1,9 +1,9 @@
 package org.dice.ida.action;
 
-import org.dice.ida.action.def.LoadDataSetAction;
-import org.dice.ida.constant.IDAConst;
+import org.dice.ida.controller.MessageController;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,48 +12,45 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @SpringBootTest
 public class LoadDataSetActionTest {
 
-	@Autowired
-	private LoadDataSetAction loadDataSetAction;
 	private ChatUserMessage chatUserMessage;
 	private ChatMessageResponse chatMessageResponse;
+	@Autowired
+	private MessageController messageController;
+	@Autowired
+	private SessionUtil sessionUtil;
 
 	@Test
-	void testUnavailableSet() {
+	void testUnavailableSet() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatMessageResponse = new ChatMessageResponse();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put(IDAConst.PARAM_DATASET_NAME, "null");
-		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
-		loadDataSetAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		chatUserMessage.setMessage("load null dataset");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		assertEquals("'<b>null</b>' dataset does not exist. <br/><br/> You can ask to \"list all datasets\" to confirm if your dataset is present.", chatMessageResponse.getMessage());
 		assertNull(chatMessageResponse.getPayload().get("dsData"));
+		sessionUtil.resetSessionId();
 	}
 
 	@Test
-	void testEmptyDSName() {
+	void testEmptyDSName() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatMessageResponse = new ChatMessageResponse();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put(IDAConst.PARAM_DATASET_NAME, "");
-		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
-		loadDataSetAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
-		assertEquals("This is a test", chatMessageResponse.getMessage());
+		chatUserMessage.setMessage("load dataset");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		assertEquals("ok. tell me name of the dataset?", chatMessageResponse.getMessage());
+		assertNull(chatMessageResponse.getPayload().get("dsData"));
+		sessionUtil.resetSessionId();
 	}
 
 	@Test
-	void testLoadDSPos() {
+	void testLoadDSPos() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatMessageResponse = new ChatMessageResponse();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put(IDAConst.PARAM_DATASET_NAME, "covid19");
-		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
-		loadDataSetAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		chatUserMessage.setMessage("load covid19 dataset");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		assertEquals("<b>'covid19'</b> dataset has been loaded", chatMessageResponse.getMessage());
 		assertNotNull(chatMessageResponse.getPayload().get("dsData"));
+		sessionUtil.resetSessionId();
 	}
 
 }

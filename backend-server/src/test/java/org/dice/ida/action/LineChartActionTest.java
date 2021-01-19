@@ -1,12 +1,12 @@
 package org.dice.ida.action;
 
-import org.dice.ida.action.def.LineChartAction;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.controller.MessageController;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.linechart.LineChartData;
 import org.dice.ida.model.linechart.LineChartItem;
+import org.dice.ida.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,25 +21,25 @@ public class LineChartActionTest {
 	private ChatUserMessage chatUserMessage;
 	private ChatMessageResponse chatMessageResponse;
 	@Autowired
-	private LineChartAction lineChartAction;
-	@Autowired
 	private MessageController messageController;
+	@Autowired
+	private SessionUtil sessionUtil;
 
 	@Test
-	void testLineChartFlow() {
+	void testLineChartFlow() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatMessageResponse = new ChatMessageResponse();
-		chatMessageResponse.setPayload(new HashMap<>() {{
-			put("activeDS", "covid19");
-			put("activeTable", "Patient_Data_Before_20-04-2020.csv");
-		}});
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("records-selection", "first 10");
-		paramMap.put(IDAConst.LINE_CHART_PARAM_DATE_COL, "Date Announced");
-		paramMap.put(IDAConst.LINE_CHART_PARAM_LABEL_COL, "Detected State");
-		paramMap.put(IDAConst.LINE_CHART_PARAM_VALUE_COL, "Detected State");
-		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
-		lineChartAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		chatUserMessage.setMessage("draw line chart");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 10");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Date announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		LineChartData lineChartData = (LineChartData) chatMessageResponse.getPayload().get("lineChartData");
 		List<LineChartItem> lineChartItemList = new ArrayList<>();
 		lineChartItemList.add(new LineChartItem("Delhi", Arrays.asList(0.0, 0.0, 0.0, 1.0, 0.0, 0.0)));
@@ -49,6 +49,7 @@ public class LineChartActionTest {
 		lineChartItemList.add(new LineChartItem("Kerala", Arrays.asList(1.0, 1.0, 1.0, 0.0, 0.0, 0.0)));
 		assertNotNull(lineChartItemList);
 		assertEquals(lineChartItemList, lineChartData.getLines());
+		sessionUtil.resetSessionId();
 	}
 
 	@Test
@@ -61,24 +62,25 @@ public class LineChartActionTest {
 		chatUserMessage.setMessage("null");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		assertEquals(IDAConst.INVALID_FILTER, chatMessageResponse.getMessage());
+		sessionUtil.resetSessionId();
 	}
 
 	@Test
-	void testLineChartWrongColumnName() {
+	void testLineChartWrongColumnName() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatMessageResponse = new ChatMessageResponse();
-		chatMessageResponse.setPayload(new HashMap<>() {{
-			put("activeDS", "covid19");
-			put("activeTable", "Patient_Data_Before_20-04-2020.csv");
-		}});
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put(IDAConst.INTENT_NAME, IDAConst.VIZ_TYPE_BAR_CHART);
-		paramMap.put("records-selection", "all");
-		paramMap.put(IDAConst.LINE_CHART_PARAM_DATE_COL, "Tested As Of");
-		paramMap.put(IDAConst.LINE_CHART_PARAM_LABEL_COL, "Detected State");
-		paramMap.put(IDAConst.LINE_CHART_PARAM_VALUE_COL, "Detected State");
-		paramMap.put(IDAConst.PARAM_TEXT_MSG, "This is a test");
-		lineChartAction.performAction(paramMap, chatMessageResponse, chatUserMessage);
+		chatUserMessage.setMessage("draw line chart");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("all");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Tested as of");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("detected state");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("detected state");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		assertEquals("Tested As Of: " + IDAConst.BC_INVALID_COL, chatMessageResponse.getMessage());
+		sessionUtil.resetSessionId();
 	}
 }
