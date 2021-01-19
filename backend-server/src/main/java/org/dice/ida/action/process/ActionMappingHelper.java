@@ -11,6 +11,7 @@ import org.dice.ida.action.def.VisualizeAction;
 import org.dice.ida.action.def.DefaultAction;
 import org.dice.ida.action.def.ClusterAction;
 import org.dice.ida.action.def.ClearConversationAction;
+import org.dice.ida.action.def.CauseExceptionAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -60,6 +61,9 @@ public class ActionMappingHelper {
 				break;
 			case CLEAR:
 				action = appContext.getBean(ClearConversationAction.class);
+				break;
+			case CAUSE_EXCEPTION:
+				action = appContext.getBean(CauseExceptionAction.class);
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);

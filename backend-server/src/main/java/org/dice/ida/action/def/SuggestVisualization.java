@@ -10,28 +10,23 @@ import java.util.Map;
 @Component
 public class SuggestVisualization implements Action {
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
-		try {
-			Map<String, Object> payload = chatMessageResponse.getPayload();
-			if (payload.get("activeDS") == null || payload.get("activeTable") == null) {
-				chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-				return;
-			}
-			String datasetName = payload.get("activeDS").toString();
-			String tableName = payload.get("activeTable").toString();
-			if (datasetName.isEmpty()) {
-				chatMessageResponse.setMessage(IDAConst.BOT_LOAD_DS_BEFORE);
-			} else if (tableName.isEmpty()) {
-				chatMessageResponse.setMessage(IDAConst.BOT_SELECT_TABLE);
-			} else {
-				VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator(tableName, datasetName);
-				chatMessageResponse.setMessage(vizSuggestOrchestrator.getSuggestion());
-			}
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-		} catch (Exception e) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws Exception {
+		Map<String, Object> payload = chatMessageResponse.getPayload();
+		if (payload.get("activeDS") == null || payload.get("activeTable") == null) {
 			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			return;
 		}
+		String datasetName = payload.get("activeDS").toString();
+		String tableName = payload.get("activeTable").toString();
+		if (datasetName.isEmpty()) {
+			chatMessageResponse.setMessage(IDAConst.BOT_LOAD_DS_BEFORE);
+		} else if (tableName.isEmpty()) {
+			chatMessageResponse.setMessage(IDAConst.BOT_SELECT_TABLE);
+		} else {
+			VizSuggestOrchestrator vizSuggestOrchestrator = new VizSuggestOrchestrator(tableName, datasetName);
+			chatMessageResponse.setMessage(vizSuggestOrchestrator.getSuggestion());
+		}
+		chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 	}
 }

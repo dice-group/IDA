@@ -6,6 +6,7 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ValidatorUtilTest {
 	}
 
 	@Test
-	void testAreParamsValid() throws IDAException {
+	void testAreParamsValid() throws IDAException, IOException {
 		List<String> columnList = new ArrayList<>();
 		IDAException exception = assertThrows(IDAException.class, () -> ValidatorUtil.areParametersValid("", "", null, false));
 		assertEquals(IDAConst.BOT_LOAD_DS_BEFORE, exception.getMessage());

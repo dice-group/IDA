@@ -21,6 +21,9 @@ import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Value;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -68,8 +71,7 @@ public class VisualizeAction implements Action {
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
-		try {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws IOException, IDAException, InvalidKeySpecException, NoSuchAlgorithmException {
 			textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 			if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 				String vizType = paramMap.get(IDAConst.INTENT_NAME).toString();
@@ -129,15 +131,6 @@ public class VisualizeAction implements Action {
 					}
 				}
 			}
-		} catch (IDAException ex) {
-			ex.printStackTrace();
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			chatMessageResponse.setMessage(ex.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-		}
 	}
 
 	/**
@@ -146,7 +139,7 @@ public class VisualizeAction implements Action {
 	 * @param paramMap - param map from Dialogflow
 	 * @return - set of options possible for rendering the visualization based on user inputs
 	 */
-	private Set<String> processParameters(Map<String, Object> paramMap) {
+	private Set<String> processParameters(Map<String, Object> paramMap) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		String attributeType;
 		String attributeName;
 		String paramType;
@@ -183,7 +176,7 @@ public class VisualizeAction implements Action {
 	 * @param paramMap      - parameter map from dialogflow
 	 * @return - true if response is ready and false otherwise
 	 */
-	private boolean createResponseForUser(Set<String> options, int i, String attributeName, String attributeType, Map<String, Object> paramMap, String paramType) {
+	private boolean createResponseForUser(Set<String> options, int i, String attributeName, String attributeType, Map<String, Object> paramMap, String paramType) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		String columnName = paramMap.get(attributeName).toString();
 		if (options.size() == 0 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
@@ -457,11 +450,8 @@ public class VisualizeAction implements Action {
 		min = calendar.getTime();
 		LocalDate localMin = min.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate max = LocalDate.now();
-		try {
-			max = values.get(values.size() - 1).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+		max = values.get(values.size() - 1).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		labelCounts.putAll(initializeGraphItemsForDateBins(localMin, max, binType, binSize, formatter));
 		for (Map<String, String> entry : tableData) {
 			String valueString = entry.get(xAxisColumn);
