@@ -4,7 +4,7 @@
 
 .chatbox {
   background: #fff;
-  z-index: 2000;
+  z-index: 1100;
   width: 370px;
   height: 90%;
   position: absolute;
@@ -56,7 +56,7 @@
 .chatbox-chat-area .chat-area-msgs {
   padding-top: 10px;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent {
