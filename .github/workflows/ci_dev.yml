@@ -1,0 +1,29 @@
+name: CI_DEV
+
+# Controls when the action will run. Triggers the workflow
+# on push or pull request for the master branch
+on:
+  pull_request:
+    branches: [dev]
+
+# A workflow run is made up of one or more jobs
+# that can run sequentially or in parallel
+jobs:
+  test_build:
+    name: Test and build
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    # Copies the dialogflow credential file and datasets to the checked out repository
+    - name: Copy Resources
+      run: |
+            mkdir backend-server/src/main/resources/datasets
+            cp -r ~/datasets/* backend-server/src/main/resources/datasets/
+            cp ~/ida-chatbot-dialogflow.json backend-server/src/main/resources/
+    - name: Test
+      run: mvn test --file backend-server/pom.xml
+    - name: Build with Maven
+      run: mvn clean install -P dev --file backend-server/pom.xml && mvn package -P dev --file backend-server/pom.xml
