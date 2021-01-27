@@ -35,6 +35,8 @@ export default class IDALineChart extends Component {
             series: this.graphData.lines,
             dates: this.graphData.xAxisLabels
         };
+        console.log(this.graphData)
+        console.log(this.data)
         this.data.dates = this.data.dates.map(d => new Date(d));
         this.state = {
             selectedIndex: this.data.series.map(l => l.label)
@@ -218,7 +220,7 @@ export default class IDALineChart extends Component {
                     </Grid>
                 </Hidden>
                 <Grid item md={9} className="tab-container">
-                    <div className="linechart-container" id={this.containerId}></div>
+                    <div role="dialog" className="linechart-container" id={this.containerId}></div>
                 </Grid>
                 <Hidden mdDown>
                     <Grid item md={3}>

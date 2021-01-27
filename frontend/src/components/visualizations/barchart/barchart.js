@@ -224,7 +224,7 @@ export default class IDABarGraph extends Component {
         </div>
       </Grid>
       <Grid item xs={12}>
-        <div className="bargraph-container" id={this.containerId}>
+        <div role="dialog" className="bargraph-container" id={this.containerId}>
         </div>
       </Grid>
     </Grid>;

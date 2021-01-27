@@ -8,6 +8,6 @@ import "@testing-library/jest-dom";
 
 it("it should pass barchart visualisation inputs", () => {
     const mockData = MOCK_COMPONENT.MOCKDATA;
-    const { debug } = render(<IDABarGraph data={mockData} />, <IDABubbleChart data={mockData} />, <IDALineChart data={mockData} />);
+    const { debug } = render(<IDABarGraph data={mockData} />);
     debug();
 });  

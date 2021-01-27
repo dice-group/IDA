@@ -92,7 +92,7 @@ export default class IDABubbleGraph extends Component {
   }
   render() {
     return <div className="tab-container">
-      <div className="bubblechart-container" id={this.containerId}></div>
+      <div className="bubblechart-container" role="dialog" id={this.containerId}></div>
     </div>;
   }
 

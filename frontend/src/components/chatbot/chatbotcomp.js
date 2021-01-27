@@ -21,7 +21,7 @@ export default class ChatApp extends React.Component {
                 type: "text",
                 key: 1,
                 message: "Hello, Welcome to IDA. How may I help you?",
-				timestamp: Date.now()
+                timestamp: Date.now()
 
             }],
             changeCSS: {},
@@ -41,7 +41,7 @@ export default class ChatApp extends React.Component {
                 type: "text",
                 key: Math.random(),
                 message: text,
-				timestamp: time
+                timestamp: time
             }]
         });
     }
@@ -163,10 +163,10 @@ export default class ChatApp extends React.Component {
                                     } else {
                                         return (
                                             <div className="agent" key={Math.random()}>
-												<div>
-                                                	<div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
-                                                	<div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
-												</div>
+                                                <div>
+                                                    <div className="msg" key={Math.random()} dangerouslySetInnerHTML={{ __html: val.message }} />
+                                                    <div className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
+                                                </div>
                                                 <div className="agent-pic" key={Math.random()} />
                                             </div>
                                         );
@@ -176,7 +176,7 @@ export default class ChatApp extends React.Component {
                         </div>
                         <div className="chat-area-input" >
                             <IDALinearProgress hide={this.state.hideProgress} />
-                            <input type="text" id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} autoFocus={true} />
+                            <input type="text" id="chat-input" aria-label="chat-input" name="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} autoFocus={true} />
                         </div>
                     </div>
                 </div>

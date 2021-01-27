@@ -3,10 +3,10 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import Home from "../home";
 
-it("should accept the input", () => {
-    const mockMsg = jest.fn();
-    const { debug, getByLabelText } = render(<Home ChatApp={mockMsg} />);
-    const Input = getByLabelText(/chat-input/i);
-    fireEvent.change(Input, { target: { placeholder: 'a new chat-input' } });
-    debug();
-});
+it('should accept the input', () => {
+    const mockMsg = "hello Ida"
+    const { debug, getByLabelText } = render(<Home ChatApp={mockMsg} />)
+    const Input = getByLabelText(/chat-input/i)
+    fireEvent.change(Input, { target: { placeholder: 'a new chat-input' } })
+    debug()
+})
