@@ -140,17 +140,34 @@ export default class ChatApp extends React.Component {
 		return processed instanceof Array ? processed : [processed];
 	}
 
-	idaElementRenderer(el) {
-		const idaEles = {
-			"ida-btn": "button"
-		};
+	idaElementRenderer(el, msgCount) {
+		let elem = null;
 
-		return React.createElement(idaEles[el.name], {
-			onClick: () => {
-				this.messageSend({keyCode: 13, target: {value: el.msg}});
-			}, // mimicking message sent from input field
-			className: el.style
-		}, el.value);
+		if (el.name === 'ida-btn') {
+			elem = React.createElement('button', {
+				onClick: () => {
+					this.messageSend({keyCode: 13, target: {value: el.msg}});
+				}, // mimicking message sent from input field
+				className: el.style
+			}, el.value);
+		} else if (el.name === 'ida-radio') {
+			if (this.state.messages.length - msgCount === 1) {
+				elem = React.createElement('label', {}, React.createElement('input', {
+					type: 'radio',
+					value: el.value,
+					onChange: () => {
+						setTimeout(() => {
+							// This timeout is make sure that user will get visual feedback
+							this.messageSend({keyCode: 13, target: {value: el.msg}});
+						}, 300);
+					}
+				}), ' ', el.value);
+			} else {
+				// Disabling options once they are selected
+				elem = React.createElement('span', {}, '- ', el.value);
+			}
+		}
+		return elem;
 	}
 
 	msgIterator = (e, userMsgs) => {
@@ -224,7 +241,7 @@ export default class ChatApp extends React.Component {
 															<div className="msg" key={Math.random()}>{
 																this.idaElementParser(val.message).map((token) => {
 																	if (token instanceof Object) {
-																		return this.idaElementRenderer(token);
+																		return this.idaElementRenderer(token, i);
 																	} else {
 																		return <span
 																			dangerouslySetInnerHTML={{__html: token}}/>;
