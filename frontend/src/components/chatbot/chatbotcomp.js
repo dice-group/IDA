@@ -143,17 +143,17 @@ export default class ChatApp extends React.Component {
 	idaElementRenderer(el, msgCount) {
 		let elem = null;
 
-		if (el.name === 'ida-btn') {
-			elem = React.createElement('button', {
+		if (el.name === "ida-btn") {
+			elem = React.createElement("button", {
 				onClick: () => {
 					this.messageSend({keyCode: 13, target: {value: el.msg}});
 				}, // mimicking message sent from input field
 				className: el.style
 			}, el.value);
-		} else if (el.name === 'ida-radio') {
+		} else if (el.name === "ida-radio") {
 			if (this.state.messages.length - msgCount === 1) {
-				elem = React.createElement('label', {}, React.createElement('input', {
-					type: 'radio',
+				elem = React.createElement("label", {}, React.createElement("input", {
+					type: "radio",
 					value: el.value,
 					onChange: () => {
 						setTimeout(() => {
@@ -161,10 +161,10 @@ export default class ChatApp extends React.Component {
 							this.messageSend({keyCode: 13, target: {value: el.msg}});
 						}, 300);
 					}
-				}), ' ', el.value);
+				}), " ", el.value);
 			} else {
 				// Disabling options once they are selected
-				elem = React.createElement('span', {}, '- ', el.value);
+				elem = React.createElement("span", {}, "- ", el.value);
 			}
 		}
 		return elem;
