@@ -186,7 +186,7 @@ public class VisualizeAction implements Action {
 		} else if (options.size() == 0) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
 			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-			textMsg = new StringBuilder(attributeType + " cannot be used as " + attributeType + ". Please provide correct type.");
+			textMsg = new StringBuilder(columnName + " cannot be used as " + attributeType + ". Please provide correct type.");
 			return true;
 		} else if (options.size() > 1 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
