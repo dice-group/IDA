@@ -37,6 +37,8 @@ public class BubbleChartActionTest {
 		chatUserMessage.setMessage("Detected State");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Detected State");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BubbleChartData bubbleChartData = (BubbleChartData) chatMessageResponse.getPayload().get("bubbleChartData");
 		List<BubbleChartItem> bubbleChartItemList = new ArrayList<>();
@@ -66,6 +68,8 @@ public class BubbleChartActionTest {
 		chatUserMessage.setMessage("age");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("count of");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BubbleChartData bubbleChartData = (BubbleChartData) chatMessageResponse.getPayload().get("bubbleChartData");
 		List<BubbleChartItem> bubbleChartItemList = new ArrayList<>();
@@ -99,6 +103,8 @@ public class BubbleChartActionTest {
 		chatUserMessage.setMessage("1 month");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Date Announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BubbleChartData bubbleChartData = (BubbleChartData) chatMessageResponse.getPayload().get("bubbleChartData");
 		List<BubbleChartItem> bubbleChartItemList = new ArrayList<>();
@@ -125,6 +131,8 @@ public class BubbleChartActionTest {
 		chatUserMessage.setMessage("unique");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Daily confirmed");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BubbleChartData bubbleChartData = (BubbleChartData) chatMessageResponse.getPayload().get("bubbleChartData");
 		List<BubbleChartItem> bubbleChartItemList = new ArrayList<>();

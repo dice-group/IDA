@@ -39,6 +39,8 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("Detected State");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Detected State");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -110,6 +112,8 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("age");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("count of");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -143,6 +147,8 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("1 month");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Date Announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -173,6 +179,8 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("Total positive cases");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("sum of");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -204,6 +212,8 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("Total positive cases");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("sum of");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -235,6 +245,8 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("Total positive cases");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("average");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -259,6 +271,8 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("unique");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Daily confirmed");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
