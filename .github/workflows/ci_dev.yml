@@ -1,10 +1,10 @@
-name: CI
+name: CI_DEV
 
 # Controls when the action will run. Triggers the workflow
 # on push or pull request for the master branch
 on:
   pull_request:
-    branches: [dev, master]
+    branches: [dev]
 
 # A workflow run is made up of one or more jobs
 # that can run sequentially or in parallel
@@ -22,11 +22,10 @@ jobs:
       run: |
             mkdir backend-server/src/main/resources/datasets
             cp -r ~/datasets/* backend-server/src/main/resources/datasets/
-            cp ~/ida-chatbot-dialogflow.json backend-server/src/main/resources/
+            cp ~/resources/dev/ida-chatbot-dialogflow.json backend-server/src/main/resources/
     - name: Test
-      run: mvn test --file backend-server/pom.xml
+      run: mvn test -P dev --file backend-server/pom.xml
     - name: Build with Maven
-      run: mvn clean install --file backend-server/pom.xml && mvn package --file backend-server/pom.xml
+      run: mvn clean install -P dev --file backend-server/pom.xml && mvn package -P dev --file backend-server/pom.xml
     - name: Upload code coverage report
       uses: codecov/codecov-action@v1
-    
