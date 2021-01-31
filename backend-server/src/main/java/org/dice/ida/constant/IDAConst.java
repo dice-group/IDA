@@ -27,6 +27,10 @@ public interface IDAConst {
 	public static final int UIA_LINECHART = 1007;
 	//Load clustered dara
 	public static final int UIA_CLUSTER = 1008;
+	// Load grouped bar chart
+	public static final int UIA_GROUPED_BARGRAPH = 1009;
+	// Load grouped bubble chart
+	public static final int UIA_GROUPED_BUBBLECHART = 1010;
 
 	/**
 	 * Pre-defined action codes
