@@ -154,6 +154,10 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             addVisualizationEntry(props, payload.barGraphData, "Grouped Bar Chart", "groupedBarchart", payload.activeDS);
             break;
         }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_GROUPED_BUBBLECHART: {
+            addVisualizationEntry(props, payload.bubbleChartData, "Grouped Bubble Chart", "groupedBubblechart", payload.activeDS);
+            break;
+        }
         default:
     }
 }

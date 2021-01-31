@@ -1,0 +1,10 @@
+.grouped-bubblechart-container {
+  width: 100%;
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+.tab-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
