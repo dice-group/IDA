@@ -27,3 +27,6 @@ jobs:
       run: mvn test --file backend-server/pom.xml
     - name: Build with Maven
       run: mvn clean install --file backend-server/pom.xml && mvn package --file backend-server/pom.xml
+    - name: Upload code coverage report
+      uses: codecov/codecov-action@v1
+    
