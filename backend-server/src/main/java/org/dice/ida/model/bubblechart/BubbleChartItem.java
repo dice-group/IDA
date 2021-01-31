@@ -41,4 +41,12 @@ public class BubbleChartItem {
 		return "BubbleChartItem [label=" + label + ", description=" + description + ", size=" + size + "]";
 	}
 
+	@Override
+	public boolean equals(Object obj2) {
+		if (!(obj2 instanceof BubbleChartItem)) {
+			return false;
+		}
+		return this.toString().equals(obj2.toString());
+	}
+
 }
