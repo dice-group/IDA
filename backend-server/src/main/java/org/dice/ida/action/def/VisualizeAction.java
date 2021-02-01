@@ -105,6 +105,7 @@ public class VisualizeAction implements Action {
 				Set<String> options = processParameters(paramMap);
 				if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
 					getParameters(paramMap);
+					groupingNeeded = false;
 					if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) &&
 							!handleGroupingLogic(chatMessageResponse, paramMap)) {
 						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
@@ -378,8 +379,8 @@ public class VisualizeAction implements Action {
 				Map<String, Double> groupEntries = new HashMap<>();
 				Map<String, Map<String, Integer>> groupedLabelCounts = new HashMap<>();
 				for (String label : labels) {
-					labelCounts.put(label, 1);
-					groupEntries.put(label, 1.0);
+					labelCounts.put(label, 0);
+					groupEntries.put(label, 0.0);
 				}
 				for (String group : groups) {
 					groupedGraphItems.put(group, new HashMap<>() {{
