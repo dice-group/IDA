@@ -5,15 +5,19 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
+import org.dice.ida.model.groupedBubbleChart.GroupedBubbleChartData;
 import org.dice.ida.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
@@ -146,4 +150,37 @@ public class BubbleChartActionTest {
 		sessionUtil.resetSessionId();
 	}
 
+	@Test
+	void testGroupedBubbleNumLabels() throws Exception {
+		chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("draw bubble chart");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 5");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("detected state");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("age");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("average");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("yes");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("current status");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		GroupedBubbleChartData groupedBubbleChartData = (GroupedBubbleChartData) chatMessageResponse.getPayload().get("bubbleChartData");
+		Map<String, List<BubbleChartItem>> groupedBubbleChartItems = new HashMap<>();
+		groupedBubbleChartItems.put("Recovered", new ArrayList<>(){{
+			add(new BubbleChartItem("Delhi", "Delhi", 45.0));
+			add(new BubbleChartItem("Telangana", "Telangana", 24.0));
+			add(new BubbleChartItem("Kerala", "Kerala", 6.666666666666667));
+		}});
+		assertNotNull(groupedBubbleChartData);
+		assertEquals(groupedBubbleChartData.getGroupedBubbleChartData().keySet(), groupedBubbleChartItems.keySet());
+		for(String key: groupedBubbleChartItems.keySet()){
+			assertTrue(groupedBubbleChartItems.get(key).containsAll(groupedBubbleChartData.getGroupedBubbleChartData().get(key)));
+		}
+		sessionUtil.resetSessionId();
+	}
 }

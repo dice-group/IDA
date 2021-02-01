@@ -6,16 +6,20 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
+import org.dice.ida.model.groupedBarGraph.GroupedBarGraphData;
 import org.dice.ida.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest
@@ -271,8 +275,6 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("unique");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Daily confirmed");
-		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		BarGraphData barGraphData = (BarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		List<BarGraphItem> barGraphItemList = new ArrayList<>();
@@ -315,6 +317,160 @@ public class BarGraphActionTest {
 		chatUserMessage.setMessage("Daily confirmed");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		assertEquals("Population: " + IDAConst.BC_INVALID_COL, chatMessageResponse.getMessage());
+		sessionUtil.resetSessionId();
+	}
+
+	@Test
+	void testGroupedBarGraph() throws Exception {
+		chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("draw bar graph");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 10");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("current status");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("current status");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("yes");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		GroupedBarGraphData groupedBarGraphData = (GroupedBarGraphData) chatMessageResponse.getPayload().get("barGraphData");
+		Map<String, List<BarGraphItem>> groupedBarChartItems = new HashMap<>();
+		groupedBarChartItems.put("Delhi", new ArrayList<>(){{
+			add(new BarGraphItem("Recovered", 1.0));
+		}});
+		groupedBarChartItems.put("Haryana", new ArrayList<>(){{
+			add(new BarGraphItem("Recovered", 4.0));
+		}});
+		groupedBarChartItems.put("Kerala", new ArrayList<>(){{
+			add(new BarGraphItem("Recovered", 3.0));
+		}});
+		groupedBarChartItems.put("Rajasthan", new ArrayList<>(){{
+			add(new BarGraphItem("Recovered", 1.0));
+		}});
+		groupedBarChartItems.put("Telangana", new ArrayList<>(){{
+			add(new BarGraphItem("Recovered", 1.0));
+		}});
+		assertNotNull(groupedBarGraphData);
+		assertEquals(groupedBarGraphData.getGroupedBarChartData().keySet(), groupedBarChartItems.keySet());
+		for(String key: groupedBarChartItems.keySet()){
+			assertTrue(groupedBarChartItems.get(key).containsAll(groupedBarGraphData.getGroupedBarChartData().get(key)));
+		}
+		sessionUtil.resetSessionId();
+	}
+
+	@Test
+	void testGroupedBarGraphNumLabels() throws Exception {
+		chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("draw bar graph");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 5");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("age");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("bin");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("20");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("age");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("count of");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("yes");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		GroupedBarGraphData groupedBarGraphData = (GroupedBarGraphData) chatMessageResponse.getPayload().get("barGraphData");
+		Map<String, List<BarGraphItem>> groupedBarChartItems = new HashMap<>();
+		groupedBarChartItems.put("Delhi", new ArrayList<>(){{
+			add(new BarGraphItem("40.0 - 59.0", 1.0));
+			add(new BarGraphItem("20.0 - 39.0", 0.0));
+			add(new BarGraphItem("0.0 - 19.0", 0.0));
+			add(new BarGraphItem("UNKNOWN", 0.0));
+		}});
+		groupedBarChartItems.put("Kerala", new ArrayList<>(){{
+			add(new BarGraphItem("40.0 - 59.0", 0.0));
+			add(new BarGraphItem("20.0 - 39.0", 1.0));
+			add(new BarGraphItem("0.0 - 19.0", 0.0));
+			add(new BarGraphItem("UNKNOWN", 2.0));
+		}});
+		groupedBarChartItems.put("Telangana", new ArrayList<>(){{
+			add(new BarGraphItem("40.0 - 59.0", 0.0));
+			add(new BarGraphItem("20.0 - 39.0", 1.0));
+			add(new BarGraphItem("0.0 - 19.0", 0.0));
+			add(new BarGraphItem("UNKNOWN", 0.0));
+		}});
+		assertNotNull(groupedBarGraphData);
+		assertEquals(groupedBarGraphData.getGroupedBarChartData().keySet(), groupedBarChartItems.keySet());
+		for(String key: groupedBarChartItems.keySet()){
+			assertTrue(groupedBarChartItems.get(key).containsAll(groupedBarGraphData.getGroupedBarChartData().get(key)));
+		}
+		sessionUtil.resetSessionId();
+	}
+
+	@Test
+	void testGroupedBarGraphDateLabels() throws Exception {
+		chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("draw bar graph");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 30");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("date announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("bin");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("2 weeks");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("date announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("yes");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		GroupedBarGraphData groupedBarGraphData = (GroupedBarGraphData) chatMessageResponse.getPayload().get("barGraphData");
+		Map<String, List<BarGraphItem>> groupedBarChartItems = new HashMap<>();
+		groupedBarChartItems.put("Delhi", new ArrayList<>(){{
+			add(new BarGraphItem("23-02-20 to 07-03-20", 2.0));
+			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
+			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		}});
+		groupedBarChartItems.put("Haryana", new ArrayList<>(){{
+			add(new BarGraphItem("23-02-20 to 07-03-20", 14.0));
+			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
+			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		}});
+		groupedBarChartItems.put("Kerala", new ArrayList<>(){{
+			add(new BarGraphItem("23-02-20 to 07-03-20", 0.0));
+			add(new BarGraphItem("26-01-20 to 08-02-20", 3.0));
+			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		}});
+		groupedBarChartItems.put("Rajasthan", new ArrayList<>(){{
+			add(new BarGraphItem("23-02-20 to 07-03-20", 2.0));
+			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
+			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		}});
+		groupedBarChartItems.put("Telangana", new ArrayList<>(){{
+			add(new BarGraphItem("23-02-20 to 07-03-20", 1.0));
+			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
+			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		}});
+		groupedBarChartItems.put("Uttar Pradesh", new ArrayList<>(){{
+			add(new BarGraphItem("23-02-20 to 07-03-20", 8.0));
+			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
+			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		}});
+		assertNotNull(groupedBarGraphData);
+		assertEquals(groupedBarGraphData.getGroupedBarChartData().keySet(), groupedBarChartItems.keySet());
+		for(String key: groupedBarChartItems.keySet()){
+			assertTrue(groupedBarChartItems.get(key).containsAll(groupedBarGraphData.getGroupedBarChartData().get(key)));
+		}
 		sessionUtil.resetSessionId();
 	}
 }
