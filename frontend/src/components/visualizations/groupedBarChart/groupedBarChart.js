@@ -35,7 +35,7 @@ export default class IDAGroupedBarGraph extends Component {
                 groupLabel: k.length > 16 ? k.substring(0, 13) + "..." : k,
                 originalGroupLabel: k
             };
-            this.data.groupedBarChartData[k].forEach((e) => {
+            this.data.groupedBarChartData[`${k}`].forEach((e) => {
                 Object.defineProperty(obj, e.x, {
                     value: e.y
                 });
@@ -75,7 +75,7 @@ export default class IDAGroupedBarGraph extends Component {
             .padding(0.05);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max(this.graphData, (d) => d3.max(keys, key => d[key]))]).nice()
+            .domain([0, d3.max(this.graphData, (d) => d3.max(keys, (key) => d[`${key}`]))]).nice()
             .rangeRound([this.height - this.margin.bottom, this.margin.top]);
 
         const color = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemeCategory10);
@@ -86,7 +86,7 @@ export default class IDAGroupedBarGraph extends Component {
             .join("g")
             .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`)
             .selectAll("rect")
-            .data((d) => keys.map(key => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[key] })))
+            .data((d) => keys.map((key) => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[`${key}`] })))
             .join("rect")
             .attr("x", (d) => x1(d.key))
             .attr("y", (d) => y(d.value))
@@ -123,7 +123,7 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("x", 515)
             .attr("y", 15);
 
-        const xAxis = g => (g)
+        const xAxis = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x0).tickSizeOuter(0))
             .selectAll("text")
@@ -132,7 +132,7 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "end");
 
-        const yAxis = g => (g)
+        const yAxis = (g) => (g)
             .attr("transform", `translate(${this.margin.left},0)`)
             .call(d3.axisLeft(y).tickSizeOuter(0));
 
