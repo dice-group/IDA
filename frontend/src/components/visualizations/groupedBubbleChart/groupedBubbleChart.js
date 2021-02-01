@@ -27,13 +27,12 @@ export default class IDAGroupedBubbleChart extends Component {
             name: "Total",
             children: []
         };
-        Object.keys(this.data.groupedBubbleChartData).forEach(k => {
+        Object.keys(this.data.groupedBubbleChartData).forEach((k) => {
             this.graphData.children.push({
                 name: k,
-                children: this.data.groupedBubbleChartData[k].map((e) => ({ name: e.label, value: e.size }))
+                children: this.data.groupedBubbleChartData[`${k}`].map((e) => ({ name: e.label, value: e.size }))
             });
         });
-        console.log(this.graphData);
     }
 
     componentDidMount() {
@@ -41,15 +40,14 @@ export default class IDAGroupedBubbleChart extends Component {
     }
 
     drawGraph() {
-        debugger;
-        const pack = data => d3.pack()
+        const pack = (data) => d3.pack()
             .size([this.width - 2, this.height - 2])
             .padding(3)
             (d3.hierarchy(data)
-                .sum(d => d.value)
+                .sum((d) => d.value)
                 .sort((a, b) => b.value - a.value));
         const format = d3.format(",d");
-        const color = d3.scaleOrdinal([3, 0], ["#b2df8a", "#4f8bff", "#EFEFEF"])
+        const color = d3.scaleOrdinal([3, 0], ["#b2df8a", "#4f8bff", "#EFEFEF"]);
 
         const root = pack(this.graphData);
 
@@ -68,22 +66,22 @@ export default class IDAGroupedBubbleChart extends Component {
             .attr("dy", 1);
 
         const node = svg.selectAll("g")
-            .data(d3.group(root.descendants(), d => d.height))
+            .data(d3.group(root.descendants(), (d) => d.height))
             .join("g")
             .attr("filter", shadow)
             .selectAll("g")
-            .data(d => d[1])
+            .data((d) => d[1])
             .join("g")
-            .attr("transform", d => `translate(${d.x + 1},${d.y + 1})`);
+            .attr("transform", (d) => `translate(${d.x + 1},${d.y + 1})`);
 
         node.append("circle")
-            .attr("r", d => d.r)
-            .attr("fill", d => color(d.height));
+            .attr("r", (d) => d.r)
+            .attr("fill", (d) => color(d.height));
 
-        const leaf = node.filter(d => !d.children);
+        const leaf = node.filter((d) => !d.children);
 
         leaf.select("circle")
-            .attr("id", d => (d.leafUid = uid("leaf")).id);
+            .attr("id", (d) => (d.leafUid = uid("leaf")).id);
 
         leaf.append("text")
             .attr("dy", ".2em")
@@ -94,12 +92,12 @@ export default class IDAGroupedBubbleChart extends Component {
             .attr("fill", "#FFF");
 
         node.append("title")
-            .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("-")}:\n${format(d.value)}`);
+            .text((d) => `${d.ancestors().map((d) => d.data.name).reverse().join("-")}:\n${format(d.value)}`);
 
         const zoom = d3.zoom()
             .scaleExtent([0.1, Infinity])
-            .on('zoom', (event) => {
-                svg.attr('transform', event.transform);
+            .on("zoom", (event) => {
+                svg.attr("transform", event.transform);
             });
         svg.call(zoom);
     }
@@ -109,6 +107,6 @@ export default class IDAGroupedBubbleChart extends Component {
             <div className="tab-container">
                 <div className="grouped-bubblechart-container" id={this.containerId}></div>
             </div>
-        </>
-    };
+        </>;
+    }
 }

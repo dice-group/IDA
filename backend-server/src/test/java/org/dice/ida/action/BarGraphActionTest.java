@@ -6,7 +6,7 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
-import org.dice.ida.model.groupedBarGraph.GroupedBarGraphData;
+import org.dice.ida.model.groupedbargraph.GroupedBarGraphData;
 import org.dice.ida.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

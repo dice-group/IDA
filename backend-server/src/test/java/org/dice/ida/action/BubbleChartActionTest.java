@@ -5,7 +5,7 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
-import org.dice.ida.model.groupedBubbleChart.GroupedBubbleChartData;
+import org.dice.ida.model.groupedbubblechart.GroupedBubbleChartData;
 import org.dice.ida.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

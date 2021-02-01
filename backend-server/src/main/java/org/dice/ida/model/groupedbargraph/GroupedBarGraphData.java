@@ -1,4 +1,4 @@
-package org.dice.ida.model.groupedBarGraph;
+package org.dice.ida.model.groupedbargraph;
 
 import org.dice.ida.model.bargraph.BarGraphItem;
 
