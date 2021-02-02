@@ -1,0 +1,10 @@
+.scatterplot-container {
+    width: 100%;
+    border: 1px solid black;
+    overflow-x: auto;
+  }
+  
+  .tab-container {
+    width: 100%;
+  }
+  
