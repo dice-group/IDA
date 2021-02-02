@@ -1,4 +1,4 @@
-package org.dice.ida.model.groupedBubbleChart;
+package org.dice.ida.model.groupedbubblechart;
 
 import org.dice.ida.model.bubblechart.BubbleChartItem;
 

@@ -5,7 +5,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Chip from '@material-ui/core/Chip';
+import Chip from "@material-ui/core/Chip";
 import { Hidden } from "@material-ui/core";
 
 import "./groupedBarChart.css";
@@ -30,17 +30,19 @@ export default class IDAGroupedBarGraph extends Component {
         super();
         this.data = props.data;
         this.containerId = props.nodeId;
-        Object.keys(this.data.groupedBarChartData).forEach(k => {
+        Object.keys(this.data.groupedBarChartData).forEach((k) => {
             let obj = {
                 groupLabel: k.length > 16 ? k.substring(0, 13) + "..." : k,
                 originalGroupLabel: k
             };
-            this.data.groupedBarChartData[k].forEach(e => {
-                obj[e.x] = e.y;
+            this.data.groupedBarChartData[`${k}`].forEach((e) => {
+                Object.defineProperty(obj, e.x, {
+                    value: e.y
+                });
             });
             this.graphData.push(obj);
-            this.tooltip = document.createElement('div');
-            this.tooltip.setAttribute('class', 'tooltip');
+            this.tooltip = document.createElement("div");
+            this.tooltip.setAttribute("class", "tooltip");
             document.body.appendChild(this.tooltip);
         });
     }
@@ -63,7 +65,7 @@ export default class IDAGroupedBarGraph extends Component {
         const keys = this.data.xAxisLabels;
 
         const x0 = d3.scaleBand()
-            .domain(this.graphData.map(d => d[groupKey]))
+            .domain(this.graphData.map((d) => d.groupLabel))
             .rangeRound([this.margin.left, this.width - this.margin.right])
             .paddingInner(0.1);
 
@@ -73,7 +75,7 @@ export default class IDAGroupedBarGraph extends Component {
             .padding(0.05);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max(this.graphData, d => d3.max(keys, key => d[key]))]).nice()
+            .domain([0, d3.max(this.graphData, (d) => d3.max(keys, (key) => d[`${key}`]))]).nice()
             .rangeRound([this.height - this.margin.bottom, this.margin.top]);
 
         const color = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemeCategory10);
@@ -82,16 +84,16 @@ export default class IDAGroupedBarGraph extends Component {
             .selectAll("g")
             .data(this.graphData)
             .join("g")
-            .attr("transform", d => `translate(${x0(d[groupKey])},0)`)
+            .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`)
             .selectAll("rect")
-            .data(d => keys.map(key => ({ key, groupLabel: d[groupKey], originalGroupLabel: d["originalGroupLabel"], value: d[key] })))
+            .data((d) => keys.map((key) => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[`${key}`] })))
             .join("rect")
-            .attr("x", d => x1(d.key))
-            .attr("y", d => y(d.value))
+            .attr("x", (d) => x1(d.key))
+            .attr("y", (d) => y(d.value))
             .attr("width", x1.bandwidth())
-            .attr("height", d => y(0) - y(d.value))
-            .attr("fill", d => this.colorFunction(d.key))
-            .attr("tooltip-text", d => (d.originalGroupLabel + "\n" + d.key + ": " + d.value))
+            .attr("height", (d) => y(0) - y(d.value))
+            .attr("fill", (d) => this.colorFunction(d.key))
+            .attr("tooltip-text", (d) => (d.originalGroupLabel + "\n" + d.key + ": " + d.value))
             .on("mouseover", (event) => {
                 this.tooltip.style.display = "block";
                 this.tooltip.style.position = "absolute";
@@ -121,7 +123,7 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("x", 515)
             .attr("y", 15);
 
-        const xAxis = g => g
+        const xAxis = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x0).tickSizeOuter(0))
             .selectAll("text")
@@ -130,7 +132,7 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "end");
 
-        const yAxis = g => g
+        const yAxis = (g) => (g)
             .attr("transform", `translate(${this.margin.left},0)`)
             .call(d3.axisLeft(y).tickSizeOuter(0));
 
@@ -140,40 +142,10 @@ export default class IDAGroupedBarGraph extends Component {
         svg.append("g")
             .call(yAxis);
 
-        const legend = legendSvg => {
-            const g = legendSvg
-                .attr("transform", `translate(100,10)`)
-                .attr("text-anchor", "end")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", 10)
-                .selectAll("g")
-                .data(color.domain().slice())
-                .join("g")
-                .attr("transform", (d, i) => `translate(0,${i * 20})`);
-
-            g.append("rect")
-                .attr("x", -19)
-                .attr("width", 19)
-                .attr("height", 19)
-                .attr("fill", color);
-
-            g.append("text")
-                .attr("x", -24)
-                .attr("y", 9.5)
-                .attr("dy", "0.35em")
-                .text(d => d);
-        };
-
-        /* legendSvg.append("g")
-            .call(legend); */
     }
 
     render() {
         return <>
-            {/* <div className="legend-container" id="legend-container">
-            </div>
-            <div className="grouped-bargraph-container" id={this.containerId}>
-            </div> */}
             <Grid container>
                 <Hidden mdUp>
                     <Grid item xs={12}>
@@ -214,6 +186,6 @@ export default class IDAGroupedBarGraph extends Component {
                     </Grid>
                 </Hidden>
             </Grid>
-        </>
-    };
+        </>;
+    }
 }

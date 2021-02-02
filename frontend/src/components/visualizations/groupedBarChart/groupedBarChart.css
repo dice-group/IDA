@@ -27,15 +27,3 @@
   width: 100%;
   overflow-x: auto;
 }
-
-.grouped-bargraph-container {
-  max-width: 100%;
-  border: 1px solid black;
-  overflow: scroll;
-}
-
-.legend-item-sm-icon {
-  min-width: 10px;
-  min-height: 10px;
-  border-radius: 50%;
-}
