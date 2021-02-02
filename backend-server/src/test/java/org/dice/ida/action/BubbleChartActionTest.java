@@ -171,10 +171,14 @@ public class BubbleChartActionTest {
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		GroupedBubbleChartData groupedBubbleChartData = (GroupedBubbleChartData) chatMessageResponse.getPayload().get("bubbleChartData");
 		Map<String, List<BubbleChartItem>> groupedBubbleChartItems = new HashMap<>();
-		groupedBubbleChartItems.put("Recovered", new ArrayList<>(){{
-			add(new BubbleChartItem("Delhi", "Delhi", 45.0));
-			add(new BubbleChartItem("Telangana", "Telangana", 24.0));
-			add(new BubbleChartItem("Kerala", "Kerala", 6.666666666666667));
+		groupedBubbleChartItems.put("Delhi", new ArrayList<>(){{
+			add(new BubbleChartItem("Recovered", "Recovered", 45.0));
+		}});
+		groupedBubbleChartItems.put("Telangana", new ArrayList<>(){{
+			add(new BubbleChartItem("Recovered", "Recovered", 24.0));
+		}});
+		groupedBubbleChartItems.put("Kerala", new ArrayList<>(){{
+			add(new BubbleChartItem("Recovered", "Recovered", 6.666666666666667));
 		}});
 		assertNotNull(groupedBubbleChartData);
 		assertEquals(groupedBubbleChartData.getGroupedBubbleChartData().keySet(), groupedBubbleChartItems.keySet());
