@@ -19,763 +19,763 @@
 @prefix transformation_type: <https://www.upb.de/ida/viz/data/transformation_type/> .
 @prefix representational_type: <https://www.upb.de/ida/viz/data/representational_type/> .
 @prefix representation_tree_node: <https://www.upb.de/ida/viz/data/representation_tree_node/> .
-@base <https://www.upb.de/ida/viz/ontology/> .
 
-<https://www.upb.de/ida/viz/ontology/> rdf:type owl:Ontology ;
-                                        dc:title "Visualization Vocabulary"@en .
-
-#################################################################
-#    Annotation properties
-#################################################################
-
-###  http://purl.org/dc/elements/1.1/description
-dc:description rdf:type owl:AnnotationProperty .
-
-
-###  http://purl.org/dc/elements/1.1/title
-dc:title rdf:type owl:AnnotationProperty .
-
-
-#################################################################
-#    Object Properties
-#################################################################
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasChildNode
-ivoop:hasChildNode rdf:type owl:ObjectProperty ;
-                   rdfs:subPropertyOf owl:topObjectProperty ;
-                   rdfs:domain ivoc:RepresentationTreeNode ;
-                   rdfs:range ivoc:RepresentationTreeNode ;
-                   rdfs:comment "Describes a child node of a node in the representation tree of a parameter in a visualization technique"^^xsd:string ;
-                   rdfs:label "hasChildNode"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasInformation
-ivoop:hasInformation rdf:type owl:ObjectProperty ;
-                     rdfs:subPropertyOf owl:topObjectProperty ;
-                     rdfs:domain ivoc:Visualization ;
-                     rdfs:range ivoc:Information ;
-                     rdfs:label "hasInformation"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasInstance
-ivoop:hasInstance rdf:type owl:ObjectProperty ;
-                  rdfs:subPropertyOf owl:topObjectProperty ;
-                  rdfs:domain ivoc:Visualization ;
-                  rdfs:range ivoc:Instance ;
-                  rdfs:label "hasInstance"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasInstanceParam
-ivoop:hasInstanceParam rdf:type owl:ObjectProperty ;
-                       rdfs:subPropertyOf owl:topObjectProperty ;
-                       rdfs:domain ivoc:Instance ;
-                       rdfs:range ivoc:InstanceParam ;
-                       rdfs:label "hasInstanceParam"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasParam
-ivoop:hasParam rdf:type owl:ObjectProperty ;
-               rdfs:subPropertyOf owl:topObjectProperty ;
-               rdfs:domain ivoc:Visualization ;
-               rdfs:range ivoc:Parameter ;
-               rdfs:label "hasParam"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasParamTree
-ivoop:hasParamTree rdf:type owl:ObjectProperty ;
-                   rdfs:subPropertyOf owl:topObjectProperty ;
-                   rdfs:domain ivoc:Parameter ;
-                   rdfs:range ivoc:RepresentationTree ;
-                   rdfs:label "hasParamTree"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasParamType
-ivoop:hasParamType rdf:type owl:ObjectProperty ;
-                   rdfs:subPropertyOf owl:topObjectProperty ;
-                   rdfs:domain ivoc:Parameter ;
-                   rdfs:range ivoc:RepresentationalType ;
-                   rdfs:label "hasParamType"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasReference
-ivoop:hasReference rdf:type owl:ObjectProperty ;
-                   rdfs:subPropertyOf owl:topObjectProperty ;
-                   rdfs:domain ivoc:Information ;
-                   rdfs:range ivoc:Reference ;
-                   rdfs:comment "Describes a web resource for detailed information about the visualization technique"^^xsd:string ;
-                   rdfs:label "hasReference"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasRepType
-ivoop:hasRepType rdf:type owl:ObjectProperty ;
-                 rdfs:domain ivoc:InstanceParam ,
-                             ivoc:RepresentationTreeNode ;
-                 rdfs:range ivoc:RepresentationalType ;
-                 rdfs:label "hasRepType"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasRootNode
-ivoop:hasRootNode rdf:type owl:ObjectProperty ;
-                  rdfs:subPropertyOf owl:topObjectProperty ;
-                  rdfs:domain ivoc:RepresentationTree ;
-                  rdfs:range ivoc:RepresentationTreeNode ;
-                  rdfs:comment "Describes the root node of a representation tree of a parameter in a visualization technique"^^xsd:string ;
-                  rdfs:label "hasRootNode"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasTargetRepType
-ivoop:hasTargetRepType rdf:type owl:ObjectProperty ;
-                       rdfs:subPropertyOf owl:topObjectProperty ;
-                       rdfs:domain ivoc:Transformation ;
-                       rdfs:range ivoc:RepresentationalType ;
-                       rdfs:label "hasTargetRepType"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasTransformation
-ivoop:hasTransformation rdf:type owl:ObjectProperty ;
-                        rdfs:subPropertyOf owl:topObjectProperty ;
-                        rdfs:domain ivoc:InstanceParam ;
-                        rdfs:range ivoc:Transformation ;
-                        rdfs:label "hasTransformation"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasTransformationTarget
-ivoop:hasTransformationTarget rdf:type owl:ObjectProperty ;
-                              rdfs:subPropertyOf owl:topObjectProperty ;
-                              rdfs:domain ivoc:Transformation ;
-                              rdfs:range ivoc:Parameter ;
-                              rdfs:label "hasTransformationTarget"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/hasTransformationType
-ivoop:hasTransformationType rdf:type owl:ObjectProperty ;
-                            rdfs:subPropertyOf owl:topObjectProperty ;
-                            rdfs:domain ivoc:Transformation ;
-                            rdfs:range ivoc:TransformationType ;
-                            rdfs:label "hasTransformationType"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/object-property/representedParam
-ivoop:representedParam rdf:type owl:ObjectProperty ;
-                       rdfs:subPropertyOf owl:topObjectProperty ;
-                       rdfs:domain ivoc:InstanceParam ;
-                       rdfs:range ivoc:Parameter ;
-                       rdfs:label "representedParam" .
-
-
-#################################################################
-#    Data properties
-#################################################################
-
-###  https://www.upb.de/ida/viz/ontology/data-property/hasPriority
-ivodp:hasPriority rdf:type owl:DatatypeProperty ;
-                  rdfs:subPropertyOf owl:topDataProperty ;
-                  rdfs:domain ivoc:Parameter ;
-                  rdfs:range xsd:int ;
-                  rdfs:comment "Priority of the visualization parameter"@en ;
-                  rdfs:label "priority"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/data-property/link
-ivodp:link rdf:type owl:DatatypeProperty ;
-           rdfs:subPropertyOf owl:topDataProperty ;
-           rdfs:domain ivoc:Reference ;
-           rdfs:range xsd:string ;
-           rdfs:comment "link to a external resource for more info about the visualization technique"^^xsd:string ;
-           rdfs:label "link"@en .
-
-
-#################################################################
-#    Classes
-#################################################################
-
-###  https://www.upb.de/ida/viz/ontology/class/Information
-ivoc:Information rdf:type owl:Class ;
-                 dc:description "Describes an entity having information of a visualization technique"@en ;
-                 rdfs:label "Information"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/Instance
-ivoc:Instance rdf:type owl:Class ;
-              rdfs:label "Instance"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/InstanceParam
-ivoc:InstanceParam rdf:type owl:Class ;
-                   rdfs:label "InstanceParam"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/Parameter
-ivoc:Parameter rdf:type owl:Class ;
-               rdfs:label "Parameter"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/Reference
-ivoc:Reference rdf:type owl:Class ;
-               rdfs:label "Reference"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/RepresentationTree
-ivoc:RepresentationTree rdf:type owl:Class ;
-                        dc:description "Describes a representation tree of a particular parameter in a visualization technique"@en ;
-                        rdfs:label "RepresentationTree"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/RepresentationTreeNode
-ivoc:RepresentationTreeNode rdf:type owl:Class ;
-                            dc:description "Describes a node in a representation tree of a parameter in a visualization technique"@en ;
-                            rdfs:label "RepresentationTreeNode"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/RepresentationalType
-ivoc:RepresentationalType rdf:type owl:Class ;
-                          rdfs:label "RepresentationalType"@en .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/Transformation
-ivoc:Transformation rdf:type owl:Class ;
-                    rdfs:comment "Represents a transformation function" ;
-                    rdfs:label "Transformation" .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/TransformationType
-ivoc:TransformationType rdf:type owl:Class ;
-                        rdfs:label "TransformationType" .
-
-
-###  https://www.upb.de/ida/viz/ontology/class/Visualization
-ivoc:Visualization rdf:type owl:Class ;
-                   rdfs:subClassOf owl:Thing ;
-                   rdfs:label "Visualization"@en .
-
-
-#################################################################
-#    Individuals
-#################################################################
-
-###  https://www.upb.de/ida/viz/data/information/BarChart
-information:BarChart rdf:type owl:NamedIndividual ,
-                              ivoc:Information ;
-                     ivoop:hasReference reference:BarChart ;
-                     dc:description "A bar chart or bar graph is a chart that presents grouped data with rectangular bars with lengths proportional to the values that they represent."@en ;
-                     rdfs:label "Bar Chart Information"@en .
-
-
-###  https://www.upb.de/ida/viz/data/information/BubbleChart
-information:BubbleChart rdf:type owl:NamedIndividual ,
-                                 ivoc:Information ;
-                        ivoop:hasReference reference:BubbleChart ;
-                        dc:description "A bubble chart is a variation of a scatter chart in which the data points are replaced with bubbles, and an additional dimension of the data is represented in the size of the bubbles."@en ;
-                        rdfs:label "Bubble Chart Information"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bar_chart_1
-instance:bar_chart_1 rdf:type owl:NamedIndividual ,
-                              ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_unique ,
-                                            instance_param:y_axis_numeric ;
-                     rdfs:label "Bar Chart Instance 1"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bar_chart_2
-instance:bar_chart_2 rdf:type owl:NamedIndividual ,
-                              ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_bins ,
-                                            instance_param:y_axis_sumof ;
-                     rdfs:label "Bar Chart Instance 2"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bar_chart_3
-instance:bar_chart_3 rdf:type owl:NamedIndividual ,
-                              ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_bins ,
-                                            instance_param:y_axis_averageof ;
-                     rdfs:label "Bar Chart Instance 3"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bar_chart_4
-instance:bar_chart_4 rdf:type owl:NamedIndividual ,
-                              ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_bins ,
-                                            instance_param:y_axis_countof ;
-                     rdfs:label "Bar Chart Instance 4"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bar_chart_5
-instance:bar_chart_5 rdf:type owl:NamedIndividual ,
-                              ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_non_unique ,
-                                            instance_param:y_axis_averageof ;
-                     rdfs:label "Bar Chart Instance 5"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bar_chart_6
-instance:bar_chart_6 rdf:type owl:NamedIndividual ,
-                              ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_non_unique ,
-                                            instance_param:y_axis_countof ;
-                     rdfs:label "Bar Chart Instance 6"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bar_chart_7
-instance:bar_chart_7 rdf:type owl:NamedIndividual ,
-                              ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_non_unique ,
-                                            instance_param:y_axis_sumof ;
-                     rdfs:label "Bar Chart Instance 7"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bubble_chart_1
-instance:bubble_chart_1 rdf:type owl:NamedIndividual ,
-                                 ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:bubble_label_unique ,
-                                               instance_param:bubble_size_numeric ;
-                        rdfs:label "Bubble Chart Instance 1"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bubble_chart_2
-instance:bubble_chart_2 rdf:type owl:NamedIndividual ,
-                                 ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:bubble_label_bins ,
-                                               instance_param:bubble_size_sumof ;
-                        rdfs:label "Bubble Chart Instance 2"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bubble_chart_3
-instance:bubble_chart_3 rdf:type owl:NamedIndividual ,
-                                 ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:bubble_label_bins ,
-                                               instance_param:bubble_size_averageof ;
-                        rdfs:label "Bubble Chart Instance 3"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bubble_chart_4
-instance:bubble_chart_4 rdf:type owl:NamedIndividual ,
-                                 ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:bubble_label_bins ,
-                                               instance_param:bubble_size_countof ;
-                        rdfs:label "Bubble Chart Instance 4"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bubble_chart_5
-instance:bubble_chart_5 rdf:type owl:NamedIndividual ,
-                                 ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:bubble_label_non_unique ,
-                                               instance_param:bubble_size_averageof ;
-                        rdfs:label "Bubble Chart Instance 5"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bubble_chart_6
-instance:bubble_chart_6 rdf:type owl:NamedIndividual ,
-                                 ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:bubble_label_non_unique ,
-                                               instance_param:bubble_size_countof ;
-                        rdfs:label "Bubble Chart Instance 6"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance/bubble_chart_7
-instance:bubble_chart_7 rdf:type owl:NamedIndividual ,
-                                 ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:bubble_label_non_unique ,
-                                               instance_param:bubble_size_sumof ;
-                        rdfs:label "Bubble Chart Instance 7"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/bubble_label_bins
-instance_param:bubble_label_bins rdf:type owl:NamedIndividual ,
-                                          ivoc:InstanceParam ;
-                                 ivoop:hasRepType representational_type:Bins ;
-                                 ivoop:representedParam parameter:bubble_label ;
-                                 rdfs:label "Bubble label Bins"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/bubble_label_non_unique
-instance_param:bubble_label_non_unique rdf:type owl:NamedIndividual ,
-                                                ivoc:InstanceParam ;
-                                       ivoop:hasRepType representational_type:NonUnique ;
-                                       ivoop:representedParam parameter:bubble_label ;
-                                       rdfs:label "Bubble Labels Non Unique"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/bubble_label_unique
-instance_param:bubble_label_unique rdf:type owl:NamedIndividual ,
-                                            ivoc:InstanceParam ;
-                                   ivoop:hasRepType representational_type:Unique ;
-                                   ivoop:representedParam parameter:bubble_label ;
-                                   rdfs:label "Bubble label Unique"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/bubble_size_averageof
-instance_param:bubble_size_averageof rdf:type owl:NamedIndividual ,
-                                              ivoc:InstanceParam ;
-                                     ivoop:hasRepType representational_type:Transformation ;
-                                     ivoop:hasTransformation transformation:bubblechart_averageof ;
-                                     ivoop:representedParam parameter:bubble_size ;
-                                     rdfs:label "Bubble Size Averageof"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/bubble_size_countof
-instance_param:bubble_size_countof rdf:type owl:NamedIndividual ,
-                                            ivoc:InstanceParam ;
-                                   ivoop:hasRepType representational_type:Transformation ;
-                                   ivoop:hasTransformation transformation:bubblechart_countof ;
-                                   ivoop:representedParam parameter:bubble_size ;
-                                   rdfs:label "Bubble Size Countof"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/bubble_size_numeric
-instance_param:bubble_size_numeric rdf:type owl:NamedIndividual ,
-                                            ivoc:InstanceParam ;
-                                   ivoop:hasRepType representational_type:Numeric ;
-                                   ivoop:representedParam parameter:bubble_size ;
-                                   rdfs:label "Bubble Size Numeric"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/bubble_size_sumof
-instance_param:bubble_size_sumof rdf:type owl:NamedIndividual ,
-                                          ivoc:InstanceParam ;
-                                 ivoop:hasRepType representational_type:Transformation ;
-                                 ivoop:hasTransformation transformation:bubblechart_sumof ;
-                                 ivoop:representedParam parameter:bubble_size ;
-                                 rdfs:label "Bubble Size Sumof"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/x_axis_bins
-instance_param:x_axis_bins rdf:type owl:NamedIndividual ,
-                                    ivoc:InstanceParam ;
-                           ivoop:hasRepType representational_type:Bins ;
-                           ivoop:representedParam parameter:x_axis ;
-                           rdfs:label "X-Axis Bins"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/x_axis_non_unique
-instance_param:x_axis_non_unique rdf:type owl:NamedIndividual ,
-                                          ivoc:InstanceParam ;
-                                 ivoop:hasRepType representational_type:NonUnique ;
-                                 ivoop:representedParam parameter:x_axis ;
-                                 rdfs:label "X-Axis Non Unique"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/x_axis_unique
-instance_param:x_axis_unique rdf:type owl:NamedIndividual ,
-                                      ivoc:InstanceParam ;
-                             ivoop:hasRepType representational_type:Unique ;
-                             ivoop:representedParam parameter:x_axis ;
-                             rdfs:label "X-Axis Unique"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/y_axis_averageof
-instance_param:y_axis_averageof rdf:type owl:NamedIndividual ,
-                                         ivoc:InstanceParam ;
-                                ivoop:hasRepType representational_type:Transformation ;
-                                ivoop:hasTransformation transformation:bargraph_averageof ;
-                                ivoop:representedParam parameter:y_axis ;
-                                rdfs:label "Y-Axis Averageof"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/y_axis_countof
-instance_param:y_axis_countof rdf:type owl:NamedIndividual ,
-                                       ivoc:InstanceParam ;
-                              ivoop:hasRepType representational_type:Transformation ;
-                              ivoop:hasTransformation transformation:bargraph_countof ;
-                              ivoop:representedParam parameter:y_axis ;
-                              rdfs:label "Y-Axis Countof"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/y_axis_numeric
-instance_param:y_axis_numeric rdf:type owl:NamedIndividual ,
-                                       ivoc:InstanceParam ;
-                              ivoop:hasRepType representational_type:Numeric ;
-                              ivoop:representedParam parameter:y_axis ;
-                              rdfs:label "Y-Axis Numeric"@en .
-
-
-###  https://www.upb.de/ida/viz/data/instance_param/y_axis_sumof
-instance_param:y_axis_sumof rdf:type owl:NamedIndividual ,
-                                     ivoc:InstanceParam ;
-                            ivoop:hasRepType representational_type:Transformation ;
-                            ivoop:hasTransformation transformation:bargraph_sumof ;
-                            ivoop:representedParam parameter:y_axis ;
-                            rdfs:label "Y-Axis Sumof"@en .
-
-
-###  https://www.upb.de/ida/viz/data/parameter/bubble_label
-parameter:bubble_label rdf:type owl:NamedIndividual ,
-                                ivoc:Parameter ;
-                       ivoop:hasParamTree representation_tree:tree_1 ;
-                       ivoop:hasRepType representational_type:Categorical ;
-                       ivodp:hasPriority 1 ;
-                       rdfs:label "Bubble_Label"@en .
-
-
-###  https://www.upb.de/ida/viz/data/parameter/bubble_size
-parameter:bubble_size rdf:type owl:NamedIndividual ,
-                               ivoc:Parameter ;
-                      ivoop:hasRepType representational_type:Numeric ;
-                      ivodp:hasPriority 2 ;
-                      rdfs:label "Bubble_Size"@en .
-
-
-###  https://www.upb.de/ida/viz/data/parameter/x_axis
-parameter:x_axis rdf:type owl:NamedIndividual ,
-                          ivoc:Parameter ;
-                 ivoop:hasParamTree representation_tree:tree_1 ;
-                 ivoop:hasRepType representational_type:Categorical ;
-                 ivodp:hasPriority 1 ;
-                 rdfs:label "X-Axis"@en .
-
-
-###  https://www.upb.de/ida/viz/data/parameter/y_axis
-parameter:y_axis rdf:type owl:NamedIndividual ,
-                          ivoc:Parameter ;
-                 ivoop:hasRepType representational_type:Numeric ;
-                 ivodp:hasPriority 2 ;
-                 rdfs:label "Y-Axis"@en .
-
-
-###  https://www.upb.de/ida/viz/data/reference/BarChart
-reference:BarChart rdf:type owl:NamedIndividual ,
-                            ivoc:Reference ;
-                   ivodp:link "https://en.wikipedia.org/wiki/Bar_chart" ;
-                   rdfs:label "Bar Chart (Wikipedia)"@en .
-
-
-###  https://www.upb.de/ida/viz/data/reference/BubbleChart
-reference:BubbleChart rdf:type owl:NamedIndividual ,
-                               ivoc:Reference ;
-                      ivodp:link "https://en.wikipedia.org/wiki/Bubble_chart" ;
-                      rdfs:label "Bubble Chart (Wikipedia)"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree/tree_1
-representation_tree:tree_1 rdf:type owl:NamedIndividual ,
-                                    ivoc:RepresentationTree ;
-                           ivoop:hasRootNode representation_tree_node:categorical ;
-                           rdfs:label "Categorical data tree"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree_node/bins
-representation_tree_node:bins rdf:type owl:NamedIndividual ,
-                                       ivoc:RepresentationTreeNode ;
-                              ivoop:hasRepType representational_type:Bins ;
-                              rdfs:label "Bin Values"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree_node/categorical
-representation_tree_node:categorical rdf:type owl:NamedIndividual ,
-                                              ivoc:RepresentationTreeNode ;
-                                     ivoop:hasChildNode representation_tree_node:date ,
-                                                        representation_tree_node:nominal ,
-                                                        representation_tree_node:numeric ;
-                                     ivoop:hasRepType representational_type:Categorical ;
-                                     rdfs:label "Categorical Values"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree_node/date
-representation_tree_node:date rdf:type owl:NamedIndividual ,
-                                       ivoc:RepresentationTreeNode ;
-                              ivoop:hasChildNode representation_tree_node:bins ,
-                                                 representation_tree_node:nominal ;
-                              ivoop:hasRepType representational_type:Date ;
-                              rdfs:label "Date Values"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree_node/nominal
-representation_tree_node:nominal rdf:type owl:NamedIndividual ,
-                                          ivoc:RepresentationTreeNode ;
-                                 ivoop:hasChildNode representation_tree_node:non_unique ,
-                                                    representation_tree_node:unique ;
-                                 ivoop:hasRepType representational_type:Nominal ;
-                                 rdfs:label "Nominal Values"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree_node/non_unique
-representation_tree_node:non_unique rdf:type owl:NamedIndividual ,
-                                             ivoc:RepresentationTreeNode ;
-                                    ivoop:hasRepType representational_type:NonUnique ;
-                                    rdfs:label "Non Unique Values"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree_node/numeric
-representation_tree_node:numeric rdf:type owl:NamedIndividual ,
-                                          ivoc:RepresentationTreeNode ;
-                                 ivoop:hasChildNode representation_tree_node:bins ,
-                                                    representation_tree_node:nominal ;
-                                 ivoop:hasRepType representational_type:Numeric ;
-                                 rdfs:label "Numeric Values"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representation_tree_node/unique
-representation_tree_node:unique rdf:type owl:NamedIndividual ,
-                                         ivoc:RepresentationTreeNode ;
-                                ivoop:hasRepType representational_type:Unique ;
-                                rdfs:label "Unique Values"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/Bins
-representational_type:Bins rdf:type owl:NamedIndividual ,
-                                    ivoc:RepresentationalType ;
-                           rdfs:label "Bins"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/Categorical
-representational_type:Categorical rdf:type owl:NamedIndividual ,
-                                           ivoc:RepresentationalType ;
-                                  rdfs:label "Categorical"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/Date
-representational_type:Date rdf:type owl:NamedIndividual ,
-                                    ivoc:RepresentationalType ;
-                           rdfs:label "Date"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/Nominal
-representational_type:Nominal rdf:type owl:NamedIndividual ,
-                                       ivoc:RepresentationalType ;
-                              rdfs:label "Nominal"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/NonUnique
-representational_type:NonUnique rdf:type owl:NamedIndividual ,
-                                         ivoc:RepresentationalType ;
-                                rdfs:label "Non Unique"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/NotRequired
-representational_type:NotRequired rdf:type owl:NamedIndividual ,
-                                           ivoc:RepresentationalType ;
-                                  rdfs:label "Not Required"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/Numeric
-representational_type:Numeric rdf:type owl:NamedIndividual ,
-                                       ivoc:RepresentationalType ;
-                              rdfs:label "Numeric"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/Transformation
-representational_type:Transformation rdf:type owl:NamedIndividual ,
-                                              ivoc:RepresentationalType ;
-                                     rdfs:label "Transformation"@en .
-
-
-###  https://www.upb.de/ida/viz/data/representational_type/Unique
-representational_type:Unique rdf:type owl:NamedIndividual ,
-                                      ivoc:RepresentationalType ;
-                             rdfs:label "Unique"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation/bargraph_averageof
-transformation:bargraph_averageof rdf:type owl:NamedIndividual ,
-                                           ivoc:Transformation ;
-                                  ivoop:hasTargetRepType representational_type:Numeric ;
-                                  ivoop:hasTransformationTarget parameter:x_axis ;
-                                  ivoop:hasTransformationType transformation_type:average ;
-                                  rdfs:label "Average of a column on barchart"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation/bargraph_countof
-transformation:bargraph_countof rdf:type owl:NamedIndividual ,
-                                         ivoc:Transformation ;
-                                ivoop:hasTargetRepType representational_type:NotRequired ;
-                                ivoop:hasTransformationTarget parameter:x_axis ;
-                                ivoop:hasTransformationType transformation_type:countof ;
-                                rdfs:label "Count of X-axis on barchart"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation/bargraph_sumof
-transformation:bargraph_sumof rdf:type owl:NamedIndividual ,
-                                       ivoc:Transformation ;
-                              ivoop:hasTargetRepType representational_type:Numeric ;
-                              ivoop:hasTransformationTarget parameter:x_axis ;
-                              ivoop:hasTransformationType transformation_type:sumof ;
-                              rdfs:label "Sum of a column on bar graph"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation/bubblechart_averageof
-transformation:bubblechart_averageof rdf:type owl:NamedIndividual ,
-                                              ivoc:Transformation ;
-                                     ivoop:hasTargetRepType representational_type:Numeric ;
-                                     ivoop:hasTransformationTarget parameter:bubble_label ;
-                                     ivoop:hasTransformationType transformation_type:average ;
-                                     rdfs:label "Average of a column on bubble chart"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation/bubblechart_countof
-transformation:bubblechart_countof rdf:type owl:NamedIndividual ,
-                                            ivoc:Transformation ;
-                                   ivoop:hasTargetRepType representational_type:NotRequired ;
-                                   ivoop:hasTransformationTarget parameter:bubble_label ;
-                                   ivoop:hasTransformationType transformation_type:countof ;
-                                   rdfs:label "Count of labels on bubble chart"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation/bubblechart_sumof
-transformation:bubblechart_sumof rdf:type owl:NamedIndividual ,
-                                          ivoc:Transformation ;
-                                 ivoop:hasTargetRepType representational_type:Numeric ;
-                                 ivoop:hasTransformationTarget parameter:bubble_label ;
-                                 ivoop:hasTransformationType transformation_type:sumof ;
-                                 rdfs:label "Sum of a column on bubble chart"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation_type/average
-transformation_type:average rdf:type owl:NamedIndividual ,
-                                     ivoc:TransformationType ;
-                            rdfs:label "Average"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation_type/countof
-transformation_type:countof rdf:type owl:NamedIndividual ,
-                                     ivoc:TransformationType ;
-                            rdfs:label "Count Of"@en .
-
-
-###  https://www.upb.de/ida/viz/data/transformation_type/sumof
-transformation_type:sumof rdf:type owl:NamedIndividual ,
-                                   ivoc:TransformationType ;
-                          rdfs:label "Sum Of"@en .
-
-
-###  https://www.upb.de/ida/viz/data/visualization/bar_chart
-visualization:bar_chart rdf:type owl:NamedIndividual ,
-                                 ivoc:Visualization ;
-                        ivoop:hasInformation information:BarChart ;
-                        ivoop:hasInstance instance:bar_chart_1 ,
-                                          instance:bar_chart_2 ,
-                                          instance:bar_chart_3 ,
-                                          instance:bar_chart_4 ,
-                                          instance:bar_chart_5 ,
-                                          instance:bar_chart_6 ,
-                                          instance:bar_chart_7 ;
-                        ivoop:hasParam parameter:x_axis ,
-                                       parameter:y_axis ;
-                        rdfs:label "Bar Chart"@en .
-
-
-###  https://www.upb.de/ida/viz/data/visualization/bubble_chart
-visualization:bubble_chart rdf:type owl:NamedIndividual ,
-                                    ivoc:Visualization ;
-                           ivoop:hasInformation information:BubbleChart ;
-                           ivoop:hasInstance instance:bubble_chart_1 ,
-                                             instance:bubble_chart_2 ,
-                                             instance:bubble_chart_3 ,
-                                             instance:bubble_chart_4 ,
-                                             instance:bubble_chart_5 ,
-                                             instance:bubble_chart_6 ,
-                                             instance:bubble_chart_7 ;
-                           ivoop:hasParam parameter:bubble_label ,
-                                          parameter:bubble_size ;
-                           rdfs:label "Bubble Chart"@en .
-
-
-#################################################################
-#    Annotations
-#################################################################
-
-<https://www.upb.de/ida/ontology/DataType> rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string ;
-                                           rdfs:label "data type"^^xsd:string .
-
-
-###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
+<https://www.upb.de/ida/viz/ontology/> a owl:Ontology ;
+	dc:title "Visualization Vocabulary"@en .
+# 
+# 
+# #################################################################
+# #
+# #    Annotation properties
+# #
+# #################################################################
+# 
+# 
+# http://purl.org/dc/elements/1.1/description
+
+dc:description a owl:AnnotationProperty .
+# 
+# http://purl.org/dc/elements/1.1/title
+
+dc:title a owl:AnnotationProperty .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Object Properties
+# #
+# #################################################################
+# 
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasChildNode
+
+ivoop:hasChildNode a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:RepresentationTreeNode ;
+	rdfs:range ivoc:RepresentationTreeNode ;
+	rdfs:comment "Describes a child node of a node in the representation tree of a parameter in a visualization technique"^^xsd:string ;
+	rdfs:label "hasChildNode"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasInformation
+
+ivoop:hasInformation a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Visualization ;
+	rdfs:range ivoc:Information ;
+	rdfs:label "hasInformation"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasInstance
+
+ivoop:hasInstance a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Visualization ;
+	rdfs:range ivoc:Instance ;
+	rdfs:label "hasInstance"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasInstanceParam
+
+ivoop:hasInstanceParam a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Instance ;
+	rdfs:range ivoc:InstanceParam ;
+	rdfs:label "hasInstanceParam"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasParam
+
+ivoop:hasParam a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Visualization ;
+	rdfs:range ivoc:Parameter ;
+	rdfs:label "hasParam"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasParamTree
+
+ivoop:hasParamTree a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Parameter ;
+	rdfs:range ivoc:RepresentationTree ;
+	rdfs:label "hasParamTree"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasParamType
+
+ivoop:hasParamType a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Parameter ;
+	rdfs:range ivoc:RepresentationalType ;
+	rdfs:label "hasParamType"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasReference
+
+ivoop:hasReference a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Information ;
+	rdfs:range ivoc:Reference ;
+	rdfs:comment "Describes a web resource for detailed information about the visualization technique"^^xsd:string ;
+	rdfs:label "hasReference"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasRepType
+
+ivoop:hasRepType a owl:ObjectProperty ;
+	rdfs:domain ivoc:InstanceParam , ivoc:RepresentationTreeNode ;
+	rdfs:range ivoc:RepresentationalType ;
+	rdfs:label "hasRepType"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasRootNode
+
+ivoop:hasRootNode a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:RepresentationTree ;
+	rdfs:range ivoc:RepresentationTreeNode ;
+	rdfs:comment "Describes the root node of a representation tree of a parameter in a visualization technique"^^xsd:string ;
+	rdfs:label "hasRootNode"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasTargetRepType
+
+ivoop:hasTargetRepType a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Transformation ;
+	rdfs:range ivoc:RepresentationalType ;
+	rdfs:label "hasTargetRepType"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasTransformation
+
+ivoop:hasTransformation a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:InstanceParam ;
+	rdfs:range ivoc:Transformation ;
+	rdfs:label "hasTransformation"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasTransformationTarget
+
+ivoop:hasTransformationTarget a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Transformation ;
+	rdfs:range ivoc:Parameter ;
+	rdfs:label "hasTransformationTarget"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/hasTransformationType
+
+ivoop:hasTransformationType a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:Transformation ;
+	rdfs:range ivoc:TransformationType ;
+	rdfs:label "hasTransformationType"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/object-property/representedParam
+
+ivoop:representedParam a owl:ObjectProperty ;
+	rdfs:subPropertyOf owl:topObjectProperty ;
+	rdfs:domain ivoc:InstanceParam ;
+	rdfs:range ivoc:Parameter ;
+	rdfs:label "representedParam" .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Data properties
+# #
+# #################################################################
+# 
+# 
+# https://www.upb.de/ida/viz/ontology/data-property/hasPriority
+
+ivodp:hasPriority a owl:DatatypeProperty ;
+	rdfs:subPropertyOf owl:topDataProperty ;
+	rdfs:domain ivoc:Parameter ;
+	rdfs:range xsd:int ;
+	rdfs:comment "Priority of the visualization parameter"@en ;
+	rdfs:label "priority"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/data-property/link
+
+ivodp:link a owl:DatatypeProperty ;
+	rdfs:subPropertyOf owl:topDataProperty ;
+	rdfs:domain ivoc:Reference ;
+	rdfs:range xsd:string ;
+	rdfs:comment "link to a external resource for more info about the visualization technique"^^xsd:string ;
+	rdfs:label "link"@en .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Classes
+# #
+# #################################################################
+# 
+# 
+# https://www.upb.de/ida/viz/ontology/class/Information
+
+ivoc:Information a owl:Class ;
+	dc:description "Describes an entity having information of a visualization technique"@en ;
+	rdfs:label "Information"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/Instance
+
+ivoc:Instance a owl:Class ;
+	rdfs:label "Instance"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/InstanceParam
+
+ivoc:InstanceParam a owl:Class ;
+	rdfs:label "InstanceParam"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/Parameter
+
+ivoc:Parameter a owl:Class ;
+	rdfs:label "Parameter"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/Reference
+
+ivoc:Reference a owl:Class ;
+	rdfs:label "Reference"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/RepresentationTree
+
+ivoc:RepresentationTree a owl:Class ;
+	dc:description "Describes a representation tree of a particular parameter in a visualization technique"@en ;
+	rdfs:label "RepresentationTree"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/RepresentationTreeNode
+
+ivoc:RepresentationTreeNode a owl:Class ;
+	dc:description "Describes a node in a representation tree of a parameter in a visualization technique"@en ;
+	rdfs:label "RepresentationTreeNode"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/RepresentationalType
+
+ivoc:RepresentationalType a owl:Class ;
+	rdfs:label "RepresentationalType"@en .
+# 
+# https://www.upb.de/ida/viz/ontology/class/Transformation
+
+ivoc:Transformation a owl:Class ;
+	rdfs:comment "Represents a transformation function" ;
+	rdfs:label "Transformation" .
+# 
+# https://www.upb.de/ida/viz/ontology/class/TransformationType
+
+ivoc:TransformationType a owl:Class ;
+	rdfs:label "TransformationType" .
+# 
+# https://www.upb.de/ida/viz/ontology/class/Visualization
+
+ivoc:Visualization a owl:Class ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:label "Visualization"@en .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Individuals
+# #
+# #################################################################
+# 
+# 
+# http://www.upb.de/ida/viz/data/information/ScatterPlot
+
+<http://www.upb.de/ida/viz/data/information/ScatterPlot> a owl:NamedIndividual , ivoc:Information ;
+	ivoop:hasReference <http://www.upb.de/ida/viz/data/reference/ScatterPlot> ;
+	dc:description "A scatter plot is a type of plot or mathematical diagram using Cartesian coordinates to display values for typically two variables for a set of data." ;
+	rdfs:label "Scatter Plot Information" .
+# 
+# http://www.upb.de/ida/viz/data/instance/scatter_plot_1
+
+<http://www.upb.de/ida/viz/data/instance/scatter_plot_1> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam <http://www.upb.de/ida/viz/data/instance_param/y_axis_not_required> , instance_param:x_axis_unique ;
+	rdfs:label "Scatter Plot Instance 1" .
+# 
+# http://www.upb.de/ida/viz/data/instance/scatter_plot_2
+
+<http://www.upb.de/ida/viz/data/instance/scatter_plot_2> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_sumof ;
+	rdfs:label "Scatter Plot Instance 2" .
+# 
+# http://www.upb.de/ida/viz/data/instance/scatter_plot_3
+
+<http://www.upb.de/ida/viz/data/instance/scatter_plot_3> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_averageof ;
+	rdfs:label "Scatter Plot Instance 3" .
+# 
+# http://www.upb.de/ida/viz/data/instance/scatter_plot_4
+
+<http://www.upb.de/ida/viz/data/instance/scatter_plot_4> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_countof ;
+	rdfs:label "Scatter Plot Instance 4" .
+# 
+# http://www.upb.de/ida/viz/data/instance/scatter_plot_5
+
+<http://www.upb.de/ida/viz/data/instance/scatter_plot_5> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_averageof ;
+	rdfs:label "Scatter Plot Instance 5" .
+# 
+# http://www.upb.de/ida/viz/data/instance/scatter_plot_6
+
+<http://www.upb.de/ida/viz/data/instance/scatter_plot_6> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_countof ;
+	rdfs:label "Scatter Plot Instance 6" .
+# 
+# http://www.upb.de/ida/viz/data/instance/scatter_plot_7
+
+<http://www.upb.de/ida/viz/data/instance/scatter_plot_7> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_sumof ;
+	rdfs:label "Scatter Plot Instance 7" .
+# 
+# http://www.upb.de/ida/viz/data/instance_param/y_axis_not_required
+
+<http://www.upb.de/ida/viz/data/instance_param/y_axis_not_required> a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:NotRequired ;
+	ivoop:representedParam parameter:y_axis ;
+	rdfs:label "Y-Axis Not Required" .
+# 
+# http://www.upb.de/ida/viz/data/reference/ScatterPlot
+
+<http://www.upb.de/ida/viz/data/reference/ScatterPlot> a owl:NamedIndividual , ivoc:Reference ;
+	ivodp:link "https://en.wikipedia.org/wiki/Scatter_plot" ;
+	rdfs:label "Scatter Plot (Wikipedia)" .
+# 
+# http://www.upb.de/ida/viz/data/visualization/scatter_plot
+
+<http://www.upb.de/ida/viz/data/visualization/scatter_plot> a owl:NamedIndividual , ivoc:Visualization ;
+	ivoop:hasInformation <http://www.upb.de/ida/viz/data/information/ScatterPlot> ;
+	ivoop:hasInstance <http://www.upb.de/ida/viz/data/instance/scatter_plot_1> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_2> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_3> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_4> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_5> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_6> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_7> ;
+	ivoop:hasParam parameter:x_axis , parameter:y_axis ;
+	rdfs:label "Scatter plot" .
+# 
+# https://www.upb.de/ida/viz/data/information/BarChart
+
+information:BarChart a owl:NamedIndividual , ivoc:Information ;
+	ivoop:hasReference reference:BarChart ;
+	dc:description "A bar chart or bar graph is a chart that presents grouped data with rectangular bars with lengths proportional to the values that they represent."@en ;
+	rdfs:label "Bar Chart Information"@en .
+# 
+# https://www.upb.de/ida/viz/data/information/BubbleChart
+
+information:BubbleChart a owl:NamedIndividual , ivoc:Information ;
+	ivoop:hasReference reference:BubbleChart ;
+	dc:description "A bubble chart is a variation of a scatter chart in which the data points are replaced with bubbles, and an additional dimension of the data is represented in the size of the bubbles."@en ;
+	rdfs:label "Bubble Chart Information"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bar_chart_1
+
+instance:bar_chart_1 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_unique , instance_param:y_axis_numeric ;
+	rdfs:label "Bar Chart Instance 1"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bar_chart_2
+
+instance:bar_chart_2 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_sumof ;
+	rdfs:label "Bar Chart Instance 2"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bar_chart_3
+
+instance:bar_chart_3 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_averageof ;
+	rdfs:label "Bar Chart Instance 3"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bar_chart_4
+
+instance:bar_chart_4 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_countof ;
+	rdfs:label "Bar Chart Instance 4"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bar_chart_5
+
+instance:bar_chart_5 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_averageof ;
+	rdfs:label "Bar Chart Instance 5"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bar_chart_6
+
+instance:bar_chart_6 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_countof ;
+	rdfs:label "Bar Chart Instance 6"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bar_chart_7
+
+instance:bar_chart_7 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_sumof ;
+	rdfs:label "Bar Chart Instance 7"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bubble_chart_1
+
+instance:bubble_chart_1 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:bubble_label_unique , instance_param:bubble_size_numeric ;
+	rdfs:label "Bubble Chart Instance 1"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bubble_chart_2
+
+instance:bubble_chart_2 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:bubble_label_bins , instance_param:bubble_size_sumof ;
+	rdfs:label "Bubble Chart Instance 2"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bubble_chart_3
+
+instance:bubble_chart_3 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:bubble_label_bins , instance_param:bubble_size_averageof ;
+	rdfs:label "Bubble Chart Instance 3"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bubble_chart_4
+
+instance:bubble_chart_4 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:bubble_label_bins , instance_param:bubble_size_countof ;
+	rdfs:label "Bubble Chart Instance 4"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bubble_chart_5
+
+instance:bubble_chart_5 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:bubble_label_non_unique , instance_param:bubble_size_averageof ;
+	rdfs:label "Bubble Chart Instance 5"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bubble_chart_6
+
+instance:bubble_chart_6 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:bubble_label_non_unique , instance_param:bubble_size_countof ;
+	rdfs:label "Bubble Chart Instance 6"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance/bubble_chart_7
+
+instance:bubble_chart_7 a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam instance_param:bubble_label_non_unique , instance_param:bubble_size_sumof ;
+	rdfs:label "Bubble Chart Instance 7"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/bubble_label_bins
+
+instance_param:bubble_label_bins a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Bins ;
+	ivoop:representedParam parameter:bubble_label ;
+	rdfs:label "Bubble label Bins"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/bubble_label_non_unique
+
+instance_param:bubble_label_non_unique a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:NonUnique ;
+	ivoop:representedParam parameter:bubble_label ;
+	rdfs:label "Bubble Labels Non Unique"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/bubble_label_unique
+
+instance_param:bubble_label_unique a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Unique ;
+	ivoop:representedParam parameter:bubble_label ;
+	rdfs:label "Bubble label Unique"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/bubble_size_averageof
+
+instance_param:bubble_size_averageof a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Transformation ;
+	ivoop:hasTransformation transformation:bubblechart_averageof ;
+	ivoop:representedParam parameter:bubble_size ;
+	rdfs:label "Bubble Size Averageof"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/bubble_size_countof
+
+instance_param:bubble_size_countof a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Transformation ;
+	ivoop:hasTransformation transformation:bubblechart_countof ;
+	ivoop:representedParam parameter:bubble_size ;
+	rdfs:label "Bubble Size Countof"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/bubble_size_numeric
+
+instance_param:bubble_size_numeric a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Numeric ;
+	ivoop:representedParam parameter:bubble_size ;
+	rdfs:label "Bubble Size Numeric"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/bubble_size_sumof
+
+instance_param:bubble_size_sumof a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Transformation ;
+	ivoop:hasTransformation transformation:bubblechart_sumof ;
+	ivoop:representedParam parameter:bubble_size ;
+	rdfs:label "Bubble Size Sumof"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/x_axis_bins
+
+instance_param:x_axis_bins a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Bins ;
+	ivoop:representedParam parameter:x_axis ;
+	rdfs:label "X-Axis Bins"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/x_axis_non_unique
+
+instance_param:x_axis_non_unique a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:NonUnique ;
+	ivoop:representedParam parameter:x_axis ;
+	rdfs:label "X-Axis Non Unique"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/x_axis_unique
+
+instance_param:x_axis_unique a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Unique ;
+	ivoop:representedParam parameter:x_axis ;
+	rdfs:label "X-Axis Unique"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/y_axis_averageof
+
+instance_param:y_axis_averageof a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Transformation ;
+	ivoop:hasTransformation transformation:bargraph_averageof ;
+	ivoop:representedParam parameter:y_axis ;
+	rdfs:label "Y-Axis Averageof"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/y_axis_countof
+
+instance_param:y_axis_countof a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Transformation ;
+	ivoop:hasTransformation transformation:bargraph_countof ;
+	ivoop:representedParam parameter:y_axis ;
+	rdfs:label "Y-Axis Countof"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/y_axis_numeric
+
+instance_param:y_axis_numeric a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Numeric ;
+	ivoop:representedParam parameter:y_axis ;
+	rdfs:label "Y-Axis Numeric"@en .
+# 
+# https://www.upb.de/ida/viz/data/instance_param/y_axis_sumof
+
+instance_param:y_axis_sumof a owl:NamedIndividual , ivoc:InstanceParam ;
+	ivoop:hasRepType representational_type:Transformation ;
+	ivoop:hasTransformation transformation:bargraph_sumof ;
+	ivoop:representedParam parameter:y_axis ;
+	rdfs:label "Y-Axis Sumof"@en .
+# 
+# https://www.upb.de/ida/viz/data/parameter/bubble_label
+
+parameter:bubble_label a owl:NamedIndividual , ivoc:Parameter ;
+	ivoop:hasParamTree representation_tree:tree_1 ;
+	ivoop:hasRepType representational_type:Categorical ;
+	ivodp:hasPriority "1"^^xsd:integer ;
+	rdfs:label "Bubble_Label"@en .
+# 
+# https://www.upb.de/ida/viz/data/parameter/bubble_size
+
+parameter:bubble_size a owl:NamedIndividual , ivoc:Parameter ;
+	ivoop:hasRepType representational_type:Numeric ;
+	ivodp:hasPriority "2"^^xsd:integer ;
+	rdfs:label "Bubble_Size"@en .
+# 
+# https://www.upb.de/ida/viz/data/parameter/x_axis
+
+parameter:x_axis a owl:NamedIndividual , ivoc:Parameter ;
+	ivoop:hasParamTree representation_tree:tree_1 ;
+	ivoop:hasRepType representational_type:Categorical ;
+	ivodp:hasPriority "1"^^xsd:integer ;
+	rdfs:label "X-Axis"@en .
+# 
+# https://www.upb.de/ida/viz/data/parameter/y_axis
+
+parameter:y_axis a owl:NamedIndividual , ivoc:Parameter ;
+	ivoop:hasRepType representational_type:Numeric ;
+	ivodp:hasPriority "2"^^xsd:integer ;
+	rdfs:label "Y-Axis"@en .
+# 
+# https://www.upb.de/ida/viz/data/reference/BarChart
+
+reference:BarChart a owl:NamedIndividual , ivoc:Reference ;
+	ivodp:link "https://en.wikipedia.org/wiki/Bar_chart" ;
+	rdfs:label "Bar Chart (Wikipedia)"@en .
+# 
+# https://www.upb.de/ida/viz/data/reference/BubbleChart
+
+reference:BubbleChart a owl:NamedIndividual , ivoc:Reference ;
+	ivodp:link "https://en.wikipedia.org/wiki/Bubble_chart" ;
+	rdfs:label "Bubble Chart (Wikipedia)"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree/tree_1
+
+representation_tree:tree_1 a owl:NamedIndividual , ivoc:RepresentationTree ;
+	ivoop:hasRootNode representation_tree_node:categorical ;
+	rdfs:label "Categorical data tree"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree_node/bins
+
+representation_tree_node:bins a owl:NamedIndividual , ivoc:RepresentationTreeNode ;
+	ivoop:hasRepType representational_type:Bins ;
+	rdfs:label "Bin Values"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree_node/categorical
+
+representation_tree_node:categorical a owl:NamedIndividual , ivoc:RepresentationTreeNode ;
+	ivoop:hasChildNode representation_tree_node:date , representation_tree_node:nominal , representation_tree_node:numeric ;
+	ivoop:hasRepType representational_type:Categorical ;
+	rdfs:label "Categorical Values"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree_node/date
+
+representation_tree_node:date a owl:NamedIndividual , ivoc:RepresentationTreeNode ;
+	ivoop:hasChildNode representation_tree_node:bins , representation_tree_node:nominal ;
+	ivoop:hasRepType representational_type:Date ;
+	rdfs:label "Date Values"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree_node/nominal
+
+representation_tree_node:nominal a owl:NamedIndividual , ivoc:RepresentationTreeNode ;
+	ivoop:hasChildNode representation_tree_node:non_unique , representation_tree_node:unique ;
+	ivoop:hasRepType representational_type:Nominal ;
+	rdfs:label "Nominal Values"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree_node/non_unique
+
+representation_tree_node:non_unique a owl:NamedIndividual , ivoc:RepresentationTreeNode ;
+	ivoop:hasRepType representational_type:NonUnique ;
+	rdfs:label "Non Unique Values"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree_node/numeric
+
+representation_tree_node:numeric a owl:NamedIndividual , ivoc:RepresentationTreeNode ;
+	ivoop:hasChildNode representation_tree_node:bins , representation_tree_node:nominal ;
+	ivoop:hasRepType representational_type:Numeric ;
+	rdfs:label "Numeric Values"@en .
+# 
+# https://www.upb.de/ida/viz/data/representation_tree_node/unique
+
+representation_tree_node:unique a owl:NamedIndividual , ivoc:RepresentationTreeNode ;
+	ivoop:hasRepType representational_type:Unique ;
+	rdfs:label "Unique Values"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/Bins
+
+representational_type:Bins a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Bins"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/Categorical
+
+representational_type:Categorical a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Categorical"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/Date
+
+representational_type:Date a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Date"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/Nominal
+
+representational_type:Nominal a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Nominal"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/NonUnique
+
+representational_type:NonUnique a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Non Unique"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/NotRequired
+
+representational_type:NotRequired a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Not Required"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/Numeric
+
+representational_type:Numeric a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Numeric"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/Transformation
+
+representational_type:Transformation a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Transformation"@en .
+# 
+# https://www.upb.de/ida/viz/data/representational_type/Unique
+
+representational_type:Unique a owl:NamedIndividual , ivoc:RepresentationalType ;
+	rdfs:label "Unique"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation/bargraph_averageof
+
+transformation:bargraph_averageof a owl:NamedIndividual , ivoc:Transformation ;
+	ivoop:hasTargetRepType representational_type:Numeric ;
+	ivoop:hasTransformationTarget parameter:x_axis ;
+	ivoop:hasTransformationType transformation_type:average ;
+	rdfs:label "Average of a column on barchart"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation/bargraph_countof
+
+transformation:bargraph_countof a owl:NamedIndividual , ivoc:Transformation ;
+	ivoop:hasTargetRepType representational_type:NotRequired ;
+	ivoop:hasTransformationTarget parameter:x_axis ;
+	ivoop:hasTransformationType transformation_type:countof ;
+	rdfs:label "Count of X-axis on barchart"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation/bargraph_sumof
+
+transformation:bargraph_sumof a owl:NamedIndividual , ivoc:Transformation ;
+	ivoop:hasTargetRepType representational_type:Numeric ;
+	ivoop:hasTransformationTarget parameter:x_axis ;
+	ivoop:hasTransformationType transformation_type:sumof ;
+	rdfs:label "Sum of a column on bar graph"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation/bubblechart_averageof
+
+transformation:bubblechart_averageof a owl:NamedIndividual , ivoc:Transformation ;
+	ivoop:hasTargetRepType representational_type:Numeric ;
+	ivoop:hasTransformationTarget parameter:bubble_label ;
+	ivoop:hasTransformationType transformation_type:average ;
+	rdfs:label "Average of a column on bubble chart"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation/bubblechart_countof
+
+transformation:bubblechart_countof a owl:NamedIndividual , ivoc:Transformation ;
+	ivoop:hasTargetRepType representational_type:NotRequired ;
+	ivoop:hasTransformationTarget parameter:bubble_label ;
+	ivoop:hasTransformationType transformation_type:countof ;
+	rdfs:label "Count of labels on bubble chart"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation/bubblechart_sumof
+
+transformation:bubblechart_sumof a owl:NamedIndividual , ivoc:Transformation ;
+	ivoop:hasTargetRepType representational_type:Numeric ;
+	ivoop:hasTransformationTarget parameter:bubble_label ;
+	ivoop:hasTransformationType transformation_type:sumof ;
+	rdfs:label "Sum of a column on bubble chart"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation_type/average
+
+transformation_type:average a owl:NamedIndividual , ivoc:TransformationType ;
+	rdfs:label "Average"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation_type/countof
+
+transformation_type:countof a owl:NamedIndividual , ivoc:TransformationType ;
+	rdfs:label "Count Of"@en .
+# 
+# https://www.upb.de/ida/viz/data/transformation_type/sumof
+
+transformation_type:sumof a owl:NamedIndividual , ivoc:TransformationType ;
+	rdfs:label "Sum Of"@en .
+# 
+# https://www.upb.de/ida/viz/data/visualization/bar_chart
+
+visualization:bar_chart a owl:NamedIndividual , ivoc:Visualization ;
+	ivoop:hasInformation information:BarChart ;
+	ivoop:hasInstance instance:bar_chart_1 , instance:bar_chart_2 , instance:bar_chart_3 , instance:bar_chart_4 , instance:bar_chart_5 , instance:bar_chart_6 , instance:bar_chart_7 ;
+	ivoop:hasParam parameter:x_axis , parameter:y_axis ;
+	rdfs:label "Bar Chart"@en .
+# 
+# https://www.upb.de/ida/viz/data/visualization/bubble_chart
+
+visualization:bubble_chart a owl:NamedIndividual , ivoc:Visualization ;
+	ivoop:hasInformation information:BubbleChart ;
+	ivoop:hasInstance instance:bubble_chart_1 , instance:bubble_chart_2 , instance:bubble_chart_3 , instance:bubble_chart_4 , instance:bubble_chart_5 , instance:bubble_chart_6 , instance:bubble_chart_7 ;
+	ivoop:hasParam parameter:bubble_label , parameter:bubble_size ;
+	rdfs:label "Bubble Chart"@en .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Annotations
+# #
+# #################################################################
+# 
+# 
+
+<https://www.upb.de/ida/ontology/DataType> rdfs:label "data type"^^xsd:string ;
+	rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string .
+# 
+# Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
