@@ -6,6 +6,7 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.model.Intent;
 import org.dice.ida.model.LableComparator;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
@@ -13,6 +14,8 @@ import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
 import org.dice.ida.model.groupedbargraph.GroupedBarGraphData;
 import org.dice.ida.model.groupedbubblechart.GroupedBubbleChartData;
+import org.dice.ida.model.scatterplot.ScatterPlotData;
+import org.dice.ida.model.scatterplot.ScatterPlotItem;
 import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.RDFUtil;
@@ -97,7 +100,8 @@ public class VisualizeAction implements Action {
 				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 			} else {
-				attributeList = new RDFUtil().getAttributeList(paramMap.get(IDAConst.INTENT_NAME).toString());
+				String intent = paramMap.get(IDAConst.INTENT_NAME).toString();
+				attributeList = new RDFUtil().getAttributeList(intent);
 				List<String> columnNameList = getColumnNames(attributeList, paramMap);
 				List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
 				columnMap = columnDetail.get(0);
@@ -106,7 +110,7 @@ public class VisualizeAction implements Action {
 				if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
 					getParameters(paramMap);
 					groupingNeeded = false;
-					if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) &&
+					if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) && !intent.equals(Intent.SCATTERPLOT.getKey()) &&
 							!handleGroupingLogic(chatMessageResponse, paramMap)) {
 						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 						return;
@@ -143,6 +147,12 @@ public class VisualizeAction implements Action {
 								chatMessageResponse.setUiAction(IDAConst.UIA_BUBBLECHART);
 							}
 							chatMessageResponse.setMessage(IDAConst.BC_LOADED);
+							break;
+						case IDAConst.VIZ_TYPE_SCATTER_PLOT:
+							createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
+							createScatterPlotResponse();
+							chatMessageResponse.setUiAction(IDAConst.UIA_SCATTERPLOT);
+							chatMessageResponse.setMessage(IDAConst.SCATTER_PLOT_LOADED);
 							break;
 						default:
 							chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
@@ -823,6 +833,24 @@ public class VisualizeAction implements Action {
 		}
 		List<String> xAxisLabels = groupedGraphItems.get(groupedGraphItems.keySet().iterator().next()).keySet().stream().sorted(comparator).collect(Collectors.toList());
 		payload.put("barGraphData", new GroupedBarGraphData(graphLabel, xAxisColumn, yAxisLabel, xAxisLabels, groupedBarChartData));
+	}
+
+	/**
+	 * Method to create a response object for scatter plot
+	 */
+	private void createScatterPlotResponse() {
+		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM);
+		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
+		String xAxisColumnType = parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+		String yAxisColumnType = parameterTypeMap.get(IDAConst.Y_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+		String yAxisLabel = IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(xAxisColumnType) ? yAxisColumn : yAxisColumnType + " " + yAxisColumn;
+		String graphLabel = "Scatter plot for " + xAxisColumn + " and " + yAxisLabel;
+		List<ScatterPlotItem> ScatterPlotItemList = new ArrayList<>();
+		for (String label : graphItems.keySet().stream().sorted(comparator).collect(Collectors.toList())) {
+			ScatterPlotItemList.add(new ScatterPlotItem(label, graphItems.get(label)));
+		}
+		payload.put("ScatterPlotData", new ScatterPlotData(graphLabel, ScatterPlotItemList, xAxisColumn, yAxisLabel));
+
 	}
 
 	/**
