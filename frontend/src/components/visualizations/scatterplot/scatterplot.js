@@ -129,9 +129,9 @@ export default class IDAScatterPLot extends Component {
       .data(this.graphData.items)
       .enter()
       .append("circle")
-      .attr("cx", function (d) { return scaleX(d.x)+40; } )
+      .attr("cx", function (d) { return scaleX(d.x)+11; } )
       // .attr("cy", function (d) { return scaleY(d.y); } )
-      .attr("cy", (d) => scaleY(d.y) )
+      .attr("cy", (d) => scaleY(d.y)-2 )
       .attr("r",3.0)
       .attr("fill", "#4f8bff")
 
