@@ -339,20 +339,12 @@ public class BarGraphActionTest {
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		GroupedBarGraphData groupedBarGraphData = (GroupedBarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		Map<String, List<BarGraphItem>> groupedBarChartItems = new HashMap<>();
-		groupedBarChartItems.put("Delhi", new ArrayList<>(){{
-			add(new BarGraphItem("Recovered", 1.0));
-		}});
-		groupedBarChartItems.put("Haryana", new ArrayList<>(){{
-			add(new BarGraphItem("Recovered", 4.0));
-		}});
-		groupedBarChartItems.put("Kerala", new ArrayList<>(){{
-			add(new BarGraphItem("Recovered", 3.0));
-		}});
-		groupedBarChartItems.put("Rajasthan", new ArrayList<>(){{
-			add(new BarGraphItem("Recovered", 1.0));
-		}});
-		groupedBarChartItems.put("Telangana", new ArrayList<>(){{
-			add(new BarGraphItem("Recovered", 1.0));
+		groupedBarChartItems.put("Recovered", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 1.0));
+			add(new BarGraphItem("Haryana", 4.0));
+			add(new BarGraphItem("Kerala", 3.0));
+			add(new BarGraphItem("Rajasthan", 1.0));
+			add(new BarGraphItem("Telangana", 1.0));
 		}});
 		assertNotNull(groupedBarGraphData);
 		assertEquals(groupedBarGraphData.getGroupedBarChartData().keySet(), groupedBarChartItems.keySet());
@@ -387,23 +379,25 @@ public class BarGraphActionTest {
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		GroupedBarGraphData groupedBarGraphData = (GroupedBarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		Map<String, List<BarGraphItem>> groupedBarChartItems = new HashMap<>();
-		groupedBarChartItems.put("Delhi", new ArrayList<>(){{
-			add(new BarGraphItem("40.0 - 59.0", 1.0));
-			add(new BarGraphItem("20.0 - 39.0", 0.0));
-			add(new BarGraphItem("0.0 - 19.0", 0.0));
-			add(new BarGraphItem("UNKNOWN", 0.0));
+		groupedBarChartItems.put("40.0 - 59.0", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 1.0));
+			add(new BarGraphItem("Kerala", 0.0));
+			add(new BarGraphItem("Telangana", 0.0));
 		}});
-		groupedBarChartItems.put("Kerala", new ArrayList<>(){{
-			add(new BarGraphItem("40.0 - 59.0", 0.0));
-			add(new BarGraphItem("20.0 - 39.0", 1.0));
-			add(new BarGraphItem("0.0 - 19.0", 0.0));
-			add(new BarGraphItem("UNKNOWN", 2.0));
+		groupedBarChartItems.put("20.0 - 39.0", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 0.0));
+			add(new BarGraphItem("Kerala", 1.0));
+			add(new BarGraphItem("Telangana", 1.0));
 		}});
-		groupedBarChartItems.put("Telangana", new ArrayList<>(){{
-			add(new BarGraphItem("40.0 - 59.0", 0.0));
-			add(new BarGraphItem("20.0 - 39.0", 1.0));
-			add(new BarGraphItem("0.0 - 19.0", 0.0));
-			add(new BarGraphItem("UNKNOWN", 0.0));
+		groupedBarChartItems.put("0.0 - 19.0", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 0.0));
+			add(new BarGraphItem("Kerala", 0.0));
+			add(new BarGraphItem("Telangana", 0.0));
+		}});
+		groupedBarChartItems.put("UNKNOWN", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 0.0));
+			add(new BarGraphItem("Kerala", 2.0));
+			add(new BarGraphItem("Telangana", 0.0));
 		}});
 		assertNotNull(groupedBarGraphData);
 		assertEquals(groupedBarGraphData.getGroupedBarChartData().keySet(), groupedBarChartItems.keySet());
@@ -436,38 +430,32 @@ public class BarGraphActionTest {
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		GroupedBarGraphData groupedBarGraphData = (GroupedBarGraphData) chatMessageResponse.getPayload().get("barGraphData");
 		Map<String, List<BarGraphItem>> groupedBarChartItems = new HashMap<>();
-		groupedBarChartItems.put("Delhi", new ArrayList<>(){{
-			add(new BarGraphItem("23-02-20 to 07-03-20", 2.0));
-			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
-			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		groupedBarChartItems.put("23-02-20 to 07-03-20", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 2.0));
+			add(new BarGraphItem("Haryana", 14.0));
+			add(new BarGraphItem("Kerala", 0.0));
+			add(new BarGraphItem("Rajasthan", 2.0));
+			add(new BarGraphItem("Telangana", 1.0));
+			add(new BarGraphItem("Uttar Pradesh", 8.0));
 		}});
-		groupedBarChartItems.put("Haryana", new ArrayList<>(){{
-			add(new BarGraphItem("23-02-20 to 07-03-20", 14.0));
-			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
-			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		groupedBarChartItems.put("26-01-20 to 08-02-20", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 0.0));
+			add(new BarGraphItem("Haryana", 0.0));
+			add(new BarGraphItem("Kerala", 3.0));
+			add(new BarGraphItem("Rajasthan", 0.0));
+			add(new BarGraphItem("Telangana", 0.0));
+			add(new BarGraphItem("Uttar Pradesh", 0.0));
 		}});
-		groupedBarChartItems.put("Kerala", new ArrayList<>(){{
-			add(new BarGraphItem("23-02-20 to 07-03-20", 0.0));
-			add(new BarGraphItem("26-01-20 to 08-02-20", 3.0));
-			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
-		}});
-		groupedBarChartItems.put("Rajasthan", new ArrayList<>(){{
-			add(new BarGraphItem("23-02-20 to 07-03-20", 2.0));
-			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
-			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
-		}});
-		groupedBarChartItems.put("Telangana", new ArrayList<>(){{
-			add(new BarGraphItem("23-02-20 to 07-03-20", 1.0));
-			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
-			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
-		}});
-		groupedBarChartItems.put("Uttar Pradesh", new ArrayList<>(){{
-			add(new BarGraphItem("23-02-20 to 07-03-20", 8.0));
-			add(new BarGraphItem("26-01-20 to 08-02-20", 0.0));
-			add(new BarGraphItem("09-02-20 to 22-02-20", 0.0));
+		groupedBarChartItems.put("09-02-20 to 22-02-20", new ArrayList<>(){{
+			add(new BarGraphItem("Delhi", 0.0));
+			add(new BarGraphItem("Haryana", 0.0));
+			add(new BarGraphItem("Kerala", 0.0));
+			add(new BarGraphItem("Rajasthan", 0.0));
+			add(new BarGraphItem("Telangana", 0.0));
+			add(new BarGraphItem("Uttar Pradesh", 0.0));
 		}});
 		assertNotNull(groupedBarGraphData);
-		assertEquals(groupedBarGraphData.getGroupedBarChartData().keySet(), groupedBarChartItems.keySet());
+		assertEquals(groupedBarChartItems.keySet(), groupedBarGraphData.getGroupedBarChartData().keySet());
 		for(String key: groupedBarChartItems.keySet()){
 			assertTrue(groupedBarChartItems.get(key).containsAll(groupedBarGraphData.getGroupedBarChartData().get(key)));
 		}

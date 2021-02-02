@@ -378,21 +378,21 @@ public class VisualizeAction implements Action {
 				List<String> labels = tableData.stream().map(e -> e.get(xAxisColumn)).distinct().collect(Collectors.toList());
 				Map<String, Double> groupEntries = new HashMap<>();
 				Map<String, Map<String, Integer>> groupedLabelCounts = new HashMap<>();
-				for (String label : labels) {
-					labelCounts.put(label, 0);
-					groupEntries.put(label, 0.0);
-				}
 				for (String group : groups) {
-					groupedGraphItems.put(group, new HashMap<>() {{
+					labelCounts.put(group, 0);
+					groupEntries.put(group, 0.0);
+				}
+				for (String label : labels) {
+					groupedGraphItems.put(label, new HashMap<>() {{
 						putAll(groupEntries);
 					}});
-					groupedLabelCounts.put(group, new HashMap<>() {{
+					groupedLabelCounts.put(label, new HashMap<>() {{
 						putAll(labelCounts);
 					}});
 				}
 				for (Map<String, String> entry : tableData) {
-					xValue = entry.get(xAxisColumn);
-					updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(entry.get(groupColumn)), groupedGraphItems.get(entry.get(groupColumn)));
+					xValue = entry.get(groupColumn);
+					updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(entry.get(xAxisColumn)), groupedGraphItems.get(entry.get(xAxisColumn)));
 				}
 				if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
 					for (String group : groupedGraphItems.keySet()) {
@@ -504,21 +504,21 @@ public class VisualizeAction implements Action {
 		Map<String, Double> groupEntries = new HashMap<>();
 		Map<String, Map<String, Integer>> groupedLabelCounts = new HashMap<>();
 		Map<String, Integer> labelCounts = new HashMap<>();
+		for(String group: groups) {
+			groupEntries.put(group, 0.0);
+			labelCounts.put(group, 1);
+		}
 		for (double i = min; i < max; i += binSize) {
-			groupEntries.put(i + " - " + (i + binSize - 1), 0.0);
-			labelCounts.put(i + " - " + (i + binSize - 1), 1);
-		}
-		if ((int) tableData.stream().filter(e -> IDAConst.NULL_VALUE_IDENTIFIER.equalsIgnoreCase(e.get(xAxisColumn))).count() > 0) {
-			groupEntries.put(IDAConst.NULL_VALUE_IDENTIFIER, 0.0);
-			labelCounts.put(IDAConst.NULL_VALUE_IDENTIFIER, 1);
-		}
-		for (String group : groups) {
-			groupedGraphItems.put(group, new HashMap<>() {{
+			groupedGraphItems.put(i + " - " + (i + binSize - 1), new HashMap<>() {{
 				putAll(groupEntries);
 			}});
-			groupedLabelCounts.put(group, new HashMap<>() {{
+			groupedLabelCounts.put(i + " - " + (i + binSize - 1), new HashMap<>() {{
 				putAll(labelCounts);
 			}});
+		}
+		if ((int) tableData.stream().filter(e -> IDAConst.NULL_VALUE_IDENTIFIER.equalsIgnoreCase(e.get(xAxisColumn))).count() > 0) {
+			groupedGraphItems.put(IDAConst.NULL_VALUE_IDENTIFIER, groupEntries);
+			groupedLabelCounts.put(IDAConst.NULL_VALUE_IDENTIFIER, labelCounts);
 		}
 		for (Map<String, String> entry : tableData) {
 			String valueString = entry.get(xAxisColumn);
@@ -526,9 +526,9 @@ public class VisualizeAction implements Action {
 				binVal = Double.parseDouble(valueString);
 				intervalBegin = binVal - (binVal % binSize);
 				xValue = intervalBegin + " - " + (intervalBegin + binSize - 1);
-				updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(entry.get(groupColumn)), groupedGraphItems.get(entry.get(groupColumn)));
+				updateGraphItemList(entry.get(groupColumn), entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(xValue), groupedGraphItems.get(xValue));
 			} else if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER)) {
-				updateGraphItemList(valueString, entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(entry.get(groupColumn)), groupedGraphItems.get(entry.get(groupColumn)));
+				updateGraphItemList(entry.get(groupColumn), entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(valueString), groupedGraphItems.get(valueString));
 			}
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
@@ -600,19 +600,21 @@ public class VisualizeAction implements Action {
 		} else if (IDAConst.DURATION_TYPE_YEAR.equals(binType)) {
 			formatter = DateTimeFormatter.ofPattern(IDAConst.LABEL_PATTERN_YEAR);
 		}
-
 		List<String> groups = tableData.stream().map(e -> e.get(groupColumn)).distinct().collect(Collectors.toList());
 		Map<String, Map<String, Integer>> groupedLabelCounts = new HashMap<>();
 		Map<String, Integer> labelCounts = new HashMap<>(initializeGraphItemsForDateBins(binSize, binType, xAxisColumn, calendar));
-		Map<String, Double> groupEntries = new HashMap<>() {{
-			putAll(graphItems);
-		}};
-		for (String group : groups) {
-			groupedGraphItems.put(group, new HashMap<>() {{
+		Map<String, Double> groupEntries = new HashMap<>();
+		Map<String, Integer> lblCounts = new HashMap<>();
+		for(String group: groups) {
+			groupEntries.put(group, 0.0);
+			lblCounts.put(group, 0);
+		}
+		for (String label : labelCounts.keySet()) {
+			groupedGraphItems.put(label, new HashMap<>() {{
 				putAll(groupEntries);
 			}});
-			groupedLabelCounts.put(group, new HashMap<>() {{
-				putAll(labelCounts);
+			groupedLabelCounts.put(label, new HashMap<>() {{
+				putAll(lblCounts);
 			}});
 		}
 		Date min = calendar.getTime();
@@ -623,10 +625,10 @@ public class VisualizeAction implements Action {
 			try {
 				calendar.setTime(DateUtils.parseDate(valueString, IDAConst.DATE_PATTERNS));
 				xValue = getBinLabelFromDate(binType, calendar, binSize, localMin, formatter);
-				updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(entry.get(groupColumn)), groupedGraphItems.get(entry.get(groupColumn)));
+				updateGraphItemList(entry.get(groupColumn), entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(xValue), groupedGraphItems.get(xValue));
 			} catch (ParseException | NullPointerException ex) {
 				if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER))
-					updateGraphItemList(valueString, entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(entry.get(groupColumn)), groupedGraphItems.get(entry.get(groupColumn)));
+					updateGraphItemList(entry.get(groupColumn), entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(valueString), groupedGraphItems.get(valueString));
 			}
 		}
 		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(yAxisColumnType)) {
