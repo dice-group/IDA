@@ -1,11 +1,11 @@
-package org.dice.ida.model.bargraph;
+package org.dice.ida.model.scatterplot;
 
-public class BarGraphItem {
+public class ScatterPlotItem {
 
 	private String x;
 	private Double y;
 
-	public BarGraphItem(String x, Double y) {
+	public ScatterPlotItem(String x, Double y) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -24,12 +24,12 @@ public class BarGraphItem {
 	}
 	@Override
 	public String toString() {
-		return "BarGraphItem [x=" + x + ", y=" + y + "]";
+		return "ScatterPlotItem [x=" + x + ", y=" + y + "]";
 	}
 
 	@Override
 	public boolean equals(Object obj2) {
-		if (!(obj2 instanceof BarGraphItem)) {
+		if (!(obj2 instanceof ScatterPlotItem)) {
 			return false;
 		}
 		return this.toString().equals(obj2.toString());

@@ -54,6 +54,7 @@ public class ActionMappingHelper {
 				break;
 			case BARCHART:
 			case BUBBLECHART:
+			case SCATTERPLOT:
 				action = appContext.getBean(VisualizeAction.class);
 				break;
 			case CLUSTERING:

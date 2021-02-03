@@ -13,6 +13,8 @@ import "./tabs.css";
 import { Grid, IconButton } from "@material-ui/core";
 import IDALineChart from "../visualizations/linechart/linechart";
 import IDAScatterPLot from "../visualizations/scatterplot/scatterplot";
+import IDAGroupedBarGraph from "../visualizations/groupedBarChart/groupedBarChart";
+import IDAGroupedBubbleChart from "../visualizations/groupedBubbleChart/groupedBubbleChart";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -81,6 +83,10 @@ export default function ScrollableTabsButtonAuto(props) {
         return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id} />;
       case "scatterplot":
         return <IDAScatterPLot data={tab.data} nodeId={tab.id} />;
+      case "groupedBarchart":
+        return <IDAGroupedBarGraph data={tab.data} nodeId={tab.id} />;
+      case "groupedBubblechart":
+        return <IDAGroupedBubbleChart data={tab.data} nodeId={tab.id} />;
       default:
         return null;
     }
