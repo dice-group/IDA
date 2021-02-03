@@ -145,7 +145,7 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             break;
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_SCATTERPLOT: {
-            addVisualizationEntry(props, payload.barGraphData, "Scatter Plot", "scatterplot", payload.activeDS);
+            addVisualizationEntry(props, payload.ScatterPlotData, "Scatter Plot", "scatterplot", payload.activeDS);
             break;
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
