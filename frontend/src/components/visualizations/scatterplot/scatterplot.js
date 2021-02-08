@@ -173,7 +173,7 @@ export default class IDAScatterPLot extends Component {
       .attr("class", "x-axis-label");
 
     label
-      .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
+      .attr("data-foo", (d) => { return d.xLabel + ": " + d.y; })
       .on("mouseover", (event) => {
         this.tooltip.style.display = "block";
         this.tooltip.style.position = "absolute";
