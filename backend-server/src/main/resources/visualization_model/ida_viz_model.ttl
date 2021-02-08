@@ -275,73 +275,73 @@ ivoc:Visualization a owl:Class ;
 # #################################################################
 #
 #
-# http://www.upb.de/ida/viz/data/information/ScatterPlot
+# https://www.upb.de/ida/viz/data/information/ScatterPlot
 
-<http://www.upb.de/ida/viz/data/information/ScatterPlot> a owl:NamedIndividual , ivoc:Information ;
-	ivoop:hasReference <http://www.upb.de/ida/viz/data/reference/ScatterPlot> ;
+<https://www.upb.de/ida/viz/data/information/ScatterPlot> a owl:NamedIndividual , ivoc:Information ;
+	ivoop:hasReference <https://www.upb.de/ida/viz/data/reference/ScatterPlot> ;
 	dc:description "A scatter plot is a type of plot or mathematical diagram using Cartesian coordinates to display values for typically two variables for a set of data." ;
 	rdfs:label "Scatter Plot Information" .
 #
-# http://www.upb.de/ida/viz/data/instance/scatter_plot_1
+# https://www.upb.de/ida/viz/data/instance/scatter_plot_1
 
-<http://www.upb.de/ida/viz/data/instance/scatter_plot_1> a owl:NamedIndividual , ivoc:Instance ;
-	ivoop:hasInstanceParam <http://www.upb.de/ida/viz/data/instance_param/y_axis_not_required> , instance_param:x_axis_unique ;
+<https://www.upb.de/ida/viz/data/instance/scatter_plot_1> a owl:NamedIndividual , ivoc:Instance ;
+	ivoop:hasInstanceParam <https://www.upb.de/ida/viz/data/instance_param/y_axis_not_required> , instance_param:x_axis_unique ;
 	rdfs:label "Scatter Plot Instance 1" .
 #
-# http://www.upb.de/ida/viz/data/instance/scatter_plot_2
+# https://www.upb.de/ida/viz/data/instance/scatter_plot_2
 
-<http://www.upb.de/ida/viz/data/instance/scatter_plot_2> a owl:NamedIndividual , ivoc:Instance ;
+<https://www.upb.de/ida/viz/data/instance/scatter_plot_2> a owl:NamedIndividual , ivoc:Instance ;
 	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_sumof ;
 	rdfs:label "Scatter Plot Instance 2" .
 #
-# http://www.upb.de/ida/viz/data/instance/scatter_plot_3
+# https://www.upb.de/ida/viz/data/instance/scatter_plot_3
 
-<http://www.upb.de/ida/viz/data/instance/scatter_plot_3> a owl:NamedIndividual , ivoc:Instance ;
+<https://www.upb.de/ida/viz/data/instance/scatter_plot_3> a owl:NamedIndividual , ivoc:Instance ;
 	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_averageof ;
 	rdfs:label "Scatter Plot Instance 3" .
 #
-# http://www.upb.de/ida/viz/data/instance/scatter_plot_4
+# https://www.upb.de/ida/viz/data/instance/scatter_plot_4
 
-<http://www.upb.de/ida/viz/data/instance/scatter_plot_4> a owl:NamedIndividual , ivoc:Instance ;
+<https://www.upb.de/ida/viz/data/instance/scatter_plot_4> a owl:NamedIndividual , ivoc:Instance ;
 	ivoop:hasInstanceParam instance_param:x_axis_bins , instance_param:y_axis_countof ;
 	rdfs:label "Scatter Plot Instance 4" .
 #
-# http://www.upb.de/ida/viz/data/instance/scatter_plot_5
+# https://www.upb.de/ida/viz/data/instance/scatter_plot_5
 
-<http://www.upb.de/ida/viz/data/instance/scatter_plot_5> a owl:NamedIndividual , ivoc:Instance ;
+<https://www.upb.de/ida/viz/data/instance/scatter_plot_5> a owl:NamedIndividual , ivoc:Instance ;
 	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_averageof ;
 	rdfs:label "Scatter Plot Instance 5" .
 #
-# http://www.upb.de/ida/viz/data/instance/scatter_plot_6
+# https://www.upb.de/ida/viz/data/instance/scatter_plot_6
 
-<http://www.upb.de/ida/viz/data/instance/scatter_plot_6> a owl:NamedIndividual , ivoc:Instance ;
+<https://www.upb.de/ida/viz/data/instance/scatter_plot_6> a owl:NamedIndividual , ivoc:Instance ;
 	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_countof ;
 	rdfs:label "Scatter Plot Instance 6" .
 #
-# http://www.upb.de/ida/viz/data/instance/scatter_plot_7
+# https://www.upb.de/ida/viz/data/instance/scatter_plot_7
 
-<http://www.upb.de/ida/viz/data/instance/scatter_plot_7> a owl:NamedIndividual , ivoc:Instance ;
+<https://www.upb.de/ida/viz/data/instance/scatter_plot_7> a owl:NamedIndividual , ivoc:Instance ;
 	ivoop:hasInstanceParam instance_param:x_axis_non_unique , instance_param:y_axis_sumof ;
 	rdfs:label "Scatter Plot Instance 7" .
 #
-# http://www.upb.de/ida/viz/data/instance_param/y_axis_not_required
+# https://www.upb.de/ida/viz/data/instance_param/y_axis_not_required
 
-<http://www.upb.de/ida/viz/data/instance_param/y_axis_not_required> a owl:NamedIndividual , ivoc:InstanceParam ;
+<https://www.upb.de/ida/viz/data/instance_param/y_axis_not_required> a owl:NamedIndividual , ivoc:InstanceParam ;
 	ivoop:hasRepType representational_type:NotRequired ;
 	ivoop:representedParam parameter:y_axis ;
 	rdfs:label "Y-Axis Not Required" .
 #
-# http://www.upb.de/ida/viz/data/reference/ScatterPlot
+# https://www.upb.de/ida/viz/data/reference/ScatterPlot
 
-<http://www.upb.de/ida/viz/data/reference/ScatterPlot> a owl:NamedIndividual , ivoc:Reference ;
+<https://www.upb.de/ida/viz/data/reference/ScatterPlot> a owl:NamedIndividual , ivoc:Reference ;
 	ivodp:link "https://en.wikipedia.org/wiki/Scatter_plot" ;
 	rdfs:label "Scatter Plot (Wikipedia)" .
 #
 # https://www.upb.de/ida/viz/data/visualization/scatter_plot
 
 <https://www.upb.de/ida/viz/data/visualization/scatter_plot> a owl:NamedIndividual , ivoc:Visualization ;
-	ivoop:hasInformation <http://www.upb.de/ida/viz/data/information/ScatterPlot> ;
-	ivoop:hasInstance <http://www.upb.de/ida/viz/data/instance/scatter_plot_1> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_2> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_3> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_4> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_5> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_6> , <http://www.upb.de/ida/viz/data/instance/scatter_plot_7> ;
+	ivoop:hasInformation <https://www.upb.de/ida/viz/data/information/ScatterPlot> ;
+	ivoop:hasInstance <https://www.upb.de/ida/viz/data/instance/scatter_plot_1> , <https://www.upb.de/ida/viz/data/instance/scatter_plot_2> , <https://www.upb.de/ida/viz/data/instance/scatter_plot_3> , <https://www.upb.de/ida/viz/data/instance/scatter_plot_4> , <https://www.upb.de/ida/viz/data/instance/scatter_plot_5> , <https://www.upb.de/ida/viz/data/instance/scatter_plot_6> , <https://www.upb.de/ida/viz/data/instance/scatter_plot_7> ;
 	ivoop:hasParam parameter:x_axis , parameter:y_axis ;
 	rdfs:label "Scatter plot" .
 #
