@@ -849,7 +849,7 @@ public class VisualizeAction implements Action {
 		for (String label : graphItems.keySet().stream().sorted(comparator).collect(Collectors.toList())) {
 			ScatterPlotItemList.add(new ScatterPlotItem(label, graphItems.get(label)));
 		}
-		payload.put("ScatterPlotData", new ScatterPlotData(graphLabel, ScatterPlotItemList, xAxisColumn, yAxisLabel));
+		payload.put("scatterPlotData", new ScatterPlotData(graphLabel, ScatterPlotItemList, xAxisColumn, yAxisLabel));
 
 	}
 
