@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
-import TrendingDownIcon from '@material-ui/icons/TrendingDown';
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import TrendingDownIcon from "@material-ui/icons/TrendingDown";
 import "./scatterplot.css";
 import { IDA_CONSTANTS } from "../../constants";
 import { Grid, Fab } from "@material-ui/core";
@@ -28,8 +28,8 @@ export default class IDAScatterPLot extends Component {
     this.state = {
       sortMode: ""
     };
-    this.tooltip = document.createElement('div');
-    this.tooltip.setAttribute('class', 'tooltip');
+    this.tooltip = document.createElement("div");
+    this.tooltip.setAttribute("class", "tooltip");
     document.body.appendChild(this.tooltip);
 
   }
@@ -58,7 +58,7 @@ export default class IDAScatterPLot extends Component {
         this.graphData.items.reverse();
       }
       this.setState({
-        sortMode: sortMode
+        sortMode
       });
     }
     this.drawScatterPlot();
@@ -66,7 +66,7 @@ export default class IDAScatterPLot extends Component {
 
   drawScatterPlot() {
 
-    this.graphData.items.forEach(item => {
+    this.graphData.items.forEach((item) => {
       item.xLabel = item.x;
       item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
     });
@@ -82,7 +82,7 @@ export default class IDAScatterPLot extends Component {
       .attr("height", this.height)
       .attr("width", this.width);
 
-    
+
     /**
     * append y-axis label
     */
@@ -110,14 +110,14 @@ export default class IDAScatterPLot extends Component {
      * function to scale the y axis entries
      */
     const scaleY = d3.scaleLinear()
-      .domain([0, d3.max(this.graphData.items, d => d.y)]).nice()
+      .domain([0, d3.max(this.graphData.items, (d) => d.y)]).nice()
       .range([this.height - this.margin.bottom, this.margin.top]);
 
     /**
      * function to scale x axis entries
      */
     const scaleX = d3.scaleBand()
-      .domain(this.graphData.items.map(d => d.x))
+      .domain(this.graphData.items.map((d) => d.x))
       .range([this.margin.left, this.width])
       .padding(0.1);
 
@@ -133,11 +133,11 @@ export default class IDAScatterPLot extends Component {
       // .attr("cy", function (d) { return scaleY(d.y); } )
       .attr("cy", (d) => scaleY(d.y)-2 )
       .attr("r",3.0)
-      .attr("fill", "#4f8bff")
+      .attr("fill", "#4f8bff");
 
     plot
       // .append("title")
-      .attr("data-foo", d => { return d.xLabel + ": " + d.y; })
+      .attr("data-foo", (d) => { return d.xLabel + ": " + d.y; })
       .on("mouseover", (event) => {
         this.tooltip.style.display = "block";
         this.tooltip.style.position = "absolute";
@@ -164,7 +164,7 @@ export default class IDAScatterPLot extends Component {
       .style("text-anchor", "end")
 
       .attr("value", (d) => {
-        return d.x + ": " + d.y
+        return d.x + ": " + d.y;
       })
       .style("fill", (d) => {
         return d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000";
