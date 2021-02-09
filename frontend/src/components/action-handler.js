@@ -144,6 +144,10 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             addVisualizationEntry(props, payload.lineChartData, "Line Chart", "linechart", payload.activeDS);
             break;
         }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_SCATTERPLOT: {
+            addVisualizationEntry(props, payload.scatterPlotData, "Scatter Plot", "scatterplot", payload.activeDS);
+            break;
+        }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
             const clusteredData = payload.clusteredData;
             clusteredData.sort((a, b) => parseInt(a.Cluster, 10) > parseInt(b.Cluster, 10) ? 1 : parseInt(a.Cluster, 10) < parseInt(b.Cluster, 10) ? -1 : 0);
