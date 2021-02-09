@@ -9,6 +9,7 @@ import org.dice.ida.chatbot.IDAChatbotUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -38,6 +39,7 @@ public class DialogFlowUtil {
 		String contextName = "projects/" + projectId + "/agent/sessions/" + idaChatBot.fetchDfSessionId() + "/contexts/" + contextString;
 		ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings());
 		contextsClient.deleteContext(contextName);
+		contextsClient.close();
 	}
 
 	/**
@@ -65,7 +67,8 @@ public class DialogFlowUtil {
 
 		// Performs the create context request
 		contextsClient.createContext(session, context);
-}
+		contextsClient.close();
+	}
 
 	/**
 	 * Method to add a context to list of active contexts with a lifespan count
@@ -93,7 +96,7 @@ public class DialogFlowUtil {
 
 		// Performs the create context request
 		contextsClient.createContext(session, context);
-
+		contextsClient.close();
 	}
 
 	/**
@@ -101,13 +104,14 @@ public class DialogFlowUtil {
 	 */
 	public void resetContext() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings());
-			// Set the session name using the sessionId (UUID) and projectId (my-project-id)
+		// Set the session name using the sessionId (UUID) and projectId (my-project-id)
 		SessionName session = SessionName.of(projectId, idaChatBot.fetchDfSessionId());
 
 		// Performs the list contexts request
 		for (Context context : contextsClient.listContexts(session).iterateAll()) {
 			contextsClient.deleteContext(context.getName());
 		}
+		contextsClient.close();
 	}
 
 	/**
@@ -128,6 +132,7 @@ public class DialogFlowUtil {
 			contextName = contextName.substring(contextName.lastIndexOf("/") + 1);
 			contextList.add(contextName);
 		}
+		contextsClient.close();
 		return contextList;
 	}
 }
