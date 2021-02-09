@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import TrendingUpIcon from "@material-ui/icons/TrendingUp";
-import TrendingDownIcon from "@material-ui/icons/TrendingDown";
 import "./scatterplot.css";
-import { IDA_CONSTANTS } from "../../constants";
-import { Grid, Fab } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 export default class IDAScatterPlotMatrix extends Component {
   margin = {
@@ -14,218 +11,135 @@ export default class IDAScatterPlotMatrix extends Component {
     left: 100
   };
   height = 700;
-  width = 1000;
   graphData = {};
   containerId = "";
-  originalGraphData = {};
-  tooltip = null;
 
   constructor(props) {
     super(props);
     this.containerId = props.nodeId;
     this.graphData = props.data;
-    this.originalGraphData = JSON.parse(JSON.stringify(this.graphData));
-    this.state = {
-      sortMode: ""
-    };
-    this.tooltip = document.createElement("div");
-    this.tooltip.setAttribute("class", "tooltip");
-    document.body.appendChild(this.tooltip);
-
   }
 
   componentDidMount() {
     this.graphData && this.graphData.items && this.drawScatterPlot();
   }
 
+	drawScatterPlot() {
+		const width = 954;
+		const columns = this.graphData.columns;
+		const ref_column = this.graphData.referenceColumn;
+		const padding = 20;
+		const size =
+			(width - (columns.length + 1) * padding) / columns.length + padding;
+		const data = this.graphData.items;
 
-  sortGraphItems(sortMode) {
-    document.getElementById(this.containerId).innerHTML = "";
-    if (sortMode === this.state.sortMode) {
-      this.setState({
-        sortMode: ""
-      });
-      this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
-    } else {
-      if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_Y) {
-        this.graphData.items.sort((a, b) => a.y > b.y ? 1 : a.y < b.y ? -1 : 0);
-      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC_Y) {
-        this.graphData.items.sort((a, b) => a.y > b.y ? -1 : a.y < b.y ? 1 : 0);
-      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_X) {
-        this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
-      } else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC_X) {
-        this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
-        this.graphData.items.reverse();
-      }
-      this.setState({
-        sortMode
-      });
-    }
-    this.drawScatterPlot();
-  }
+		const x = columns.map(c =>
+			d3
+				.scaleLinear()
+				.domain(d3.extent(data, d => d[c]))
+				.rangeRound([padding / 2, size - padding / 2])
+		);
 
-  drawScatterPlot() {
+		const y = x.map(x => x.copy().range([size - padding / 2, padding / 2]));
+		const z = d3
+			.scaleOrdinal()
+			.domain(data.map(d => d[ref_column]))
+			.range(d3.schemeCategory10);
 
-    this.graphData.items.forEach((item) => {
-      item.xLabel = item.x;
-      item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
-    });
-
-    // Every plot will be of static width 25px
-    this.width = Math.max(this.graphData.items.length * 25, this.width);
-
-    /**
-     * append placeholder for the scatter plot
-     */
-    const svg = d3.select("#" + this.containerId)
-      .append("svg")
-      .attr("height", this.height)
-      .attr("width", this.width);
+		const svg = d3
+			.select("#sdsd")
+			.attr("viewBox", `${-padding} 0 ${width} ${width}`)
+			.style("max-width", "100%")
+			.style("height", "auto");
 
 
-    /**
-    * append y-axis label
-    */
-    svg.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("x", 0 - (this.height / 2))
-      .attr("y", 11)
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text(this.graphData.yAxisLabel);
+		// Labels for x axis
 
-    /**
-     * append x-axis label
-     */
-    d3.select("#" + this.containerId).append("svg")
-      .attr("height", 30)
-      .attr("width", this.width)
-      .append("text")
-      .text(this.graphData.xAxisLabel)
-      .attr("text-anchor", "middle")
-      .attr("x", 515)
-      .attr("y", 25);
+		const xAxis = d3
+			.axisBottom()
+			.ticks(6)
+			.tickSize(size * columns.length);
 
-    /**
-     * function to scale the y axis entries
-     */
-    const scaleY = d3.scaleLinear()
-      .domain([0, d3.max(this.graphData.items, (d) => d.y)]).nice()
-      .range([this.height - this.margin.bottom, this.margin.top]);
+		svg.append("g").call(g => {
+			g.selectAll("g")
+				.data(x)
+				.join("g")
+				.attr("transform", (d, i) => `translate(${i * size},0)`)
+				.each(function(d) {
+					return d3.select(this).call(xAxis.scale(d));
+				})
+				.call(g => g.select(".domain").remove())
+				.call(g => g.selectAll(".tick line").attr("stroke", "#fff"));
+		});
 
-    /**
-     * function to scale x axis entries
-     */
-    const scaleX = d3.scaleBand()
-      .domain(this.graphData.items.map((d) => d.x))
-      .range([this.margin.left, this.width])
-      .padding(0.1);
+		// lables foe y-axis
 
-    /**
-     * append the scatter plot graph to SVG
-     */
-    let plot = svg.append("g")
-      .selectAll("dot")
-      .data(this.graphData.items)
-      .enter()
-      .append("circle")
-      .attr("cx", function (d) { return scaleX(d.x)+11; } )
-      // .attr("cy", function (d) { return scaleY(d.y); } )
-      .attr("cy", (d) => scaleY(d.y)-2 )
-      .attr("r",3.0)
-      .attr("fill", "#4f8bff");
+		const yAxis = d3
+			.axisLeft()
+			.ticks(6)
+			.tickSize(-size * columns.length);
 
-    plot
-      // .append("title")
-      .attr("data-foo", (d) => { return d.xLabel + ": " + d.y; })
-      .on("mouseover", (event) => {
-        this.tooltip.style.display = "block";
-        this.tooltip.style.position = "absolute";
-        this.tooltip.style.top = event.clientY + "px";
-        this.tooltip.style.left = event.clientX + "px";
-        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
-      })
-      .on("mouseout", () => {
-        this.tooltip.style.display = "none";
-      });
+		svg.append("g").call(g => {
+			g.selectAll("g")
+				.data(y)
+				.join("g")
+				.attr("transform", (d, i) => `translate(0,${i * size})`)
+				.each(function(d) {
+					return d3.select(this).call(yAxis.scale(d));
+				})
+				.call(g => g.select(".domain").remove())
+				.call(g => g.selectAll(".tick line").attr("stroke", "#fff"));
+		});
 
-    /**
-     * append x-axis to the graph
-     */
+		const cell = svg
+			.append("g")
+			.selectAll("g")
+			.data(d3.cross(d3.range(columns.length), d3.range(columns.length)))
+			.join("g")
+			.attr("transform", ([i, j]) => `translate(${i * size},${j * size})`);
 
-    let label = svg.append("g")
-      .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-      .call(d3.axisBottom(scaleX).tickSizeOuter(0))
-      .selectAll("text")
-      .data(this.graphData.items)
-      .attr("x", -10)
-      .attr("y", -5)
-      .attr("transform", "rotate(-90)")
-      .style("text-anchor", "end")
+		cell
+			.append("rect")
+			.attr("fill", "none")
+			.attr("stroke", "#aaa")
+			.attr("x", padding / 2 + 0.5)
+			.attr("y", padding / 2 + 0.5)
+			.attr("width", size - padding)
+			.attr("height", size - padding);
 
-      .attr("value", (d) => {
-        return d.x + ": " + d.y;
-      })
-      .style("fill", (d) => {
-        return d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000";
-      })
-      .style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
-      .attr("class", "x-axis-label");
+		cell.each(function([i, j]) {
+			d3.select(this)
+				.selectAll("circle")
+				.data(data.filter(d => !isNaN(d[columns[i]]) && !isNaN(d[columns[j]])))
+				.join("circle")
+				.attr("cx", d => x[i](d[columns[i]]))
+				.attr("cy", d => y[j](d[columns[j]]));
+		});
 
-    label
-      .attr("data-foo", (d) => { return d.xLabel + ": " + d.y; })
-      .on("mouseover", (event) => {
-        this.tooltip.style.display = "block";
-        this.tooltip.style.position = "absolute";
-        this.tooltip.style.top = event.clientY + "px";
-        this.tooltip.style.left = event.clientX + "px";
-        this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
-      })
-      .on("mouseout", () => {
-        this.tooltip.style.display = "none";
-      });
+		const circle = cell
+			.selectAll("circle")
+			.attr("r", 3.5)
+			.attr("fill-opacity", 0.7)
+			.attr("fill", d => z(d.species));
 
-
-    /**
-   * append y-axis to the graph
-   */
-    svg.append("g")
-      .attr("transform", `translate(${this.margin.left},0)`)
-      .call(d3.axisLeft(scaleY).tickSizeOuter(0));
-  }
+		svg
+			.append("g")
+			.style("font", "bold 10px sans-serif")
+			.selectAll("text")
+			.data(columns)
+			.join("text")
+			.attr("transform", (d, i) => `translate(${i * size},${i * size})`)
+			.attr("x", padding)
+			.attr("y", padding)
+			.attr("dy", ".71em")
+			.text(d => d);
+	}
 
   render() {
     return <Grid>
       <Grid item xs={12}>
-        <div className="text-center pt-2 pb-2 row align-items-center">
-          <span className="text-right col-6">
-            Sort the plot:
-          </span>
-          <div className="col-6 text-left row">
-            <div>
-              <Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC_Y ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC_Y)}>
-                <TrendingUpIcon />
-              </Fab>
-              <Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC_Y ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC_Y)}>
-                <TrendingDownIcon />
-              </Fab>
-              <div className="mt-2 text-center">Y-Axis</div>
-            </div>
-            <div className="ml-md-4">
-              <Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC_X ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC_X)}>
-                <TrendingUpIcon />
-              </Fab>
-              <Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC_X ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC_X)}>
-                <TrendingDownIcon />
-              </Fab>
-              <div className="mt-2 text-center">X-Axis</div>
-            </div>
-          </div>
-        </div>
-      </Grid>
-      <Grid item xs={12}>
-        <div className="scatterplot-container" id={this.containerId}>
-        </div>
+        <svg className="scatterplot-container" id={this.containerId}>
+        </svg>
       </Grid>
     </Grid>;
   }
