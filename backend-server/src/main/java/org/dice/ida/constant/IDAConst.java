@@ -21,6 +21,8 @@ public interface IDAConst {
 	public static final int UAC_UPLDDTMSG = 1002;
 	//Load bar graph
 	public static final int UIA_BARGRAPH = 1005;
+	// Load scatter plot
+	public static final int UIA_SCATTERPLOT = 1011;
 	//Load bubble chart
 	public static final int UIA_BUBBLECHART = 1006;
 	// Draw line chart
@@ -77,6 +79,9 @@ public interface IDAConst {
 	public static final String DSMAP_PROP_FILEPATH = "datasetmap.properties";
 	// CSV File name Pattern
 	public static final String CSV_FILE_PATTERN = ".*[cC][sS][vV]$";
+
+	// Scatter plot
+	public static final String SCATTER_PLOT_LOADED = "The requested scatter plot has been loaded.";
 
 	// Bar graph
 	public static final String PARAM_FILTER_STRING = "records-selection";
@@ -240,6 +245,7 @@ public interface IDAConst {
 
 	String VIZ_TYPE_BAR_CHART = "bar_chart";
 	String VIZ_TYPE_BUBBLE_CHART = "bubble_chart";
+	String VIZ_TYPE_SCATTER_PLOT = "scatter_plot";
 	String BUBBLE_LABEL_PARAM = "Bubble_Label";
 	String BUBBLE_SIZE_PARAM = "Bubble_Size";
 	String X_AXIS_PARAM = "X-Axis";
