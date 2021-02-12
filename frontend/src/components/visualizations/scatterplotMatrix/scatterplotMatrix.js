@@ -32,52 +32,52 @@ export default class IDAScatterPlotMatrix extends Component {
 		this.state = {
 			referenceValues: []
 		};
-		this.tooltip = document.createElement('div');
-		this.tooltip.setAttribute('class', 'tooltip');
+		this.tooltip = document.createElement("div");
+		this.tooltip.setAttribute("class", "tooltip");
 		document.body.appendChild(this.tooltip);
 	}
 
 	componentDidMount() {
 		if (this.graphData && this.graphData.items) {
-			this.graphData.columns.forEach(col => {
-				this.graphData.items = this.graphData.items.filter(entry => entry[`${col}`] !== IDA_CONSTANTS.UNKNOWN_LABEL);
+			this.graphData.columns.forEach((col) => {
+				this.graphData.items = this.graphData.items.filter((entry) => entry[`${col}`] !== IDA_CONSTANTS.UNKNOWN_LABEL);
 			});
 			const ref_column = this.graphData.referenceColumn;
 			this.colorFunction = d3.scaleOrdinal()
-				.domain(this.graphData.items.map(d => d[`${ref_column}`]))
+				.domain(this.graphData.items.map((d) => d[`${ref_column}`]))
 				.range(d3.schemeCategory10);
 			this.setState({
 				referenceValues: this.colorFunction.domain()
-			})
+			});
 			this.drawScatterPlot();
 		}
 	}
 
 	drawScatterPlot() {
 		const self = this;
-		const ref_column = this.graphData.referenceColumn;
+		const refColumn = this.graphData.referenceColumn;
 		const columns = this.graphData.columns;
 		const padding = 50;
 		const size =
 			(this.width - (columns.length + 1) * padding) / columns.length + padding;
-		this.graphData.items = this.graphData.items.map(entry => {
+		this.graphData.items = this.graphData.items.map((entry) => {
 			let obj = {};
-			columns.forEach(c => {
+			columns.forEach((c) => {
 				obj[`${c}`] = parseFloat(entry[`${c}`]);
 			});
-			obj[`${ref_column}`] = entry[`${ref_column}`];
+			obj[`${refColumn}`] = entry[`${refColumn}`];
 			return obj;
 		});
 		const data = this.graphData.items;
 
-		const x = columns.map(c =>
+		const x = columns.map((c) =>
 			d3
 				.scaleLinear()
-				.domain(d3.extent(data, d => d[c]))
+				.domain(d3.extent(data, (d) => d[`${c}`]))
 				.rangeRound([padding / 2, size - padding / 2])
 		);
 
-		const y = x.map(x => x.copy().range([size - padding / 2, padding / 2]));
+		const y = x.map((x) => x.copy().range([size - padding / 2, padding / 2]));
 		const z = this.colorFunction;
 
 		const svg = d3.select("#" + this.containerId)
@@ -91,7 +91,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			.ticks(6)
 			.tickSize(size * columns.length);
 
-		svg.append("g").call(g => {
+		svg.append("g").call((g) => {
 			g.selectAll("g")
 				.data(x)
 				.join("g")
@@ -99,8 +99,8 @@ export default class IDAScatterPlotMatrix extends Component {
 				.each(function (d) {
 					return d3.select(this).call(xAxis.scale(d));
 				})
-				.call(g => g.select(".domain").remove())
-				.call(g => g.selectAll(".tick line").attr("stroke", "#efefef"));
+				.call((g) => g.select(".domain").remove())
+				.call((g) => g.selectAll(".tick line").attr("stroke", "#efefef"));
 		});
 
 		const yAxis = d3
@@ -139,11 +139,11 @@ export default class IDAScatterPlotMatrix extends Component {
 		cell.each(function ([i, j]) {
 			d3.select(this)
 				.selectAll("circle")
-				.data(data.filter(d => !isNaN(d[columns[i]]) && !isNaN(d[columns[j]])))
+				.data(data.filter((d) => !isNaN(d[`${columns[`${i}`]}`]) && !isNaN(d[`${columns[`${j}`]}`])))
 				.join("circle")
-				.attr("cx", d => x[i](d[columns[i]]))
-				.attr("cy", d => y[j](d[columns[j]]))
-				.attr("data-tooltip", d => columns[i] + ": " + d[columns[i]] + "\n" + columns[j] + ": " + d[columns[j]])
+				.attr("cx", (d) => x[`${i}`](d[`${columns[`${i}`]}`]))
+				.attr("cy", (d) => y[`${j}`](d[`${columns[`${j}`]}`]))
+				.attr("data-tooltip", (d) => columns[`${i}`] + ": " + d[`${columns[`${i}`]}`] + "\n" + columns[`${j}`] + ": " + d[`${columns[`${j}`]}`])
 				.on("mouseover", (event) => {
 					self.tooltip.style.display = "block";
 					self.tooltip.style.position = "absolute";
@@ -160,7 +160,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			.selectAll("circle")
 			.attr("r", 3.5)
 			.attr("fill-opacity", 0.7)
-			.attr("fill", d => z(d[`${ref_column}`]));
+			.attr("fill", (d) => z(d[`${refColumn}`]));
 
 		svg
 			.append("g")
@@ -172,7 +172,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			.attr("x", padding)
 			.attr("y", padding)
 			.attr("dy", ".71em")
-			.text(d => d);
+			.text((d) => d);
 	}
 
 	render() {
@@ -217,6 +217,6 @@ export default class IDAScatterPlotMatrix extends Component {
 					</Grid>
 				</Hidden>
 			</Grid>
-		</>;;
+		</>;
 	}
 }
