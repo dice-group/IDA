@@ -3,6 +3,11 @@ package org.dice.ida.model.scatterplotmatrix;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Model class for Scatter Plot Matrix Data
+ *
+ * @author Sourabh Poddar
+ */
 public class ScatterPlotMatrixData {
 
 
