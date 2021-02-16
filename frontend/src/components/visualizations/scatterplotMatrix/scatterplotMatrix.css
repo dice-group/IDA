@@ -1,0 +1,31 @@
+.scatterplot-container {
+  width: 100%;
+  border: 1px solid black;
+  overflow-x: auto;
+}
+
+.tab-container {
+  width: 100%;
+  max-height: 700px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.grouped-bar-chart-legend {
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+.MuiListItem-root.Mui-selected {
+  background-color: unset;
+}
+
+.MuiListItem-root.Mui-selected .MuiListItemText-root span {
+  text-decoration: line-through;
+}
+
+.legend-item-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
