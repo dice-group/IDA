@@ -42,9 +42,9 @@ export default class IDAScatterPlotMatrix extends Component {
 			this.graphData.columns.forEach((col) => {
 				this.graphData.items = this.graphData.items.filter((entry) => entry[`${col}`] !== IDA_CONSTANTS.UNKNOWN_LABEL);
 			});
-			const ref_column = this.graphData.referenceColumn;
+			const refColumn = this.graphData.referenceColumn;
 			this.colorFunction = d3.scaleOrdinal()
-				.domain(this.graphData.items.map((d) => d[`${ref_column}`]))
+				.domain(this.graphData.items.map((d) => d[`${refColumn}`]))
 				.range(d3.schemeCategory10);
 			this.setState({
 				referenceValues: this.colorFunction.domain()
@@ -108,7 +108,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			.ticks(6)
 			.tickSize(-size * columns.length);
 
-		svg.append("g").call(g => {
+		svg.append("g").call((g) => {
 			g.selectAll("g")
 				.data(y)
 				.join("g")
@@ -116,8 +116,8 @@ export default class IDAScatterPlotMatrix extends Component {
 				.each(function (d) {
 					return d3.select(this).call(yAxis.scale(d));
 				})
-				.call(g => g.select(".domain").remove())
-				.call(g => g.selectAll(".tick line").attr("stroke", "#efefef"));
+				.call((g) => g.select(".domain").remove())
+				.call((g) => g.selectAll(".tick line").attr("stroke", "#efefef"));
 		});
 
 		const cell = svg
