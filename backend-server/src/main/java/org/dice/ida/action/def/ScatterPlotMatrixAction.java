@@ -13,6 +13,7 @@ import org.dice.ida.util.FileUtil;
 import org.dice.ida.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,40 +58,57 @@ public class ScatterPlotMatrixAction implements Action {
 			tableName = payload.get("activeTable").toString();
 			selectAll = (String) paramMap.get("All_select");
 			Value paramVal = (Value) paramMap.get("column_List");
-			if (!(selectAll == null && paramVal == null)) {
-				paramVal.getListValue().getValuesList().forEach(str -> columnListParameter.add(str.getStringValue()));
-				if (!selectAll.isEmpty()) {
-					columnList = getColumnList(datasetName, tableName);
+			boolean onTemporaryData = message.isTemporaryData();
+			String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 
-				} else {
-					columnList = columnListParameter;
-
+			if (ValidatorUtil.isStringEmpty(filterString)) {
+				double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
+				if (confidence == 0.0) {
+					paramMap.replace(IDAConst.PARAM_TEXT_MSG, IDAConst.INVALID_FILTER);
+					chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 				}
-				columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnList, false);
-				columnMap = columnDetail.get(0);
-				columnList = filterNonNumericColumn(columnList);
-				if (columnList.size() < 2) {
-					textMsg = new StringBuilder("Please provide more than one Numeric columns");
-					dialogFlowUtil.deleteContext("get_ref");
-				} else {
-					refColumn = (String) paramMap.get("ref_column");
-					if (refColumn != null) {
-						if (columnMap.containsKey(refColumn)) {
-							columnList.add(refColumn);
-							tableData = dataUtil.getData(datasetName, tableName, columnList, "all", columnMap);
-							createScatterPlotMatrixData(tableData, columnList, refColumn);
-							textMsg = new StringBuilder("Scatter plot Matrix Loaded");
-							UI_Action = IDAConst.UIA_SCATTERPLOT_MATRIX;
-							dialogFlowUtil.resetContext();
-						} else {
-							textMsg = new StringBuilder("Column <b>" + refColumn + "</b> doesn't exist in the table " + tableName);
-						}
+				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+			} else {
+				if (!(selectAll == null && paramVal == null)) {
+					paramVal.getListValue().getValuesList().forEach(str -> columnListParameter.add(str.getStringValue()));
+					if (!selectAll.isEmpty()) {
+						columnList = getColumnList(datasetName, tableName);
+
+					} else {
+						columnList = columnListParameter;
 
 					}
+					columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnList, onTemporaryData);
+					columnMap = columnDetail.get(0);
+					columnList = filterNonNumericColumn(columnList);
+					if (columnList.size() < 2) {
+						textMsg = new StringBuilder("Please provide more than one Numeric columns");
+						dialogFlowUtil.deleteContext("get_ref");
+					} else {
+						refColumn = (String) paramMap.get("ref_column");
+						if (refColumn != null) {
+							if (columnMap.containsKey(refColumn)) {
+								columnList.add(refColumn);
+								if (onTemporaryData)
+									tableData = message.getActiveTableData();
+								else
+									tableData = dataUtil.getData(datasetName, tableName, columnList, filterString, columnMap);
+								createScatterPlotMatrixData(tableData, columnList, refColumn);
+								textMsg = new StringBuilder("Scatter plot Matrix Loaded");
+								UI_Action = IDAConst.UIA_SCATTERPLOT_MATRIX;
+								dialogFlowUtil.resetContext();
+							} else {
+								textMsg = new StringBuilder("Column <b>" + refColumn + "</b> doesn't exist in the table " + tableName);
+							}
+
+						}
+					}
 				}
+				chatMessageResponse.setUiAction(UI_Action);
+				chatMessageResponse.setMessage(textMsg.toString());
 			}
-			chatMessageResponse.setUiAction(UI_Action);
-			chatMessageResponse.setMessage(textMsg.toString());
 		}
 	}
 
