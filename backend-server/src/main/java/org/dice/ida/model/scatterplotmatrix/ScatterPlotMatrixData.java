@@ -38,4 +38,16 @@ public class ScatterPlotMatrixData {
 	public void setItems(List<Map<String, String>> items) {
 		this.items = items;
 	}
+
+	@Override
+	public boolean equals(Object obj2) {
+		if (!(obj2 instanceof ScatterPlotMatrixData)) {
+			return false;
+		}
+		ScatterPlotMatrixData object2 = (ScatterPlotMatrixData) obj2;
+		if (!this.referenceColumn.equals(object2.getReferenceColumn()) || !this.columns.containsAll(object2.getColumns()) || !this.getItems().containsAll(object2.getItems())) {
+			return false;
+		}
+		return true;
+	}
 }
