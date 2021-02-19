@@ -9,6 +9,7 @@ import Chip from "@material-ui/core/Chip";
 import { Hidden } from "@material-ui/core";
 
 import "./groupedBarChart.css";
+import { geoContains } from "d3";
 
 export default class IDAGroupedBarGraph extends Component {
     margin = {
@@ -25,7 +26,7 @@ export default class IDAGroupedBarGraph extends Component {
     originalGraphData = {};
     tooltip = null;
     colorFunction = (label) => null;
-
+    datalabel = [];
     constructor(props) {
         super();
         this.data = props.data;
@@ -54,7 +55,8 @@ export default class IDAGroupedBarGraph extends Component {
 
     drawGraph() {
         this.width = Math.max(this.graphData.length * this.data.xAxisLabels.length * 25, this.width);
-
+        console.log(this.data)
+        console.log(this.graphData)
         const legendSvg = d3.select("#legend-container").append("svg");
 
         const svg = d3.select("#" + this.containerId)
@@ -73,6 +75,13 @@ export default class IDAGroupedBarGraph extends Component {
             .domain(keys)
             .rangeRound([0, x0.bandwidth()])
             .padding(0.05);
+        console.log(keys)
+
+        const x2 = d3.scaleBand()
+            .domain(keys)
+            .rangeRound([this.margin.left, this.width - this.margin.right])
+            .paddingInner(0.1);
+
 
         const y = d3.scaleLinear()
             .domain([0, d3.max(this.graphData, (d) => d3.max(keys, (key) => d[`${key}`]))]).nice()
@@ -80,11 +89,14 @@ export default class IDAGroupedBarGraph extends Component {
 
         const color = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemeCategory10);
 
-        svg.append("g")
+        const group = svg.append("g")
             .selectAll("g")
             .data(this.graphData)
             .join("g")
             .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`)
+
+
+        group
             .selectAll("rect")
             .data((d) => keys.map((key) => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[`${key}`] })))
             .join("rect")
@@ -106,6 +118,7 @@ export default class IDAGroupedBarGraph extends Component {
                 this.tooltip.style.display = "none";
             });
 
+
         svg.append("text")
             .attr("transform", "rotate(-90)")
             .attr("x", 0 - (this.height / 2))
@@ -123,6 +136,7 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("x", 515)
             .attr("y", 15);
 
+        //delhi, kerala etc
         const xAxis = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x0).tickSizeOuter(0))
@@ -131,14 +145,29 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("y", -5)
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "end");
-
+        console.log(group._groups[0]);
+        //recovered migrated and hospitalised\
+        group._groups[0].forEach((k) => {
+            console.log("k: ", k)
+            const label1 = (k) => (k)
+                .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+                .call(d3.axisBottom(x2).tickSizeOuter(0))
+                .selectAll("text")
+                .attr("x", -15)
+                .attr("y", -8)
+                .attr("transform", "rotate(-90)")
+                .style("text-anchor", "end")
+            svg.append("g")
+                .call(label1);
+        })
         const yAxis = (g) => (g)
             .attr("transform", `translate(${this.margin.left},0)`)
             .call(d3.axisLeft(y).tickSizeOuter(0));
 
         svg.append("g")
             .call(xAxis);
-
+        // svg.append("g")
+        //     .call(name);
         svg.append("g")
             .call(yAxis);
 
@@ -174,10 +203,12 @@ export default class IDAGroupedBarGraph extends Component {
                                 {
                                     this.data.xAxisLabels.map((label) => (
                                         <ListItem key={label}>
+
                                             <ListItemAvatar>
                                                 <div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(label) }}></div>
                                             </ListItemAvatar>
-                                            <ListItemText primary={label} />
+
+                                            < ListItemText primary={label} />
                                         </ListItem>
                                     ))
                                 }
