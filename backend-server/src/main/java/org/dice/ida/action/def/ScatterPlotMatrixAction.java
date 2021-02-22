@@ -91,8 +91,10 @@ public class ScatterPlotMatrixAction implements Action {
 						if (refColumn != null) {
 							if (columnMap.containsKey(refColumn)) {
 								columnList.add(refColumn);
-								if (onTemporaryData)
+								if (onTemporaryData) {
 									tableData = message.getActiveTableData();
+									tableData = dataUtil.filterData(tableData, filterString, columnList, columnMap);
+								}
 								else
 									tableData = dataUtil.getData(datasetName, tableName, columnList, filterString, columnMap);
 								createScatterPlotMatrixData(tableData, columnList, refColumn);
