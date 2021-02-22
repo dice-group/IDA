@@ -9,13 +9,14 @@ import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.scatterplotmatrix.ScatterPlotMatrixData;
 import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.DialogFlowUtil;
-import org.dice.ida.util.FileUtil;
+import org.dice.ida.util.RDFUtil;
 import org.dice.ida.util.ValidatorUtil;
+import org.dice.ida.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class ScatterPlotMatrixAction implements Action {
 	private String tableName;
 	private String selectAll;
 	private String refColumn;
+	private Map<String, Map<String, Map<String, String>>> instanceMap;
 	private Map<String, String> columnMap;
 	private List<Map<String, String>> tableData;
 
@@ -53,11 +55,19 @@ public class ScatterPlotMatrixAction implements Action {
 		List<Map<String, String>> columnDetail;
 
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
+			String vizType = paramMap.get(IDAConst.INTENT_NAME).toString();
 			payload = chatMessageResponse.getPayload();
 			datasetName = payload.get("activeDS").toString();
 			tableName = payload.get("activeTable").toString();
 			selectAll = (String) paramMap.get("All_select");
-			Value paramVal = (Value) paramMap.get("column_List");
+			instanceMap = new RDFUtil().getInstances(vizType);
+			List<String> attributeList = new ArrayList<>();
+			Map<String, String> attributeTypeMap = new HashMap<>();
+			instanceMap.keySet().forEach(instance -> attributeList.addAll(instanceMap.get(instance).keySet()));
+			for (String attribute : attributeList) {
+				instanceMap.keySet().forEach(instance -> attributeTypeMap.put(attribute, instanceMap.get(instance).get(attribute).get("type")));
+			}
+			Value paramVal = (Value) paramMap.get(attributeList.get(0));
 			boolean onTemporaryData = message.isTemporaryData();
 			String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 
@@ -82,20 +92,19 @@ public class ScatterPlotMatrixAction implements Action {
 					}
 					columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnList, onTemporaryData);
 					columnMap = columnDetail.get(0);
-					columnList = filterNonNumericColumn(columnList);
+					columnList = filterColumns(columnList, attributeTypeMap.get("Column_List"));
 					if (columnList.size() < 2) {
 						textMsg = new StringBuilder("Please provide more than one Numeric columns");
 						dialogFlowUtil.deleteContext("get_ref");
 					} else {
-						refColumn = (String) paramMap.get("ref_column");
+						refColumn = (String) paramMap.get(attributeList.get(1));
 						if (refColumn != null) {
 							if (columnMap.containsKey(refColumn)) {
 								columnList.add(refColumn);
 								if (onTemporaryData) {
 									tableData = message.getActiveTableData();
 									tableData = dataUtil.filterData(tableData, filterString, columnList, columnMap);
-								}
-								else
+								} else
 									tableData = dataUtil.getData(datasetName, tableName, columnList, filterString, columnMap);
 								createScatterPlotMatrixData(tableData, columnList, refColumn);
 								textMsg = new StringBuilder("Scatter plot Matrix Loaded");
@@ -125,12 +134,12 @@ public class ScatterPlotMatrixAction implements Action {
 		payload.put("scatterPlotMatrixData", scatterPlotMatrixData);
 	}
 
-	private ArrayList<String> filterNonNumericColumn(ArrayList<String> columnList) {
+	private ArrayList<String> filterColumns(ArrayList<String> columnList, String type) {
 
 		ArrayList<String> columnListTemp;
 		columnListTemp = (ArrayList<String>) columnList.clone();
 		for (String column : columnList) {
-			if (!columnMap.get(column).equals("numeric"))
+			if (!columnMap.get(column).equalsIgnoreCase(type))
 				columnListTemp.remove(column);
 		}
 		return columnListTemp;
