@@ -14,6 +14,7 @@ import org.dice.ida.util.ValidatorUtil;
 import org.dice.ida.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,6 +121,8 @@ public class ScatterPlotMatrixAction implements Action {
 				chatMessageResponse.setUiAction(UI_Action);
 				chatMessageResponse.setMessage(textMsg.toString());
 			}
+		} else {
+			dialogFlowUtil.resetContext();
 		}
 	}
 
