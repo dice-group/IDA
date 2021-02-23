@@ -68,7 +68,53 @@ public class DataUtil {
 			extractedData.add(dataRow);
 		}
 		return extractedData;
+	}
+	/**
+	 * Method to filter the file date based on a filter string
+	 *
+	 * @param filterText Filter String
+	 * @param fileData - File data extracted into a map.
+	 * @param columns - list of columns whose data is required
+	 * @return list of maps where each map represents a row of the table
+	 * @throws IOException - Exception when the dataset or table does not exist
+	 */
+	public List<Map<String, String>> filterData(List<Map<String, String>> fileData, String filterText, List<String> columns, Map<String,String> columnMap )
+	{
+		List<Map<String, String>> extractedData = new ArrayList<>();
+		int rangeStart = 0;
+		int rangeEnd = 0;
 
+		if (filterText.equals(IDAConst.BG_FILTER_ALL)) {
+			// All data has been selected
+			rangeEnd = fileData.size();
+		} else {
+			String[] tokens = filterText.split(" "); // tokenized filter text
+			String filterType = tokens[0]; // Dialogflow makes sure that these tokens are in correct order
+			// Extracting ranges
+			if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_FIRST)) {
+				rangeEnd = Math.min(Integer.parseInt(tokens[1]), fileData.size());
+			} else if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_LAST)) {
+				rangeStart = Math.max(fileData.size() - Integer.parseInt(tokens[1]), 0);
+				rangeEnd = fileData.size();
+			} else if (TextUtil.matchString(filterType, IDAConst.BG_FILTER_FROM)) {
+				rangeStart = Integer.parseInt(tokens[1]) == 0 ? 0 : Integer.parseInt(tokens[1]) - 1;
+				rangeEnd = Integer.parseInt(tokens[3]);
+			}
+		}
+
+		for (int  i = rangeStart; i < rangeEnd; i++) {
+			Map<String, String> dataRow = new HashMap<>();
+			for (String column : columns) {
+				// Getting data only from required columns
+				String columnValue = fileData.get(i).get(column);
+				if(columnMap.get(column).equalsIgnoreCase("Numeric"))
+					dataRow.put(column, DbUtils.manageNullValues(columnValue.replaceAll(",",".")));
+				else
+					dataRow.put(column, DbUtils.manageNullValues(columnValue));
+			}
+			extractedData.add(dataRow);
+		}
+		return extractedData;
 	}
 	public List<Map<String, String>> getDataSet(String datasetName, String tableName) throws IOException {
 		Map<String, String> columnTypeMap = new HashMap<>();
