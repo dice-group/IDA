@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 public class ScatterPlotMatrixActionTest {
@@ -178,6 +180,74 @@ public class ScatterPlotMatrixActionTest {
 		chatUserMessage.setMessage("region, density");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		assertEquals("Please provide more than one Numeric columns", chatMessageResponse.getMessage());
+		sessionUtil.resetSessionId();
+	}
+	@Test
+	void testClusterScatterPlotMatrix() throws Exception {
+		ChatUserMessage chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("cluster");
+		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveTable("countries-of-the-world.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("population, population density");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("kmeans");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setActiveTableData((List<Map<String, String>>) chatMessageResponse.getPayload().get("clusteredData"));
+		chatUserMessage.setTemporaryData(true);
+		chatUserMessage.setMessage("draw scatter plot matrix");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 5");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("density, gdp, literacy");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("cluster");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
+		ScatterPlotMatrixData expectedData =  new ScatterPlotMatrixData();
+		expectedData.setColumns(new ArrayList<>(){{
+			add("Pop. Density (per sq. mi.)");
+			add("GDP ($ per capita)");
+			add("Literacy (%)");
+		}});
+		expectedData.setReferenceColumn("Cluster");
+		expectedData.setItems(new ArrayList<>(){{
+			add(new HashMap<>(){{
+				put("Literacy (%)", "36.0");
+				put("GDP ($ per capita)", "700");
+				put("Cluster", "3");
+				put("Pop. Density (per sq. mi.)", "48.0");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "4500");
+				put("Literacy (%)", "86.5");
+				put("Pop. Density (per sq. mi.)", "124.6");
+				put("Cluster", "0");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "6000");
+				put("Literacy (%)", "70.0");
+				put("Pop. Density (per sq. mi.)", "13.8");
+				put("Cluster", "3");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "8000");
+				put("Literacy (%)", "97.0");
+				put("Pop. Density (per sq. mi.)", "290.4");
+				put("Cluster", "5");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "19000");
+				put("Literacy (%)", "100.0");
+				put("Pop. Density (per sq. mi.)", "152.1");
+				put("Cluster", "0");
+			}});
+
+		}});
+		assertNotNull(actualData);
+		assertEquals(expectedData, actualData);
 		sessionUtil.resetSessionId();
 	}
 }
