@@ -82,8 +82,8 @@ export default class IDAScatterPlotMatrix extends Component {
 
 		const svg = d3.select("#" + this.containerId)
 			.append("svg")
-			.attr("viewBox", `${-padding} 0 ${this.width} ${this.width}`)
-			.style("max-width", "100%")
+			.attr("viewBox", `${-padding} 0 ${this.width + padding} ${this.width}`)
+			.attr("width", this.width)
 			.style("height", "auto");
 
 		const xAxis = d3
@@ -92,15 +92,18 @@ export default class IDAScatterPlotMatrix extends Component {
 			.tickSize(size * columns.length);
 
 		svg.append("g").call((g) => {
-			g.selectAll("g")
+
+			let axisG = g.selectAll("g")
 				.data(x)
 				.join("g")
-				.attr("transform", (d, i) => `translate(${i * size},0)`)
+				.attr("transform", (d, i) => `translate(${(i * size) + padding},0)`)
 				.each(function (d) {
-					return d3.select(this).call(xAxis.scale(d));
-				})
-				.call((g) => g.select(".domain").remove())
-				.call((g) => g.selectAll(".tick line").attr("stroke", "#efefef"));
+					return d3.select(this)
+						.call(xAxis.scale(d));
+				});
+			axisG.call((g) => g.select(".domain").remove())
+			axisG.call((g) => g.selectAll(".tick line").attr("stroke", "#efefef"));
+			axisG.selectAll("text").attr("transform", "rotate(-90)").attr("y", "-5").attr("x", `${-size * columns.length - 15}`);
 		});
 
 		const yAxis = d3
@@ -112,7 +115,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			g.selectAll("g")
 				.data(y)
 				.join("g")
-				.attr("transform", (d, i) => `translate(0, ${i * size})`)
+				.attr("transform", (d, i) => `translate(${padding}, ${i * size})`)
 				.each(function (d) {
 					return d3.select(this).call(yAxis.scale(d));
 				})
@@ -125,7 +128,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			.selectAll("g")
 			.data(d3.cross(d3.range(columns.length), d3.range(columns.length)))
 			.join("g")
-			.attr("transform", ([i, j]) => `translate(${i * size},${j * size})`);
+			.attr("transform", ([i, j]) => `translate(${(i * size) + padding},${j * size})`);
 
 		cell
 			.append("rect")
@@ -164,15 +167,33 @@ export default class IDAScatterPlotMatrix extends Component {
 
 		svg
 			.append("g")
+			.attr("transform", `translate(${-padding}, 0)`)
 			.style("font", "bold 10px sans-serif")
 			.selectAll("text")
 			.data(columns)
 			.join("text")
-			.attr("transform", (d, i) => `translate(${i * size},${i * size})`)
-			.attr("x", padding)
-			.attr("y", padding)
+			.attr("transform", (d, i) => `rotate(-90)`)
+			.attr("x", (d, i) => `${-size * i - (size / 2)}`)
+			.attr("y", 10)
 			.attr("dy", ".71em")
-			.text((d) => d);
+			.text((d) => d)
+			.style("text-anchor", "middle");
+
+		const xAxisSvg = d3.select("#" + this.containerId)
+			.append("svg")
+			.attr("viewBox", `${-padding} 0 ${this.width + padding} 100`)
+			.attr("width", this.width)
+			.style("height", "100");
+
+		xAxisSvg
+			.style("font", "bold 10px sans-serif")
+			.selectAll("text")
+			.data(columns)
+			.join("text")
+			.attr("transform", (d, i) => `translate(${(i * size)}, 30)`)
+			.attr("x", size / 2 + padding)
+			.text((d) => d)
+			.style("text-anchor", "middle");
 	}
 
 	render() {
