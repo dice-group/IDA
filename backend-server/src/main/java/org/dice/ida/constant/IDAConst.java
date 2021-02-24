@@ -33,6 +33,8 @@ public interface IDAConst {
 	public static final int UIA_GROUPED_BARGRAPH = 1009;
 	// Load grouped bubble chart
 	public static final int UIA_GROUPED_BUBBLECHART = 1010;
+	//Load scatter plot matrix
+	public static final int UIA_SCATTERPLOT_MATRIX = 1012;
 
 	/**
 	 * Pre-defined action codes

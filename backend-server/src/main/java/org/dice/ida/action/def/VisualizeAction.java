@@ -117,6 +117,7 @@ public class VisualizeAction implements Action {
 					}
 					if (onTemporaryData) {
 						tableData = message.getActiveTableData();
+						tableData = dataUtil.filterData(tableData, filterString, columnNameList, columnMap);
 					} else {
 						if (groupingNeeded) {
 							columnNameList.add(paramMap.get("group_column").toString());
