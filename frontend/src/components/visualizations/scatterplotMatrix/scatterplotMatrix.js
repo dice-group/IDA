@@ -101,7 +101,7 @@ export default class IDAScatterPlotMatrix extends Component {
 					return d3.select(this)
 						.call(xAxis.scale(d));
 				});
-			axisG.call((g) => g.select(".domain").remove())
+			axisG.call((g) => g.select(".domain").remove());
 			axisG.call((g) => g.selectAll(".tick line").attr("stroke", "#efefef"));
 			axisG.selectAll("text").attr("transform", "rotate(-90)").attr("y", "-5").attr("x", `${-size * columns.length - 15}`);
 		});
@@ -172,7 +172,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			.selectAll("text")
 			.data(columns)
 			.join("text")
-			.attr("transform", (d, i) => `rotate(-90)`)
+			.attr("transform", "rotate(-90)")
 			.attr("x", (d, i) => `${-size * i - (size / 2)}`)
 			.attr("y", 10)
 			.attr("dy", ".71em")
