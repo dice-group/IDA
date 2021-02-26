@@ -4,18 +4,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.Value;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.scatterplotmatrix.ScatterPlotMatrixData;
-import org.dice.ida.util.DataUtil;
-import org.dice.ida.util.DialogFlowUtil;
-import org.dice.ida.util.RDFUtil;
 import org.dice.ida.util.ValidatorUtil;
+import org.dice.ida.util.DataUtil;
+import org.dice.ida.util.RDFUtil;
+import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,15 +44,18 @@ public class ScatterPlotMatrixAction implements Action {
 	private Map<String, Map<String, Map<String, String>>> instanceMap;
 	private Map<String, String> columnMap;
 	private List<Map<String, String>> tableData;
+	private boolean labelNeeded;
+	private StringBuilder textMsg;
+	private String labelColumn;
 
 	/**
 	 * @param paramMap            - parameters from dialogflow
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws Exception {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws IOException, IDAException, InvalidKeySpecException, NoSuchAlgorithmException {
 		int UI_Action = IDAConst.UAC_NRMLMSG;
-		StringBuilder textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+		textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 		ArrayList<String> columnListParameter = new ArrayList<>();
 		ArrayList<String> columnList;
 		List<Map<String, String>> columnDetail;
@@ -68,7 +73,7 @@ public class ScatterPlotMatrixAction implements Action {
 			for (String attribute : attributeList) {
 				instanceMap.keySet().forEach(instance -> attributeTypeMap.put(attribute, instanceMap.get(instance).get(attribute).get("type")));
 			}
-			Value paramVal = (Value) paramMap.get(attributeList.get(0));
+			Value paramVal = (Value) paramMap.get(attributeList.get(1));
 			boolean onTemporaryData = message.isTemporaryData();
 			String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 
@@ -98,23 +103,30 @@ public class ScatterPlotMatrixAction implements Action {
 						textMsg = new StringBuilder("Please provide more than one Numeric columns");
 						dialogFlowUtil.deleteContext("get_ref");
 					} else {
-						refColumn = (String) paramMap.get(attributeList.get(1));
+						refColumn = (String) paramMap.get(attributeList.get(2));
 						if (refColumn != null) {
 							if (columnMap.containsKey(refColumn)) {
 								columnList.add(refColumn);
-								if (onTemporaryData) {
-									tableData = message.getActiveTableData();
-									tableData = dataUtil.filterData(tableData, filterString, columnList, columnMap);
-								} else
-									tableData = dataUtil.getData(datasetName, tableName, columnList, filterString, columnMap);
-								createScatterPlotMatrixData(tableData, columnList, refColumn);
-								textMsg = new StringBuilder("Scatter plot Matrix Loaded");
-								UI_Action = IDAConst.UIA_SCATTERPLOT_MATRIX;
-								dialogFlowUtil.resetContext();
+								labelNeeded = false;
+								if(handleLabelLogic(paramMap,attributeList))
+								{
+									if(labelNeeded)
+									{
+										columnList.add(labelColumn);
+									}
+									if (onTemporaryData) {
+										tableData = message.getActiveTableData();
+										tableData = dataUtil.filterData(tableData, filterString, columnList, columnMap);
+									} else
+										tableData = dataUtil.getData(datasetName, tableName, columnList, filterString, columnMap);
+									createScatterPlotMatrixData(tableData, columnList, refColumn, labelColumn);
+									textMsg = new StringBuilder("Scatter plot Matrix Loaded");
+									UI_Action = IDAConst.UIA_SCATTERPLOT_MATRIX;
+									dialogFlowUtil.resetContext();
+								}
 							} else {
 								textMsg = new StringBuilder("Column <b>" + refColumn + "</b> doesn't exist in the table " + tableName);
 							}
-
 						}
 					}
 				}
@@ -126,9 +138,37 @@ public class ScatterPlotMatrixAction implements Action {
 		}
 	}
 
-	private void createScatterPlotMatrixData(List<Map<String, String>> tableData, ArrayList<String> columnList, String ref_column) {
+	private boolean handleLabelLogic(Map<String, Object> paramMap, List<String> attributeList) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+		String islabelNeeded = paramMap.getOrDefault("labelNeeded", "").toString();
+		if (islabelNeeded.isEmpty()) {
+			textMsg = new StringBuilder("Do you want to use label on the data points?");
+		}else if ("false".equals(islabelNeeded)) {
+			labelNeeded = false;
+			return true;
+		}else
+		{
+			labelNeeded = true;
+			labelColumn = (String) paramMap.get(attributeList.get(0));
+			if(labelColumn.isEmpty())
+			{
+				textMsg = new StringBuilder("Please provide the Label column");
+			}
+			else {
+				if(!columnMap.containsKey(labelColumn))
+				{
+					textMsg = new StringBuilder("Column "+ labelColumn+ " doesn't exist in the loaded table.");
+				}
+				else
+					return true;
+			}
+		}
+		return false;
+	}
+
+	private void createScatterPlotMatrixData(List<Map<String, String>> tableData, ArrayList<String> columnList, String ref_column, String labelColumn) {
 		ScatterPlotMatrixData scatterPlotMatrixData = new ScatterPlotMatrixData();
 		scatterPlotMatrixData.setReferenceColumn(ref_column);
+		scatterPlotMatrixData.setLabelColumn(labelColumn);
 		ArrayList<String> numericColumns;
 		numericColumns = (ArrayList<String>) columnList.clone();
 		numericColumns.remove(ref_column);

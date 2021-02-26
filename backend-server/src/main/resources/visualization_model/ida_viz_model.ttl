@@ -457,7 +457,8 @@ instance:scatter_plot_7 rdf:type owl:NamedIndividual ,
 instance:scatter_plot_matrix_1 rdf:type owl:NamedIndividual ,
                                         ivoc:Instance ;
                                ivoop:hasInstanceParam instance_param:column_list ,
-                                                      instance_param:reference_column ;
+                                                      instance_param:reference_column ,
+                                                      :ScatterPlotMatrixLabel ;
                                rdfs:label "Scatter Plot Matrix Instance 1"@en .
 
 
@@ -928,6 +929,22 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                   ivoop:hasParam parameter:column_list ,
                                                  parameter:reference_column ;
                                   rdfs:label "Scatter Plot Matrix"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/ScatterPlotMatrixLabel
+:ScatterPlotMatrixLabel rdf:type owl:NamedIndividual ,
+                                 ivoc:InstanceParam ;
+                        ivoop:hasRepType representational_type:NotRequired ;
+                        ivoop:representedParam :ScatterPlotMatrix_Label ;
+                        rdfs:label "Scatter Plot Matrix Label" .
+
+
+###  https://www.upb.de/ida/viz/ontology/ScatterPlotMatrix_Label
+:ScatterPlotMatrix_Label rdf:type owl:NamedIndividual ,
+                                  ivoc:Parameter ;
+                         ivoop:hasRepType representational_type:Nominal ;
+                         ivodp:hasPriority 3 ;
+                         rdfs:label "ScatterPlotMatrix_Label" .
 
 
 #################################################################
