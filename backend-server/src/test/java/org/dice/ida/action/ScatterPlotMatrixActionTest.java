@@ -37,6 +37,8 @@ public class ScatterPlotMatrixActionTest {
 		chatUserMessage.setMessage("country, density, gdp, literacy");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("region");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData =  new ScatterPlotMatrixData();
@@ -114,6 +116,109 @@ public class ScatterPlotMatrixActionTest {
 	}
 
 	@Test
+	void testLabelledScatterPlotMatrix() throws Exception {
+		ChatUserMessage chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("draw scatter plot matrix");
+		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveTable("countries-of-the-world.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 10");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("country, density, gdp, literacy");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("region");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("yes");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("country");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
+		ScatterPlotMatrixData expectedData =  new ScatterPlotMatrixData();
+		expectedData.setColumns(new ArrayList<>(){{
+			add("Pop. Density (per sq. mi.)");
+			add("GDP ($ per capita)");
+			add("Literacy (%)");
+			add("Country");
+		}});
+		expectedData.setReferenceColumn("Region");
+		expectedData.setLabelColumn("Country");
+		expectedData.setItems(new ArrayList<>(){{
+			add(new HashMap<>(){{
+				put("Literacy (%)", "36.0");
+				put("GDP ($ per capita)", "700");
+				put("Region", "ASIA (EX. NEAR EAST)         ");
+				put("Pop. Density (per sq. mi.)", "48.0");
+				put("Country", "Afghanistan ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "4500");
+				put("Literacy (%)", "86.5");
+				put("Pop. Density (per sq. mi.)", "124.6");
+				put("Region", "EASTERN EUROPE                     ");
+				put("Country", "Albania ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "6000");
+				put("Literacy (%)", "70.0");
+				put("Pop. Density (per sq. mi.)", "13.8");
+				put("Region", "NORTHERN AFRICA                    ");
+				put("Country", "Algeria ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "8000");
+				put("Literacy (%)", "97.0");
+				put("Pop. Density (per sq. mi.)", "290.4");
+				put("Region", "OCEANIA                            ");
+				put("Country", "American Samoa ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "19000");
+				put("Literacy (%)", "100.0");
+				put("Pop. Density (per sq. mi.)", "152.1");
+				put("Region", "WESTERN EUROPE                     ");
+				put("Country", "Andorra ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "1900");
+				put("Literacy (%)", "42.0");
+				put("Pop. Density (per sq. mi.)", "9.7");
+				put("Region", "SUB-SAHARAN AFRICA                 ");
+				put("Country", "Angola ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "8600");
+				put("Literacy (%)", "95.0");
+				put("Pop. Density (per sq. mi.)", "132.1");
+				put("Region", "LATIN AMER. & CARIB    ");
+				put("Country", "Anguilla ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "11000");
+				put("Literacy (%)", "89.0");
+				put("Pop. Density (per sq. mi.)", "156.0");
+				put("Region", "LATIN AMER. & CARIB    ");
+				put("Country", "Antigua & Barbuda ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "11200");
+				put("Literacy (%)", "97.1");
+				put("Pop. Density (per sq. mi.)", "14.4");
+				put("Region", "LATIN AMER. & CARIB    ");
+				put("Country", "Argentina ");
+			}});
+			add(new HashMap<>(){{
+				put("GDP ($ per capita)", "3500");
+				put("Literacy (%)", "98.6");
+				put("Pop. Density (per sq. mi.)", "99.9");
+				put("Region", "C.W. OF IND. STATES ");
+				put("Country", "Armenia ");
+			}});
+		}});
+		assertNotNull(actualData);
+		assertEquals(expectedData, actualData);
+		sessionUtil.resetSessionId();
+	}
+	@Test
 	void testScatterPlotMatrixAllColumns() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw scatter plot matrix");
@@ -125,6 +230,8 @@ public class ScatterPlotMatrixActionTest {
 		chatUserMessage.setMessage("all");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("detected state");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData =  new ScatterPlotMatrixData();
@@ -204,6 +311,8 @@ public class ScatterPlotMatrixActionTest {
 		chatUserMessage.setMessage("density, gdp, literacy");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("cluster");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData =  new ScatterPlotMatrixData();
