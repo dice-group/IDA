@@ -2,7 +2,6 @@ package org.dice.ida.action.def;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.Value;
 import org.dice.ida.constant.IDAConst;
@@ -30,6 +29,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +72,7 @@ public class ClusterAction implements Action {
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
-		try {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws Exception {
 			fileUtil = new FileUtil();
 			textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 			if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
@@ -116,10 +116,6 @@ public class ClusterAction implements Action {
 				}
 				chatMessageResponse.setMessage(textMsg.toString());
 			}
-		} catch (Exception e) {
-			chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-			chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-		}
 	}
 
 	/**
@@ -136,11 +132,7 @@ public class ClusterAction implements Action {
 				ArrayList fileData = (ArrayList) file.get("data");
 				for (int i = 0; i < fileData.size(); i++) {
 					HashMap<String, String> row = (HashMap<String, String>) fileData.get(i);
-					try {
-						row.put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
-					} catch (Exception e) {
-						//Continue with loop skipping the data row
-					}
+					row.put("Cluster", String.valueOf(model.clusterInstance(data.instance(i))));
 					clusteredData.add(row);
 				}
 			}
@@ -284,7 +276,7 @@ public class ClusterAction implements Action {
 	/**
 	 * Method to change parameters set by user for clustering alogorithm
 	 */
-	private void getnsetNewParamValue() {
+	private void getnsetNewParamValue() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		switch (clusterMethod) {
 			case IDAConst.K_MEAN_CLUSTERING:
 				getnSetKmeanParam();
@@ -300,7 +292,7 @@ public class ClusterAction implements Action {
 	/**
 	 * Method to change parameters for Farthest First clustering algorithm
 	 */
-	private void getnSetFarthestFirstParam() {
+	private void getnSetFarthestFirstParam() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		FarthestFirstAttribute farthestFirstAttribute = (FarthestFirstAttribute) sessionMap.get(IDAConst.FARTHEST_FIRST);
 		switch (paramtertoChange) {
 			case IDAConst.GET_NUM_CLUSTER:
@@ -348,7 +340,7 @@ public class ClusterAction implements Action {
 	/**
 	 * Method to change parameters for K-mean clustering algorithm
 	 */
-	private void getnSetKmeanParam() {
+	private void getnSetKmeanParam() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		KmeansAttribute kmeansAttribute = (KmeansAttribute) sessionMap.get(IDAConst.K_MEAN_CLUSTERING);
 		switch (paramtertoChange) {
 			case IDAConst.GET_NUM_CLUSTER:
@@ -411,7 +403,7 @@ public class ClusterAction implements Action {
 	/**
 	 * Method to add parameters of K-mean clusterer to Session Map
 	 */
-	private void setKmeanParam(KmeansAttribute kmeansAttribute) {
+	private void setKmeanParam(KmeansAttribute kmeansAttribute) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		if (!paramValue.isEmpty() || multiParmaValue != null) {
 			sessionMap.put(IDAConst.K_MEAN_CLUSTERING, kmeansAttribute);
 			sessionUtil.setSessionMap(sessionMap);

@@ -57,39 +57,33 @@ public class IDAChatBot {
 	 * @param userMessage . Chat message from the user
 	 * @return Response to the user chat message
 	 */
-	public ChatMessageResponse processMessage(ChatUserMessage userMessage) {
+	public ChatMessageResponse processMessage(ChatUserMessage userMessage) throws Exception {
 		String msgText = userMessage.getMessage();
 		messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 		Map<String, Object> dataMap = messageResponse.getPayload();
 		dataMap.put("activeDS", userMessage.getActiveDS());
 		dataMap.put("activeTable", userMessage.getActiveTable());
 
-		try {
-			// Instantiate the dialogflow client using the credential json file
-			String	sessionId = fetchDfSessionId();
-			// Set the session name using the sessionId and projectID
-			SessionName session = SessionName.of(projectId, sessionId);
+		// Instantiate the dialogflow client using the credential json file
+		String	sessionId = fetchDfSessionId();
+		// Set the session name using the sessionId and projectID
+		SessionName session = SessionName.of(projectId, sessionId);
 
-			// Set the text from user and language code for the query
-			TextInput.Builder textInput =
-					TextInput.newBuilder().setText(msgText).setLanguageCode(IDAConst.BOT_LANGUAGE);
+		// Set the text from user and language code for the query
+		TextInput.Builder textInput =
+				TextInput.newBuilder().setText(msgText).setLanguageCode(IDAConst.BOT_LANGUAGE);
 
-			// Build the query with the TextInput
-			QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
+		// Build the query with the TextInput
+		QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
 
-			// Detect the intent of the query
-			DetectIntentResponse response = SESSIONS_CLIENT.detectIntent(session, queryInput);
-			QueryResult queryResult = response.getQueryResult();
-			// forwarding the flow to action executor
+		// Detect the intent of the query
+		DetectIntentResponse response = SESSIONS_CLIENT.detectIntent(session, queryInput);
+		QueryResult queryResult = response.getQueryResult();
+		// forwarding the flow to action executor
 
-			AutowireCapableBeanFactory factory = appContext.getAutowireCapableBeanFactory();
-			ActionExecutor actionExecutor = factory.getBean(ActionExecutor.class, queryResult);
-			actionExecutor.processAction(messageResponse, userMessage);
-		} catch (Exception ex) {
-			messageResponse.setMessage(IDAConst.BOT_UNAVAILABLE);
-			messageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-			ex.printStackTrace();
-		}
+		AutowireCapableBeanFactory factory = appContext.getAutowireCapableBeanFactory();
+		ActionExecutor actionExecutor = factory.getBean(ActionExecutor.class, queryResult);
+		actionExecutor.processAction(messageResponse, userMessage);
 		return messageResponse;
 	}
 

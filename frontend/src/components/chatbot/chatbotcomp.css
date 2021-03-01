@@ -4,70 +4,59 @@
 
 .chatbox {
   background: #fff;
-  border: solid 1px #ccc;
-  z-index: 10;
+  z-index: 1100;
   width: 370px;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
+  height: 90%;
+  position: absolute;
+  top: 80px;
+  left: 35%;
+  transition: box-shadow 0.2s, left 0.5s;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: solid 1px #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.with-data .chatbox {
+  left: calc(99% - 370px);
+}
+
+.chatbox.drag {
+  box-shadow: 0 0 20px #ccc;
+}
+
+.draggable {
+  cursor: move;
 }
 
 .chatbox .chatbox-title {
-  border-bottom: solid 1px #ccc;
   background-color: #4e8cff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   color: #fff;
   height: 55px;
+  display: flex;
+  padding: 15px;
 }
 
 .chatbox .chatbox-title .chat-window-title {
   font-size: 16px;
+  width: 95%;
 }
 
 .chatbox .chatbox-title .chatbot-close {
   cursor: pointer;
 }
 
-.makeStyles-root-6 {
-  margin-left: -18px;
-}
-
 .chatbox .chatbox-chat-area {
-  position: absolute;
-  top: 0;
-  margin-top: 55px;
-  height: calc(100% - 65px);
-  width: 100%;
-}
-
-.chatbox-chat-area .chat-area-input {
-  box-shadow: 0 -5px 20px 0 rgba(150, 165, 190, 0.4);
-  position: absolute;
-  bottom: -6px;
-  height: 55px;
-  width: 100%;
-}
-
-.chatbox-chat-area .chat-area-input input {
-  padding-left: 10px;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
+  height: 86%;
 }
 
 .chatbox-chat-area .chat-area-msgs {
-  position: absolute;
-  top: 0;
-  padding: 15px 15px 15px 15px;
-  height: calc(100% - 65px);
+  padding-top: 10px;
+  height: 100%;
   overflow-y: auto;
-  width: 100%;
-}
-
-.chatbox-chat-area .chat-area-msgs a:link,
-.chatbox-chat-area .chat-area-msgs a:visited {
-  color: #fff;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent {
@@ -83,8 +72,22 @@
   border-radius: 5px;
   padding: 15px;
   max-width: 270px;
-  min-width: 90px;
   position: relative;
+}
+
+.chatbox-chat-area .chat-area-msgs .agent .msg button.default {
+  border: solid 1px #a79b9b;
+  border-radius: 5px;
+  padding: 0 4px;
+  background: #fff; /* Old browsers */
+  background: -moz-linear-gradient(top, #fff 0%, #e5e5e5 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #fff 0%, #e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #fff 0%, #e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#fff', endColorstr='#e5e5e5', GradientType=0); /* IE6-9 */
+}
+
+.chatbox-chat-area .chat-area-msgs .agent .msg button:hover {
+  box-shadow: 0 0 5px #ccc;
 }
 
 .chatbox-chat-area .chat-area-msgs .agent .msg::after {
@@ -116,7 +119,6 @@
   border-radius: 5px;
   padding: 15px;
   max-width: 270px;
-  min-width: 90px;
   position: relative;
   overflow-wrap: break-word;
 }
@@ -141,36 +143,53 @@
   visibility: hidden;
 }
 
+.chatbox-chat-area .chat-area-msgs .agent .time {
+  float: right;
+  margin-right: 10px;
+}
+
 .chatbox-chat-area .chat-area-msgs .agent .msg:hover ~ .time,
 .chatbox-chat-area .chat-area-msgs .user .msg:hover ~ .time {
   visibility: visible;
 }
 
-@media (min-width: 992px) {
+.chat-area-input {
+  flex-grow: 1;
+}
+
+.chat-area-input textarea {
+  box-shadow: 0 -10px 20px -5px rgba(150, 165, 190, 0.4);
+  padding-left: 10px;
+  width: 100%;
+  height: 91%;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+@media (max-width: 576px) {
   .chatbox {
-    position: absolute;
-    left: unset;
-    top: 80px;
-    width: 400px;
-    max-height: 85vh;
-    height: 85vh;
-    border-radius: 10px 10px 0 0;
+    left: 0;
+    top: 70px;
+    background: #fff;
+    width: 100%;
+    height: 90%;
   }
 
-  .with-data .chatbox {
-    right: 20px;
+  .chatbox .chatbox-chat-area {
+    height: 91%;
   }
 
-  .no-data .chatbox {
-    right: 45%;
+  .chatbox-chat-area .chat-area-msgs {
+    height: 455px;
   }
 
-  .chatbox .chatbox-chat-area,
-  .chatbox-chat-area .chat-area-input {
-    border-radius: 0 0 10px 10px;
-  }
-
-  .chatbox .chatbox-title {
-    border-radius: 10px 10px 0 0;
+  .chatbox-chat-area .chat-area-input textarea {
+    box-shadow: 0 -10px 20px -5px rgba(150, 165, 190, 0.4);
+    padding-left: 10px;
+    width: 100%;
+    outline: none;
+    border-top: solid 1px #ccc;
+    resize: none;
   }
 }

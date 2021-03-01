@@ -11,6 +11,7 @@ import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.ValidatorUtil;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.util.Comparator;
@@ -49,7 +50,7 @@ public class LineChartAction implements Action {
 	 * @param chatMessageResponse - API response object
 	 */
 	@Override
-	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) {
+	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws IDAException, IOException {
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 			Map<String, Object> payload = chatMessageResponse.getPayload();
 			String datasetName = payload.get("activeDS").toString();
@@ -70,7 +71,6 @@ public class LineChartAction implements Action {
 				chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
 				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 			} else {
-				try {
 					if (ValidatorUtil.isStringEmpty(dateColumn) || ValidatorUtil.isStringEmpty(labelColumn) || ValidatorUtil.isStringEmpty(valueColumn)) {
 						SimpleTextAction.setSimpleTextResponse(paramMap, chatMessageResponse);
 						return;
@@ -91,14 +91,6 @@ public class LineChartAction implements Action {
 					payload.put(IDAConst.LINE_CHART_PROPERTY_NAME, createLineChartData());
 					chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
 					chatMessageResponse.setMessage(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
-				} catch (IDAException ex) {
-					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-					chatMessageResponse.setMessage(ex.getMessage());
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-					chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
-				}
 			}
 		}
 	}

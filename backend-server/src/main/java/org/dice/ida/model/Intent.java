@@ -12,10 +12,12 @@ public enum Intent {
     SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NRMLMSG),
 	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
 	BARCHART("bar_chart",IDAConst.UIA_BARGRAPH),
+	SCATTERPLOT("scatter_plot",IDAConst.UIA_SCATTERPLOT),
 	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
 	CLUSTERING("clustering",IDAConst.UAC_NRMLMSG),
 	NEXT_STEPS("next-steps", IDAConst.UAC_NRMLMSG),
 	CLEAR("clear_context", IDAConst.UAC_NRMLMSG),
+	CAUSE_EXCEPTION("cause_exception", IDAConst.UAC_NRMLMSG),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
     private final String key;

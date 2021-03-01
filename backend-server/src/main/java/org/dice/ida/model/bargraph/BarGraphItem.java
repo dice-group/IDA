@@ -27,4 +27,12 @@ public class BarGraphItem {
 		return "BarGraphItem [x=" + x + ", y=" + y + "]";
 	}
 
+	@Override
+	public boolean equals(Object obj2) {
+		if (!(obj2 instanceof BarGraphItem)) {
+			return false;
+		}
+		return this.toString().equals(obj2.toString());
+	}
+
 }

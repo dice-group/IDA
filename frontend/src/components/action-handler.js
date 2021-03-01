@@ -144,10 +144,22 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             addVisualizationEntry(props, payload.lineChartData, "Line Chart", "linechart", payload.activeDS);
             break;
         }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_SCATTERPLOT: {
+            addVisualizationEntry(props, payload.scatterPlotData, "Scatter Plot", "scatterplot", payload.activeDS);
+            break;
+        }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_CLUSTERING: {
             const clusteredData = payload.clusteredData;
             clusteredData.sort((a, b) => parseInt(a.Cluster, 10) > parseInt(b.Cluster, 10) ? 1 : parseInt(a.Cluster, 10) < parseInt(b.Cluster, 10) ? -1 : 0);
             addAnalysisEntry(props, clusteredData, "Clustering", "clustering", payload.activeDS, payload.activeTable, payload.columns);
+            break;
+        }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_GROUPED_BARCHART: {
+            addVisualizationEntry(props, payload.barGraphData, "Grouped Bar Chart", "groupedBarchart", payload.activeDS);
+            break;
+        }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_GROUPED_BUBBLECHART: {
+            addVisualizationEntry(props, payload.bubbleChartData, "Grouped Bubble Chart", "groupedBubblechart", payload.activeDS);
             break;
         }
         default:
