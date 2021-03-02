@@ -73,7 +73,7 @@ public class ScatterPlotMatrixAction implements Action {
 			for (String attribute : attributeList) {
 				instanceMap.keySet().forEach(instance -> attributeTypeMap.put(attribute, instanceMap.get(instance).get(attribute).get("type")));
 			}
-			Value paramVal = (Value) paramMap.get(attributeList.get(1));
+			Value paramVal = (Value) paramMap.get(attributeList.get(0));
 			boolean onTemporaryData = message.isTemporaryData();
 			String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
 
@@ -103,7 +103,7 @@ public class ScatterPlotMatrixAction implements Action {
 						textMsg = new StringBuilder("Please provide more than one Numeric columns");
 						dialogFlowUtil.deleteContext("get_ref");
 					} else {
-						refColumn = (String) paramMap.get(attributeList.get(2));
+						refColumn = (String) paramMap.get(attributeList.get(1));
 						if (refColumn != null) {
 							if (columnMap.containsKey(refColumn)) {
 								columnList.add(refColumn);
@@ -149,7 +149,7 @@ public class ScatterPlotMatrixAction implements Action {
 		}else
 		{
 			labelNeeded = true;
-			labelColumn = (String) paramMap.get(attributeList.get(0));
+			labelColumn = (String) paramMap.get(attributeList.get(2));
 			if(labelColumn.isEmpty())
 			{
 				textMsg = new StringBuilder("Please provide the Label column");
