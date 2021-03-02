@@ -10,7 +10,6 @@ import { Hidden } from "@material-ui/core";
 
 import "./scatterplotMatrix.css";
 import { IDA_CONSTANTS } from "./../../constants";
-
 export default class IDAScatterPlotMatrix extends Component {
 	margin = {
 		top: 20,
@@ -56,6 +55,7 @@ export default class IDAScatterPlotMatrix extends Component {
 	drawScatterPlot() {
 		const self = this;
 		const refColumn = this.graphData.referenceColumn;
+		const labelColumn = this.graphData.labelColumn;
 		const columns = this.graphData.columns;
 		const padding = 50;
 		const size =
@@ -66,6 +66,9 @@ export default class IDAScatterPlotMatrix extends Component {
 				obj[`${c}`] = parseFloat(entry[`${c}`]);
 			});
 			obj[`${refColumn}`] = entry[`${refColumn}`];
+			if (labelColumn) {
+				obj[`${labelColumn}`] = entry[`${labelColumn}`];
+			}
 			return obj;
 		});
 		const data = this.graphData.items;
@@ -146,7 +149,13 @@ export default class IDAScatterPlotMatrix extends Component {
 				.join("circle")
 				.attr("cx", (d) => x[`${i}`](d[`${columns[`${i}`]}`]))
 				.attr("cy", (d) => y[`${j}`](d[`${columns[`${j}`]}`]))
-				.attr("data-tooltip", (d) => columns[`${i}`] + ": " + d[`${columns[`${i}`]}`] + "\n" + columns[`${j}`] + ": " + d[`${columns[`${j}`]}`])
+				.attr("data-tooltip", (d) => {
+					let text = "";
+					if(labelColumn){
+						text = d[`${labelColumn}`] + "\n\n";
+					}
+					return text + columns[`${i}`] + ": " + d[`${columns[`${i}`]}`] + "\n" + columns[`${j}`] + ": " + d[`${columns[`${j}`]}`];
+				})
 				.on("mouseover", (event) => {
 					self.tooltip.style.display = "block";
 					self.tooltip.style.position = "absolute";

@@ -140,6 +140,7 @@ public class ScatterPlotMatrixAction implements Action {
 
 	private boolean handleLabelLogic(Map<String, Object> paramMap, List<String> attributeList) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		String islabelNeeded = paramMap.getOrDefault("labelNeeded", "").toString();
+		labelColumn = "";
 		if (islabelNeeded.isEmpty()) {
 			textMsg = new StringBuilder("Do you want to use label on the data points?");
 		}else if ("false".equals(islabelNeeded)) {
@@ -172,6 +173,7 @@ public class ScatterPlotMatrixAction implements Action {
 		ArrayList<String> numericColumns;
 		numericColumns = (ArrayList<String>) columnList.clone();
 		numericColumns.remove(ref_column);
+		numericColumns.remove(labelColumn);
 		scatterPlotMatrixData.setColumns(numericColumns);
 		scatterPlotMatrixData.setItems(tableData);
 		payload.put("scatterPlotMatrixData", scatterPlotMatrixData);
