@@ -64,7 +64,8 @@ public class IDAChatbotUtil {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> credentials;
 		String credentialsFilePath = props.get("dialogflow.credentials.path");
-		String jsonString = new String(Files.readAllBytes(Paths.get(IDAChatbotUtil.class.getClassLoader().getResource(credentialsFilePath).getPath())));
+		InputStream input = new FileInputStream(IDAChatbotUtil.class.getClassLoader().getResource(credentialsFilePath).getPath());
+		String jsonString = new String(input.readAllBytes());
 		credentials = objectMapper.readValue(jsonString, new TypeReference<>() {
 		});
 		return credentials;

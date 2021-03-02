@@ -14,6 +14,7 @@ public class ScatterPlotMatrixData {
 	private List<String> columns;
 	private String referenceColumn;
 	private List<Map<String, String>> items;
+	private String labelColumn;
 
 	public List<String> getColumns() {
 		return columns;
@@ -38,6 +39,15 @@ public class ScatterPlotMatrixData {
 	public void setItems(List<Map<String, String>> items) {
 		this.items = items;
 	}
+
+	public String getLabelColumn() {
+		return labelColumn;
+	}
+
+	public void setLabelColumn(String labelColumn) {
+		this.labelColumn = labelColumn;
+	}
+
 
 	@Override
 	public boolean equals(Object obj2) {
