@@ -7,7 +7,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Chip from "@material-ui/core/Chip";
 import { Hidden } from "@material-ui/core";
-
 import "./groupedBarChart.css";
 import { geoContains } from "d3";
 
@@ -33,7 +32,7 @@ export default class IDAGroupedBarGraph extends Component {
         this.containerId = props.nodeId;
         Object.keys(this.data.groupedBarChartData).forEach((k) => {
             let obj = {
-                groupLabel: k.length > 16 ? k.substring(0, 13) + "..." : k,
+                groupLabel: k.length > 16 ? k.substring(0, 7) + "..." : k,
                 originalGroupLabel: k
             };
             this.data.groupedBarChartData[`${k}`].forEach((e) => {
@@ -55,8 +54,6 @@ export default class IDAGroupedBarGraph extends Component {
 
     drawGraph() {
         this.width = Math.max(this.graphData.length * this.data.xAxisLabels.length * 25, this.width);
-        console.log(this.data)
-        console.log(this.graphData)
         const legendSvg = d3.select("#legend-container").append("svg");
 
         const svg = d3.select("#" + this.containerId)
@@ -75,13 +72,6 @@ export default class IDAGroupedBarGraph extends Component {
             .domain(keys)
             .rangeRound([0, x0.bandwidth()])
             .padding(0.05);
-        console.log(keys)
-
-        const x2 = d3.scaleBand()
-            .domain(keys)
-            .rangeRound([this.margin.left, this.width - this.margin.right])
-            .paddingInner(0.1);
-
 
         const y = d3.scaleLinear()
             .domain([0, d3.max(this.graphData, (d) => d3.max(keys, (key) => d[`${key}`]))]).nice()
@@ -90,11 +80,11 @@ export default class IDAGroupedBarGraph extends Component {
         const color = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemeCategory10);
 
         const group = svg.append("g")
+            .attr("name", "group")
             .selectAll("g")
             .data(this.graphData)
             .join("g")
             .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`)
-
 
         group
             .selectAll("rect")
@@ -106,6 +96,7 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("height", (d) => y(0) - y(d.value))
             .attr("fill", (d) => this.colorFunction(d.key))
             .attr("tooltip-text", (d) => (d.originalGroupLabel + "\n" + d.key + ": " + d.value))
+            .attr("name", (d) => "rect" + (d.key))
             .on("mouseover", (event) => {
                 this.tooltip.style.display = "block";
                 this.tooltip.style.position = "absolute";
@@ -116,8 +107,25 @@ export default class IDAGroupedBarGraph extends Component {
             })
             .on("mouseout", () => {
                 this.tooltip.style.display = "none";
-            });
-
+            })
+        const xAxis2 = (g) => (g)
+            .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+            .call(d3.axisBottom(x1).tickSizeOuter(0))
+            .selectAll("text")
+            .attr("x", -15)
+            .attr("y", -5)
+            .attr("transform", "rotate(-90)")
+            .style("text-anchor", "end");
+        group
+            .append("g")
+            .call(xAxis2)
+            .append('line')
+            .style("stroke", "steelblue")
+            .style("stroke-width", 1.5)
+            .attr("x1", 2.5)
+            .attr("y1", 76)
+            .attr("x2", 80)
+            .attr("y2", 76);
 
         svg.append("text")
             .attr("transform", "rotate(-90)")
@@ -136,38 +144,24 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("x", 515)
             .attr("y", 15);
 
+
         //delhi, kerala etc
         const xAxis = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-            .call(d3.axisBottom(x0).tickSizeOuter(0))
+            .call(d3.axisBottom(x0).tickSize(0))
             .selectAll("text")
-            .attr("x", -10)
-            .attr("y", -5)
-            .attr("transform", "rotate(-90)")
+            .attr("x", 25)
+            .attr("y", 80)
             .style("text-anchor", "end");
-        console.log(group._groups[0]);
-        //recovered migrated and hospitalised\
-        group._groups[0].forEach((k) => {
-            console.log("k: ", k)
-            const label1 = (k) => (k)
-                .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-                .call(d3.axisBottom(x2).tickSizeOuter(0))
-                .selectAll("text")
-                .attr("x", -15)
-                .attr("y", -8)
-                .attr("transform", "rotate(-90)")
-                .style("text-anchor", "end")
-            svg.append("g")
-                .call(label1);
-        })
+
+
         const yAxis = (g) => (g)
             .attr("transform", `translate(${this.margin.left},0)`)
             .call(d3.axisLeft(y).tickSizeOuter(0));
 
         svg.append("g")
             .call(xAxis);
-        // svg.append("g")
-        //     .call(name);
+
         svg.append("g")
             .call(yAxis);
 
