@@ -22,16 +22,17 @@ export default class DSUploadWizard extends React.Component {
 			activeStep: 0,
 			steps: ["Upload dataset", "confirm meta data", "finalize"],
 			isFileSelected: false,
-			fileName: ''
+			fileName: '',
+			showNextButton: false
 		};
 	}
 
 	onFileChange = (ev) => {
 		const files = ev.target.files
 		if (files.length > 0) {
-			this.setState({isFileSelected: true, fileName: files[0].name});
+			this.setState({isFileSelected: true, fileName: files[0].name, showNextButton: true});
 		} else {
-			this.setState({isFileSelected: false});
+			this.setState({isFileSelected: false, showNextButton: false});
 		}
 	}
 
@@ -98,7 +99,7 @@ export default class DSUploadWizard extends React.Component {
 					</DialogContent>
 
 					<DialogActions>
-						<Button color="primary" variant="outlined" style={{ textTransform: "Capitalize" }} >
+						<Button color="primary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.showNextButton ? 'block': 'none' }} >
 							Next
 						</Button>
 						<Button color="secondary" variant="outlined" style={{ textTransform: "Capitalize" }} >
