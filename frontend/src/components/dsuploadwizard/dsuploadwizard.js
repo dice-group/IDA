@@ -13,6 +13,8 @@ import BackupIcon from "@material-ui/icons/Backup";
 import Button from '@material-ui/core/Button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 import axios from "axios";
 
@@ -26,7 +28,9 @@ export default class DSUploadWizard extends React.Component {
 			isFileSelected: false,
 			fileName: '',
 			file: null,
+			nextButtonText: 'Upload',
 			enableNextButton: false,
+			showError: false,
 			showFileUploadLoading: false
 		};
 	}
@@ -36,13 +40,13 @@ export default class DSUploadWizard extends React.Component {
 		if (files.length > 0) {
 			this.setState({isFileSelected: true, file: files[0], fileName: files[0].name, enableNextButton: true});
 		} else {
-			this.setState({isFileSelected: false, enableNextButton: false});
+			this.setState({isFileSelected: false, enableNextButton: false, fileName: '', file: null});
 		}
 	}
 
 	handleNext = () => {
 		if (this.state.activeStep === 0) {
-			this.setState({showFileUploadLoading: true, enableNextButtonL: false})
+			this.setState({showFileUploadLoading: true, enableNextButton: false})
 			let formData = new FormData();
 			formData.append("file", this.state.file);
 			axios.post("http://127.0.0.1:5000/", formData, {
@@ -52,10 +56,14 @@ export default class DSUploadWizard extends React.Component {
 			}).then(() => {
 				this.setState({activeStep: this.state.activeStep + 1, enableNextButton: false})
 			}).catch(() => {
-				console.log("failed to upload dataset")
+				this.setState({isFileSelected: false, showFileUploadLoading: false, showError: true})
 			})
 		}
 	};
+
+	hideError = () => {
+		this.setState({showError: false})
+	}
 
 	render() {
 		const renderFileUploadText = () => {
@@ -81,10 +89,10 @@ export default class DSUploadWizard extends React.Component {
 				<Dialog
 					open={this.props.isOpen}
 					fullWidth
-					maxWidth="md"
+					maxWidth="lg"
 					PaperProps={{
 						style: {
-							minHeight: "400px"
+							minHeight: "600px"
 						}
 					}}
 				>
@@ -121,6 +129,13 @@ export default class DSUploadWizard extends React.Component {
 									</label>
 									<CircularProgress style={{display: this.state.showFileUploadLoading ? "block" : "none"}} />
 									{renderFileUploadText()}
+									<Snackbar
+										open={this.state.showError}
+										onClose={this.hideError}
+										autoHideDuration="4000"
+									>
+										<Alert severity="error">Unable to upload dataset. Please try again..</Alert>
+									</Snackbar>
 								</div>
 							</div>
 							<div style={{display: this.state.activeStep === 1 ? "block" : "none"}}>
@@ -132,8 +147,8 @@ export default class DSUploadWizard extends React.Component {
 					</DialogContent>
 
 					<DialogActions>
-						<Button onClick={this.handleNext} color="primary" variant="outlined" disabled={!this.state.enableNextButton} style={{ textTransform: "Capitalize" }} >
-							Next
+						<Button onClick={this.handleNext} color="primary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.enableNextButton ? 'block' : 'none'}} >
+							{this.state.nextButtonText}
 						</Button>
 						<Button color="secondary" variant="outlined" style={{ textTransform: "Capitalize" }} >
 							Cancel dataset upload
