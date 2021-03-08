@@ -109,7 +109,8 @@ public class RDFUtil {
 				"  }" +
 				"  ?IParam ivoop:representedParam ?Param ;" +
 				"          ivoop:hasRepType ?repType ." +
-				"  ?Param rdfs:label ?paramLabel ." +
+				"  ?Param rdfs:label ?paramLabel ;" +
+				"		  ivodp:hasPriority ?priority ." +
 				"  ?repType rdfs:label ?paramType ." +
 				"  OPTIONAL {" +
 				"    ?IParam ivoop:hasTransformation ?transformation ." +
@@ -118,14 +119,14 @@ public class RDFUtil {
 				"    ?targetType rdfs:label ?transformationTargetType ." +
 				"    ?transformationType rdfs:label ?transformationLabel" +
 				"  }" +
-				"}";
+				"} ORDER BY ASC(?priority)";
 		ResultSet instancesResultSet = getResultFromQuery(queryString);
 		if (instancesResultSet == null) {
 			return instanceMap;
 		}
 		while (instancesResultSet.hasNext()) {
 			resource = instancesResultSet.next();
-			instanceParam = new HashMap<>();
+			instanceParam = new TreeMap<>();
 			instanceLabel = resource.get("label").asLiteral().getString();
 			paramType = resource.get("paramType").asLiteral().getString();
 			if (IDAConst.TRANSFORMATION_LABEL.equals(paramType)) {
@@ -135,7 +136,7 @@ public class RDFUtil {
 				instanceParam.put(IDAConst.INSTANCE_PARAM_TYPE_KEY, paramType);
 				instanceParam.put(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY, paramType);
 			}
-			instance = instanceMap.getOrDefault(instanceLabel, new HashMap<>());
+			instance = instanceMap.getOrDefault(instanceLabel, new TreeMap<>());
 			instance.put(resource.get("paramLabel").asLiteral().getString(), instanceParam);
 			instanceMap.put(instanceLabel, instance);
 		}

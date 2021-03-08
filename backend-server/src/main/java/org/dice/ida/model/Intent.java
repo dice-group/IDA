@@ -15,6 +15,7 @@ public enum Intent {
 	SCATTERPLOT("scatter_plot",IDAConst.UIA_SCATTERPLOT),
 	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),
 	CLUSTERING("clustering",IDAConst.UAC_NRMLMSG),
+	SCATTERPLOTMATRIX("scatter_plot_matrix",IDAConst.UIA_SCATTERPLOT_MATRIX),
 	NEXT_STEPS("next-steps", IDAConst.UAC_NRMLMSG),
 	CLEAR("clear_context", IDAConst.UAC_NRMLMSG),
 	CAUSE_EXCEPTION("cause_exception", IDAConst.UAC_NRMLMSG),
