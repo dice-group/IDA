@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -73,7 +72,7 @@ public class MessageController {
 		activeDS = message.getActiveDS();
 		activeTable = message.getActiveTable();
 		return () -> {
-			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t user message:\t" + message.getMessage());
+			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t user message:\t" + message.getMessage().trim());
 			try {
 				idaChatBot.processMessage(message);
 			} catch(IDAException e) {
@@ -89,7 +88,8 @@ public class MessageController {
 				response.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 				response.setUiAction(IDAConst.UAC_NRMLMSG);
 			}
-			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage());
+			chatLog.info("Context list: " + dialogFlowUtil.getActiveContextList());
+			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage() +"\n");
 			return response;
 		};
 	}
