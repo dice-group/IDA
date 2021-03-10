@@ -155,6 +155,14 @@ ivoop:hasTransformationType rdf:type owl:ObjectProperty ;
                             rdfs:label "hasTransformationType"@en .
 
 
+###  https://www.upb.de/ida/viz/ontology/object-property/isDependentOn
+ivoop:isDependentOn rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf owl:topObjectProperty ;
+                    rdfs:domain ivoc:InstanceParam ;
+                    rdfs:range ivoc:Parameter ;
+                    rdfs:label "isDependentOn"@en .
+
+
 ###  https://www.upb.de/ida/viz/ontology/object-property/representedParam
 ivoop:representedParam rdf:type owl:ObjectProperty ;
                        rdfs:subPropertyOf owl:topObjectProperty ;
@@ -409,7 +417,7 @@ instance:bubble_chart_7 rdf:type owl:NamedIndividual ,
 instance:line_chart_1 rdf:type owl:NamedIndividual ,
                                ivoc:Instance ;
                       ivoop:hasInstanceParam instance_param:line_chart_temporal ,
-                                             instance_param:line_label ,
+                                             instance_param:line_label_non_unique ,
                                              instance_param:line_values_countof ;
                       rdfs:label "Line Chart Instance 1"@en .
 
@@ -418,7 +426,7 @@ instance:line_chart_1 rdf:type owl:NamedIndividual ,
 instance:line_chart_2 rdf:type owl:NamedIndividual ,
                                ivoc:Instance ;
                       ivoop:hasInstanceParam instance_param:line_chart_temporal ,
-                                             instance_param:line_label ,
+                                             instance_param:line_label_non_unique ,
                                              instance_param:line_values_sumof ;
                       rdfs:label "Line Chart Instance 2"@en .
 
@@ -427,9 +435,18 @@ instance:line_chart_2 rdf:type owl:NamedIndividual ,
 instance:line_chart_3 rdf:type owl:NamedIndividual ,
                                ivoc:Instance ;
                       ivoop:hasInstanceParam instance_param:line_chart_temporal ,
-                                             instance_param:line_label ,
+                                             instance_param:line_label_non_unique ,
                                              instance_param:line_values_averageof ;
                       rdfs:label "Line Chart Instance 3"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance/line_chart_4
+instance:line_chart_4 rdf:type owl:NamedIndividual ,
+                               ivoc:Instance ;
+                      ivoop:hasInstanceParam instance_param:line_chart_temporal ,
+                                             instance_param:line_label_unique ,
+                                             instance_param:line_values_numeric ;
+                      rdfs:label "Line Chart Instance 4"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/instance/scatter_plot_1
@@ -572,12 +589,22 @@ instance_param:line_chart_temporal rdf:type owl:NamedIndividual ,
                                    rdfs:label "Line Chart Temporal Column"@en .
 
 
-###  https://www.upb.de/ida/viz/data/instance_param/line_label
-instance_param:line_label rdf:type owl:NamedIndividual ,
-                                   ivoc:InstanceParam ;
-                          ivoop:hasRepType representational_type:NonUnique ;
-                          ivoop:representedParam parameter:line_label ;
-                          rdfs:label "Line Chart Labels"@en .
+###  https://www.upb.de/ida/viz/data/instance_param/line_label_non_unique
+instance_param:line_label_non_unique rdf:type owl:NamedIndividual ,
+                                              ivoc:InstanceParam ;
+                                     ivoop:hasRepType representational_type:NonUnique ;
+                                     ivoop:isDependentOn parameter:temporal_column ;
+                                     ivoop:representedParam parameter:line_label ;
+                                     rdfs:label "Line Chart Labels Non Unique"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_label_unique
+instance_param:line_label_unique rdf:type owl:NamedIndividual ,
+                                          ivoc:InstanceParam ;
+                                 ivoop:hasRepType representational_type:Unique ;
+                                 ivoop:isDependentOn parameter:temporal_column ;
+                                 ivoop:representedParam parameter:line_label ;
+                                 rdfs:label "Line Chart Labels Unique"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/instance_param/line_values_averageof
@@ -596,6 +623,14 @@ instance_param:line_values_countof rdf:type owl:NamedIndividual ,
                                    ivoop:hasTransformation transformation:linechart_countof ;
                                    ivoop:representedParam parameter:line_value ;
                                    rdfs:label "Line Values Countof"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_values_numeric
+instance_param:line_values_numeric rdf:type owl:NamedIndividual ,
+                                            ivoc:InstanceParam ;
+                                   ivoop:hasRepType representational_type:Numeric ;
+                                   ivoop:representedParam parameter:line_value ;
+                                   rdfs:label "Line Values Numeric"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/instance_param/line_values_sumof
@@ -718,6 +753,8 @@ parameter:line_label rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/parameter/line_value
 parameter:line_value rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
+                     ivoop:hasRepType representational_type:Numeric ;
+                     ivodp:hasPriority 3 ;
                      rdfs:label "Line_Value"@en .
 
 
@@ -1047,7 +1084,8 @@ visualization:line_chart rdf:type owl:NamedIndividual ,
                          ivoop:hasInformation information:LineChart ;
                          ivoop:hasInstance instance:line_chart_1 ,
                                            instance:line_chart_2 ,
-                                           instance:line_chart_3 ;
+                                           instance:line_chart_3 ,
+                                           instance:line_chart_4 ;
                          ivoop:hasParam parameter:line_label ,
                                         parameter:line_value ,
                                         parameter:temporal_column ;
