@@ -162,6 +162,10 @@ public interface IDAConst {
 	public static final String LINE_CHART_PARAM_VALUE_COL = "line_value_column";
 	public static final String INVALID_DATE_COLUMN_MSG = " is not a date column";
 	public static final String INVALID_NUMERIC_COLUMN_MSG = " is not a numeric column";
+	public static final String LINE_CHART_LOADED = "The requested line chart has been loaded.";
+	public static final String LINE_CHART_TEMPORAL_PARAM = "Temporal_Column";
+	public static final String LINE_CHART_LABLE_PARAM = "Line_Label";
+	public static final String LINE_CHART_VALUE_PARAM = "Line_Value";
 
 	/**
 	 * Column data types
@@ -201,6 +205,7 @@ public interface IDAConst {
 	public static final String TRANSFORMATION_LABEL = "Transformation";
 	public static final String INSTANCE_PARAM_TYPE_KEY = "type";
 	public static final String INSTANCE_PARAM_TRANS_TYPE_KEY = "trans_type";
+	public static final String INSTANCE_PARAM_DEPENDENT_KEY = "dependentOn";
 	public static final String INSTANCE_PARAM_TYPE_UNIQUE = "unique";
 	public static final String INSTANCE_PARAM_TYPE_NON_UNIQUE = "non unique";
 	public static final String INSTANCE_PARAM_TYPE_NOT_REQUIRED = "not required";
@@ -248,6 +253,7 @@ public interface IDAConst {
 	String VIZ_TYPE_BAR_CHART = "bar_chart";
 	String VIZ_TYPE_BUBBLE_CHART = "bubble_chart";
 	String VIZ_TYPE_SCATTER_PLOT = "scatter_plot";
+	String VIZ_TYPE_LINE_CHART = "line_chart";
 	String BUBBLE_LABEL_PARAM = "Bubble_Label";
 	String BUBBLE_SIZE_PARAM = "Bubble_Size";
 	String X_AXIS_PARAM = "X-Axis";
@@ -292,6 +298,9 @@ public interface IDAConst {
 		put("Y-Axis", "Y-Axis");
 		put("Bubble_Label", "label of the bubbles");
 		put("Bubble_Size", "size of the bubbles");
+		put("Temporal_Column", "X-Axis (Temporal data)");
+		put("Line_Label", "Line Labels");
+		put("Line_Value", "Line Values");
 	}};
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");
