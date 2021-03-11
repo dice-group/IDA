@@ -1,7 +1,7 @@
 #alert-dialog-description > div {
   border: dashed 1px #ccc;
   width: 100%;
-  height: 500px;
+  height: 700px;
 }
 
 .upload-dataset-box {
@@ -14,8 +14,14 @@
 
 .meta-data-box {
   overflow-y: scroll;
+  height: 700px;
 }
 
 .heading {
   color: #000;
+}
+
+td.required:after {
+  content: "*";
+  color: red;
 }

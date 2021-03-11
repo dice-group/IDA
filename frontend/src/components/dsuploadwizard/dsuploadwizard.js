@@ -62,8 +62,8 @@ export default class DSUploadWizard extends React.Component {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				}
-			}).then(() => {
-				this.setState({activeStep: this.state.activeStep + 1, enableNextButton: false})
+			}).then((resp) => {
+				this.setState({activeStep: this.state.activeStep + 1, enableNextButton: false, metaData: resp.data.metadata })
 			}).catch(() => {
 				this.setState({isFileSelected: false, showFileUploadLoading: false, showError: true})
 			})
@@ -131,8 +131,8 @@ export default class DSUploadWizard extends React.Component {
 					<form onChange={this.handleChange}>
 					<table>
 						<tr>
-							<td width="15%" className="heading">Dataset name</td>
-							<td>{this.state.metaData.dsName}</td>
+							<td width="15%" className="heading required">Dataset name</td>
+							<td><input type="text" value={this.state.metaData.dsName}/></td>
 						</tr>
 						<tr>
 							<td  width="15%" className="heading">Dataset description</td>
@@ -143,53 +143,66 @@ export default class DSUploadWizard extends React.Component {
 					This dataset contains {this.state.metaData.filesMd.length} files.
 					<br/>
 					<hr/>
-					<table>
-						<tr>
-							<td className="heading">File name</td>
-							<td>{this.state.metaData.filesMd[0].fileName}</td>
-						</tr>
-						<tr>
-							<td className="heading">Display name</td>
-							<td><input type="text" value={this.state.metaData.filesMd[0].displayName} /></td>
-						</tr>
-						<tr>
-							<td className="heading">File description</td>
-							<td><input type="text" value={this.state.metaData.filesMd[0].fileDesc} /></td>
-						</tr>
-						<tr>
-							<td className="heading">Columns count</td>
-							<td>{this.state.metaData.filesMd[0].colCount}</td>
-						</tr>
-						<tr>
-							<td className="heading">Row count</td>
-							<td>{this.state.metaData.filesMd[0].rowCount}</td>
-						</tr>
-					</table>
-					<table>
-						<thead>
-						<td className="heading">Column index</td>
-						<td className="heading">Column name</td>
-						<td className="heading">Column description</td>
-						<td className="heading">Column attribute</td>
-						<td className="heading">Column type</td>
-						<td className="heading">Contains unique values</td>
-						</thead>
-						<tbody>
-						{ this.state.metaData.filesMd[0].fileColMd.map((e, i) => {
+						{this.state.metaData.filesMd.map((f, i) => {
 							return (
-								<tr key={i}>
-									<td>{e.colIndex}</td>
-									<td>{e.colName}</td>
-									<td><input value={e.colDesc} /></td>
-									<td><input value={e.colAttr} /></td>
-									<td>{e.colType}</td>
-									<td>{e.isUnique? 'Yes' : 'No'}</td>
-								</tr>
+								<div>
+									<table>
+										<tr>
+											<td className="heading">#</td>
+											<td>{i}</td>
+										</tr>
+										<tr>
+											<td className="heading">File name</td>
+											<td>{f.fileName}</td>
+										</tr>
+										<tr>
+											<td className="heading">Display name</td>
+											<td><input type="text" value={f.displayName} /></td>
+										</tr>
+										<tr>
+											<td className="heading">File description</td>
+											<td><input type="text" value={f.fileDesc} /></td>
+										</tr>
+										<tr>
+											<td className="heading">Columns count</td>
+											<td>{f.colCount}</td>
+										</tr>
+										<tr>
+											<td className="heading">Row count</td>
+											<td>{f.rowCount}</td>
+										</tr>
+									</table>
+									<table>
+									<thead>
+									<td className="heading">Column index</td>
+									<td className="heading">Column name</td>
+									<td className="heading">Column description</td>
+									<td className="heading">Column attribute</td>
+									<td className="heading">Column type</td>
+									<td className="heading">Contains unique values</td>
+									</thead>
+									<tbody>
+									{ f.fileColMd.map((e, i) => {
+										return (
+											<tr key={i}>
+												<td>{e.colIndex}</td>
+												<td><input value={e.colName} /></td>
+												<td><input value={e.colDesc} /></td>
+												<td>{e.colAttr}</td>
+												<td>{e.colType}</td>
+												<td>{e.isUnique? 'Yes' : 'No'}</td>
+											</tr>
+										)
+									})}
+									</tbody>
+
+								</table>
+									<br/>
+									<hr/>
+								</div>
 							)
 						})}
-						</tbody>
 
-					</table>
 					</form>
 				</div>)
 			}
@@ -203,7 +216,7 @@ export default class DSUploadWizard extends React.Component {
 					maxWidth="lg"
 					PaperProps={{
 						style: {
-							minHeight: "600px"
+							minHeight: "800px"
 						}
 					}}
 				>
