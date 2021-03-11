@@ -54,13 +54,11 @@ public class ActionMappingHelper {
 			case BARCHART:
 			case BUBBLECHART:
 			case SCATTERPLOT:
+			case SCATTERPLOTMATRIX:
 				action = appContext.getBean(VisualizeAction.class);
 				break;
 			case CLUSTERING:
 				action = appContext.getBean(ClusterAction.class);
-				break;
-			case SCATTERPLOTMATRIX:
-				action = appContext.getBean(ScatterPlotMatrixAction.class);
 				break;
 			case CLEAR:
 				action = appContext.getBean(ClearConversationAction.class);

@@ -1114,7 +1114,8 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                   ivoop:hasInformation information:ScatterPlotMatrix ;
                                   ivoop:hasInstance instance:scatter_plot_matrix_1 ;
                                   ivoop:hasParam parameter:column_list ,
-                                                 parameter:reference_column ;
+                                                 parameter:reference_column ,
+                                                 :hasListColumn ;
                                   rdfs:label "Scatter Plot Matrix"@en .
 
 
@@ -1132,6 +1133,13 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                          ivoop:hasRepType representational_type:Nominal ;
                          ivodp:hasPriority 3 ;
                          rdfs:label "ScatterPlotMatrix_Label" .
+
+
+###  https://www.upb.de/ida/viz/ontology/hasListColumn
+:hasListColumn rdf:type owl:NamedIndividual ,
+                        ivoc:Parameter ;
+               ivodp:hasPriority 4 ;
+               rdfs:label "hasListColumn" .
 
 
 #################################################################
