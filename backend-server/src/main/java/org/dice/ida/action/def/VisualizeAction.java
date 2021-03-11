@@ -1176,31 +1176,17 @@ public class VisualizeAction implements Action {
 	 * @return - line chart data
 	 */
 	private Map<String, Map<String, Double>> createLineChartData(String dateColumn, String labelColumn, String valueColumn, String valueType) {
-		Map<String, Double> labelData;
+		Map<String, Double> labelData = new TreeMap<>();
 		String date;
 		String label;
 		double value;
 		Map<String, Map<String, Double>> chartData = new HashMap<>();
 		Calendar calendar = Calendar.getInstance();
-		lineChartXAxisLabels = new ArrayList<>();
 		comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DATE);
 		Map<String, Map<String, Integer>> labelCountsMap = new HashMap<>();
 		Map<String, Integer> labelCounts;
 
-		for (Map<String, String> object : tableData) {
-			String currentDate = object.get(dateColumn).trim();
-			try {
-				calendar.setTime(org.apache.commons.lang3.time.DateUtils.parseDateStrictly(currentDate, IDAConst.DATE_PATTERNS));
-			} catch (java.text.ParseException ex) {
-				ex.printStackTrace();
-				continue; // Ignore the row and continue with the next
-			}
-
-			if (!lineChartXAxisLabels.contains(currentDate)) {
-				lineChartXAxisLabels.add(currentDate);
-			}
-		}
-		lineChartXAxisLabels.sort(comparator);
+		createlineChartXAxisLabels(calendar, dateColumn);
 		for (Map<String, String> row : tableData) {
 			date = row.get(dateColumn).trim();
 			label = row.get(labelColumn);
@@ -1223,33 +1209,83 @@ public class VisualizeAction implements Action {
 			}
 			labelCounts.put(date, labelCounts.get(date) + 1);
 			labelCountsMap.put(label, labelCounts);
-			double oldValue = labelData.getOrDefault(date, 0.0);
-			double newValue;
-			switch (valueType) {
-				case IDAConst.TRANSFORMATION_TYPE_COUNT:
-					newValue = oldValue + 1.0;
-					break;
-				case IDAConst.TRANSFORMATION_TYPE_AVG:
-				case IDAConst.TRANSFORMATION_TYPE_SUM:
-					newValue = oldValue + value;
-					break;
-				default:
-					newValue = value;
-			}
-			labelData.put(date, newValue);
-			chartData.put(label, labelData);
+			updateLineChartData(chartData, labelData, label, date, valueType, value);
 		}
-		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(valueType)) {
-			for (String lineLabel : chartData.keySet()) {
-				labelCounts = labelCountsMap.get(lineLabel);
-				labelData = chartData.get(lineLabel);
-				for (String dateLabel : labelData.keySet()) {
-					labelData.put(dateLabel, labelData.get(dateLabel) / (labelCounts.get(dateLabel) > 0.0 ? labelCounts.get(dateLabel) : 1.0));
-				}
-				chartData.put(lineLabel, labelData);
-			}
+		if(IDAConst.TRANSFORMATION_TYPE_AVG.equals(valueType)) {
+			updateLinesWithAverage(chartData, labelCountsMap);
 		}
 		return chartData;
+	}
+
+	/**
+	 * Method to create the X-Axis labels for the line chart
+	 *
+	 * @param calendar - Calendar instance
+	 * @param dateColumn - Temporal column
+	 */
+	private void createlineChartXAxisLabels(Calendar calendar, String dateColumn) {
+		lineChartXAxisLabels = new ArrayList<>();
+		for (Map<String, String> object : tableData) {
+			String currentDate = object.get(dateColumn).trim();
+			try {
+				calendar.setTime(org.apache.commons.lang3.time.DateUtils.parseDateStrictly(currentDate, IDAConst.DATE_PATTERNS));
+			} catch (java.text.ParseException ex) {
+				ex.printStackTrace();
+				continue; // Ignore the row and continue with the next
+			}
+
+			if (!lineChartXAxisLabels.contains(currentDate)) {
+				lineChartXAxisLabels.add(currentDate);
+			}
+		}
+		lineChartXAxisLabels.sort(comparator);
+	}
+
+	/**
+	 * Method to update the line values of the line chart data after processing a row
+	 *
+	 * @param chartData - line chart data instance
+	 * @param labelData - line values for a label (Empty map for newly seen label or existing data for already seen label)
+	 * @param label - label of the line
+	 * @param date - date string for the row
+	 * @param valueType - Y-axis value type
+	 * @param value - Y-Axis value of the row
+	 */
+	private void updateLineChartData(Map<String, Map<String, Double>> chartData,Map<String, Double> labelData, String label, String date, String valueType, double value) {
+		double oldValue = labelData.getOrDefault(date, 0.0);
+		double newValue;
+		switch (valueType) {
+			case IDAConst.TRANSFORMATION_TYPE_COUNT:
+				newValue = oldValue + 1.0;
+				break;
+			case IDAConst.TRANSFORMATION_TYPE_AVG:
+			case IDAConst.TRANSFORMATION_TYPE_SUM:
+				newValue = oldValue + value;
+				break;
+			default:
+				newValue = value;
+				break;
+		}
+		labelData.put(date, newValue);
+		chartData.put(label, labelData);
+	}
+
+	/**
+	 * Method to update the line values with the average.
+	 *
+	 * @param chartData - line chart data
+	 * @param labelCountsMap - count of values for each labels to calculate the average
+	 */
+	private void updateLinesWithAverage(Map<String, Map<String, Double>> chartData, Map<String, Map<String, Integer>> labelCountsMap) {
+		Map<String, Integer> labelCounts;
+		for(String lineLabel: chartData.keySet()) {
+			labelCounts = labelCountsMap.get(lineLabel);
+			Map<String, Double> labelData = chartData.get(lineLabel);
+			for(String dateLabel: labelData.keySet()) {
+				labelData.put(dateLabel, labelData.get(dateLabel) / (labelCounts.get(dateLabel) > 0.0 ? labelCounts.get(dateLabel) : 1.0));
+			}
+			chartData.put(lineLabel, labelData);
+		}
 	}
 
 	/**
@@ -1257,10 +1293,11 @@ public class VisualizeAction implements Action {
 	 */
 	private void createLineChartResponse(Map<String, Object> paramMap) {
 		LineChartData lineChartData = new LineChartData();
+		getParameters(paramMap);
 		String dateColumn = parameterMap.get(IDAConst.LINE_CHART_TEMPORAL_PARAM);
 		String labelColumn = parameterMap.get(IDAConst.LINE_CHART_LABLE_PARAM);
 		String valueColumn = parameterMap.get(IDAConst.LINE_CHART_VALUE_PARAM);
-		String valueType = (String) paramMap.getOrDefault(IDAConst.LINE_CHART_VALUE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX, "");
+		String valueType = parameterTypeMap.get(IDAConst.LINE_CHART_VALUE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		Map<String, Map<String, Double>> chartData = createLineChartData(dateColumn, labelColumn, valueColumn, valueType.toLowerCase());
 		lineChartData.setxAxisLabel(dateColumn);
 		String yAxisLabel = valueColumn;
