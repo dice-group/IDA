@@ -1082,10 +1082,11 @@ public class VisualizeAction implements Action {
 	 */
 	private void createLineChartResponse(Map<String, Object> paramMap) {
 		LineChartData lineChartData = new LineChartData();
+		getParameters(paramMap);
 		String dateColumn = parameterMap.get(IDAConst.LINE_CHART_TEMPORAL_PARAM);
 		String labelColumn = parameterMap.get(IDAConst.LINE_CHART_LABLE_PARAM);
 		String valueColumn = parameterMap.get(IDAConst.LINE_CHART_VALUE_PARAM);
-		String valueType = (String) paramMap.getOrDefault(IDAConst.LINE_CHART_VALUE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX, "");
+		String valueType = parameterTypeMap.get(IDAConst.LINE_CHART_VALUE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		Map<String, Map<String, Double>> chartData = createLineChartData(dateColumn, labelColumn, valueColumn, valueType.toLowerCase());
 		lineChartData.setxAxisLabel(dateColumn);
 		String yAxisLabel = valueColumn;
