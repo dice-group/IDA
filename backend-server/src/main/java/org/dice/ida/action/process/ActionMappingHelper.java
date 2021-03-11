@@ -5,7 +5,6 @@ import org.dice.ida.action.def.Action;
 import org.dice.ida.action.def.ListDataSetsAction;
 import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.SimpleTextAction;
-import org.dice.ida.action.def.ScatterPlotMatrixAction;
 import org.dice.ida.action.def.SuggestVisualization;
 import org.dice.ida.action.def.ListVisualizationsAction;
 import org.dice.ida.action.def.VisualizeAction;

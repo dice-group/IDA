@@ -117,7 +117,7 @@ public class VisualizeAction implements Action {
 				String intent = paramMap.get(IDAConst.INTENT_NAME).toString();
 				attributeList = new RDFUtil().getAttributeList(intent);
 				if (attributeList.containsValue(IDAConst.HAS_LIST_COLUMN)) {
-					columnListVizProcessed = processListAttribute(paramMap, vizType, datasetName, tableName, onTemporaryData, filterString, message, columnListVizProcessed);
+					columnListVizProcessed = processListAttribute(paramMap, vizType, datasetName, tableName, onTemporaryData, filterString, message);
 				} else {
 					columnNameList = getColumnNames(attributeList, paramMap);
 					List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
@@ -212,10 +212,11 @@ public class VisualizeAction implements Action {
 	 * @param filterString    - filter String
 	 * @return - true if the list attributes are processed
 	 */
-	private boolean processListAttribute(Map<String, Object> paramMap, String vizType, String datasetName, String tableName, boolean onTemporaryData, String filterString, ChatUserMessage message, boolean columnListVizProcessed) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, IDAException {
+	private boolean processListAttribute(Map<String, Object> paramMap, String vizType, String datasetName, String tableName, boolean onTemporaryData, String filterString, ChatUserMessage message) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, IDAException {
 		List<Map<String, String>> columnDetail;
 		ArrayList<String> columnListParameter = new ArrayList<>();
 		String selectAll = (String) paramMap.get("All_select");
+		boolean columnListVizProcessed = false;
 		instanceMap = new RDFUtil().getInstances(vizType);
 		List<String> attributeList = new ArrayList<>();
 		Map<String, String> attributeTypeMap = new HashMap<>();
