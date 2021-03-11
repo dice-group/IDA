@@ -1,4 +1,4 @@
 env
-uploads
+temp-uploads
 .idea
 *.pyc
