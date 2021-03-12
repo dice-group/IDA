@@ -5,7 +5,6 @@ import org.dice.ida.action.def.Action;
 import org.dice.ida.action.def.ListDataSetsAction;
 import org.dice.ida.action.def.LoadDataSetAction;
 import org.dice.ida.action.def.SimpleTextAction;
-import org.dice.ida.action.def.ScatterPlotMatrixAction;
 import org.dice.ida.action.def.SuggestVisualization;
 import org.dice.ida.action.def.ListVisualizationsAction;
 import org.dice.ida.action.def.VisualizeAction;
@@ -54,13 +53,11 @@ public class ActionMappingHelper {
 			case BARCHART:
 			case BUBBLECHART:
 			case SCATTERPLOT:
+			case SCATTERPLOTMATRIX:
 				action = appContext.getBean(VisualizeAction.class);
 				break;
 			case CLUSTERING:
 				action = appContext.getBean(ClusterAction.class);
-				break;
-			case SCATTERPLOTMATRIX:
-				action = appContext.getBean(ScatterPlotMatrixAction.class);
 				break;
 			case CLEAR:
 				action = appContext.getBean(ClearConversationAction.class);
