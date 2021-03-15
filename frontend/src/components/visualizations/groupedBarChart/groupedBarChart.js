@@ -25,7 +25,7 @@ export default class IDAGroupedBarGraph extends Component {
     colorFunction = (label) => null;
     datalabel = [];
     constructor(props) {
-        super(); \
+        super();
         this.data = props.data;
         this.containerId = props.nodeId;
         Object.keys(this.data.groupedBarChartData).forEach((k) => {
