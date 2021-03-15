@@ -8,8 +8,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Chip from "@material-ui/core/Chip";
 import { Hidden } from "@material-ui/core";
 import "./groupedBarChart.css";
-import { geoContains } from "d3";
-
+import { tickFormat, ticks } from "d3";
 export default class IDAGroupedBarGraph extends Component {
     margin = {
         top: 20,
@@ -32,7 +31,7 @@ export default class IDAGroupedBarGraph extends Component {
         this.containerId = props.nodeId;
         Object.keys(this.data.groupedBarChartData).forEach((k) => {
             let obj = {
-                groupLabel: k.length > 16 ? k.substring(0, 7) + "..." : k,
+                groupLabel: k.length > 12 ? k.substring(0, 7) + "..." : k,
                 originalGroupLabel: k
             };
             this.data.groupedBarChartData[`${k}`].forEach((e) => {
@@ -116,17 +115,24 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("y", -5)
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "end");
+
+        var xval = 0;
+        var yval = 0;
+
+        group._groups[0].map((g) => {
+            xval = g.childNodes[0].attributes[0].value;
+            yval = g.childNodes[3].attributes[1].value;
+        })
         group
             .append("g")
             .call(xAxis2)
             .append('line')
             .style("stroke", "steelblue")
             .style("stroke-width", 1.5)
-            .attr("x1", 2.5)
+            .attr("x1", xval)
             .attr("y1", 76)
             .attr("x2", 80)
             .attr("y2", 76);
-
         svg.append("text")
             .attr("transform", "rotate(-90)")
             .attr("x", 0 - (this.height / 2))
@@ -144,14 +150,13 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("x", 515)
             .attr("y", 15);
 
-
-        //delhi, kerala etc
         const xAxis = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x0).tickSize(0))
             .selectAll("text")
             .attr("x", 25)
             .attr("y", 80)
+            .style("dominant-baseline", "text-before-edge")
             .style("text-anchor", "end");
 
 
