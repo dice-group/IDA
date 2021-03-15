@@ -8,8 +8,6 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Chip from "@material-ui/core/Chip";
 import { Hidden } from "@material-ui/core";
 import "./groupedBarChart.css";
-import { data } from './data';
-import { tickFormat, ticks } from "d3";
 export default class IDAGroupedBarGraph extends Component {
     margin = {
         top: 20,
@@ -27,11 +25,9 @@ export default class IDAGroupedBarGraph extends Component {
     colorFunction = (label) => null;
     datalabel = [];
     constructor(props) {
-        super();
-        this.data = data;
-        this.containerId = "test";
-        // this.data = props.data;
-        // this.containerId = props.nodeId;
+        super(); \
+        this.data = props.data;
+        this.containerId = props.nodeId;
         Object.keys(this.data.groupedBarChartData).forEach((k) => {
             let obj = {
                 groupLabel: k.length > 12 ? k.substring(0, 7) + "..." : k,
