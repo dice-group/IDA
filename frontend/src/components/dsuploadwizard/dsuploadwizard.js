@@ -9,7 +9,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import BackupIcon from "@material-ui/icons/Backup";
+import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 import Button from '@material-ui/core/Button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -19,10 +19,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import CloudDoneOutlinedIcon from '@material-ui/icons/CloudDoneOutlined';
 
 import axios from "axios";
 
@@ -32,7 +33,7 @@ export default class DSUploadWizard extends React.Component {
 		super(props);
 		this.state = {
 			activeStep: 0,
-			steps: ["Upload dataset", "confirm meta data", "finalize"],
+			steps: ["Upload dataset", "confirm meta data", "finished"],
 			isFileSelected: false,
 			files: [],
 			nextButtonText: 'Upload',
@@ -41,6 +42,9 @@ export default class DSUploadWizard extends React.Component {
 			enableLoader: false,
 			metaData: null,
 			errorMsg: '',
+			showBackBtn: false,
+			showCancelBtn: true,
+			showOkBtn: false,
 			udsi: null // It will come from Pydsmx and we will use it for metadata storage
 		};
 	}
@@ -68,7 +72,7 @@ export default class DSUploadWizard extends React.Component {
 					"Content-Type": "multipart/form-data",
 				}
 			}).then((resp) => {
-				this.setState({activeStep: this.state.activeStep + 1, nextButtonText: 'save metadata', enableNextButton: true, metaData: resp.data.metadata, udsi:  resp.data.udsi})
+				this.setState({activeStep: this.state.activeStep + 1, nextButtonText: 'save metadata', enableLoader: false, enableNextButton: true, metaData: resp.data.metadata, udsi:  resp.data.udsi, showBackBtn: true})
 			}).catch(() => {
 				this.setState({isFileSelected: false, enableLoader: false, showError: true, errorMsg: 'Unable to upload dataset. Please try again..'})
 			})
@@ -80,7 +84,7 @@ export default class DSUploadWizard extends React.Component {
 						"Content-Type": "application/json",
 					}
 				}).then((resp) => {
-					// TODO: manange success response
+					this.setState({activeStep: this.state.activeStep + 1, enableLoader: false, showOkBtn: true, showCancelBtn: false, showBackBtn: false})
 				}).catch(() => {
 					this.setState({enableLoader: false, enableNextButton: true, showError: true, errorMsg: 'Something happened while uploading metadata..'})
 				})
@@ -129,6 +133,10 @@ export default class DSUploadWizard extends React.Component {
 		}
 	}
 
+	handleBack = () => {
+
+	}
+
 	addMoreFiles  = () => {
 		this.state.fileUploadBtn.click();
 	}
@@ -145,7 +153,7 @@ export default class DSUploadWizard extends React.Component {
 						<div className="upload-dataset-box">
 							<label htmlFor="icon-button-file" style={{ marginBottom: '-15px'}} style={{display: !this.state.enableLoader ? "block" : "none"}}>
 								<IconButton color="primary" aria-label="upload picture" component="span">
-									<BackupIcon style={{ fontSize: 80 }}/>
+									<BackupOutlinedIcon style={{ fontSize: 80 }}/>
 								</IconButton>
 							</label>
 							<CircularProgress style={{display: this.state.enableLoader ? "block" : "none"}} />
@@ -158,7 +166,7 @@ export default class DSUploadWizard extends React.Component {
 					let files_row = []
 					for (var i = 0; i < this.state.files.length; i++) {
 						let a = i;
-						files_row.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText primary={this.state.files[i].name} /><ListItemSecondaryAction><IconButton edge="end" aria-label="delete"><DeleteIcon onClick={() => { this.removefile(a) } } /></IconButton></ListItemSecondaryAction></ListItem>)
+						files_row.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText primary={this.state.files[i].name} /><ListItemSecondaryAction><IconButton edge="end" aria-label="delete"><DeleteOutlinedIcon onClick={() => { this.removefile(a) } } /></IconButton></ListItemSecondaryAction></ListItem>)
 					}
 					return <div><h5 style={{padding: '10px 0', textAlign: 'center', color: '#444'}}>Selected file(s)</h5><List><ListItem button onClick={this.addMoreFiles}> <ListItemIcon> <AddCircleOutlineIcon /> </ListItemIcon> <ListItemText primary="Add more files.." /> </ListItem>{files_row}</List></div>
 				}
@@ -316,15 +324,27 @@ export default class DSUploadWizard extends React.Component {
 							<div style={{display: this.state.activeStep === 1 ? "block" : "none"}}>
 								{renderMetaDataForm()}
 							</div>
+							<div style={{display: this.state.activeStep === 2 ? "block" : "none"}}>
+								<div className="upload-dataset-box">
+									<CloudDoneOutlinedIcon style={{ fontSize: 80, color: '#4CAF50' }}/>
+									<div style={{textAlign: 'center'}}>Your dataset was uploaded successfully.<br />You can start using it now.</div>
+								</div>
+							</div>
 						</DialogContentText>
 					</DialogContent>
 
 					<DialogActions>
-						<Button onClick={this.handleNext} color="primary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.enableNextButton ? 'block' : 'none'}} >
+						<Button onClick={this.handleBack} style={{textTransform: "Capitalize", display: this.state.showBackBtn ? 'block' : 'none'}}>
+							Back
+						</Button>
+						<Button onClick={this.handleNext} color="primary" variant="outlined" style={{textTransform: "Capitalize", display: this.state.enableNextButton ? 'block' : 'none'}} >
 							{this.state.nextButtonText}
 						</Button>
-						<Button color="secondary" variant="outlined" style={{ textTransform: "Capitalize" }} >
+						<Button color="secondary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.showCancelBtn ? 'block' : 'none'}} >
 							Cancel dataset upload
+						</Button>
+						<Button color="primary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.showOkBtn ? 'block' : 'none'}} >
+							Close
 						</Button>
 					</DialogActions>
 				</Dialog>
