@@ -20,6 +20,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 
 import axios from "axios";
 
@@ -41,7 +44,7 @@ export default class DSUploadWizard extends React.Component {
 	}
 
 	onFileChange = (ev) => {
-		const files = [];
+		const files = this.state.files;
 		Array.from(ev.target.files).forEach(f => files.push(f));
 		if (files.length > 0) {
 			this.setState({isFileSelected: true, files: files, enableNextButton: true});
@@ -87,20 +90,20 @@ export default class DSUploadWizard extends React.Component {
 		}
 	}
 
+	addMoreFiles  = () => {
+		this.state.fileUploadBtn.click();
+	}
+
+	fileUploadBtnRef = (e) => {
+		this.setState({fileUploadBtn:  e});
+	}
+
 	render() {
 		const renderFileUpload = () => {
 			if (!this.state.showFileUploadLoading) {
 				if (!this.state.isFileSelected) {
 					return (
 						<div className="upload-dataset-box">
-							<input
-								type="file"
-								accept="text/csv"
-								id="icon-button-file"
-								onChange={this.onFileChange}
-								multiple
-								hidden
-							/>
 							<label htmlFor="icon-button-file" style={{ marginBottom: '-15px'}} style={{display: !this.state.showFileUploadLoading ? "block" : "none"}}>
 								<IconButton color="primary" aria-label="upload picture" component="span">
 									<BackupIcon style={{ fontSize: 80 }}/>
@@ -116,9 +119,9 @@ export default class DSUploadWizard extends React.Component {
 					let files_row = []
 					for (var i = 0; i < this.state.files.length; i++) {
 						let a = i;
-						files_row.push(<ListItem><ListItemText primary={this.state.files[i].name} /><ListItemSecondaryAction><IconButton edge="end" aria-label="delete"><DeleteIcon onClick={() => { this.removefile(a) } } /></IconButton></ListItemSecondaryAction></ListItem>)
+						files_row.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText primary={this.state.files[i].name} /><ListItemSecondaryAction><IconButton edge="end" aria-label="delete"><DeleteIcon onClick={() => { this.removefile(a) } } /></IconButton></ListItemSecondaryAction></ListItem>)
 					}
-					return <div><h5 style={{padding: '10px 0', textAlign: 'center', color: '#444'}}>Selected file(s)</h5><List>{files_row}</List></div>
+					return <div><h5 style={{padding: '10px 0', textAlign: 'center', color: '#444'}}>Selected file(s)</h5><List><ListItem button onClick={this.addMoreFiles}> <ListItemIcon> <AddCircleOutlineIcon /> </ListItemIcon> <ListItemText primary="Add more files.." /> </ListItem>{files_row}</List></div>
 				}
 			} else {
 				return <div className="upload-dataset-box"><CircularProgress /></div>
@@ -238,6 +241,15 @@ export default class DSUploadWizard extends React.Component {
 					<DialogContent>
 						<DialogContentText id="alert-dialog-description">
 							<div style={{display: this.state.activeStep === 0 ? "block" : "none"}}>
+								<input
+									type="file"
+									accept="text/csv"
+									id="icon-button-file"
+									onChange={this.onFileChange}
+									multiple
+									hidden
+									ref={this.fileUploadBtnRef}
+								/>
 								{renderFileUpload()}
 								<Snackbar
 									open={this.state.showError}
