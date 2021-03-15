@@ -39,7 +39,8 @@ export default class DSUploadWizard extends React.Component {
 			enableNextButton: false,
 			showError: false,
 			showFileUploadLoading: false,
-			metaData: null
+			metaData: null,
+			errorMsg: ''
 		};
 	}
 
@@ -66,10 +67,16 @@ export default class DSUploadWizard extends React.Component {
 					"Content-Type": "multipart/form-data",
 				}
 			}).then((resp) => {
-				this.setState({activeStep: this.state.activeStep + 1, enableNextButton: false, metaData: resp.data.metadata })
+				this.setState({activeStep: this.state.activeStep + 1, nextButtonText: 'Looks good!', enableNextButton: true, metaData: resp.data.metadata })
 			}).catch(() => {
-				this.setState({isFileSelected: false, showFileUploadLoading: false, showError: true})
+				this.setState({isFileSelected: false, showFileUploadLoading: false, showError: true, errorMsg: 'Unable to upload dataset. Please try again..'})
 			})
+		} else if (this.state.activeStep === 1) {
+			if (! this.state.metaData.dsName.trim() === '') {
+
+			} else {
+				this.setState({showError: true, errorMsg: 'Please provide dataset name'});
+			}
 		}
 	};
 
@@ -78,7 +85,29 @@ export default class DSUploadWizard extends React.Component {
 	}
 
 	handleChange = (ev) => {
-		console.log(ev)
+		const target = ev.target;
+		const name = target.name;
+		let  new_meta_data = Object.assign({}, this.state.metaData);
+
+		if (name.startsWith("filesMd")) {
+			const tokens = name.split('.');
+			const depth  = tokens.length;
+
+			const attr   = tokens[depth-1];
+			let first_key = tokens[0].split('[')[0];
+			let first_index = tokens[0].match(/(\d+)/)[0];
+
+			if (depth === 2) {
+				new_meta_data[first_key][first_index][attr] = target.value;
+			} else if (depth === 3)  {
+				let second_key = tokens[1].split('[')[0];
+				let second_index = tokens[1].match(/(\d+)/)[0];
+				new_meta_data[first_key][first_index][second_key][second_index][attr] = target.value;
+			}
+		} else {
+			new_meta_data[name] = target.value;
+		}
+		this.setState({metaData: new_meta_data});
 	}
 
 	removefile = (index) => {
@@ -131,80 +160,86 @@ export default class DSUploadWizard extends React.Component {
 		const renderMetaDataForm = () => {
 			if (this.state.metaData) {
 				return (<div className="meta-data-box">
-					<form onChange={this.handleChange}>
-					<table>
-						<tr>
-							<td width="15%" className="heading required">Dataset name</td>
-							<td><input type="text" value={this.state.metaData.dsName}/></td>
-						</tr>
-						<tr>
-							<td  width="15%" className="heading">Dataset description</td>
-							<td><input type="text" value={this.state.metaData.dsDesc}/></td>
-						</tr>
-					</table>
-					<br/>
-					This dataset contains {this.state.metaData.filesMd.length} files.
-					<br/>
-					<hr/>
-						{this.state.metaData.filesMd.map((f, i) => {
-							return (
-								<div>
-									<table>
-										<tr>
-											<td className="heading">#</td>
-											<td>{i}</td>
-										</tr>
-										<tr>
-											<td className="heading">File name</td>
-											<td>{f.fileName}</td>
-										</tr>
-										<tr>
-											<td className="heading">Display name</td>
-											<td><input type="text" value={f.displayName} /></td>
-										</tr>
-										<tr>
-											<td className="heading">File description</td>
-											<td><input type="text" value={f.fileDesc} /></td>
-										</tr>
-										<tr>
-											<td className="heading">Columns count</td>
-											<td>{f.colCount}</td>
-										</tr>
-										<tr>
-											<td className="heading">Row count</td>
-											<td>{f.rowCount}</td>
-										</tr>
-									</table>
-									<table>
-									<thead>
-									<td className="heading">Column index</td>
-									<td className="heading">Column name</td>
-									<td className="heading">Column description</td>
-									<td className="heading">Column attribute</td>
-									<td className="heading">Column type</td>
-									<td className="heading">Contains unique values</td>
-									</thead>
-									<tbody>
-									{ f.fileColMd.map((e, i) => {
-										return (
-											<tr key={i}>
-												<td>{e.colIndex}</td>
-												<td><input value={e.colName} /></td>
-												<td><input value={e.colDesc} /></td>
-												<td>{e.colAttr}</td>
-												<td>{e.colType}</td>
-												<td>{e.isUnique? 'Yes' : 'No'}</td>
+					<form>
+						<table>
+							<tr>
+								<td width="15%" className="heading required">Dataset name</td>
+								<td><input type="text" name="dsName" value={this.state.metaData.dsName} onChange={this.handleChange}/></td>
+							</tr>
+							<tr>
+								<td  width="15%" className="heading">Dataset description</td>
+								<td><input type="text" name="dsDesc" value={this.state.metaData.dsDesc} onChange={this.handleChange}/></td>
+							</tr>
+						</table>
+						<br/>
+						This dataset contains {this.state.metaData.filesMd.length} files.
+						<br/>
+						<hr/>
+							{this.state.metaData.filesMd.map((f, i) => {
+								return (
+									<div>
+										<table>
+											<tr>
+												<td className="heading">#</td>
+												<td>{i}</td>
 											</tr>
-										)
-									})}
-									</tbody>
+											<tr>
+												<td className="heading">File name</td>
+												<td>{f.fileName}</td>
+											</tr>
+											<tr>
+												<td className="heading">Display name</td>
+												<td><input type="text" value={f.displayName} name={`filesMd[${i}].displayName`} onChange={this.handleChange}/></td>
+											</tr>
+											<tr>
+												<td className="heading">File description</td>
+												<td><input type="text" value={f.fileDesc} name={`filesMd[${i}].fileDesc`} onChange={this.handleChange}/></td>
+											</tr>
+											<tr>
+												<td className="heading">Columns count</td>
+												<td>{f.colCount}</td>
+											</tr>
+											<tr>
+												<td className="heading">Row count</td>
+												<td>{f.rowCount}</td>
+											</tr>
+										</table>
+										<table>
+											<thead>
+												<td className="heading">Column index</td>
+												<td className="heading">Column name</td>
+												<td className="heading">Column description</td>
+												<td className="heading">Column attribute</td>
+												<td className="heading">Column type</td>
+												<td className="heading">Contains unique values</td>
+											</thead>
+											<tbody>
+											{ f.fileColMd.map((e, b) => {
+												return (
+													<tr key={b}>
+														<td>{e.colIndex}</td>
+														<td><input value={e.colName} name={`filesMd[${i}].fileColMd[${b}].colName`} onChange={this.handleChange}/></td>
+														<td><input value={e.colDesc} name={`filesMd[${i}].fileColMd[${b}].colDesc`} onChange={this.handleChange}/></td>
+														<td>{e.colAttr}</td>
+														<td>
+															<select value={e.colType} name={`filesMd[${i}].fileColMd[${b}].colType`} onChange={this.handleChange}>
+																<option value="date">Date</option>
+																<option value="string">String</option>
+																<option value="numeric">Numeric</option>
+															</select>
+														</td>
+														<td>{e.isUnique? 'Yes' : 'No'}</td>
+													</tr>
+												)
+											})}
+											</tbody>
 
-								</table>
-									<br/>
-									<hr/>
-								</div>
-							)
-						})}
+										</table>
+										<br/>
+										<hr/>
+									</div>
+								)
+							})}
 
 					</form>
 				</div>)
@@ -251,13 +286,6 @@ export default class DSUploadWizard extends React.Component {
 									ref={this.fileUploadBtnRef}
 								/>
 								{renderFileUpload()}
-								<Snackbar
-									open={this.state.showError}
-									onClose={this.hideError}
-									autoHideDuration="6000"
-								>
-									<Alert severity="error">Unable to upload dataset. Please try again..</Alert>
-								</Snackbar>
 							</div>
 							<div style={{display: this.state.activeStep === 1 ? "block" : "none"}}>
 								{renderMetaDataForm()}
@@ -274,6 +302,13 @@ export default class DSUploadWizard extends React.Component {
 						</Button>
 					</DialogActions>
 				</Dialog>
+				<Snackbar
+					open={this.state.showError}
+					onClose={this.hideError}
+					autoHideDuration="5000"
+				>
+					<Alert severity="error">{this.state.errorMsg}</Alert>
+				</Snackbar>
 			</div>
 		)
 	}

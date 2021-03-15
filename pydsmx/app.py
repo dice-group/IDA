@@ -30,7 +30,12 @@ def upload_file():
 
 			file_cols_md = []
 			for index, col_name in enumerate(cols):
-				file_cols_md.append({"colIndex": index+1, "colName": col_name, "colDesc":  col_name, "colType": str(ds[col_name].dtype), "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique})
+				d_dt = str(ds[col_name].dtype)  # detected data type
+				data_type = "string"
+				if d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
+					data_type = "numeric"
+
+				file_cols_md.append({"colIndex": index+1, "colName": col_name, "colDesc":  col_name, "colType": data_type, "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique})
 
 			files_meta_data.append(
 				{
