@@ -38,9 +38,10 @@ export default class DSUploadWizard extends React.Component {
 			nextButtonText: 'Upload',
 			enableNextButton: false,
 			showError: false,
-			showFileUploadLoading: false,
+			enableLoader: false,
 			metaData: null,
-			errorMsg: ''
+			errorMsg: '',
+			udsi: null // It will come from Pydsmx and we will use it for metadata storage
 		};
 	}
 
@@ -56,7 +57,7 @@ export default class DSUploadWizard extends React.Component {
 
 	handleNext = () => {
 		if (this.state.activeStep === 0) {
-			this.setState({showFileUploadLoading: true, enableNextButton: false})
+			this.setState({enableLoader: true, enableNextButton: false})
 			let formData = new FormData();
 			const files = this.state.files;
 			for (let i = 0; i < files.length; i++) {
@@ -67,13 +68,22 @@ export default class DSUploadWizard extends React.Component {
 					"Content-Type": "multipart/form-data",
 				}
 			}).then((resp) => {
-				this.setState({activeStep: this.state.activeStep + 1, nextButtonText: 'Looks good!', enableNextButton: true, metaData: resp.data.metadata })
+				this.setState({activeStep: this.state.activeStep + 1, nextButtonText: 'save metadata', enableNextButton: true, metaData: resp.data.metadata, udsi:  resp.data.udsi})
 			}).catch(() => {
-				this.setState({isFileSelected: false, showFileUploadLoading: false, showError: true, errorMsg: 'Unable to upload dataset. Please try again..'})
+				this.setState({isFileSelected: false, enableLoader: false, showError: true, errorMsg: 'Unable to upload dataset. Please try again..'})
 			})
 		} else if (this.state.activeStep === 1) {
-			if (! this.state.metaData.dsName.trim() === '') {
-
+			if (this.state.metaData.dsName.trim()) {
+				this.setState({enableLoader: true, enableNextButton: false})
+				axios.post("http://127.0.0.1:5000/savemetadata", {udsi: this.state.udsi, metadata: this.state.metaData}, {
+					headers: {
+						"Content-Type": "application/json",
+					}
+				}).then((resp) => {
+					// TODO: manange success response
+				}).catch(() => {
+					this.setState({enableLoader: false, enableNextButton: true, showError: true, errorMsg: 'Something happened while uploading metadata..'})
+				})
 			} else {
 				this.setState({showError: true, errorMsg: 'Please provide dataset name'});
 			}
@@ -129,16 +139,16 @@ export default class DSUploadWizard extends React.Component {
 
 	render() {
 		const renderFileUpload = () => {
-			if (!this.state.showFileUploadLoading) {
+			if (! this.state.enableLoader) {
 				if (!this.state.isFileSelected) {
 					return (
 						<div className="upload-dataset-box">
-							<label htmlFor="icon-button-file" style={{ marginBottom: '-15px'}} style={{display: !this.state.showFileUploadLoading ? "block" : "none"}}>
+							<label htmlFor="icon-button-file" style={{ marginBottom: '-15px'}} style={{display: !this.state.enableLoader ? "block" : "none"}}>
 								<IconButton color="primary" aria-label="upload picture" component="span">
 									<BackupIcon style={{ fontSize: 80 }}/>
 								</IconButton>
 							</label>
-							<CircularProgress style={{display: this.state.showFileUploadLoading ? "block" : "none"}} />
+							<CircularProgress style={{display: this.state.enableLoader ? "block" : "none"}} />
 							<div style={{textAlign: 'center'}}>Select dataset (single file or multiple).. <br/>You can select
 								.csv files
 							</div>
@@ -158,23 +168,26 @@ export default class DSUploadWizard extends React.Component {
 		}
 
 		const renderMetaDataForm = () => {
-			if (this.state.metaData) {
-				return (<div className="meta-data-box">
-					<form>
-						<table>
-							<tr>
-								<td width="15%" className="heading required">Dataset name</td>
-								<td><input type="text" name="dsName" value={this.state.metaData.dsName} onChange={this.handleChange}/></td>
-							</tr>
-							<tr>
-								<td  width="15%" className="heading">Dataset description</td>
-								<td><input type="text" name="dsDesc" value={this.state.metaData.dsDesc} onChange={this.handleChange}/></td>
-							</tr>
-						</table>
-						<br/>
-						This dataset contains {this.state.metaData.filesMd.length} files.
-						<br/>
-						<hr/>
+			if (! this.state.enableLoader) {
+				if (this.state.metaData) {
+					return (<div className="meta-data-box">
+						<form>
+							<table>
+								<tr>
+									<td width="15%" className="heading required">Dataset name</td>
+									<td><input type="text" name="dsName" value={this.state.metaData.dsName}
+											   onChange={this.handleChange}/></td>
+								</tr>
+								<tr>
+									<td width="15%" className="heading">Dataset description</td>
+									<td><input type="text" name="dsDesc" value={this.state.metaData.dsDesc}
+											   onChange={this.handleChange}/></td>
+								</tr>
+							</table>
+							<br/>
+							This dataset contains {this.state.metaData.filesMd.length} files.
+							<br/>
+							<hr/>
 							{this.state.metaData.filesMd.map((f, i) => {
 								return (
 									<div>
@@ -189,11 +202,15 @@ export default class DSUploadWizard extends React.Component {
 											</tr>
 											<tr>
 												<td className="heading">Display name</td>
-												<td><input type="text" value={f.displayName} name={`filesMd[${i}].displayName`} onChange={this.handleChange}/></td>
+												<td><input type="text" value={f.displayName}
+														   name={`filesMd[${i}].displayName`}
+														   onChange={this.handleChange}/></td>
 											</tr>
 											<tr>
 												<td className="heading">File description</td>
-												<td><input type="text" value={f.fileDesc} name={`filesMd[${i}].fileDesc`} onChange={this.handleChange}/></td>
+												<td><input type="text" value={f.fileDesc}
+														   name={`filesMd[${i}].fileDesc`}
+														   onChange={this.handleChange}/></td>
 											</tr>
 											<tr>
 												<td className="heading">Columns count</td>
@@ -206,29 +223,35 @@ export default class DSUploadWizard extends React.Component {
 										</table>
 										<table>
 											<thead>
-												<td className="heading">Column index</td>
-												<td className="heading">Column name</td>
-												<td className="heading">Column description</td>
-												<td className="heading">Column attribute</td>
-												<td className="heading">Column type</td>
-												<td className="heading">Contains unique values</td>
+											<td className="heading">Column index</td>
+											<td className="heading">Column name</td>
+											<td className="heading">Column description</td>
+											<td className="heading">Column attribute</td>
+											<td className="heading">Column type</td>
+											<td className="heading">Contains unique values</td>
 											</thead>
 											<tbody>
-											{ f.fileColMd.map((e, b) => {
+											{f.fileColMd.map((e, b) => {
 												return (
 													<tr key={b}>
 														<td>{e.colIndex}</td>
-														<td><input value={e.colName} name={`filesMd[${i}].fileColMd[${b}].colName`} onChange={this.handleChange}/></td>
-														<td><input value={e.colDesc} name={`filesMd[${i}].fileColMd[${b}].colDesc`} onChange={this.handleChange}/></td>
+														<td><input value={e.colName}
+																   name={`filesMd[${i}].fileColMd[${b}].colName`}
+																   onChange={this.handleChange}/></td>
+														<td><input value={e.colDesc}
+																   name={`filesMd[${i}].fileColMd[${b}].colDesc`}
+																   onChange={this.handleChange}/></td>
 														<td>{e.colAttr}</td>
 														<td>
-															<select value={e.colType} name={`filesMd[${i}].fileColMd[${b}].colType`} onChange={this.handleChange}>
+															<select value={e.colType}
+																	name={`filesMd[${i}].fileColMd[${b}].colType`}
+																	onChange={this.handleChange}>
 																<option value="date">Date</option>
 																<option value="string">String</option>
 																<option value="numeric">Numeric</option>
 															</select>
 														</td>
-														<td>{e.isUnique? 'Yes' : 'No'}</td>
+														<td>{e.isUnique ? 'Yes' : 'No'}</td>
 													</tr>
 												)
 											})}
@@ -241,8 +264,11 @@ export default class DSUploadWizard extends React.Component {
 								)
 							})}
 
-					</form>
-				</div>)
+						</form>
+					</div>)
+				}
+			} else {
+				return <div className="upload-dataset-box"><CircularProgress /></div>
 			}
 		}
 

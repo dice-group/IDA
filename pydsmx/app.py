@@ -3,28 +3,35 @@ from flask import Flask, request
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import pandas as pd
+import json
+import os
+import uuid
 
 app = Flask(__name__)
 cors = CORS(app)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['TEMP_FOLDER'] = './temp-uploads'
-app.config['MAX_CONTENT_LENGTH'] = 5000000 # Maximum fi
+app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum fi
 
 
 @app.route('/', methods=['POST'])
 @cross_origin()
 def upload_file():
 	if request.method == 'POST':
-		files = request.files.to_dict() # convert multidict to dict
+		udsi = uuid.uuid4().hex[:6].upper() # Uniqye dataset identifier
+		dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
+		os.mkdir(dsdirpath)
+
+		files = request.files.to_dict()  # convert multidict to dict
 
 		files_meta_data = []
 
 		for file in files:
 			file_name = secure_filename(files[file].filename)
-			files[file].save(os.path.join(app.config['TEMP_FOLDER'], file_name))
+			files[file].save(os.path.join(dsdirpath, file_name))
 
-			ds = pd.read_csv('./temp-uploads/' + file_name)
+			ds = pd.read_csv(os.path.join(dsdirpath, file_name))
 			cols = [col for col in ds.columns]
 			no_rows, no_cols = ds.shape
 
@@ -35,7 +42,9 @@ def upload_file():
 				if d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
 					data_type = "numeric"
 
-				file_cols_md.append({"colIndex": index+1, "colName": col_name, "colDesc":  col_name, "colType": data_type, "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique})
+				file_cols_md.append(
+					{"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
+					 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique})
 
 			files_meta_data.append(
 				{
@@ -53,5 +62,17 @@ def upload_file():
 			"dsDesc": "",
 			"filesMd": files_meta_data
 		}
-		dict = {"metadata": meta_data, "message": "dataset to uploaded successfully"}
+		dict = {"metadata": meta_data, "message": "dataset to uploaded successfully", "udsi": udsi}
 		return dict, 200
+
+
+@app.route('/savemetadata', methods=['POST'])
+@cross_origin()
+def save_metadata():
+	if request.method == 'POST':
+		metadata = request.json["metadata"]
+		udsi = request.json["udsi"]
+		dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
+		metadata_file = open(os.path.join(dsdirpath, 'dsmd.json'), 'w')
+		metadata_file.write(json.dumps(metadata))
+		return 'ok', 200
