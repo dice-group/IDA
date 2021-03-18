@@ -33,6 +33,7 @@ export default class DSUploadWizard extends React.Component {
 		steps: ["Upload dataset", "confirm meta data", "finished"],
 		isFileSelected: false,
 		files: [],
+		filesName: [],
 		nextButtonText: 'Upload',
 		enableNextButton: false,
 		showError: false,
@@ -51,15 +52,17 @@ export default class DSUploadWizard extends React.Component {
 	}
 
 	onFileChange = (ev) => {
-		const files = this.state.files;
+		const files = Object.assign([], this.state.files);
+		const filesName = Object.assign([], this.state.filesName);
 		Array.from(ev.target.files).forEach(f => {
-			if (f.type === 'text/csv') {
+			if (f.type === 'text/csv' && !filesName.includes(f.name)) {
 				// Making sure user selected csv file
 				files.push(f)
+				filesName.push(f.name)
 			}
 		});
 		if (files.length > 0) {
-			this.setState({isFileSelected: true, files: files, enableNextButton: true});
+			this.setState({isFileSelected: true, files: files, enableNextButton: true, filesName: filesName});
 		} else {
 			this.setState({isFileSelected: false, enableNextButton: false, files: []});
 		}
@@ -71,9 +74,13 @@ export default class DSUploadWizard extends React.Component {
 	}
 
 	removefile = (index) => {
-		const files = this.state.files;
+		const files = Object.assign([], this.state.files);
+		const filesName = Object.assign([], this.state.filesName);
+
+		filesName.splice(files[0].name, 1);
 		files.splice(index, 1);
-		this.setState({files: files});
+
+		this.setState({files: files, filesName: filesName});
 		if (! files.length) {
 			this.setState({isFileSelected: false})
 		}
