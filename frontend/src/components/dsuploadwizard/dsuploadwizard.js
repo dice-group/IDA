@@ -114,7 +114,7 @@ export default class DSUploadWizard extends React.Component {
 					enableNextButton: true,
 					enableLoader: false,
 					showError: true,
-					errorMsg: 'Unable to upload dataset. Please try again..'
+					errorMsg: err.response.data.message
 				})
 			})
 		} else if (this.state.activeStep === 1) {
@@ -320,7 +320,7 @@ export default class DSUploadWizard extends React.Component {
 											<td className="heading">Column name</td>
 											<td className="heading">Column description</td>
 											<td className="heading">Column attribute</td>
-											<td className="heading">Column type<Tooltip arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can changed them"><HelpOutlineIcon style={{fontSize: 18, color: '#F57C00', marginLeft: '3px'}}/></Tooltip></td>
+											<td className="heading">Column type<Tooltip arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon style={{fontSize: 18, color: '#F57C00', marginLeft: '3px'}}/></Tooltip></td>
 											<td className="heading">Contains unique values</td>
 											</thead>
 											<tbody>
