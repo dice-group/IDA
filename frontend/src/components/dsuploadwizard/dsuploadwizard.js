@@ -28,25 +28,26 @@ import CloudDoneOutlinedIcon from '@material-ui/icons/CloudDoneOutlined';
 import axios from "axios";
 
 export default class DSUploadWizard extends React.Component {
+	 initialState = {
+		activeStep: 0,
+		steps: ["Upload dataset", "confirm meta data", "finished"],
+		isFileSelected: false,
+		files: [],
+		nextButtonText: 'Upload',
+		enableNextButton: false,
+		showError: false,
+		enableLoader: false,
+		metaData: null,
+		errorMsg: '',
+		showBackBtn: false,
+		showCancelBtn: true,
+		showOkBtn: false,
+		udsi: null // It will come from Pydsmx and we will use it for metadata storage
+	};
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			activeStep: 0,
-			steps: ["Upload dataset", "confirm meta data", "finished"],
-			isFileSelected: false,
-			files: [],
-			nextButtonText: 'Upload',
-			enableNextButton: false,
-			showError: false,
-			enableLoader: false,
-			metaData: null,
-			errorMsg: '',
-			showBackBtn: false,
-			showCancelBtn: true,
-			showOkBtn: false,
-			udsi: null // It will come from Pydsmx and we will use it for metadata storage
-		};
+		this.state = Object.assign({}, this.initialState);
 	}
 
 	onFileChange = (ev) => {
@@ -88,8 +89,8 @@ export default class DSUploadWizard extends React.Component {
 				}
 			}).then((resp) => {
 				this.setState({activeStep: this.state.activeStep + 1, nextButtonText: 'save metadata', enableLoader: false, enableNextButton: true, metaData: resp.data.metadata, udsi:  resp.data.udsi, showBackBtn: true})
-			}).catch(() => {
-				this.setState({isFileSelected: false, enableLoader: false, showError: true, errorMsg: 'Unable to upload dataset. Please try again..'})
+			}).catch((err) => {
+				this.setState({enableNextButton: true, enableLoader: false, showError: true, errorMsg: 'Unable to upload dataset. Please try again..'})
 			})
 		} else if (this.state.activeStep === 1) {
 			if (this.state.metaData.dsName.trim()) {
@@ -141,6 +142,10 @@ export default class DSUploadWizard extends React.Component {
 
 	handleClose = () => {
 		this.props.close();
+		if (this.state.activeStep === 2) {
+			// As data set upload was successful, hence resetting state
+			this.setState(this.initialState);
+		}
 	}
 
 	addMoreFiles  = () => {
