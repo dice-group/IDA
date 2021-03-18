@@ -52,15 +52,19 @@ export default class DSUploadWizard extends React.Component {
 
 	onFileChange = (ev) => {
 		const files = this.state.files;
-		Array.from(ev.target.files).forEach(f => files.push(f));
+		Array.from(ev.target.files).forEach(f => {
+			if (f.type === 'text/csv') {
+				// Making sure user selected csv file
+				files.push(f)
+			}
+		});
 		if (files.length > 0) {
 			this.setState({isFileSelected: true, files: files, enableNextButton: true});
 		} else {
 			this.setState({isFileSelected: false, enableNextButton: false, files: []});
 		}
+		ev.target.value = ''; // This will user to select same name file again even after removing them
 	}
-
-
 
 	hideError = () => {
 		this.setState({showError: false})
@@ -168,8 +172,8 @@ export default class DSUploadWizard extends React.Component {
 								</IconButton>
 							</label>
 							<CircularProgress style={{display: this.state.enableLoader ? "block" : "none"}} />
-							<div style={{textAlign: 'center'}}>Select dataset (single file or multiple).. <br/>You can select
-								.csv files
+							<div style={{textAlign: 'center'}}>Select dataset (single file or multiple).. <br/>You can only select
+								 <b> .csv</b> files
 							</div>
 						</div>
 					)
