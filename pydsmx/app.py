@@ -6,6 +6,7 @@ import pandas as pd
 import json
 import os
 import uuid
+import shutil
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -75,4 +76,13 @@ def save_metadata():
 		dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
 		metadata_file = open(os.path.join(dsdirpath, 'dsmd.json'), 'w')
 		metadata_file.write(json.dumps(metadata))
+		return 'ok', 200
+
+@app.route('/delete', methods=['POST'])
+@cross_origin()
+def delete():
+	if request.method == 'POST':
+		udsi = request.json["udsi"]
+		dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
+		shutil.rmtree(dsdirpath)
 		return 'ok', 200
