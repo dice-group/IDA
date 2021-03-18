@@ -24,6 +24,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import CloudDoneOutlinedIcon from '@material-ui/icons/CloudDoneOutlined';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import axios from "axios";
 
@@ -261,6 +263,7 @@ export default class DSUploadWizard extends React.Component {
 			if (!this.state.enableLoader) {
 				if (this.state.metaData) {
 					return (<div className="meta-data-box">
+						<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file. IDA uses these files to perform various operations. Here you can change some relavant fields kindly go through them all and change them as you like.</div>
 						<form>
 							<table>
 								<tr>
@@ -317,7 +320,7 @@ export default class DSUploadWizard extends React.Component {
 											<td className="heading">Column name</td>
 											<td className="heading">Column description</td>
 											<td className="heading">Column attribute</td>
-											<td className="heading">Column type</td>
+											<td className="heading">Column type<Tooltip arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can changed them"><HelpOutlineIcon style={{fontSize: 18, color: '#F57C00', marginLeft: '3px'}}/></Tooltip></td>
 											<td className="heading">Contains unique values</td>
 											</thead>
 											<tbody>

@@ -25,3 +25,11 @@ td.required:after {
   content: "*";
   color: red;
 }
+
+.metadata-info {
+  padding: 5px;
+  border: solid 1px #4e8cff;
+  margin: 5px;
+  font-size: 14px;
+  color: #4e8cff;
+}
