@@ -89,6 +89,10 @@ export default function Home(props) {
 	const handleContextPopoverClose = () => {
 		setAnchorEl(null);
 	};
+
+	const closeUploadWizard = () => {
+		setdsUploadWizardOpen(false);
+	}
 	return (
 		<>
 			<CssBaseline/>
@@ -210,7 +214,7 @@ export default function Home(props) {
 				/>
 
 			</div>
-			<DSUploadWizard isOpen={isdsUploadWizardOpen}/>
+			<DSUploadWizard isOpen={isdsUploadWizardOpen} close={closeUploadWizard}/>
 		</>
 	);
 }

@@ -59,6 +59,21 @@ export default class DSUploadWizard extends React.Component {
 		}
 	}
 
+
+
+	hideError = () => {
+		this.setState({showError: false})
+	}
+
+	removefile = (index) => {
+		const files = this.state.files;
+		files.splice(index, 1);
+		this.setState({files: files});
+		if (! files.length) {
+			this.setState({isFileSelected: false})
+		}
+	}
+
 	handleNext = () => {
 		if (this.state.activeStep === 0) {
 			this.setState({enableLoader: true, enableNextButton: false})
@@ -94,10 +109,6 @@ export default class DSUploadWizard extends React.Component {
 		}
 	};
 
-	hideError = () => {
-		this.setState({showError: false})
-	}
-
 	handleChange = (ev) => {
 		const target = ev.target;
 		const name = target.name;
@@ -124,17 +135,12 @@ export default class DSUploadWizard extends React.Component {
 		this.setState({metaData: new_meta_data});
 	}
 
-	removefile = (index) => {
-		const files = this.state.files;
-		files.splice(index, 1);
-		this.setState({files: files});
-		if (! files.length) {
-			this.setState({isFileSelected: false})
-		}
-	}
-
 	handleBack = () => {
 
+	}
+
+	handleClose = () => {
+		this.props.close();
 	}
 
 	addMoreFiles  = () => {
@@ -340,10 +346,10 @@ export default class DSUploadWizard extends React.Component {
 						<Button onClick={this.handleNext} color="primary" variant="outlined" style={{textTransform: "Capitalize", display: this.state.enableNextButton ? 'block' : 'none'}} >
 							{this.state.nextButtonText}
 						</Button>
-						<Button color="secondary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.showCancelBtn ? 'block' : 'none'}} >
+						<Button onClick={this.handleClose} color="secondary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.showCancelBtn ? 'block' : 'none'}} >
 							Cancel dataset upload
 						</Button>
-						<Button color="primary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.showOkBtn ? 'block' : 'none'}} >
+						<Button onClick={this.handleClose} color="primary" variant="outlined" style={{ textTransform: "Capitalize", display: this.state.showOkBtn ? 'block' : 'none'}} >
 							Close
 						</Button>
 					</DialogActions>
