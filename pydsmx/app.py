@@ -43,8 +43,25 @@ def upload_file():
 				file_cols_md = []
 				for index, col_name in enumerate(cols):
 					d_dt = str(ds[col_name].dtype)  # detected data type
-					data_type = "string"
-					if d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
+
+					# Pandas tends to classify most of column types as object
+					# here we further trying to categorize them into numeric and date
+					if d_dt == 'object':
+						data_type = "string"
+						try:
+							# Checking if its numeric
+							pd.to_numeric(ds[col_name].str.replace(',', '.'))
+							data_type = 'numeric'
+						except:
+							# It was not numeric column
+							try:
+								# Checking if its Date
+								pd.to_datetime(ds[col_name])
+								data_type = 'date'
+							except:
+								# it is not even date
+								pass
+					elif d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
 						data_type = "numeric"
 
 					file_cols_md.append(
