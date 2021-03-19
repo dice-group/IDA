@@ -82,7 +82,7 @@ export default class IDAGroupedBarGraph extends Component {
             .selectAll("g")
             .data(this.graphData)
             .join("g")
-            .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`)
+            .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`);
 
         group
             .selectAll("rect")
