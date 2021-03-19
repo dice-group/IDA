@@ -10,7 +10,7 @@ public enum Intent {
     LIST_DATASET("list-dataset", IDAConst.UAC_NRMLMSG),
 	LIST_VISUALIZATION("list-visualization", IDAConst.UAC_NRMLMSG),
     SUGGEST_VISUALIZATION("suggest-visualization", IDAConst.UAC_NRMLMSG),
-	LINE_CHART("line-chart", IDAConst.UIA_LINECHART),
+	LINE_CHART("line_chart", IDAConst.UIA_LINECHART),
 	BARCHART("bar_chart",IDAConst.UIA_BARGRAPH),
 	SCATTERPLOT("scatter_plot",IDAConst.UIA_SCATTERPLOT),
 	BUBBLECHART("bubble_chart", IDAConst.UIA_BUBBLECHART),

@@ -9,7 +9,6 @@ import org.dice.ida.action.def.ScatterPlotMatrixAction;
 import org.dice.ida.action.def.SuggestVisualization;
 import org.dice.ida.action.def.ListVisualizationsAction;
 import org.dice.ida.action.def.VisualizeAction;
-import org.dice.ida.action.def.LineChartAction;
 import org.dice.ida.action.def.ClusterAction;
 import org.dice.ida.action.def.ClearConversationAction;
 import org.dice.ida.action.def.CauseExceptionAction;
@@ -52,8 +51,6 @@ public class ActionMappingHelper {
 				action = appContext.getBean(SuggestVisualization.class);
 				break;
 			case LINE_CHART:
-				action = new LineChartAction();
-				break;
 			case BARCHART:
 			case BUBBLECHART:
 			case SCATTERPLOT:

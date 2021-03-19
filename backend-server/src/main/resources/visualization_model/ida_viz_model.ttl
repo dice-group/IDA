@@ -155,6 +155,14 @@ ivoop:hasTransformationType rdf:type owl:ObjectProperty ;
                             rdfs:label "hasTransformationType"@en .
 
 
+###  https://www.upb.de/ida/viz/ontology/object-property/isDependentOn
+ivoop:isDependentOn rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf owl:topObjectProperty ;
+                    rdfs:domain ivoc:InstanceParam ;
+                    rdfs:range ivoc:Parameter ;
+                    rdfs:label "isDependentOn"@en .
+
+
 ###  https://www.upb.de/ida/viz/ontology/object-property/representedParam
 ivoop:representedParam rdf:type owl:ObjectProperty ;
                        rdfs:subPropertyOf owl:topObjectProperty ;
@@ -267,6 +275,14 @@ information:BubbleChart rdf:type owl:NamedIndividual ,
                         ivoop:hasReference reference:BubbleChart ;
                         dc:description "A bubble chart is a variation of a scatter chart in which the data points are replaced with bubbles, and an additional dimension of the data is represented in the size of the bubbles."@en ;
                         rdfs:label "Bubble Chart Information"@en .
+
+
+###  https://www.upb.de/ida/viz/data/information/LineChart
+information:LineChart rdf:type owl:NamedIndividual ,
+                               ivoc:Information ;
+                      ivoop:hasReference reference:LineChart ;
+                      dc:description "Line Charts are a typical pictorial representation that depicts trends and behaviors over time. It is represented by a series of data points connected with a line."@en ;
+                      rdfs:label "Line Chart Information"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/information/ScatterPlot
@@ -395,6 +411,42 @@ instance:bubble_chart_7 rdf:type owl:NamedIndividual ,
                         ivoop:hasInstanceParam instance_param:bubble_label_non_unique ,
                                                instance_param:bubble_size_sumof ;
                         rdfs:label "Bubble Chart Instance 7"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance/line_chart_1
+instance:line_chart_1 rdf:type owl:NamedIndividual ,
+                               ivoc:Instance ;
+                      ivoop:hasInstanceParam instance_param:line_chart_temporal ,
+                                             instance_param:line_label_non_unique ,
+                                             instance_param:line_values_countof ;
+                      rdfs:label "Line Chart Instance 1"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance/line_chart_2
+instance:line_chart_2 rdf:type owl:NamedIndividual ,
+                               ivoc:Instance ;
+                      ivoop:hasInstanceParam instance_param:line_chart_temporal ,
+                                             instance_param:line_label_non_unique ,
+                                             instance_param:line_values_sumof ;
+                      rdfs:label "Line Chart Instance 2"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance/line_chart_3
+instance:line_chart_3 rdf:type owl:NamedIndividual ,
+                               ivoc:Instance ;
+                      ivoop:hasInstanceParam instance_param:line_chart_temporal ,
+                                             instance_param:line_label_non_unique ,
+                                             instance_param:line_values_averageof ;
+                      rdfs:label "Line Chart Instance 3"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance/line_chart_4
+instance:line_chart_4 rdf:type owl:NamedIndividual ,
+                               ivoc:Instance ;
+                      ivoop:hasInstanceParam instance_param:line_chart_temporal ,
+                                             instance_param:line_label_unique ,
+                                             instance_param:line_values_numeric ;
+                      rdfs:label "Line Chart Instance 4"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/instance/scatter_plot_1
@@ -529,6 +581,67 @@ instance_param:column_list rdf:type owl:NamedIndividual ,
                            rdfs:label "Scatter plot matrix colums"@en .
 
 
+###  https://www.upb.de/ida/viz/data/instance_param/line_chart_temporal
+instance_param:line_chart_temporal rdf:type owl:NamedIndividual ,
+                                            ivoc:InstanceParam ;
+                                   ivoop:hasRepType representational_type:Date ;
+                                   ivoop:representedParam parameter:temporal_column ;
+                                   rdfs:label "Line Chart Temporal Column"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_label_non_unique
+instance_param:line_label_non_unique rdf:type owl:NamedIndividual ,
+                                              ivoc:InstanceParam ;
+                                     ivoop:hasRepType representational_type:NonUnique ;
+                                     ivoop:isDependentOn parameter:temporal_column ;
+                                     ivoop:representedParam parameter:line_label ;
+                                     rdfs:label "Line Chart Labels Non Unique"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_label_unique
+instance_param:line_label_unique rdf:type owl:NamedIndividual ,
+                                          ivoc:InstanceParam ;
+                                 ivoop:hasRepType representational_type:Unique ;
+                                 ivoop:isDependentOn parameter:temporal_column ;
+                                 ivoop:representedParam parameter:line_label ;
+                                 rdfs:label "Line Chart Labels Unique"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_values_averageof
+instance_param:line_values_averageof rdf:type owl:NamedIndividual ,
+                                              ivoc:InstanceParam ;
+                                     ivoop:hasRepType representational_type:Transformation ;
+                                     ivoop:hasTransformation transformation:linechart_averageof ;
+                                     ivoop:representedParam parameter:line_value ;
+                                     rdfs:label "Line Values Averageof"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_values_countof
+instance_param:line_values_countof rdf:type owl:NamedIndividual ,
+                                            ivoc:InstanceParam ;
+                                   ivoop:hasRepType representational_type:Transformation ;
+                                   ivoop:hasTransformation transformation:linechart_countof ;
+                                   ivoop:representedParam parameter:line_value ;
+                                   rdfs:label "Line Values Countof"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_values_numeric
+instance_param:line_values_numeric rdf:type owl:NamedIndividual ,
+                                            ivoc:InstanceParam ;
+                                   ivoop:hasRepType representational_type:Numeric ;
+                                   ivoop:representedParam parameter:line_value ;
+                                   rdfs:label "Line Values Numeric"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/line_values_sumof
+instance_param:line_values_sumof rdf:type owl:NamedIndividual ,
+                                          ivoc:InstanceParam ;
+                                 ivoop:hasRepType representational_type:Transformation ;
+                                 ivoop:hasTransformation transformation:linechart_sumof ;
+                                 ivoop:representedParam parameter:line_value ;
+                                 rdfs:label "Line Values Sumof"@en .
+
+
 ###  https://www.upb.de/ida/viz/data/instance_param/reference_column
 instance_param:reference_column rdf:type owl:NamedIndividual ,
                                          ivoc:InstanceParam ;
@@ -629,12 +742,36 @@ parameter:column_list rdf:type owl:NamedIndividual ,
                       rdfs:label "Column_List"@en .
 
 
+###  https://www.upb.de/ida/viz/data/parameter/line_label
+parameter:line_label rdf:type owl:NamedIndividual ,
+                              ivoc:Parameter ;
+                     ivoop:hasRepType representational_type:Nominal ;
+                     ivodp:hasPriority 2 ;
+                     rdfs:label "Line_Label"@en .
+
+
+###  https://www.upb.de/ida/viz/data/parameter/line_value
+parameter:line_value rdf:type owl:NamedIndividual ,
+                              ivoc:Parameter ;
+                     ivoop:hasRepType representational_type:Numeric ;
+                     ivodp:hasPriority 3 ;
+                     rdfs:label "Line_Value"@en .
+
+
 ###  https://www.upb.de/ida/viz/data/parameter/reference_column
 parameter:reference_column rdf:type owl:NamedIndividual ,
                                     ivoc:Parameter ;
                            ivoop:hasRepType representational_type:Nominal ;
                            ivodp:hasPriority 2 ;
                            rdfs:label "Reference_Column"@en .
+
+
+###  https://www.upb.de/ida/viz/data/parameter/temporal_column
+parameter:temporal_column rdf:type owl:NamedIndividual ,
+                                   ivoc:Parameter ;
+                          ivoop:hasRepType representational_type:Date ;
+                          ivodp:hasPriority 1 ;
+                          rdfs:label "Temporal_Column"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/parameter/x_axis
@@ -666,6 +803,13 @@ reference:BubbleChart rdf:type owl:NamedIndividual ,
                                ivoc:Reference ;
                       ivodp:link "https://en.wikipedia.org/wiki/Bubble_chart" ;
                       rdfs:label "Bubble Chart (Wikipedia)"@en .
+
+
+###  https://www.upb.de/ida/viz/data/reference/LineChart
+reference:LineChart rdf:type owl:NamedIndividual ,
+                             ivoc:Reference ;
+                    ivodp:link "https://apexcharts.com/docs/chart-types/line-chart/" ;
+                    rdfs:label "Line Chart"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/reference/ScatterPlot
@@ -768,6 +912,8 @@ representational_type:Date rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/representational_type/Nominal
 representational_type:Nominal rdf:type owl:NamedIndividual ,
                                        ivoc:RepresentationalType ;
+                              ivoop:hasRepType representational_type:Numeric ;
+                              ivodp:hasPriority 3 ;
                               rdfs:label "Nominal"@en .
 
 
@@ -855,6 +1001,33 @@ transformation:bubblechart_sumof rdf:type owl:NamedIndividual ,
                                  rdfs:label "Sum of a column on bubble chart"@en .
 
 
+###  https://www.upb.de/ida/viz/data/transformation/linechart_averageof
+transformation:linechart_averageof rdf:type owl:NamedIndividual ,
+                                            ivoc:Transformation ;
+                                   ivoop:hasTargetRepType representational_type:Numeric ;
+                                   ivoop:hasTransformationTarget parameter:line_label ;
+                                   ivoop:hasTransformationType transformation_type:average ;
+                                   rdfs:label "Average of a column on line chart"@en .
+
+
+###  https://www.upb.de/ida/viz/data/transformation/linechart_countof
+transformation:linechart_countof rdf:type owl:NamedIndividual ,
+                                          ivoc:Transformation ;
+                                 ivoop:hasTargetRepType representational_type:NotRequired ;
+                                 ivoop:hasTransformationTarget parameter:line_label ;
+                                 ivoop:hasTransformationType transformation_type:countof ;
+                                 rdfs:label "Count of labels on line chart"@en .
+
+
+###  https://www.upb.de/ida/viz/data/transformation/linechart_sumof
+transformation:linechart_sumof rdf:type owl:NamedIndividual ,
+                                        ivoc:Transformation ;
+                               ivoop:hasTargetRepType representational_type:Numeric ;
+                               ivoop:hasTransformationTarget parameter:line_label ;
+                               ivoop:hasTransformationType transformation_type:sumof ;
+                               rdfs:label "Sum of a column on line chart"@en .
+
+
 ###  https://www.upb.de/ida/viz/data/transformation_type/average
 transformation_type:average rdf:type owl:NamedIndividual ,
                                      ivoc:TransformationType ;
@@ -905,6 +1078,20 @@ visualization:bubble_chart rdf:type owl:NamedIndividual ,
                            rdfs:label "Bubble Chart"@en .
 
 
+###  https://www.upb.de/ida/viz/data/visualization/line_chart
+visualization:line_chart rdf:type owl:NamedIndividual ,
+                                  ivoc:Visualization ;
+                         ivoop:hasInformation information:LineChart ;
+                         ivoop:hasInstance instance:line_chart_1 ,
+                                           instance:line_chart_2 ,
+                                           instance:line_chart_3 ,
+                                           instance:line_chart_4 ;
+                         ivoop:hasParam parameter:line_label ,
+                                        parameter:line_value ,
+                                        parameter:temporal_column ;
+                         rdfs:label "Line Chart"@en .
+
+
 ###  https://www.upb.de/ida/viz/data/visualization/scatter_plot
 visualization:scatter_plot rdf:type owl:NamedIndividual ,
                                     ivoc:Visualization ;
@@ -951,8 +1138,8 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 #    Annotations
 #################################################################
 
-<https://www.upb.de/ida/ontology/DataType> rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string ;
-                                           rdfs:label "data type"^^xsd:string .
+<https://www.upb.de/ida/ontology/DataType> rdfs:label "data type"^^xsd:string ;
+                                           rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
