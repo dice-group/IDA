@@ -14,6 +14,8 @@ import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
 import org.dice.ida.model.groupedbargraph.GroupedBarGraphData;
 import org.dice.ida.model.groupedbubblechart.GroupedBubbleChartData;
+import org.dice.ida.model.linechart.LineChartData;
+import org.dice.ida.model.linechart.LineChartItem;
 import org.dice.ida.model.scatterplot.ScatterPlotData;
 import org.dice.ida.model.scatterplot.ScatterPlotItem;
 import org.dice.ida.util.DataUtil;
@@ -73,6 +75,7 @@ public class VisualizeAction implements Action {
 	private Comparator<String> comparator;
 	private StringBuilder textMsg;
 	private boolean groupingNeeded;
+	private List<String> lineChartXAxisLabels = new ArrayList<>();
 
 	/**
 	 * @param paramMap            - parameters from dialogflow
@@ -110,13 +113,14 @@ public class VisualizeAction implements Action {
 				if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
 					getParameters(paramMap);
 					groupingNeeded = false;
-					if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) && !intent.equals(Intent.SCATTERPLOT.getKey()) &&
+					if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) && !intent.equals(Intent.SCATTERPLOT.getKey()) && !intent.equals(Intent.LINE_CHART.getKey()) &&
 							!handleGroupingLogic(chatMessageResponse, paramMap)) {
 						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 						return;
 					}
 					if (onTemporaryData) {
 						tableData = message.getActiveTableData();
+						tableData = dataUtil.filterData(tableData, filterString, columnNameList, columnMap);
 					} else {
 						if (groupingNeeded) {
 							columnNameList.add(paramMap.get("group_column").toString());
@@ -153,6 +157,11 @@ public class VisualizeAction implements Action {
 							createScatterPlotResponse();
 							chatMessageResponse.setUiAction(IDAConst.UIA_SCATTERPLOT);
 							chatMessageResponse.setMessage(IDAConst.SCATTER_PLOT_LOADED);
+							break;
+						case IDAConst.VIZ_TYPE_LINE_CHART:
+							createLineChartResponse(paramMap);
+							chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
+							chatMessageResponse.setMessage(IDAConst.LINE_CHART_LOADED);
 							break;
 						default:
 							chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
@@ -193,7 +202,7 @@ public class VisualizeAction implements Action {
 			paramType = attributeType.isEmpty() ?
 					columnMap.get(paramMap.get(attributeName).toString()) :
 					attributeType;
-			options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty());
+			options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty(), paramMap);
 			if (createResponseForUser(options, i, attributeName, attributeType, paramMap, paramType)) {
 				break;
 			}
@@ -275,11 +284,12 @@ public class VisualizeAction implements Action {
 	 * @param isTypeFromUser - Was the type selected by user or fetched from metadata
 	 * @return - list of options for the user to choose from
 	 */
-	private Set<String> getFilteredInstances(String attribute, String attributeType, String columnName, boolean isTypeFromUser) {
+	private Set<String> getFilteredInstances(String attribute, String attributeType, String columnName, boolean isTypeFromUser, Map<String, Object> paramMap) throws  IOException{
 		Map<String, Map<String, Map<String, String>>> filteredInstances = new HashMap<>();
 		String instanceParamType;
 		String instanceParamTransType;
 		Set<String> options = new HashSet<>();
+		boolean areValuesUnique;
 		for (String instance : instanceMap.keySet()) {
 			for (String param : instanceMap.get(instance).keySet()) {
 				instanceParamType = instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_TYPE_KEY).toLowerCase();
@@ -291,8 +301,13 @@ public class VisualizeAction implements Action {
 										(!isTypeFromUser && IDAConst.INSTANCE_PARAM_TYPE_NOT_REQUIRED.equals(instanceParamType)) ||
 										(IDAConst.PARAM_TYPE_TREE.get(attributeType) != null && IDAConst.PARAM_TYPE_TREE.get(attributeType).contains(instanceParamType))
 						)) {
-					if ((IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(instanceParamType) && !Boolean.parseBoolean(columnUniquenessMap.get(columnName))) ||
-							(IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(instanceParamType) && Boolean.parseBoolean(columnUniquenessMap.get(columnName)))) {
+					if(!instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY).isEmpty()){
+						areValuesUnique = areCompositeColumnsUnique(columnName, instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY), paramMap);
+					}else{
+						areValuesUnique = Boolean.parseBoolean(columnUniquenessMap.get(columnName));
+					}
+					if ((IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(instanceParamType) && !areValuesUnique) ||
+							(IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(instanceParamType) && areValuesUnique)) {
 						break;
 					}
 					filteredInstances.put(instance, instanceMap.get(instance));
@@ -491,11 +506,11 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to process the bins for numeric labels along with grouping
 	 *
-	 * @param binSize 			- size of the bins
-	 * @param xAxisColumn 		- column for primary parameter
-	 * @param yAxisColumn 		- column for secondary parameter
-	 * @param yAxisColumnType 	- type of secondary parameter
-	 * @param groupColumn 		- column for grouping the labels
+	 * @param binSize         - size of the bins
+	 * @param xAxisColumn     - column for primary parameter
+	 * @param yAxisColumn     - column for secondary parameter
+	 * @param yAxisColumnType - type of secondary parameter
+	 * @param groupColumn     - column for grouping the labels
 	 */
 	private void processGroupedBinsForNumericLabels(int binSize, String xAxisColumn, String yAxisColumn, String yAxisColumnType, String groupColumn) {
 		String xValue;
@@ -514,7 +529,7 @@ public class VisualizeAction implements Action {
 		Map<String, Double> groupEntries = new HashMap<>();
 		Map<String, Map<String, Integer>> groupedLabelCounts = new HashMap<>();
 		Map<String, Integer> labelCounts = new HashMap<>();
-		for(String group: groups) {
+		for (String group : groups) {
 			groupEntries.put(group, 0.0);
 			labelCounts.put(group, 1);
 		}
@@ -594,12 +609,12 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to process the bins for date labels along with grouping
 	 *
-	 * @param binSize 			- size of the bins
-	 * @param binType 			- type of duration (days, weeks, months or years)
-	 * @param xAxisColumn 		- column for labels
-	 * @param yAxisColumn 		- column for values
-	 * @param yAxisColumnType 	- type of value column
-	 * @param groupColumn 		- column for grouping the labels
+	 * @param binSize         - size of the bins
+	 * @param binType         - type of duration (days, weeks, months or years)
+	 * @param xAxisColumn     - column for labels
+	 * @param yAxisColumn     - column for values
+	 * @param yAxisColumnType - type of value column
+	 * @param groupColumn     - column for grouping the labels
 	 */
 	private void processGroupedBinsForDateLabels(int binSize, String binType, String xAxisColumn, String yAxisColumn, String yAxisColumnType, String groupColumn) {
 		String xValue;
@@ -615,7 +630,7 @@ public class VisualizeAction implements Action {
 		Map<String, Integer> labelCounts = new HashMap<>(initializeGraphItemsForDateBins(binSize, binType, xAxisColumn, calendar));
 		Map<String, Double> groupEntries = new HashMap<>();
 		Map<String, Integer> lblCounts = new HashMap<>();
-		for(String group: groups) {
+		for (String group : groups) {
 			groupEntries.put(group, 0.0);
 			lblCounts.put(group, 0);
 		}
@@ -901,12 +916,12 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to handle the chatbot flow for grouping the visualizations
 	 *
-	 * @param chatMessageResponse 			- instance of the chatbot response
-	 * @param paramMap 						- parameter map from dialogflow
-	 * @return 								- true if grouping flow is complete and false otherwise
-	 * @throws NoSuchAlgorithmException 	- dialogflow auth encryption algorithm is invalid
-	 * @throws IOException 					- dialogflow credentials file does not exist
-	 * @throws InvalidKeySpecException 		- dialogflow auth key invalid
+	 * @param chatMessageResponse - instance of the chatbot response
+	 * @param paramMap            - parameter map from dialogflow
+	 * @return - true if grouping flow is complete and false otherwise
+	 * @throws NoSuchAlgorithmException - dialogflow auth encryption algorithm is invalid
+	 * @throws IOException              - dialogflow credentials file does not exist
+	 * @throws InvalidKeySpecException  - dialogflow auth key invalid
 	 */
 	private boolean handleGroupingLogic(ChatMessageResponse chatMessageResponse, Map<String, Object> paramMap) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		String isGroupNeeded = paramMap.getOrDefault("isGrouped", "").toString();
@@ -933,4 +948,211 @@ public class VisualizeAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to check the uniqueness of values of multiple columns in a table combined.
+	 *
+	 * @param primaryCol - main parameter
+	 * @param dependentCols - comma separated value od secondary parameters
+	 * @param paramMap - parameter map from the dialogflow
+	 * @return boolean value representing the uniqueness
+	 * @throws IOException - If the dataset or table name is invalid
+	 */
+	private boolean areCompositeColumnsUnique(String primaryCol, String dependentCols, Map<String, Object> paramMap) throws IOException {
+		boolean areAllUnique = true;
+		List<String> columnsLst = new ArrayList<>();
+		HashSet<String> combinedValue = new HashSet<>();
+		columnsLst.add(primaryCol);
+		for (String param : dependentCols.split(",")) {
+			if (paramMap.get(param) != null && !paramMap.get(param).toString().isEmpty()) {
+				columnsLst.add(paramMap.get(param).toString());
+			}
+		}
+		for (String col : columnsLst) {
+			if (!Boolean.parseBoolean(columnUniquenessMap.get(col))) {
+				areAllUnique = false;
+			}
+		}
+		if (areAllUnique) {
+			return areAllUnique;
+		}
+		List<Map<String, String>> data = dataUtil.getData(payload.get("activeDS").toString(), payload.get("activeTable").toString(), columnsLst, paramMap.get(IDAConst.PARAM_FILTER_STRING).toString(), columnMap);
+		List<String> rowVal;
+		for (Map<String, String> row : data) {
+			rowVal = new ArrayList<>();
+			for (String col : columnsLst) {
+				rowVal.add(row.get(col));
+			}
+			if (combinedValue.contains(String.join(" | ", rowVal))) {
+				return false;
+			} else {
+				combinedValue.add(String.join(" | ", rowVal));
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Method to create line chart data based on user options.
+	 *
+	 * @param dateColumn - column to be mapped to X-Axis
+	 * @param labelColumn - column to be mapped to line labels
+	 * @param valueColumn - Column to be mapped to Y-Axis
+	 * @param valueType - Type of transformation if the Date & Line labels are repeating
+	 * @return - line chart data
+	 */
+	private Map<String, Map<String, Double>> createLineChartData(String dateColumn, String labelColumn, String valueColumn, String valueType) {
+		Map<String, Double> labelData = new TreeMap<>();
+		String date;
+		String label;
+		double value;
+		Map<String, Map<String, Double>> chartData = new HashMap<>();
+		Calendar calendar = Calendar.getInstance();
+		comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DATE);
+		Map<String, Map<String, Integer>> labelCountsMap = new HashMap<>();
+		Map<String, Integer> labelCounts;
+
+		createlineChartXAxisLabels(calendar, dateColumn);
+		for (Map<String, String> row : tableData) {
+			date = row.get(dateColumn).trim();
+			label = row.get(labelColumn);
+			value = 0.0;
+			try {
+				value = labelColumn.equals(valueColumn) ? 1.0 : Double.parseDouble(row.get(valueColumn));
+			} catch (NumberFormatException ex) {
+				System.out.println(ex.getMessage());
+			}
+			labelData = new TreeMap<>(comparator);
+			labelCounts = new HashMap<>();
+			if (chartData.containsKey(label)) {
+				labelData = chartData.get(label);
+				labelCounts = labelCountsMap.get(label);
+			} else {
+				for (String l : lineChartXAxisLabels) {
+					labelData.put(l, 0.0);
+					labelCounts.put(l, 0);
+				}
+			}
+			labelCounts.put(date, labelCounts.get(date) + 1);
+			labelCountsMap.put(label, labelCounts);
+			updateLineChartData(chartData, labelData, label, date, valueType, value);
+		}
+		if(IDAConst.TRANSFORMATION_TYPE_AVG.equals(valueType)) {
+			updateLinesWithAverage(chartData, labelCountsMap);
+		}
+		return chartData;
+	}
+
+	/**
+	 * Method to create the X-Axis labels for the line chart
+	 *
+	 * @param calendar - Calendar instance
+	 * @param dateColumn - Temporal column
+	 */
+	private void createlineChartXAxisLabels(Calendar calendar, String dateColumn) {
+		lineChartXAxisLabels = new ArrayList<>();
+		for (Map<String, String> object : tableData) {
+			String currentDate = object.get(dateColumn).trim();
+			try {
+				calendar.setTime(org.apache.commons.lang3.time.DateUtils.parseDateStrictly(currentDate, IDAConst.DATE_PATTERNS));
+			} catch (java.text.ParseException ex) {
+				ex.printStackTrace();
+				continue; // Ignore the row and continue with the next
+			}
+
+			if (!lineChartXAxisLabels.contains(currentDate)) {
+				lineChartXAxisLabels.add(currentDate);
+			}
+		}
+		lineChartXAxisLabels.sort(comparator);
+	}
+
+	/**
+	 * Method to update the line values of the line chart data after processing a row
+	 *
+	 * @param chartData - line chart data instance
+	 * @param labelData - line values for a label (Empty map for newly seen label or existing data for already seen label)
+	 * @param label - label of the line
+	 * @param date - date string for the row
+	 * @param valueType - Y-axis value type
+	 * @param value - Y-Axis value of the row
+	 */
+	private void updateLineChartData(Map<String, Map<String, Double>> chartData,Map<String, Double> labelData, String label, String date, String valueType, double value) {
+		double oldValue = labelData.getOrDefault(date, 0.0);
+		double newValue;
+		switch (valueType) {
+			case IDAConst.TRANSFORMATION_TYPE_COUNT:
+				newValue = oldValue + 1.0;
+				break;
+			case IDAConst.TRANSFORMATION_TYPE_AVG:
+			case IDAConst.TRANSFORMATION_TYPE_SUM:
+				newValue = oldValue + value;
+				break;
+			default:
+				newValue = value;
+				break;
+		}
+		labelData.put(date, newValue);
+		chartData.put(label, labelData);
+	}
+
+	/**
+	 * Method to update the line values with the average.
+	 *
+	 * @param chartData - line chart data
+	 * @param labelCountsMap - count of values for each labels to calculate the average
+	 */
+	private void updateLinesWithAverage(Map<String, Map<String, Double>> chartData, Map<String, Map<String, Integer>> labelCountsMap) {
+		Map<String, Integer> labelCounts;
+		for(String lineLabel: chartData.keySet()) {
+			labelCounts = labelCountsMap.get(lineLabel);
+			Map<String, Double> labelData = chartData.get(lineLabel);
+			for(String dateLabel: labelData.keySet()) {
+				labelData.put(dateLabel, labelData.get(dateLabel) / (labelCounts.get(dateLabel) > 0.0 ? labelCounts.get(dateLabel) : 1.0));
+			}
+			chartData.put(lineLabel, labelData);
+		}
+	}
+
+	/**
+	 * Method to populate the line chart data object in the response.
+	 */
+	private void createLineChartResponse(Map<String, Object> paramMap) {
+		LineChartData lineChartData = new LineChartData();
+		getParameters(paramMap);
+		String dateColumn = parameterMap.get(IDAConst.LINE_CHART_TEMPORAL_PARAM);
+		String labelColumn = parameterMap.get(IDAConst.LINE_CHART_LABLE_PARAM);
+		String valueColumn = parameterMap.get(IDAConst.LINE_CHART_VALUE_PARAM);
+		String valueType = parameterTypeMap.get(IDAConst.LINE_CHART_VALUE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+		Map<String, Map<String, Double>> chartData = createLineChartData(dateColumn, labelColumn, valueColumn, valueType.toLowerCase());
+		lineChartData.setxAxisLabel(dateColumn);
+		String yAxisLabel = valueColumn;
+		if (labelColumn.equals(valueColumn)) {
+			yAxisLabel = IDAConst.COUNT_OF_PREFIX + valueColumn;
+		}
+		lineChartData.setyAxisLabel(yAxisLabel);
+		lineChartData.setChartDesc(IDAConst.LINE_CHART_DESC_PREFIX + yAxisLabel + " across " + dateColumn);
+		List<Date> dateLabels = lineChartXAxisLabels.stream().map(l -> {
+			try {
+				return org.apache.commons.lang3.time.DateUtils.parseDate(l, IDAConst.DATE_PATTERNS);
+			} catch (java.text.ParseException e) {
+				System.out.println("Date parse exception:" + l);
+			}
+			return new Date();
+		}).collect(Collectors.toList());
+		lineChartData.setxAxisLabels(dateLabels);
+		List<LineChartItem> lines = new ArrayList<>();
+		for (String label : chartData.keySet()) {
+			Map<String, Double> labelData = chartData.get(label);
+			LineChartItem lineChartItem = new LineChartItem();
+			lineChartItem.setLabel(label);
+			List<Double> values = new ArrayList<>();
+			for (String key : labelData.keySet()) {
+				values.add(labelData.get(key));
+			}
+			lineChartItem.setLineValues(values);
+			lines.add(lineChartItem);
+		}
+		lineChartData.setLines(lines);
+		payload.put("lineChartData", lineChartData);
+	}
 }

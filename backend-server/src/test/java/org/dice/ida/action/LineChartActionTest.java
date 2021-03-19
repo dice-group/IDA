@@ -28,7 +28,7 @@ public class LineChartActionTest {
 	@Test
 	void testLineChartFlow() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatUserMessage.setMessage("draw line chart");
+		chatUserMessage.setMessage("can you draw a line chart?");
 		chatUserMessage.setActiveDS("covid19");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
@@ -55,7 +55,7 @@ public class LineChartActionTest {
 	@Test
 	void testLineChartWrongFilterString() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatUserMessage.setMessage("Draw line chart");
+		chatUserMessage.setMessage("can you draw a line chart?");
 		chatUserMessage.setActiveDS("covid19");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
@@ -68,19 +68,100 @@ public class LineChartActionTest {
 	@Test
 	void testLineChartWrongColumnName() throws Exception {
 		chatUserMessage = new ChatUserMessage();
-		chatUserMessage.setMessage("draw line chart");
+		chatUserMessage.setMessage("can you draw a line chart?");
 		chatUserMessage.setActiveDS("covid19");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Tested as of");
-		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("detected state");
-		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("detected state");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		assertEquals("Tested As Of: " + IDAConst.BC_INVALID_COL, chatMessageResponse.getMessage());
+		sessionUtil.resetSessionId();
+	}
+
+	@Test
+	void testLineChartFlowUniqueLabels() throws Exception {
+		chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("can you draw a line chart?");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 7");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Date announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Age");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		LineChartData lineChartData = (LineChartData) chatMessageResponse.getPayload().get("lineChartData");
+		List<LineChartItem> lineChartItemList = new ArrayList<>();
+		lineChartItemList.add(new LineChartItem("Delhi", Arrays.asList(0.0, 0.0, 0.0, 45.0, 0.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Haryana", Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 55.0)));
+		lineChartItemList.add(new LineChartItem("Telangana", Arrays.asList(0.0, 0.0, 0.0, 24.0, 0.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Rajasthan", Arrays.asList(0.0, 0.0, 0.0, 0.0, 69.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Kerala", Arrays.asList(20.0, 0.0, 0.0, 0.0, 0.0, 0.0)));
+		assertNotNull(lineChartItemList);
+		assertEquals(lineChartItemList, lineChartData.getLines());
+		sessionUtil.resetSessionId();
+	}
+
+	@Test
+	void testLineChartFlowAverageValues() throws Exception {
+		chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("can you draw a line chart?");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 10");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Date announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Age");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Average");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		LineChartData lineChartData = (LineChartData) chatMessageResponse.getPayload().get("lineChartData");
+		List<LineChartItem> lineChartItemList = new ArrayList<>();
+		lineChartItemList.add(new LineChartItem("Delhi", Arrays.asList(0.0, 0.0, 0.0, 45.0, 0.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Haryana", Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 55.0)));
+		lineChartItemList.add(new LineChartItem("Telangana", Arrays.asList(0.0, 0.0, 0.0, 24.0, 0.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Rajasthan", Arrays.asList(0.0, 0.0, 0.0, 0.0, 69.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Kerala", Arrays.asList(20.0, 0.0, 0.0, 0.0, 0.0, 0.0)));
+		assertNotNull(lineChartItemList);
+		assertEquals(lineChartItemList, lineChartData.getLines());
+		sessionUtil.resetSessionId();
+	}
+
+	@Test
+	void testLineChartFlowSumOfValues() throws Exception {
+		chatUserMessage = new ChatUserMessage();
+		chatUserMessage.setMessage("can you draw a line chart?");
+		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("first 10");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Date announced");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Detected State");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("Age");
+		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("sum of");
+		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
+		LineChartData lineChartData = (LineChartData) chatMessageResponse.getPayload().get("lineChartData");
+		List<LineChartItem> lineChartItemList = new ArrayList<>();
+		lineChartItemList.add(new LineChartItem("Delhi", Arrays.asList(0.0, 0.0, 0.0, 45.0, 0.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Haryana", Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 220.0)));
+		lineChartItemList.add(new LineChartItem("Telangana", Arrays.asList(0.0, 0.0, 0.0, 24.0, 0.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Rajasthan", Arrays.asList(0.0, 0.0, 0.0, 0.0, 69.0, 0.0)));
+		lineChartItemList.add(new LineChartItem("Kerala", Arrays.asList(20.0, 0.0, 0.0, 0.0, 0.0, 0.0)));
+		assertNotNull(lineChartItemList);
+		assertEquals(lineChartItemList, lineChartData.getLines());
 		sessionUtil.resetSessionId();
 	}
 }

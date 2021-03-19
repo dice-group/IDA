@@ -11,7 +11,9 @@ import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
 import org.dice.ida.model.Intent;
 import org.dice.ida.util.DialogFlowUtil;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -27,6 +29,11 @@ public class ActionExecutor {
 	private ActionMappingHelper mappingHelper;
 	@Autowired
 	private DialogFlowUtil dialogFlowUtil;
+
+	@Autowired
+	@Qualifier("chat-logger")
+	private Logger chatLog;
+
 	private Action action;
 	private Map<String, Object> paramMap;
 	private QueryResult queryResult;
@@ -44,6 +51,8 @@ public class ActionExecutor {
 		paramMap.put(IDAConst.INTENT_NAME, intent.getKey());
 		paramMap.put(IDAConst.FULL_INTENT_NAME,queryResult.getIntent().getDisplayName());
 		this.action = mappingHelper.fetchActionInstance(intent.getKey());
+
+		chatLog.info("Intent assigned: " + intent.getKey());
 	}
 
 	private Map<String, Object> createParamMap(QueryResult queryResult) {
