@@ -105,7 +105,7 @@ export default class IDAGroupedBarGraph extends Component {
             })
             .on("mouseout", () => {
                 this.tooltip.style.display = "none";
-            })
+            });
         const xAxis2 = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x1).tickSizeOuter(0))
@@ -121,7 +121,8 @@ export default class IDAGroupedBarGraph extends Component {
             var barcount = Math.max(g.childNodes.length) - 1;
             xval = g.childNodes[0].attributes[0].value;
             yval = +g.childNodes[barcount].attributes[0].value + +15;
-        })
+        });
+		
         group
             .append("g")
             .call(xAxis2)
