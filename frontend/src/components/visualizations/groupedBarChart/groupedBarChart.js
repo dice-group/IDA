@@ -126,7 +126,7 @@ export default class IDAGroupedBarGraph extends Component {
         group
             .append("g")
             .call(xAxis2)
-            .append('line')
+            .append("line")
             .style("stroke", "steelblue")
             .style("stroke-width", 1.5)
             .attr("x1", xval)
