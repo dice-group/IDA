@@ -77,7 +77,6 @@ export default class IDAScatterPLot extends Component {
 
 
 	drawScatterPlot() {
-
 		this.graphData.items.forEach((item) => {
 			item.xLabel = item.x;
 			item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
@@ -92,7 +91,21 @@ export default class IDAScatterPLot extends Component {
 		const svg = d3.select("#" + this.containerId)
 			.append("svg")
 			.attr("height", this.height)
-			.attr("width", this.width);
+			.attr("width", this.width)
+			.append('g')     
+            .attr('class', 'chart')     
+			.attr('transform', 'translate(' + 0 + ', ' + this.margin.top + ')');
+		
+		/**
+		 * append listener for zoom event
+		 */	
+		var listenerRect = svg.append('rect')
+             .attr('class', 'listener-rect')     
+             .attr('x', 0)     
+             .attr('y', 0)    
+             .attr('width', this.width)     
+             .attr('height', this.height)    
+             .style('opacity', 0); 
 
 
 		/**
@@ -128,22 +141,30 @@ export default class IDAScatterPLot extends Component {
 		/**
 		 * function to scale x axis entries
 		 */
-		const scaleX = d3.scaleBand()
+		var scaleX = d3.scaleBand()
 			.domain(this.graphData.items.map((d) => d.x))
 			.range([this.margin.left, this.width])
 			.padding(0.1);
-
+		
+		var clip = svg.append("defs").append("svg:clipPath")
+			.attr("id", "clip")
+			.append("svg:rect")
+			.attr("width", this.width )
+			.attr("height", this.height )
+			.attr("x", 100)
+			.attr("y", -100);
 		/**
 		 * append the scatter plot graph to SVG
 		 */
-		let plot = svg.append("g")
+		var plot = svg.append("g", '.listener-rect')
+			.attr("clip-path", "url(#clip)")
 			.selectAll("dot")
 			.data(this.graphData.items)
 			.enter()
 			.append("circle")
-			.attr("cx", function (d) { return scaleX(d.x) + 11; })
+			.attr("cx", function (d) { return scaleX(d.x) +11 ; })
 			// .attr("cy", function (d) { return scaleY(d.y); } )
-			.attr("cy", (d) => scaleY(d.y) - 2)
+			.attr("cy", (d) => scaleY(d.y) )
 			.attr("r", 3.0)
 			.attr("fill", "#4f8bff");
 
@@ -164,46 +185,50 @@ export default class IDAScatterPLot extends Component {
 		/**
 		 * append x-axis to the graph
 		 */
-
-		let label = svg.append("g")
-			.attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+		var xAxis = g => g
+    		.attr("transform", `translate(0,${this.height - this.margin.bottom})`)
 			.call(d3.axisBottom(scaleX).tickSizeOuter(0))
 			.selectAll("text")
 			.data(this.graphData.items)
 			.attr("x", -10)
 			.attr("y", -5)
 			.attr("transform", "rotate(-90)")
-			.style("text-anchor", "end")
-
-			.attr("value", (d) => {
-				return d.x + ": " + d.y;
-			})
-			.style("fill", (d) => {
-				return d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000";
-			})
-			.style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
-			.attr("class", "x-axis-label");
-
-		label
-			.attr("data-foo", (d) => { return d.xLabel + ": " + d.y; })
-			.on("mouseover", (event) => {
-				this.tooltip.style.display = "block";
-				this.tooltip.style.position = "absolute";
-				this.tooltip.style.top = event.clientY + "px";
-				this.tooltip.style.left = event.clientX + "px";
-				this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
-			})
-			.on("mouseout", () => {
-				this.tooltip.style.display = "none";
-			});
+			.style("text-anchor", "end");
+		
+		/**
+		 * append clip for plot to hide outside chart area
+		 */
+		svg.append("g")
+		.attr("class", "x-axis")
+		.attr("clip-path", "url(#clip)")
+        .call(xAxis);		
 
 
 		/**
 	   * append y-axis to the graph
 	   */
-		svg.append("g")
+		var Yaxisdraw = svg.append("g")
 			.attr("transform", `translate(${this.margin.left},0)`)
 			.call(d3.axisLeft(scaleY).tickSizeOuter(0));
+		
+		var zoom = d3.zoom() .on('zoom', (event)=>{zoomed(event,this)});
+			listenerRect.call(zoom);
+		
+		/**
+		 * Zoom event listener 
+		 */	
+		function zoomed(event,object) { 
+				var transform = event.transform; 
+				
+				transform.x = Math.min(-100*(transform.k -1), transform.x); 
+                transform.y = Math.min(0, transform.y);; 
+                scaleX = scaleX.range([object.margin.left, object.width].map(d => event.transform.applyX(d)));
+                var yScaleNew = transform.rescaleY(scaleY);
+                plot.attr('cy', function(d) {return yScaleNew(d.y) });
+				plot.attr('cx',function (d) { return scaleX(d.x) + transform.k *11; });
+				Yaxisdraw.call(d3.axisLeft(yScaleNew).tickSizeOuter(0));
+				svg.selectAll(".x-axis").call(xAxis);
+        }
 	}
 
 	render() {
