@@ -26,7 +26,11 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import CloudDoneOutlinedIcon from '@material-ui/icons/CloudDoneOutlined';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Tooltip from '@material-ui/core/Tooltip';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { withStyles } from "@material-ui/core/styles";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import axios from "axios";
 
@@ -36,7 +40,21 @@ const useStylesBootstrap = (theme) => ({
 	},
 	tooltip: {
 		backgroundColor: theme.palette.common.black
-	}
+	},
+	root: {
+		border: "1px solid rgba(0, 0, 0, .125)",
+		boxShadow: "none",
+		"&:not(:last-child)": {
+			borderBottom: 0
+		},
+		"&:before": {
+			display: "none"
+		},
+		"&$expanded": {
+			margin: "auto"
+		}
+	},
+	expanded: {}
 });
 
 class DSUploadWizard extends React.Component {
@@ -58,7 +76,8 @@ class DSUploadWizard extends React.Component {
 		showOkBtn: false,
 		cancellingUpload: false,
 		confirmationMsg: '',
-		udsi: null // It will come from Pydsmx and we will use it for metadata storage
+		udsi: null, // It will come from Pydsmx and we will use it for metadata storage
+		expanded: 'panel1'
 	};
 
 	constructor(props) {
@@ -229,6 +248,10 @@ class DSUploadWizard extends React.Component {
 		this.setState({fileUploadBtn: e});
 	}
 
+	manageAccordion = (panel) => {
+		this.setState({expanded: panel});
+	}
+
 	render() {
 		const { classes } = this.props;
 		const renderFileUpload = () => {
@@ -276,7 +299,7 @@ class DSUploadWizard extends React.Component {
 					return (<div className="meta-data-box">
 						<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file. IDA uses these files to perform various operations. Here you can change some relavant fields kindly go through them all and change them as you like.</div>
 						<form>
-							<table>
+							<table style={{marginLeft: '16px'}}>
 								<tr>
 									<td width="15%" className="heading required">Dataset name</td>
 									<td><input type="text" name="dsName" value={this.state.metaData.dsName}
@@ -289,81 +312,75 @@ class DSUploadWizard extends React.Component {
 								</tr>
 							</table>
 							<br/>
-							This dataset contains {this.state.metaData.filesMd.length} files.
+							<div style={{marginLeft: '16px'}}> This dataset contains {this.state.metaData.filesMd.length} files. </div>
 							<br/>
-							<hr/>
 							{this.state.metaData.filesMd.map((f, i) => {
 								return (
 									<div>
-										<table>
-											<tr>
-												<td className="heading">#</td>
-												<td>{i}</td>
-											</tr>
-											<tr>
-												<td className="heading">File name</td>
-												<td>{f.fileName}</td>
-											</tr>
-											<tr>
-												<td className="heading">Display name</td>
-												<td><input type="text" value={f.displayName}
-														   name={`filesMd[${i}].displayName`}
-														   onChange={this.handleChange}/></td>
-											</tr>
-											<tr>
-												<td className="heading">File description</td>
-												<td><input type="text" value={f.fileDesc}
-														   name={`filesMd[${i}].fileDesc`}
-														   onChange={this.handleChange}/></td>
-											</tr>
-											<tr>
-												<td className="heading">Columns count</td>
-												<td>{f.colCount}</td>
-											</tr>
-											<tr>
-												<td className="heading">Row count</td>
-												<td>{f.rowCount}</td>
-											</tr>
-										</table>
-										<table>
-											<thead>
-											<td className="heading">Column index</td>
-											<td className="heading">Column name</td>
-											<td className="heading">Column description</td>
-											<td className="heading">Column attribute</td>
-											<td className="heading">Column type<Tooltip classes={classes} arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon style={{fontSize: 18, color: '#F57C00', marginLeft: '3px'}}/></Tooltip></td>
-											<td className="heading">Contains unique values</td>
-											</thead>
-											<tbody>
-											{f.fileColMd.map((e, b) => {
-												return (
-													<tr key={b}>
-														<td>{e.colIndex}</td>
-														<td><input value={e.colName}
-																   name={`filesMd[${i}].fileColMd[${b}].colName`}
+										<Accordion classes={classes} expanded={this.state.expanded === `panel${i+1}`} onChange={() => {this.manageAccordion(`panel${i+1}`)}}>
+											<AccordionSummary expandIcon={<ExpandMoreIcon />}>{i+1}. {f.fileName}</AccordionSummary>
+											<AccordionDetails style={{flexDirection: 'column'}}>
+												<table>
+													<tr>
+														<td className="heading">Display name</td>
+														<td><input type="text" value={f.displayName}
+																   name={`filesMd[${i}].displayName`}
 																   onChange={this.handleChange}/></td>
-														<td><input value={e.colDesc}
-																   name={`filesMd[${i}].fileColMd[${b}].colDesc`}
-																   onChange={this.handleChange}/></td>
-														<td>{e.colAttr}</td>
-														<td>
-															<select value={e.colType}
-																	name={`filesMd[${i}].fileColMd[${b}].colType`}
-																	onChange={this.handleChange}>
-																<option value="date">Date</option>
-																<option value="string">String</option>
-																<option value="numeric">Numeric</option>
-															</select>
-														</td>
-														<td>{e.isUnique ? 'Yes' : 'No'}</td>
 													</tr>
-												)
-											})}
-											</tbody>
+													<tr>
+														<td className="heading">File description</td>
+														<td><input type="text" value={f.fileDesc}
+																   name={`filesMd[${i}].fileDesc`}
+																   onChange={this.handleChange}/></td>
+													</tr>
+													<tr>
+														<td className="heading">Columns count</td>
+														<td>{f.colCount}</td>
+													</tr>
+													<tr>
+														<td className="heading">Row count</td>
+														<td>{f.rowCount}</td>
+													</tr>
+												</table>
+												<table>
+													<thead>
+													<td className="heading">Column index</td>
+													<td className="heading">Column name</td>
+													<td className="heading">Column description</td>
+													<td className="heading">Column attribute</td>
+													<td className="heading">Column type<Tooltip classes={classes} arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon style={{fontSize: 18, color: '#F57C00', marginLeft: '3px'}}/></Tooltip></td>
+													<td className="heading">Contains unique values</td>
+													</thead>
+													<tbody>
+													{f.fileColMd.map((e, b) => {
+														return (
+															<tr key={b}>
+																<td>{e.colIndex}</td>
+																<td><input value={e.colName}
+																		   name={`filesMd[${i}].fileColMd[${b}].colName`}
+																		   onChange={this.handleChange}/></td>
+																<td><input value={e.colDesc}
+																		   name={`filesMd[${i}].fileColMd[${b}].colDesc`}
+																		   onChange={this.handleChange}/></td>
+																<td>{e.colAttr}</td>
+																<td>
+																	<select value={e.colType}
+																			name={`filesMd[${i}].fileColMd[${b}].colType`}
+																			onChange={this.handleChange}>
+																		<option value="date">Date</option>
+																		<option value="string">String</option>
+																		<option value="numeric">Numeric</option>
+																	</select>
+																</td>
+																<td>{e.isUnique ? 'Yes' : 'No'}</td>
+															</tr>
+														)
+													})}
+													</tbody>
 
-										</table>
-										<br/>
-										<hr/>
+												</table>
+												</AccordionDetails>
+										</Accordion>
 									</div>
 								)
 							})}
