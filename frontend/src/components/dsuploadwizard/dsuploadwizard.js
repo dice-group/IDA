@@ -26,10 +26,20 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import CloudDoneOutlinedIcon from '@material-ui/icons/CloudDoneOutlined';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from "@material-ui/core/styles";
 
 import axios from "axios";
 
-export default class DSUploadWizard extends React.Component {
+const useStylesBootstrap = (theme) => ({
+	arrow: {
+		color: theme.palette.common.black
+	},
+	tooltip: {
+		backgroundColor: theme.palette.common.black
+	}
+});
+
+class DSUploadWizard extends React.Component {
 	initialState = {
 		activeStep: 0,
 		steps: ["Upload dataset", "confirm meta data", "finished"],
@@ -220,6 +230,7 @@ export default class DSUploadWizard extends React.Component {
 	}
 
 	render() {
+		const { classes } = this.props;
 		const renderFileUpload = () => {
 			if (!this.state.enableLoader) {
 				if (!this.state.isFileSelected) {
@@ -320,7 +331,7 @@ export default class DSUploadWizard extends React.Component {
 											<td className="heading">Column name</td>
 											<td className="heading">Column description</td>
 											<td className="heading">Column attribute</td>
-											<td className="heading">Column type<Tooltip arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon style={{fontSize: 18, color: '#F57C00', marginLeft: '3px'}}/></Tooltip></td>
+											<td className="heading">Column type<Tooltip classes={classes} arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon style={{fontSize: 18, color: '#F57C00', marginLeft: '3px'}}/></Tooltip></td>
 											<td className="heading">Contains unique values</td>
 											</thead>
 											<tbody>
@@ -483,3 +494,4 @@ export default class DSUploadWizard extends React.Component {
 		)
 	}
 }
+export default withStyles(useStylesBootstrap)(DSUploadWizard)
