@@ -2,6 +2,7 @@ import os
 from flask import Flask, request
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
+import requests
 import pandas as pd
 import json
 import os
@@ -13,6 +14,7 @@ cors = CORS(app)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['TEMP_FOLDER'] = './temp-uploads'
+app.config['DS_FOLDER'] = '/Users/maqbool/Documents/ida-ds'
 app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum fi
 
 
@@ -101,12 +103,34 @@ def upload_file():
 @cross_origin()
 def save_metadata():
 	if request.method == 'POST':
-		metadata = request.json["metadata"]
 		udsi = request.json["udsi"]
-		dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
-		metadata_file = open(os.path.join(dsdirpath, 'dsmd.json'), 'w')
-		metadata_file.write(json.dumps(metadata))
-		return 'ok', 200
+
+		metadata = request.json["metadata"]
+		dsName = metadata["dsName"]
+
+		if dsName.isalnum():
+			resp = requests.post("http://localhost:3030/ds/query", data={
+				"query": "SELECT ?subject ?predicate ?object WHERE {   ?subject ?predicate '" + dsName + "' }"})
+			isNameUnique = False if len(resp.json()["results"]["bindings"]) > 0 else True
+
+			if isNameUnique:
+				resp = requests.post("http://localhost:3030/ds/update", data={
+					"update": "PREFIX ab: <https://www.upb.de/ida/datasets/> INSERT DATA { <https://www.upb.de/ida/datasets/" + dsName
+							  + ">  ab:names '" + dsName + "' ; ab:paths '/docs/dowloads'. }"})
+
+				if resp.status_code == 200:
+					dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
+					with open(os.path.join(dsdirpath, 'dsmd.json'), 'w') as  metadata_file:
+						metadata_file.write(json.dumps(metadata))
+
+					# Moving dataset folder from temp directory to dataset directory
+					os.rename(dsdirpath, os.path.join(app.config.get('DS_FOLDER'), dsName))
+
+					return {"message":  "Successfully uploaded dataset"}, 200
+			else:
+				return {'message': 'dataset with name ' + dsName + ' already exists!'}, 409
+		else:
+			return {'message': 'dataset name should be alpha numeric'}, 401
 
 
 @app.route('/delete', methods=['POST'])

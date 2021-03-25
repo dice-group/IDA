@@ -164,12 +164,12 @@ class DSUploadWizard extends React.Component {
 						showCancelBtn: false,
 						showBackBtn: false
 					})
-				}).catch(() => {
+				}).catch((err) => {
 					this.setState({
 						enableLoader: false,
 						enableNextButton: true,
 						showError: true,
-						errorMsg: 'Something happened while uploading metadata..'
+						errorMsg: err.response.data.message
 					})
 				})
 			} else {
