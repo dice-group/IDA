@@ -168,7 +168,7 @@ export default class IDAScatterPlotMatrix extends Component {
 				.selectAll("rect")
 				.on("click", () => {
 					let tempData = data.filter((d) => !isNaN(d[`${columns[`${i}`]}`]) && !isNaN(d[`${columns[`${j}`]}`]))
-					tempData = tempData.map((d) => ({ x: parseFloat(d[`${columns[`${i}`]}`]), y: parseFloat(d[`${columns[`${j}`]}`]) }));
+					tempData = tempData.map((d) => ({ x: parseFloat(d[`${columns[`${i}`]}`]), y: parseFloat(d[`${columns[`${j}`]}`]), reference: d[`${refColumn}`] }));
 					tempData = tempData.sort((a, b) => a.x > b.x ? 1 : a.x < b.x ? -1 : 0);
 					self.plotData = {
 						"label": "Scatterplot for " + columns[i] + " and " + columns[j],
