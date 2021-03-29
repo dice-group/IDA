@@ -84,6 +84,8 @@ public interface IDAConst {
 
 	// Scatter plot
 	public static final String SCATTER_PLOT_LOADED = "The requested scatter plot has been loaded.";
+	// Scatter plot Matrix
+	public static final String SCATTER_PLOT_MATRIX_LOADED = "The requested scatter plot matrix has been loaded.";
 
 	// Bar graph
 	public static final String PARAM_FILTER_STRING = "records-selection";
@@ -182,6 +184,12 @@ public interface IDAConst {
 	public static final String LINE_CHART_PROPERTY_NAME = "lineChartData";
 
 	/**
+	 * Visualization with List Paramter
+	 */
+
+	public static final String HAS_LIST_COLUMN = "hasListColumn";
+
+	/**
 	 * Prefixes for SPARQL queries
 	 */
 	public static final String IDA_SPARQL_PREFIX = "prefix dc: <http://purl.org/dc/elements/1.1/>\n" +
@@ -254,6 +262,7 @@ public interface IDAConst {
 	String VIZ_TYPE_BUBBLE_CHART = "bubble_chart";
 	String VIZ_TYPE_SCATTER_PLOT = "scatter_plot";
 	String VIZ_TYPE_LINE_CHART = "line_chart";
+	String VIZ_TYPE_SCATTER_PLOT_MATRIX = "scatter_plot_matrix";
 	String BUBBLE_LABEL_PARAM = "Bubble_Label";
 	String BUBBLE_SIZE_PARAM = "Bubble_Size";
 	String X_AXIS_PARAM = "X-Axis";
