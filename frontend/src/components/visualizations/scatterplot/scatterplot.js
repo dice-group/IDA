@@ -1,11 +1,7 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import TrendingUpIcon from "@material-ui/icons/TrendingUp";
-import TrendingDownIcon from "@material-ui/icons/TrendingDown";
 import "./scatterplot.css";
-import { IDA_CONSTANTS } from "../../constants";
 import { Grid, Fab } from "@material-ui/core";
-import { data } from "./data.js";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -45,9 +41,10 @@ export default class IDAScatterPLot extends Component {
 
 	componentDidMount() {
 
+		const refColumn = "reference";
 		if (this.graphData && this.graphData.items) {
 			this.colorFunction = d3.scaleOrdinal()
-				.domain(this.graphData.items.map((d) => d[`reference`]))
+				.domain(this.graphData.items.map((d) => d[`${refColumn}`]))
 				.range(d3.schemeCategory10);
 			this.setState({
 				referenceValues: this.colorFunction.domain()
@@ -61,14 +58,13 @@ export default class IDAScatterPLot extends Component {
 			item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
 		});
 
-		
 
 		/**
 		 * append placeholder for the scatter plot
 		 */
 		const svg = d3.select("#" + this.containerId)
 			.append("svg")
-			.attr('class', 'chartcontainer')
+			.attr("class", "chartcontainer")
 			.attr('width', this.width)
 			.attr("height", this.height)
 			.append('g')
@@ -136,6 +132,7 @@ export default class IDAScatterPLot extends Component {
 		/**
 		 * append the scatter plot graph to SVG
 		 */
+		const refColumn = "reference";
 		var plot = svg.append("g", '.listener-rect')
 			.attr("clip-path", "url(#clip)")
 			.selectAll("dot")
@@ -146,7 +143,7 @@ export default class IDAScatterPLot extends Component {
 			// .attr("cy", function (d) { return scaleY(d.y); } )
 			.attr("cy", (d) => scaleY(d.y))
 			.attr("r", 3.0)
-			.attr("fill", (d) => z(d[`reference`]));
+			.attr("fill", (d) => z(d[`${refColumn}`]));
 
 		plot
 			// .append("title")
@@ -185,11 +182,11 @@ export default class IDAScatterPLot extends Component {
 		function zoomed(event, object) {
 			var transform = event.transform;
 			transform.x = Math.min(-90 * (transform.k - 1), transform.x);
-			transform.y = Math.min(0, transform.y);;
+			transform.y = Math.min(0, transform.y);
 			var yScaleNew = transform.rescaleY(scaleY);
 			var xScaleNew = transform.rescaleX(scaleX);
-			plot.attr('cy', function (d) { return yScaleNew(d.y) });
-			plot.attr('cx', function (d) { return xScaleNew(d.x) });
+			plot.attr("cy", function (d) { return yScaleNew(d.y); });
+			plot.attr("cx", function (d) { return xScaleNew(d.x); });
 			Yaxisdraw.call(d3.axisLeft(yScaleNew).tickSizeOuter(0));
 			Xaxisdraw.call((d3.axisBottom(xScaleNew).tickSizeOuter(0))).selectAll("text")
 				.attr("x", -10)
