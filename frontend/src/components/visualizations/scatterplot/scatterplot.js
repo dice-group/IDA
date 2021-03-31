@@ -205,7 +205,7 @@ export default class IDAScatterPLot extends Component {
 				.style("text-anchor", "end");
 		};
 
-		const zoom = d3.zoom().on("zoom", (event) => { zoomed(event, this) });
+		const zoom = d3.zoom().on("zoom", (event) => zoomed(event, this));
 		listenerRect.call(zoom);
 	}
 
