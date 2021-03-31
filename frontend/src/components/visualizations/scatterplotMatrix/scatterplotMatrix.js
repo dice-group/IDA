@@ -167,14 +167,20 @@ export default class IDAScatterPlotMatrix extends Component {
 			d3.select(this)
 				.selectAll("rect")
 				.on("click", () => {
-					let tempData = data.filter((d) => !isNaN(d[`${columns[`${i}`]}`]) && !isNaN(d[`${columns[`${j}`]}`]))
-					tempData = tempData.map((d) => ({ x: parseFloat(d[`${columns[`${i}`]}`]), y: parseFloat(d[`${columns[`${j}`]}`]), reference: d[`${refColumn}`] }));
+					let tempData = data.filter((d) => !isNaN(d[`${columns[`${i}`]}`]) && !isNaN(d[`${columns[`${j}`]}`]));
+					tempData = tempData.map((d) => ({
+						x: parseFloat(d[`${columns[`${i}`]}`]),
+						y: parseFloat(d[`${columns[`${j}`]}`]),
+						reference: d[`${refColumn}`],
+						label: labelColumn ? d[`${labelColumn}`] : ""
+					}));
 					tempData = tempData.sort((a, b) => a.x > b.x ? 1 : a.x < b.x ? -1 : 0);
 					self.plotData = {
-						"label": "Scatterplot for " + columns[i] + " and " + columns[j],
+						"label": "Scatterplot for " + `${columns[`${i}`]}` + " and " + `${columns[`${j}`]}`,
 						"items": tempData,
-						"xAxisLabel": columns[i],
-						"yAxisLabel": columns[j]
+						"xAxisLabel": `${columns[`${i}`]}`,
+						"yAxisLabel": `${columns[`${j}`]}`,
+						"labelColumn": labelColumn ? true : false
 					};
 					self.handleClickOpen();
 				});

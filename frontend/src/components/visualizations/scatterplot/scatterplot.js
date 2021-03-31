@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
 import "./scatterplot.css";
-import { Grid, Fab } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -16,8 +16,8 @@ export default class IDAScatterPLot extends Component {
 		bottom: 100,
 		left: 100
 	};
-	height = 600;
-	width = 900;
+	height = 500;
+	width = 800;
 	graphData = {};
 	colorFunction = (label) => null;
 	containerId = "";
@@ -40,7 +40,6 @@ export default class IDAScatterPLot extends Component {
 	}
 
 	componentDidMount() {
-
 		const refColumn = "reference";
 		if (this.graphData && this.graphData.items) {
 			this.colorFunction = d3.scaleOrdinal()
@@ -52,12 +51,15 @@ export default class IDAScatterPLot extends Component {
 			this.graphData && this.graphData.items && this.drawScatterPlot();
 		}
 	}
+
 	drawScatterPlot() {
+		const labelColumn = this.graphData.labelColumn;
+		const xAxisLabel = this.graphData.xAxisLabel;
+		const yAxisLabel = this.graphData.yAxisLabel;
 		this.graphData.items.forEach((item) => {
 			item.xLabel = item.x;
 			item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
 		});
-
 
 		/**
 		 * append placeholder for the scatter plot
@@ -65,22 +67,22 @@ export default class IDAScatterPLot extends Component {
 		const svg = d3.select("#" + this.containerId)
 			.append("svg")
 			.attr("class", "chartcontainer")
-			.attr('width', this.width)
+			.attr("width", this.width)
 			.attr("height", this.height)
-			.append('g')
-			.attr('class', 'chart')
-			.attr('transform', 'translate(' + 0 + ', ' + this.margin.top + ')');
+			.append("g")
+			.attr("class", "chart")
+			.attr("transform", "translate(" + 0 + ", " + this.margin.top + ")");
 
 		/**
 		 * append listener for zoom event
 		 */
-		var listenerRect = svg.append('rect')
-			.attr('class', 'listener-rect')
-			.attr('x', 0)
-			.attr('y', 0)
-			.attr('width', this.width)
-			.attr('height', this.height)
-			.style('opacity', 0);
+		var listenerRect = svg.append("rect")
+			.attr("class", "listener-rect")
+			.attr("x", 0)
+			.attr("y", 0)
+			.attr("width", this.width)
+			.attr("height", this.height)
+			.style("opacity", 0);
 
 		const z = this.colorFunction;
 
@@ -129,25 +131,30 @@ export default class IDAScatterPLot extends Component {
 			.attr("height", this.height - (this.margin.top + this.margin.bottom))
 			.attr("x", 100)
 			.attr("y", this.margin.top);
+
 		/**
-		 * append the scatter plot graph to SVG
-		 */
+	 * append the scatter plot graph to SVG
+	 */
 		const refColumn = "reference";
-		var plot = svg.append("g", '.listener-rect')
+		const plot = svg.append("g", ".listener-rect")
 			.attr("clip-path", "url(#clip)")
 			.selectAll("dot")
 			.data(this.graphData.items)
 			.enter()
 			.append("circle")
-			.attr("cx", function (d) { return scaleX(d.x); })
-			// .attr("cy", function (d) { return scaleY(d.y); } )
+			.attr("cx", (d) => scaleX(d.x))
 			.attr("cy", (d) => scaleY(d.y))
 			.attr("r", 3.0)
 			.attr("fill", (d) => z(d[`${refColumn}`]));
 
 		plot
-			// .append("title")
-			.attr("data-foo", (d) => { return d.reference + ":" + d.xLabel + "," + d.y; })
+			.attr("data-foo", (d) => {
+				let text = "";
+				if (labelColumn) {
+					text = d.label + "\n\n";
+				}
+				return text + xAxisLabel + ": " + d.xLabel + "\n" + yAxisLabel + ": " + d.y;
+			})
 			.on("mouseover", (event) => {
 				this.tooltip.style.display = "block";
 				this.tooltip.style.position = "absolute";
@@ -160,26 +167,29 @@ export default class IDAScatterPLot extends Component {
 			});
 
 		/**
-	   * append y-axis to the graph
-	   */
-		var Xaxisdraw = svg.append("g")
+		 * append y-axis to the graph
+		 */
+		const Xaxisdraw = svg.append("g")
 			.attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-			.call(d3.axisBottom(scaleX).tickSizeOuter(0))
+			.call(d3.axisBottom(scaleX).tickSizeOuter(0));
+
+		Xaxisdraw.selectAll("text")
+			.attr("x", -10)
+			.attr("y", -5)
+			.attr("transform", "rotate(-90)")
+			.style("text-anchor", "end");
 
 		/**
-	   * append y-axis to the graph
-	   */
-		var Yaxisdraw = svg.append("g")
+		 * append y-axis to the graph
+		 */
+		const Yaxisdraw = svg.append("g")
 			.attr("transform", `translate(${this.margin.left},0)`)
 			.call(d3.axisLeft(scaleY).tickSizeOuter(0));
-
-		var zoom = d3.zoom().on('zoom', (event) => { zoomed(event, this) });
-		listenerRect.call(zoom);
 
 		/**
 		 * Zoom event listener 
 		 */
-		function zoomed(event, object) {
+		const zoomed = (event, object) => {
 			var transform = event.transform;
 			transform.x = Math.min(-90 * (transform.k - 1), transform.x);
 			transform.y = Math.min(0, transform.y);
@@ -193,7 +203,10 @@ export default class IDAScatterPLot extends Component {
 				.attr("y", -5)
 				.attr("transform", "rotate(-90)")
 				.style("text-anchor", "end");
-		}
+		};
+
+		const zoom = d3.zoom().on("zoom", (event) => { zoomed(event, this) });
+		listenerRect.call(zoom);
 	}
 
 	render() {
