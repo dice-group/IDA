@@ -33,3 +33,10 @@ td.required:after {
   font-size: 14px;
   color: #4e8cff;
 }
+
+.collapse-btns:after {
+  content: "";
+  clear: both;
+  display: table;
+  margin-bottom: -30px;
+}

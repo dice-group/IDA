@@ -31,6 +31,8 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { withStyles } from "@material-ui/core/styles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import DehazeOutlinedIcon from '@material-ui/icons/DehazeOutlined';
+import ViewAgendaOutlinedIcon from '@material-ui/icons/ViewAgendaOutlined';
 
 import axios from "axios";
 
@@ -77,7 +79,7 @@ class DSUploadWizard extends React.Component {
 		cancellingUpload: false,
 		confirmationMsg: '',
 		udsi: null, // It will come from Pydsmx and we will use it for metadata storage
-		expanded: 'panel1'
+		expandPanels: [true]
 	};
 
 	constructor(props) {
@@ -135,6 +137,10 @@ class DSUploadWizard extends React.Component {
 					"Content-Type": "multipart/form-data",
 				}
 			}).then((resp) => {
+				let panelsArr = Array(resp.data.metadata.filesMd.length);
+				panelsArr[0] = true;
+				panelsArr = panelsArr.fill(false,1);
+				console.log(panelsArr);
 				this.setState({
 					activeStep: this.state.activeStep + 1,
 					nextButtonText: 'save metadata',
@@ -142,7 +148,8 @@ class DSUploadWizard extends React.Component {
 					enableNextButton: true,
 					metaData: resp.data.metadata,
 					udsi: resp.data.udsi,
-					showBackBtn: true
+					showBackBtn: true,
+					expandPanels: panelsArr
 				})
 			}).catch((err) => {
 				this.setState({
@@ -254,8 +261,15 @@ class DSUploadWizard extends React.Component {
 		this.setState({fileUploadBtn: e});
 	}
 
-	manageAccordion = (panel) => {
-		this.setState({expanded: panel});
+	manageAccordion = (idx) => {
+		let panelsArr = Object.assign([], this.state.expandPanels);
+		panelsArr[idx] = !panelsArr[idx];
+		this.setState({expandPanels: panelsArr});
+	}
+
+	toggleCollapseAll = (collapseAll) => {
+		let panelsArr = Object.assign([], this.state.expandPanels);
+		this.setState({expandPanels: panelsArr.fill(collapseAll)});
 	}
 
 	render() {
@@ -319,12 +333,24 @@ class DSUploadWizard extends React.Component {
 							</table>
 							<br/>
 							<div style={{marginLeft: '16px'}}> This dataset contains {this.state.metaData.filesMd.length} files. </div>
+							<div style={{display:  this.state.metaData.filesMd.length > 1 ? 'block' : 'none'}} class="collapse-btns">
+								<Tooltip classes={classes} title="Collapse all">
+									<IconButton component="span" style={{float: 'right'}} onClick={() => {this.toggleCollapseAll(false)}}>
+										<DehazeOutlinedIcon />
+									</IconButton>
+								</Tooltip>
+								<Tooltip classes={classes} title="Expand all">
+									<IconButton component="span" style={{float: 'right'}}onClick={() => {this.toggleCollapseAll(true)}}>
+										<ViewAgendaOutlinedIcon />
+									</IconButton>
+								</Tooltip>
+							</div>
 							<br/>
 							{this.state.metaData.filesMd.map((f, i) => {
 								return (
 									<div>
-										<Accordion classes={classes} expanded={this.state.expanded === `panel${i+1}`} onChange={() => {this.manageAccordion(`panel${i+1}`)}}>
-											<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ? <ExpandMoreIcon /> : ''}>{i+1}. {f.fileName}</AccordionSummary>
+										<Accordion classes={classes} expanded={this.state.expandPanels[i]} onChange={() => {this.manageAccordion(i)}}>
+											<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ? <ExpandMoreIcon /> : ''} style={{width: '100%'}}>{i+1}. {f.fileName}</AccordionSummary>
 											<AccordionDetails style={{flexDirection: 'column'}}>
 												<table>
 													<tr>
