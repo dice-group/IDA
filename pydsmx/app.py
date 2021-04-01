@@ -1,13 +1,14 @@
+import json
 import os
+import uuid
+import shutil
+import re
+
 from flask import Flask, request
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import requests
 import pandas as pd
-import json
-import os
-import uuid
-import shutil
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -80,11 +81,11 @@ def upload_file():
 						"fileColMd": file_cols_md
 					}
 				)
-			except pd.errors.ParserError as e:
+			except (pd.errors.ParserError, UnicodeDecodeError) as e:
 				print(e)
 				shutil.rmtree(dsdirpath)
 				status_code = 400
-				response = {"message": "Encountered corrupt file! Kindly make sure your files contains csv content"}
+				response = {"message": file_name + " does not contain CSVs! Kindly make sure your files contains csv content"}
 				break
 
 		if status_code == 200:
@@ -108,7 +109,7 @@ def save_metadata():
 		metadata = request.json["metadata"]
 		dsName = metadata["dsName"].lower().strip()
 
-		if dsName.isalnum():
+		if re.search(r"(^[A-Za-z0-9\-_]+$)", dsName):
 			resp = requests.post("http://localhost:3030/ds/query", data={
 				"query": "SELECT ?subject ?predicate ?object WHERE {   ?subject ?predicate '" + dsName + "' }"})
 			isNameUnique = False if len(resp.json()["results"]["bindings"]) > 0 else True
@@ -130,7 +131,7 @@ def save_metadata():
 			else:
 				return {'message': 'dataset with name ' + dsName + ' already exists!'}, 409
 		else:
-			return {'message': 'dataset name should be alpha numeric'}, 401
+			return {'message': 'dataset name should be alpha numeric with only dashes and underscore'}, 401
 
 
 @app.route('/delete', methods=['POST'])
