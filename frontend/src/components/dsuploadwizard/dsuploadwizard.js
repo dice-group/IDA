@@ -482,6 +482,7 @@ class DSUploadWizard extends React.Component {
 					</DialogActions>
 				</Dialog>
 				<Snackbar
+					anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
 					open={this.state.showError}
 					onClose={() => {
 						this.setState({showError: false})
