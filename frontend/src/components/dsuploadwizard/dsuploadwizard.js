@@ -324,7 +324,7 @@ class DSUploadWizard extends React.Component {
 								return (
 									<div>
 										<Accordion classes={classes} expanded={this.state.expanded === `panel${i+1}`} onChange={() => {this.manageAccordion(`panel${i+1}`)}}>
-											<AccordionSummary expandIcon={<ExpandMoreIcon />}>{i+1}. {f.fileName}</AccordionSummary>
+											<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ? <ExpandMoreIcon /> : ''}>{i+1}. {f.fileName}</AccordionSummary>
 											<AccordionDetails style={{flexDirection: 'column'}}>
 												<table>
 													<tr>
