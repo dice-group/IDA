@@ -85,10 +85,10 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
                 data: metaData.filesMd,
                 fileName: "dsmd.json"
             }];
-            data.forEach((table) =>
+            data.forEach((table, idx) =>
                 children.push({
                     id: metaData.dsName + "_" + table.name,
-                    name: table.name,
+                    name: metaData.filesMd[idx].displayName,
                     type: "table",
                     data: table.data,
                     fileName: table.name,

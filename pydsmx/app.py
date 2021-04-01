@@ -106,7 +106,7 @@ def save_metadata():
 		udsi = request.json["udsi"]
 
 		metadata = request.json["metadata"]
-		dsName = metadata["dsName"]
+		dsName = metadata["dsName"].lower().strip()
 
 		if dsName.isalnum():
 			resp = requests.post("http://localhost:3030/ds/query", data={
