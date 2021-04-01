@@ -88,17 +88,23 @@ class DSUploadWizard extends React.Component {
 	onFileChange = (ev) => {
 		const files = Object.assign([], this.state.files);
 		const filesName = Object.assign([], this.state.filesName);
+		let notCSVFilesCount = 0
 		Array.from(ev.target.files).forEach(f => {
 			if (f.type === 'text/csv' && !filesName.includes(f.name)) {
 				// Making sure user selected csv file
 				files.push(f)
 				filesName.push(f.name)
+			} else {
+				notCSVFilesCount++;
 			}
 		});
 		if (files.length > 0) {
 			this.setState({isFileSelected: true, files: files, enableNextButton: true, filesName: filesName});
 		} else {
 			this.setState({isFileSelected: false, enableNextButton: false, files: []});
+		}
+		if (notCSVFilesCount > 1) {
+			this.setState({showError: true, errorMsg: notCSVFilesCount + ' file(s) were not added because they were not CSV file(s).'})
 		}
 		ev.target.value = ''; // This will user to select same name file again even after removing them
 	}
