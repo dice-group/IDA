@@ -21,7 +21,7 @@
   color: #000;
 }
 
-td.required:after {
+td.required::after {
   content: "*";
   color: red;
 }
@@ -34,7 +34,7 @@ td.required:after {
   color: #4e8cff;
 }
 
-.collapse-btns:after {
+.collapse-btns::after {
   content: "";
   clear: both;
   display: table;
