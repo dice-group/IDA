@@ -29,7 +29,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import { withStyles } from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/core/styles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DehazeOutlinedIcon from "@material-ui/icons/DehazeOutlined";
 import ViewAgendaOutlinedIcon from "@material-ui/icons/ViewAgendaOutlined";
@@ -91,7 +91,7 @@ class DSUploadWizard extends React.Component {
 	onFileChange = (ev) => {
 		const files = Object.assign([], this.state.files);
 		const filesName = Object.assign([], this.state.filesName);
-		let notCSVFilesCount = 0
+		let notCSVFilesCount = 0;
 		Array.from(ev.target.files).forEach((f) => {
 			if (f.type === "text/csv" && !filesName.includes(f.name)) {
 				// Making sure user selected csv file
@@ -107,12 +107,15 @@ class DSUploadWizard extends React.Component {
 			this.setState({isFileSelected: false, enableNextButton: false, files: []});
 		}
 		if (notCSVFilesCount > 0) {
-			this.setState({showError: true, errorMsg: notCSVFilesCount + " file(s) were not added because they were not CSV file(s)."})
+			this.setState({
+				showError: true,
+				errorMsg: notCSVFilesCount + " file(s) were not added because they were not CSV file(s)."
+			});
 		}
 		ev.target.value = ""; // This will user to select same name file again even after removing them
 	}
 
-	removefile = (index) => {
+	removeFile = (index) => {
 		const files = Object.assign([], this.state.files);
 		const filesName = Object.assign([], this.state.filesName);
 
@@ -131,7 +134,7 @@ class DSUploadWizard extends React.Component {
 			let formData = new FormData();
 			const files = this.state.files;
 			for (let i = 0; i < files.length; i++) {
-				formData.append(`files[${i}]`, files[i])
+				formData.append(`files[${i}]`, files[i]);
 			}
 			axios.post("http://127.0.0.1:5000/", formData, {
 				headers: {
@@ -140,8 +143,7 @@ class DSUploadWizard extends React.Component {
 			}).then((resp) => {
 				let panelsArr = Array(resp.data.metadata.filesMd.length);
 				panelsArr[0] = true;
-				panelsArr = panelsArr.fill(false,1);
-				console.log(panelsArr);
+				panelsArr = panelsArr.fill(false, 1);
 				this.setState({
 					activeStep: this.state.activeStep + 1,
 					nextButtonText: "save metadata",
@@ -158,11 +160,11 @@ class DSUploadWizard extends React.Component {
 					enableLoader: false,
 					showError: true,
 					errorMsg: err.response.data.message
-				})
+				});
 			})
 		} else if (this.state.activeStep === 1) {
 			if (this.state.metaData.dsName.trim()) {
-				this.setState({enableLoader: true, enableNextButton: false})
+				this.setState({enableLoader: true, enableNextButton: false});
 				axios.post("http://127.0.0.1:5000/savemetadata", {
 					udsi: this.state.udsi,
 					metadata: this.state.metaData
@@ -246,7 +248,11 @@ class DSUploadWizard extends React.Component {
 		if (this.state.activeStep === 0) {
 			this.props.close();
 		} else if (this.state.activeStep === 1) {
-			this.setState({showConfirm: true, cancellingUpload: true, confirmationMsg: "All your uploaded files and changes will be lost! Do you really want to cancel?"});
+			this.setState({
+				showConfirm: true,
+				cancellingUpload: true,
+				confirmationMsg: "All your uploaded files and changes will be lost! Do you really want to cancel?"
+			});
 		} else if (this.state.activeStep === 2) {
 			this.props.close();
 			// As data set upload was successful, hence resetting state
@@ -274,14 +280,16 @@ class DSUploadWizard extends React.Component {
 	}
 
 	render() {
-		const { classes } = this.props;
+		const {classes} = this.props;
 		const renderFileUpload = () => {
 			if (!this.state.enableLoader) {
 				if (!this.state.isFileSelected) {
 					return (
 						<div className="upload-dataset-box">
-							<label htmlFor="icon-button-file" style={{marginBottom: "-15px"}}
-								   style={{display: !this.state.enableLoader ? "block" : "none"}}>
+							<label htmlFor="icon-button-file" style={{
+								marginBottom: "-15px",
+								display: !this.state.enableLoader ? "block" : "none"
+							}}>
 								<IconButton color="primary" aria-label="upload picture" component="span">
 									<BackupOutlinedIcon style={{fontSize: 80}}/>
 								</IconButton>
@@ -294,31 +302,34 @@ class DSUploadWizard extends React.Component {
 						</div>
 					)
 				} else {
-					let files_row = []
+					let filesRow = [];
 					for (var i = 0; i < this.state.files.length; i++) {
 						let a = i;
-						files_row.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon/> </ListItemIcon><ListItemText
+						filesRow.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon/> </ListItemIcon><ListItemText
 							primary={this.state.files[i].name}/><ListItemSecondaryAction><IconButton edge="end"
 																									 aria-label="delete"
 																									 onClick={() => {
-																										 this.removefile(a)
+																										 this.removeFile(a);
 																									 }}><DeleteOutlinedIcon/></IconButton></ListItemSecondaryAction></ListItem>)
 					}
 					return <div><h5 style={{padding: "10px 0", textAlign: "center", color: "#444"}}>Selected
 						file(s)</h5><List><ListItem button onClick={this.addMoreFiles}> <ListItemIcon>
 						<AddCircleOutlineIcon/> </ListItemIcon> <ListItemText primary="Add more files.."/>
-					</ListItem>{files_row}</List></div>
+					</ListItem>{filesRow}</List></div>;
 				}
 			} else {
-				return <div className="upload-dataset-box"><CircularProgress/></div>
+				return <div className="upload-dataset-box"><CircularProgress/></div>;
 			}
-		}
+		};
 
 		const renderMetaDataForm = () => {
 			if (!this.state.enableLoader) {
 				if (this.state.metaData) {
 					return (<div className="meta-data-box">
-						<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file. IDA uses these files to perform various operations. Here you can change some relavant fields kindly go through them all and change them as you like.</div>
+						<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file.
+							IDA uses these files to perform various operations. Here you can change some relavant fields
+							kindly go through them all and change them as you like.
+						</div>
 						<form>
 							<table style={{marginLeft: "16px"}}>
 								<tr>
@@ -333,16 +344,23 @@ class DSUploadWizard extends React.Component {
 								</tr>
 							</table>
 							<br/>
-							<div style={{marginLeft: "16px"}}> This dataset contains {this.state.metaData.filesMd.length} files. </div>
-							<div style={{display:  this.state.metaData.filesMd.length > 1 ? "block" : "none"}} class="collapse-btns">
+							<div style={{marginLeft: "16px"}}> This dataset
+								contains {this.state.metaData.filesMd.length} files.
+							</div>
+							<div style={{display: this.state.metaData.filesMd.length > 1 ? "block" : "none"}}
+								 class="collapse-btns">
 								<Tooltip classes={classes} title="Collapse all">
-									<IconButton component="span" style={{float: "right"}} onClick={() => {this.toggleCollapseAll(false)}}>
-										<DehazeOutlinedIcon />
+									<IconButton component="span" style={{float: "right"}} onClick={() => {
+										this.toggleCollapseAll(false);
+									}}>
+										<DehazeOutlinedIcon/>
 									</IconButton>
 								</Tooltip>
 								<Tooltip classes={classes} title="Expand all">
-									<IconButton component="span" style={{float: "right"}}onClick={() => {this.toggleCollapseAll(true)}}>
-										<ViewAgendaOutlinedIcon />
+									<IconButton component="span" style={{float: "right"}} onClick={() => {
+										this.toggleCollapseAll(true);
+									}}>
+										<ViewAgendaOutlinedIcon/>
 									</IconButton>
 								</Tooltip>
 							</div>
@@ -350,8 +368,13 @@ class DSUploadWizard extends React.Component {
 							{this.state.metaData.filesMd.map((f, i) => {
 								return (
 									<div>
-										<Accordion classes={classes} expanded={this.state.expandPanels[i]} onChange={() => {this.manageAccordion(i)}}>
-											<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ? <ExpandMoreIcon /> : ''} style={{width: "100%"}}>{i+1}. {f.fileName}</AccordionSummary>
+										<Accordion classes={classes} expanded={this.state.expandPanels[i]}
+												   onChange={() => {
+													   this.manageAccordion(i);
+												   }}>
+											<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ?
+												<ExpandMoreIcon/> : ""}
+															  style={{width: "100%"}}>{i + 1}. {f.fileName}</AccordionSummary>
 											<AccordionDetails style={{flexDirection: "column"}}>
 												<table>
 													<tr>
@@ -381,7 +404,13 @@ class DSUploadWizard extends React.Component {
 													<td className="heading">Column name</td>
 													<td className="heading">Column description</td>
 													<td className="heading">Column attribute</td>
-													<td className="heading">Column type<Tooltip classes={classes} arrow title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon style={{fontSize: 18, color: "#F57C00", marginLeft: "3px"}}/></Tooltip></td>
+													<td className="heading">Column type<Tooltip classes={classes} arrow
+																								title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon
+														style={{
+															fontSize: 18,
+															color: "#F57C00",
+															marginLeft: "3px"
+														}}/></Tooltip></td>
 													<td className="heading">Contains unique values</td>
 													</thead>
 													<tbody>
@@ -412,17 +441,17 @@ class DSUploadWizard extends React.Component {
 													</tbody>
 
 												</table>
-												</AccordionDetails>
+											</AccordionDetails>
 										</Accordion>
 									</div>
 								)
 							})}
 
 						</form>
-					</div>)
+					</div>);
 				}
 			} else {
-				return <div className="upload-dataset-box"><CircularProgress/></div>
+				return <div className="upload-dataset-box"><CircularProgress/></div>;
 			}
 		}
 
@@ -483,7 +512,10 @@ class DSUploadWizard extends React.Component {
 
 					<DialogActions>
 						<Button onClick={() => {
-							this.setState({showConfirm: true, confirmationMsg: "All your uploaded files and changes will be lost! Do you really want to go back?"})
+							this.setState({
+								showConfirm: true,
+								confirmationMsg: "All your uploaded files and changes will be lost! Do you really want to go back?"
+							});
 						}} style={{
 							textTransform: "Capitalize",
 							display: this.state.showBackBtn ? "block" : "none"
@@ -509,10 +541,10 @@ class DSUploadWizard extends React.Component {
 					</DialogActions>
 				</Dialog>
 				<Snackbar
-					anchorOrigin={{ vertical: "top", horizontal: "center" }}
+					anchorOrigin={{vertical: "top", horizontal: "center"}}
 					open={this.state.showError}
 					onClose={() => {
-						this.setState({showError: false})
+						this.setState({showError: false});
 					}}
 					autoHideDuration="5000"
 				>
@@ -535,7 +567,7 @@ class DSUploadWizard extends React.Component {
 							Yes!
 						</Button>
 						<Button onClick={() => {
-							this.setState({showConfirm: false})
+							this.setState({showConfirm: false});
 						}} color="primary" variant="outlined" style={{textTransform: "Capitalize"}}>
 							No
 						</Button>
@@ -545,4 +577,5 @@ class DSUploadWizard extends React.Component {
 		)
 	}
 }
-export default withStyles(useStylesBootstrap)(DSUploadWizard)
+
+export default withStyles(useStylesBootstrap)(DSUploadWizard);
