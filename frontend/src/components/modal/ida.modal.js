@@ -52,7 +52,7 @@ const DialogActions = withStyles((theme) => ({
 export default function IDAModal({ open, handleClose, children, title }) {
   return (
     <div>
-      <Dialog fullScreen onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+      <Dialog maxWidth="xl" onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           {title}
         </DialogTitle>
