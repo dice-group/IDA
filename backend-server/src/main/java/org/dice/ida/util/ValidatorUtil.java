@@ -109,7 +109,7 @@ public class ValidatorUtil {
 		if (isStringEmpty(dsName)) {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
-		if(dsPathMap.get(dsName) == null) {
+		if(! new FileUtil().datasetExists(dsName)) {
 			throw new IDAException(IDAConst.DS_DOES_NOT_EXIST_MSG);
 		}
 		if (isStringEmpty(tableName)) {

@@ -161,7 +161,7 @@ class DSUploadWizard extends React.Component {
 					showError: true,
 					errorMsg: err.response.data.message
 				});
-			})
+			});
 		} else if (this.state.activeStep === 1) {
 			if (this.state.metaData.dsName.trim()) {
 				this.setState({enableLoader: true, enableNextButton: false});
@@ -300,7 +300,7 @@ class DSUploadWizard extends React.Component {
 								<b> .csv</b> files
 							</div>
 						</div>
-					)
+					);
 				} else {
 					let filesRow = [];
 					for (var i = 0; i < this.state.files.length; i++) {
@@ -453,7 +453,7 @@ class DSUploadWizard extends React.Component {
 			} else {
 				return <div className="upload-dataset-box"><CircularProgress/></div>;
 			}
-		}
+		};
 
 		return (
 			<div>

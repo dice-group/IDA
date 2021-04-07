@@ -32,7 +32,7 @@ public class DataUtil {
 	 */
 	public List<Map<String, String>> getData(String datasetName, String tableName, List<String> columns, String filterText, Map<String,String> columnMap ) throws IOException {
 		List<Map<String, String>> extractedData = new ArrayList<>();
-		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+		String path = new FileUtil().fetchSysFilePath( datasetName + "/" + tableName);
 		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
 		int rangeStart = 0;
 		int rangeEnd = 0;
@@ -74,7 +74,7 @@ public class DataUtil {
 		Map<String, String> columnTypeMap = new HashMap<>();
 		List<String> columns = new ArrayList<>();
 		List<Map<String, String>> extractedData = new ArrayList<>();
-		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+		String path = new FileUtil().fetchSysFilePath( datasetName + "/" + tableName);
 		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
 		ObjectNode metaData = new FileUtil().getDatasetMetaData(datasetName);
 		JsonNode fileDetails = metaData.get(IDAConst.FILE_DETAILS_ATTR);

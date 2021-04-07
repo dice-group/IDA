@@ -5,13 +5,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -32,24 +34,7 @@ import org.dice.ida.constant.IDAConst;
 @Component
 @Scope("singleton")
 public class FileUtil {
-
-	private Map<String, String> dsPathMap;
 	private final ArrayList<String> datasetsList = new ArrayList<>();
-
-	public FileUtil() throws IOException {
-		dsPathMap = new HashMap<>();
-		// Read dsmap file
-		Properties prop = new Properties();
-		InputStream input = new FileInputStream(fetchSysFilePath(IDAConst.DSMAP_PROP_FILEPATH));
-		prop.load(input);
-		String dataset;
-		for (Object key : prop.keySet()) {
-			dataset = key.toString();
-			datasetsList.add(dataset);
-			dsPathMap.put(dataset, prop.getProperty(dataset));
-		}
-
-	}
 
 	/**
 	 * A simple method which reads available datasets and return them
@@ -57,6 +42,17 @@ public class FileUtil {
 	 * @return - An ArrayList object containing names of available datasets
 	 */
 	public ArrayList<String> getListOfDatasets() {
+		try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:3030/ds") ) {
+			QueryExecution qExec = conn.query("SELECT ?object WHERE { ?subject <https://www.upb.de/ida/datasets/names> ?object }") ;
+			ResultSet results = qExec.execSelect();
+			while (results.hasNext()) {
+				datasetsList.add(results.next().get("?object").toString());
+			}
+			conn.close();
+			qExec.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 		return datasetsList;
 	}
 
@@ -94,9 +90,8 @@ public class FileUtil {
 	public ArrayList<Map> getDatasetContent(String keyword) throws IOException {
 		ArrayList<Map> resMap = new ArrayList<>();
 		Map<String, Object> datasetMap;
-		String path = dsPathMap.get(keyword.toLowerCase());
 
-		File dir = new File(fetchSysFilePath(path));
+		File dir = new File(fetchSysFilePath(keyword));
 		File[] directoryListing = dir.listFiles();
 		if (directoryListing != null) {
 			for (File child : directoryListing) {
@@ -121,12 +116,12 @@ public class FileUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public ObjectNode getDatasetMetaData(String keyword) throws JsonProcessingException, FileNotFoundException, IOException {
+	public ObjectNode getDatasetMetaData(String dsName) throws JsonProcessingException, FileNotFoundException, IOException {
 		ObjectNode resObj = null;
-		String path = dsPathMap.get(keyword.toLowerCase());
+		String path = fetchSysFilePath(dsName.toLowerCase());
 		//TODO: Change the logic to use .exists() method instead of this
 		if (path != null) {
-			File dir = new File(fetchSysFilePath(path));
+			File dir = new File(path);
 			File[] directoryListing = dir.listFiles();
 			if (directoryListing != null) {
 				for (File child : directoryListing) {
@@ -146,21 +141,30 @@ public class FileUtil {
 	/**
 	 * Method to check if given dataset exists
 	 *
-	 * @param keyword - name of dataset
+	 * @param dsName - name of dataset
 	 * @return - if dataset exists
 	 */
-	public boolean datasetExists(String keyword) {
-		return dsPathMap.get(keyword.toLowerCase()) != null;
+	public boolean datasetExists(String dsName) {
+		try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:3030/ds") ) {
+			QueryExecution qExec = conn.query("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '"+dsName+"' }") ;
+			ResultSet rs = qExec.execSelect();
+			boolean flag = rs.hasNext();
+			conn.close();
+			qExec.close();
+			return flag;
+		} catch (Exception e) {
+			System.out.println(e);
+			return false;
+		}
 	}
 
 	/**
 	 * Method to fetch the filepath for files stored in src/main/resources
 	 *
-	 * @param path - relative path to the file
+	 * @param dsName - relative path to the file
 	 * @return File System path of the file
 	 */
-	public String fetchSysFilePath(String path) {
-		return getClass().getClassLoader().getResource(path).getFile();
+	public String fetchSysFilePath(String dsName) {
+		return "/Users/maqbool/Documents/ida-ds/" + dsName;
 	}
-
 }
