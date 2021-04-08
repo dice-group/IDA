@@ -13,6 +13,19 @@ services:
       - "../backend-server/src:/build/backend-server/src"
       - "../backend-server/target:/build/backend-server/target"
       - "~/ida-local-logs:/build/backend-server/logs"
+      - "~/ida-datasets/:/build/backend-server/datasets"
+    environment:
+      - FUSEKI_URL=http://fuseki:3030/
+      - FUSEKI_USER=admin
+      - FUSEKI_PW=$FUSEKI_PW
+      - DB_PATH=/build/backend-server/datasets/
+    networks:
+      - ida-net
+  pydsmx:
+    image: $REGISTRY/ida/pydsmx:$VERSION
+    volumes:
+      -  "../pydsmx/:/app/"
+      - "~/ida-datasets/:/app/datasets"
     environment:
       - FUSEKI_URL=http://fuseki:3030/
       - FUSEKI_USER=admin

@@ -136,7 +136,7 @@ class DSUploadWizard extends React.Component {
 			for (let i = 0; i < files.length; i++) {
 				formData.append(`files[${i}]`, files[i]);
 			}
-			axios.post("http://127.0.0.1:5000/", formData, {
+			axios.post(IDA_CONSTANTS.PYDSMX_BASE + "/", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				}
@@ -165,7 +165,7 @@ class DSUploadWizard extends React.Component {
 		} else if (this.state.activeStep === 1) {
 			if (this.state.metaData.dsName.trim()) {
 				this.setState({enableLoader: true, enableNextButton: false});
-				axios.post("http://127.0.0.1:5000/savemetadata", {
+				axios.post(IDA_CONSTANTS.PYDSMX_BASE + "/savemetadata", {
 					udsi: this.state.udsi,
 					metadata: this.state.metaData
 				}, {
@@ -221,7 +221,7 @@ class DSUploadWizard extends React.Component {
 	}
 
 	handleYes = () => {
-		axios.post("http://127.0.0.1:5000/delete", {
+		axios.post(IDA_CONSTANTS.PYDSMX_BASE + "/delete", {
 			udsi: this.state.udsi,
 		}, {
 			headers: {

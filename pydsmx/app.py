@@ -5,6 +5,7 @@ import shutil
 import re
 
 from flask import Flask, request
+from requests.auth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import requests
@@ -14,9 +15,13 @@ app = Flask(__name__)
 cors = CORS(app)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['TEMP_FOLDER'] = './temp-uploads'
-app.config['DS_FOLDER'] = '/Users/maqbool/Documents/ida-ds'
-app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum fi
+app.config['TEMP_FOLDER'] = 'temp-uploads'
+app.config['DS_FOLDER'] = 'datasets'
+app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum file size 5mb
+
+FUSEKI_URL = os.environ.get('FUSEKI_URL', 'http://localhost:3030/')
+FUSEKI_USER = os.environ.get('FUSEKI_USER', '')
+FUSEKI_PASSWORD = os.environ.get('FUSEKI_PW', '')
 
 
 @app.route('/', methods=['POST'])
@@ -85,7 +90,8 @@ def upload_file():
 				print(e)
 				shutil.rmtree(dsdirpath)
 				status_code = 400
-				response = {"message": file_name + " does not contain CSVs! Kindly make sure your files contains csv content"}
+				response = {
+					"message": file_name + " does not contain CSVs! Kindly make sure your files contains csv content"}
 				break
 
 		if status_code == 200:
@@ -110,14 +116,15 @@ def save_metadata():
 		dsName = metadata["dsName"].lower().strip()
 
 		if re.search(r"(^[A-Za-z0-9\-_]+$)", dsName):
-			resp = requests.post("http://localhost:3030/ds/query", data={
-				"query": "SELECT ?subject ?predicate ?object WHERE {   ?subject ?predicate '" + dsName + "' }"})
+			resp = requests.post(FUSEKI_URL + "ida_viz/query", data={
+				"query": "SELECT ?subject ?predicate ?object WHERE {   ?subject ?predicate '" + dsName + "' }"}, auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
 			isNameUnique = False if len(resp.json()["results"]["bindings"]) > 0 else True
 
 			if isNameUnique:
-				resp = requests.post("http://localhost:3030/ds/update", data={
+				resp = requests.post(FUSEKI_URL + "ida_viz/update", data={
 					"update": "PREFIX ab: <https://www.upb.de/ida/datasets/> INSERT DATA { <https://www.upb.de/ida/datasets/" + dsName
-							  + ">  ab:names '" + dsName + "' ; ab:paths '/docs/dowloads'. }"})
+							  + ">  ab:names '" + dsName + "' ; ab:paths '/docs/dowloads'. }"},
+									 auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
 
 				if resp.status_code == 200:
 					dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
@@ -125,9 +132,8 @@ def save_metadata():
 						metadata_file.write(json.dumps(metadata))
 
 					# Moving dataset folder from temp directory to dataset directory
-					os.rename(dsdirpath, os.path.join(app.config.get('DS_FOLDER'), dsName))
-
-					return {"message":  "Successfully uploaded dataset"}, 200
+					shutil.move(dsdirpath, os.path.join(app.config.get('DS_FOLDER'), dsName))
+					return {"message": "Successfully uploaded dataset"}, 200
 			else:
 				return {'message': 'dataset with name ' + dsName + ' already exists!'}, 409
 		else:
@@ -142,3 +148,13 @@ def delete():
 		dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
 		shutil.rmtree(dsdirpath)
 		return 'ok', 200
+
+
+@app.route('/test', methods=['GET'])
+@cross_origin()
+def test():
+	return "Pydsmx is up and running.", 200
+
+
+if __name__ == '__main__':
+	app.run(debug=True, host='0.0.0.0')

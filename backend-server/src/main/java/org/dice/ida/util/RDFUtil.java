@@ -34,9 +34,9 @@ public class RDFUtil {
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
 	 * @return It takes query string as its parameter and returns the result set after executing the query.
 	 */
-	private ResultSet getResultFromQuery(String queryString) {
-		QueryExecution queryExecution;
-		ResultSet resultSet;
+	public ResultSet getResultFromQuery(String queryString) {
+		QueryExecution queryExecution = null;
+		ResultSet resultSet = null;
 		Query query = QueryFactory.create(queryString);
 
 		/*
@@ -53,7 +53,7 @@ public class RDFUtil {
 					model.read(path);
 					queryExecution = QueryExecutionFactory.create(query, model);
 				} catch (NullPointerException ex) {
-					return null;
+					resultSet = null;
 				}
 			} else {
 				try {
@@ -61,7 +61,7 @@ public class RDFUtil {
 					conn = (RDFConnectionFuseki) builder.build();
 					queryExecution = conn.query(query);
 				} catch (Exception ex) {
-					return null;
+					resultSet = null;
 				} finally {
 					conn.close();
 				}
@@ -69,16 +69,18 @@ public class RDFUtil {
 		} else {
 			queryExecution = QueryExecutionFactory.create(query, model);
 		}
+
 		if (queryExecution != null) {
 			try {
 				resultSet = ResultSetFactory.copyResults(queryExecution.execSelect());
-				queryExecution.close();
-				return resultSet;
 			} catch (Exception e) {
-				return null;
+				resultSet = null;
+			} finally {
+				conn.close();
+				queryExecution.close();
 			}
 		}
-		return null;
+		return resultSet;
 	}
 
 	/**

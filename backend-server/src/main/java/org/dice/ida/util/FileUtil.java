@@ -10,10 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -42,16 +39,9 @@ public class FileUtil {
 	 * @return - An ArrayList object containing names of available datasets
 	 */
 	public ArrayList<String> getListOfDatasets() {
-		try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:3030/ds") ) {
-			QueryExecution qExec = conn.query("SELECT ?object WHERE { ?subject <https://www.upb.de/ida/datasets/names> ?object }") ;
-			ResultSet results = qExec.execSelect();
-			while (results.hasNext()) {
-				datasetsList.add(results.next().get("?object").toString());
-			}
-			conn.close();
-			qExec.close();
-		} catch (Exception e) {
-			System.out.println(e);
+		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?object WHERE { ?subject <https://www.upb.de/ida/datasets/names> ?object }");
+		while (results.hasNext()) {
+			datasetsList.add(results.next().get("?object").toString());
 		}
 		return datasetsList;
 	}
@@ -110,7 +100,7 @@ public class FileUtil {
 	/**
 	 * Method to fetch the metadata json for the given dataset
 	 *
-	 * @param keyword - name of dataset
+	 * @param dsName - name of dataset
 	 * @return - metadata json object
 	 * @throws JsonProcessingException
 	 * @throws FileNotFoundException
@@ -145,17 +135,8 @@ public class FileUtil {
 	 * @return - if dataset exists
 	 */
 	public boolean datasetExists(String dsName) {
-		try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:3030/ds") ) {
-			QueryExecution qExec = conn.query("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '"+dsName+"' }") ;
-			ResultSet rs = qExec.execSelect();
-			boolean flag = rs.hasNext();
-			conn.close();
-			qExec.close();
-			return flag;
-		} catch (Exception e) {
-			System.out.println(e);
-			return false;
-		}
+		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '"+dsName+"' }");
+		return (results != null) && results.hasNext();
 	}
 
 	/**
@@ -165,6 +146,6 @@ public class FileUtil {
 	 * @return File System path of the file
 	 */
 	public String fetchSysFilePath(String dsName) {
-		return "/Users/maqbool/Documents/ida-ds/" + dsName;
+		return System.getenv("DB_PATH") + dsName;
 	}
 }

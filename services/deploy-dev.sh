@@ -4,6 +4,7 @@ cd "${BASH_SOURCE%/*}" || exit
 
 ### if logs folder does not exist then create it
 [ ! -d ~/ida-local-logs ] && mkdir -p ~/ida-local-logs
+[ ! -d ~/ida-datasets ] && mkdir -p ~/ida-datasets
 
 version=$(cat VERSION)
 registry=${REGISTRY:-localhost:5000}
@@ -25,6 +26,7 @@ build_container nginx .. -f nginx/Dockerfile
 build_container frontend .. -f frontend/Dockerfile.dev
 build_container backend-server .. -f backend-server/Dockerfile.dev
 build_container fuseki-server .. -f Dockerfile.fuseki
+build_container pydsmx .. -f pydsmx/Dockerfile.dev
 
 export REGISTRY=$registry
 export VERSION=$version

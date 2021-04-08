@@ -1,5 +1,6 @@
 export const IDA_CONSTANTS = {
 	API_BASE: "/ida-ws",        // change it to http://localhost:8080 if not using docker
+	PYDSMX_BASE: "/pydsmx", // change it to http://localhost:5000 if not using docker
 	UI_ACTION_CODES: {
 		UAC_NRMLMSG: 1001,
 		UAC_UPLDDTMSG: 1002,
