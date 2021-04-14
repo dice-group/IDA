@@ -76,7 +76,9 @@ public class RDFUtil {
 			} catch (Exception e) {
 				resultSet = null;
 			} finally {
-				conn.close();
+				if (conn != null) {
+					conn.close();
+				}
 				queryExecution.close();
 			}
 		}
