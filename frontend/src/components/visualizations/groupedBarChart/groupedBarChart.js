@@ -106,6 +106,7 @@ export default class IDAGroupedBarGraph extends Component {
             .on("mouseout", () => {
                 this.tooltip.style.display = "none";
             });
+
         const xAxis2 = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x1).tickSizeOuter(0))
@@ -114,10 +115,9 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("y", -5)
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "end")
-		    .data(this.graphData)
+            .data(this.graphData)
             .data((d) => keys.map((key) => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[`${key}`] })))
             .attr("tooltip-text", (d) => (d.originalGroupLabel + "\n" + d.key + ": " + d.value));
-
 
         var xval = 0;
         var yval = 0;
@@ -137,8 +137,8 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("y1", 76)
             .attr("x2", yval)
             .attr("y2", 76);
-		
-		 let label = group
+
+        group
             .append("g")
             .call(xAxis2)
             .on("mouseover", (event) => {
