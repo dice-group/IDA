@@ -113,7 +113,11 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("x", -15)
             .attr("y", -5)
             .attr("transform", "rotate(-90)")
-            .style("text-anchor", "end");
+            .style("text-anchor", "end")
+		    .data(this.graphData)
+            .data((d) => keys.map((key) => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[`${key}`] })))
+            .attr("tooltip-text", (d) => (d.originalGroupLabel + "\n" + d.key + ": " + d.value));
+
 
         var xval = 0;
         var yval = 0;
@@ -133,6 +137,21 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("y1", 76)
             .attr("x2", yval)
             .attr("y2", 76);
+		
+		 let label = group
+            .append("g")
+            .call(xAxis2)
+            .on("mouseover", (event) => {
+                this.tooltip.style.display = "block";
+                this.tooltip.style.position = "absolute";
+                this.tooltip.style.top = event.clientY + "px";
+                this.tooltip.style.left = event.clientX + "px";
+                this.tooltip.style.width = "auto";
+                this.tooltip.innerText = event.srcElement.getAttribute("tooltip-text");
+            })
+            .on("mouseout", () => {
+                this.tooltip.style.display = "none";
+            })
 
         svg.append("text")
             .attr("transform", "rotate(-90)")
@@ -151,8 +170,6 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("x", 515)
             .attr("y", 15);
 
-
-        //delhi, kerala etc
         const xAxis = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
             .call(d3.axisBottom(x0).tickSize(0))
