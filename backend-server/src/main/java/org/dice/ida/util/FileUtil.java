@@ -146,6 +146,6 @@ public class FileUtil {
 	 * @return File System path of the file
 	 */
 	public String fetchSysFilePath(String dsName) {
-		return "/build/backend-server/datasets/" + dsName;
+		return System.getenv("DB_PATH") + dsName;
 	}
 }
