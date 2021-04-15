@@ -8,16 +8,12 @@ services:
       - 80:80
     networks:
       - ida-net
-  ida-backend:
-    image: $REGISTRY/ida/backend-server:$VERSION
-    volumes:
-      - "/home/ida_mngr/ida-prod-logs:/usr/local/tomcat/logs"
-      - "/home/ida_mngr/ida-datasets/:/build/backend-server/datasets"
+  fuseki:
+    image: $REGISTRY/ida/fuseki-server:$VERSION
     environment:
-      - FUSEKI_URL=http://fuseki:3030/
-      - FUSEKI_USER=admin
-      - FUSEKI_PW=$FUSEKI_PW
-      - DB_PATH=/build/backend-server/datasets/
+      - ADMIN_PASSWORD=$FUSEKI_PW
+    volumes:
+      - fuseki-storage:/fuseki
     networks:
       - ida-net
   pydsmx:
@@ -30,12 +26,16 @@ services:
       - FUSEKI_PW=$FUSEKI_PW
     networks:
       - ida-net
-  fuseki:
-    image: $REGISTRY/ida/fuseki-server:$VERSION
-    environment:
-      - ADMIN_PASSWORD=$FUSEKI_PW
+  ida-backend:
+    image: $REGISTRY/ida/backend-server:$VERSION
     volumes:
-      - fuseki-storage:/fuseki
+      - "/home/ida_mngr/ida-prod-logs:/usr/local/tomcat/logs"
+      - "/home/ida_mngr/ida-datasets/:/build/backend-server/datasets"
+    environment:
+      - FUSEKI_URL=http://fuseki:3030/
+      - FUSEKI_USER=admin
+      - FUSEKI_PW=$FUSEKI_PW
+      - DB_PATH=/build/backend-server/datasets/
     networks:
       - ida-net
 volumes:
