@@ -4,6 +4,7 @@ WORKDIR /app
 COPY pydsmx /app
 
 RUN pip install -r requirements.txt
-CMD ["mkdir", "temp-uploads", "datasets"]
+CMD ["mkdir", "temp-uploads"]
+CMD ["mkdir", "datasets"]
 
 ENTRYPOINT FLASK_APP=/app/app.py flask run --host=0.0.0.0
