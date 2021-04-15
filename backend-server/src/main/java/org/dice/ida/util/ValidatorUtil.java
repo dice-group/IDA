@@ -110,7 +110,7 @@ public class ValidatorUtil {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
 		if(! new FileUtil().datasetExists(dsName)) {
-			throw new IDAException(IDAConst.DS_DOES_NOT_EXIST_MSG);
+			throw new IDAException(dsName + " " + IDAConst.DS_DOES_NOT_EXIST_MSG);
 		}
 		if (isStringEmpty(tableName)) {
 			throw new IDAException(IDAConst.BOT_SELECT_TABLE);
