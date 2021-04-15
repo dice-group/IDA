@@ -5,7 +5,7 @@ COPY backend-server/src backend-server/src
 
 WORKDIR /build/backend-server
 RUN mvn dependency:go-offline
-RUN mvn package -P dev
+RUN mvn package -P dev -Dmaven.test.skip=true
 
 FROM tomcat:8.5.37-jre11
 EXPOSE 8080
