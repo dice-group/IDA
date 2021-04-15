@@ -5,6 +5,6 @@ COPY pydsmx /app
 
 RUN pip install -r requirements.txt
 CMD ["mkdir", "tempuploads"]
-CMD ["mkdir", "datasets"]
+#CMD ["mkdir", "datasets"]
 
 CMD ["uwsgi", "app.ini"]
