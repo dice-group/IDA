@@ -329,7 +329,7 @@ public interface IDAConst {
 	}};
 	public static final String PARAM_TYPE_NON_BIN = "As it is";
 	String STATS_DIR = "stat_props";
-	String COLUMN_SD_NOMINAL = "standard_deviation_nominal";
-	String COLUMN_SD_NUMERIC = "standard_deviation";
-	String COVARIANCE_MATRIX = "covariance_matrix";
+	String COLUMN_SD_NOMINAL = "Standard Deviation Nominal";
+	String COLUMN_SD_NUMERIC = "Standard Deviation";
+	String COVARIANCE_MATRIX = "Covariance";
 }
