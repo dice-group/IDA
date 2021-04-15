@@ -4,6 +4,8 @@ COPY backend-server/pom.xml backend-server/pom.xml
 COPY backend-server/src backend-server/src
 
 WORKDIR /build/backend-server
+RUN mkdir -p datasets
+mv /build/backend-server/src/main/resources/datasets/covid19 /build/backend-server/datasets
 RUN mvn dependency:go-offline
 RUN mvn package -P dev
 
