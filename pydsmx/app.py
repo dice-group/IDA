@@ -15,7 +15,7 @@ app = Flask(__name__)
 cors = CORS(app)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['TEMP_FOLDER'] = 'tempuploads'
+app.config['TEMP_FOLDER'] = 'temp-uploads'
 app.config['DS_FOLDER'] = 'datasets'
 app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum file size 5mb
 
