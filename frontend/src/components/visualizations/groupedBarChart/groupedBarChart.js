@@ -151,7 +151,7 @@ export default class IDAGroupedBarGraph extends Component {
             })
             .on("mouseout", () => {
                 this.tooltip.style.display = "none";
-            })
+            });
 
         svg.append("text")
             .attr("transform", "rotate(-90)")
