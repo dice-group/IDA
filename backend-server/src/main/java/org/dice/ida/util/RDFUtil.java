@@ -13,11 +13,13 @@ import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.dice.ida.constant.IDAConst;
 import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.Objects;
+
 
 /**
  * Utility Class containing RDF query functions.
@@ -26,9 +28,9 @@ import java.util.TreeMap;
  */
 @Component
 public class RDFUtil {
+	private static final String dbHost = System.getenv("FUSEKI_URL");
 	private Model model;
 	private RDFConnectionFuseki conn = null;
-	private static final String dbHost = System.getenv("FUSEKI_URL");
 
 	/**
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
@@ -146,9 +148,9 @@ public class RDFUtil {
 			instanceParam.put(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY, dependentParam);
 			instance = instanceMap.getOrDefault(instanceLabel, new TreeMap<>());
 			paramLabel = resource.get("paramLabel").asLiteral().getString();
-			if(instance.containsKey(paramLabel)){
+			if (instance.containsKey(paramLabel)) {
 				instance.get(paramLabel).put(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY, instance.get(paramLabel).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY) + "," + dependentParam);
-			}else{
+			} else {
 				instance.put(resource.get("paramLabel").asLiteral().getString(), instanceParam);
 			}
 			instanceMap.put(instanceLabel, instance);
@@ -191,5 +193,45 @@ public class RDFUtil {
 		}
 		model = null;
 		return attributeMap;
+	}
+
+	public Map<String, Map<String, List<String>>> getSuggestionParamters() {
+		System.out.println("s");
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?viz ?paramLabel ?propLabel ?condLabel\n" +
+				"WHERE {\n" +
+				"  \t?s rdf:type ivoc:Visualization ; \n" +
+				"\t\t?p ?o ;\n" +
+				"       \trdfs:label ?viz ;\n" +
+				"       \tivoop:hasSuggestionParamValue ?suggest .\n" +
+				"\t\t?suggest ivoop:hasVizParam  ?Param ;\n" +
+				"       \tivoop:hasStatisticalProperty ?statProp ;\n" +
+				"       \tivoop:hasStatPropertyCondition ?cond .\n" +
+				"\t\t?Param rdfs:label ?paramLabel .\n" +
+				"  \t\t?statProp rdfs:label ?propLabel .\n" +
+				"  \t\t?cond rdfs:label ?condLabel\n" +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		if (attributeResultSet == null) {
+			return null;
+		}
+		Map<String, Map<String, List<String>>> suggestionProp = new HashMap<>();
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String Viz = querySolution.get("viz").asLiteral().getString();
+			Map<String, List<String>> vizData = new HashMap<>();
+			if (suggestionProp.containsKey(Viz))
+				vizData = suggestionProp.get(Viz);
+			String paramLabel = querySolution.get("paramLabel").asLiteral().getString();
+			String propLabel = querySolution.get("propLabel").asLiteral().getString();
+			String condLabel = querySolution.get("condLabel").asLiteral().getString();
+
+			vizData.put(paramLabel, new ArrayList<>() {{
+				add(propLabel);
+				add(condLabel);
+			}});
+			suggestionProp.put(Viz, vizData);
+		}
+		return suggestionProp;
 	}
 }
