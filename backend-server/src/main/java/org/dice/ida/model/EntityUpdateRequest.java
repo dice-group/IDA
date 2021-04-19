@@ -9,8 +9,8 @@ import java.util.Map;
  * @author Nandeesh Patel
  */
 public class EntityUpdateRequest {
-	String entityId;						// ID of the entity type to be updated
-	Map<String, List<String>> entityList;	// list of new entities to be added
+	private String entityId;						// ID of the entity type to be updated
+	private Map<String, List<String>> entityList;	// list of new entities to be added
 
 	public String getEntityId() {
 		return entityId;
