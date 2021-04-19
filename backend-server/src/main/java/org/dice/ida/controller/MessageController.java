@@ -5,13 +5,14 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.model.EntityUpdateRequest;
+import org.dice.ida.util.DialogFlowAdminUtil;
 import org.dice.ida.util.DialogFlowUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +50,9 @@ public class MessageController {
 	@Autowired
 	@Qualifier("logger")
 	private Logger log;
+
+	@Autowired
+	private DialogFlowAdminUtil dialogFlowAdminUtil;
 
 	/**
 	 * Method to check the availability of the rest service
@@ -103,6 +107,12 @@ public class MessageController {
 		response.setMessage(IDAConst.TIMEOUT_MSG);
 		dialogFlowUtil.resetContext();
 		return response;
+	}
+
+	@CrossOrigin(origins = "*", allowCredentials = "true")
+	@RequestMapping(value = "/addentities", method = RequestMethod.POST)
+	public String addColumnEntities(@RequestBody EntityUpdateRequest entityUpdateRequest) throws Exception {
+		return dialogFlowAdminUtil.addValuesToEntity(entityUpdateRequest.getEntityId(), entityUpdateRequest.getEntityList());
 	}
 
 }

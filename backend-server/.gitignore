@@ -33,6 +33,7 @@ build/
 .DS_STORE
 
 ida-chatbot-dialogflow.json
+ida-chatbot-dialogflow-admin.json
 
 src/main/resources/datasets
 src/main/resources/metadata
