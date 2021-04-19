@@ -13,6 +13,7 @@ import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.dice.ida.constant.IDAConst;
 import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,20 +197,19 @@ public class RDFUtil {
 	}
 
 	public Map<String, Map<String, List<String>>> getSuggestionParamters() {
-		System.out.println("s");
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?viz ?paramLabel ?propLabel ?condLabel\n" +
-				"WHERE {\n" +
-				"  \t?s rdf:type ivoc:Visualization ; \n" +
-				"\t\t?p ?o ;\n" +
-				"       \trdfs:label ?viz ;\n" +
-				"       \tivoop:hasSuggestionParamValue ?suggest .\n" +
-				"\t\t?suggest ivoop:hasVizParam  ?Param ;\n" +
-				"       \tivoop:hasStatisticalProperty ?statProp ;\n" +
-				"       \tivoop:hasStatPropertyCondition ?cond .\n" +
-				"\t\t?Param rdfs:label ?paramLabel .\n" +
-				"  \t\t?statProp rdfs:label ?propLabel .\n" +
-				"  \t\t?cond rdfs:label ?condLabel\n" +
+				"SELECT DISTINCT ?viz ?paramLabel ?propLabel ?condLabel " +
+				"WHERE { " +
+				"  ?s rdf:type ivoc:Visualization ;" +
+				"     ?p ?o ;" +
+				"     rdfs:label ?viz ;" +
+				"     ivoop:hasSuggestionParamValue ?suggest ." +
+				"  ?suggest ivoop:hasVizParam  ?Param ;" +
+				"           ivoop:hasStatisticalProperty ?statProp ;" +
+				"           ivoop:hasStatPropertyCondition ?cond ." +
+				"  ?Param rdfs:label ?paramLabel ." +
+				"  ?statProp rdfs:label ?propLabel ." +
+				"  ?cond rdfs:label ?condLabel" +
 				"}";
 		ResultSet attributeResultSet = getResultFromQuery(queryString);
 		if (attributeResultSet == null) {
@@ -233,5 +233,35 @@ public class RDFUtil {
 			suggestionProp.put(Viz, vizData);
 		}
 		return suggestionProp;
+	}
+
+	public Map<String, Map<String, String>> getVisualizationInfo() {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?viz ?desc ?link ?label " +
+				"WHERE {" +
+				"  ?s rdf:type ivoc:Visualization ;" +
+				"     ?p ?o ;" +
+				"     rdfs:label ?viz ;" +
+				"     ivoop:hasInformation ?info ." +
+				"  ?info  dc:description  ?desc ;" +
+				"         ivoop:hasReference ?ref ." +
+				"  ?ref   ivodp:link ?link ;" +
+				"         rdfs:label ?label ." +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		if (attributeResultSet == null) {
+			return null;
+		}
+		Map<String, Map<String, String>> vizInfo = new HashMap<>();
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			Map<String, String> info = new HashMap<>(){{
+				put("description", querySolution.get("desc").asLiteral().getString());
+				put("link", querySolution.get("link").asLiteral().getString());
+				put("linkLabel", querySolution.get("label").asLiteral().getString());
+			}};
+			vizInfo.put(querySolution.get("viz").asLiteral().getString(), info);
+		}
+		return vizInfo;
 	}
 }

@@ -9,6 +9,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.dice.ida.constant.IDAConst;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  *
  * @author Nandeesh Pate, Sourabh Poddar
  */
+@Component
 public class SuggestionUtil {
 
 	/**
