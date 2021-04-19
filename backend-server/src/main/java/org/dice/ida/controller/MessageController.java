@@ -5,6 +5,8 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.model.EntityUpdateRequest;
+import org.dice.ida.util.DialogFlowAdminUtil;
 import org.dice.ida.util.DialogFlowUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
@@ -49,6 +52,9 @@ public class MessageController {
 	@Autowired
 	@Qualifier("logger")
 	private Logger log;
+
+	@Autowired
+	private DialogFlowAdminUtil dialogFlowAdminUtil;
 
 	/**
 	 * Method to check the availability of the rest service
@@ -103,6 +109,12 @@ public class MessageController {
 		response.setMessage(IDAConst.TIMEOUT_MSG);
 		dialogFlowUtil.resetContext();
 		return response;
+	}
+
+	@CrossOrigin(origins = "*", allowCredentials = "true")
+	@RequestMapping(value = "/addcolumnentities", method = RequestMethod.POST)
+	public String addColumnEntities(@RequestBody EntityUpdateRequest entityUpdateRequest) throws Exception {
+		return dialogFlowAdminUtil.addValuesToEntity(entityUpdateRequest.getEntityId(), entityUpdateRequest.getEntityList());
 	}
 
 }
