@@ -112,7 +112,7 @@ public class MessageController {
 	}
 
 	@CrossOrigin(origins = "*", allowCredentials = "true")
-	@RequestMapping(value = "/addcolumnentities", method = RequestMethod.POST)
+	@RequestMapping(value = "/addentities", method = RequestMethod.POST)
 	public String addColumnEntities(@RequestBody EntityUpdateRequest entityUpdateRequest) throws Exception {
 		return dialogFlowAdminUtil.addValuesToEntity(entityUpdateRequest.getEntityId(), entityUpdateRequest.getEntityList());
 	}
