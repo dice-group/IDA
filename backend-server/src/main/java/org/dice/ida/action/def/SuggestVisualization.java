@@ -40,6 +40,10 @@ public class SuggestVisualization implements Action {
 					Map<String, Double> attributeList = statProps.get(paramList.get(param).get(0));
 					String attributeProperty = paramList.get(param).get(1);
 					String key;
+					if (attributeList.isEmpty()) {
+						paramSuggestionMap = new HashMap<>();
+						break;
+					}
 					if (attributeProperty.equals("min"))
 						key = Collections.min(attributeList.entrySet(), Map.Entry.comparingByValue()).getKey();
 					else
@@ -50,7 +54,9 @@ public class SuggestVisualization implements Action {
 					param = IDAConst.PARAM_NAME_MAP.getOrDefault(param, param);
 					paramSuggestionMap.put(param, key);
 				}
-				suggestionMap.put(viz, paramSuggestionMap);
+				if (!paramSuggestionMap.isEmpty()) {
+					suggestionMap.put(viz, paramSuggestionMap);
+				}
 			}
 			payload.put("suggestionData", new HashMap<>() {{
 				put("suggestedParams", suggestionMap);

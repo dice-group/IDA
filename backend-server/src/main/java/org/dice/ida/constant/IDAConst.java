@@ -338,4 +338,5 @@ public interface IDAConst {
 	String COLUMN_SD_NOMINAL = "Standard Deviation Nominal";
 	String COLUMN_SD_NUMERIC = "Standard Deviation";
 	String COVARIANCE_MATRIX = "Covariance";
+	String COLUMN_SD_TEMPORAL = "Standard Deviation Temporal";
 }

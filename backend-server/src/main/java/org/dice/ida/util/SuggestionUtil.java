@@ -30,7 +30,7 @@ public class SuggestionUtil {
 	/**
 	 * Method to get statistical properties (Standard deviation, Covariance Matrix) for column values of a given table
 	 *
-	 * @param dsName - name of the dataset
+	 * @param dsName    - name of the dataset
 	 * @param tableName - name of the table
 	 * @return - map containing standard deviation for label counts, numeric columns and covariance matrix
 	 * @throws Exception - If dataset or table does not exist. In case of statistical properties file creation failure
@@ -50,7 +50,13 @@ public class SuggestionUtil {
 						columnMap.put(columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText(), columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
 					}
 					List<Map<String, String>> tableData = getColumnData(dsName, tableName, columnMap);
-					stats.put(IDAConst.COLUMN_SD_NOMINAL, calculateCountSD(tableData, columnMap));
+					stats.put(IDAConst.COLUMN_SD_NOMINAL, calculateCountSD(tableData, columnMap, new ArrayList<>() {{
+						add(IDAConst.COLUMN_TYPE_NOMINAL);
+						add(IDAConst.COLUMN_TYPE_DATE);
+					}}));
+					stats.put(IDAConst.COLUMN_SD_TEMPORAL, calculateCountSD(tableData, columnMap, new ArrayList<>() {{
+						add(IDAConst.COLUMN_TYPE_DATE);
+					}}));
 					stats.put(IDAConst.COVARIANCE_MATRIX, getCovariance(tableData, columnMap));
 					stats.put(IDAConst.COLUMN_SD_NUMERIC, calculateSD(tableData, columnMap));
 					writeStatsToFile(dsName, tableName, stats);
@@ -69,7 +75,7 @@ public class SuggestionUtil {
 	 * Method to get covariance matrix for numerical columns of a given table
 	 *
 	 * @param columnData - column values for the table
-	 * @param columnMap - column name and datatype map
+	 * @param columnMap  - column name and datatype map
 	 * @return - covariance matrix as a map (key - columnM|columnN, value - covariance)
 	 */
 	private Map<String, Double> getCovariance(List<Map<String, String>> columnData, Map<String, String> columnMap) {
@@ -90,8 +96,8 @@ public class SuggestionUtil {
 	 * Method to calculate an entry of a covariance matrix
 	 *
 	 * @param fileData - table data
-	 * @param column1 - first column
-	 * @param column2 - second column
+	 * @param column1  - first column
+	 * @param column2  - second column
 	 * @return covariance of column 1 and 2
 	 */
 	private Double getCovariancePair(List<Map<String, String>> fileData, String column1, String column2) {
@@ -114,8 +120,8 @@ public class SuggestionUtil {
 	 * Method to get the table data from resource file
 	 *
 	 * @param datasetName - name of the dataset
-	 * @param tableName - name of the table
-	 * @param columnMap - column name and datatype map
+	 * @param tableName   - name of the table
+	 * @param columnMap   - column name and datatype map
 	 * @return - table in form of list of rows (each row is a map)
 	 * @throws Exception - if dataset or table does not exist
 	 */
@@ -149,14 +155,14 @@ public class SuggestionUtil {
 	 * @param colTypeMap - column name and datatype map
 	 * @return standard deviation of label counts
 	 */
-	private Map<String, Double> calculateCountSD(List<Map<String, String>> columnData, Map<String, String> colTypeMap) {
+	private Map<String, Double> calculateCountSD(List<Map<String, String>> columnData, Map<String, String> colTypeMap, List<String> colTypeList) {
 		Map<String, Double> statsMap = new HashMap<>();
 		Map<String, Map<String, Double>> countMap = new HashMap<>();
 		Map<String, Double> colCountMap;
 		String val;
 		for (Map<String, String> row : columnData) {
 			for (String col : colTypeMap.keySet()) {
-				if (!IDAConst.COLUMN_TYPE_NUMERIC.equalsIgnoreCase(colTypeMap.get(col))) {
+				if (colTypeList.contains(colTypeMap.get(col))) {
 					colCountMap = countMap.getOrDefault(col, new HashMap<>());
 					val = row.get(col);
 					if (colCountMap.containsKey(val)) {
@@ -179,7 +185,7 @@ public class SuggestionUtil {
 	/**
 	 * Method to calculate standard deviation of values of numeric columns of a table
 	 *
-	 * @param tableData - table data
+	 * @param tableData  - table data
 	 * @param colTypeMap - column name and datatype map
 	 * @return - standard deviation of numeric column values
 	 */
@@ -204,7 +210,7 @@ public class SuggestionUtil {
 	/**
 	 * Method to write the statistical properties of a table to a resource file for future use
 	 *
-	 * @param dsName - name of the dataset
+	 * @param dsName    - name of the dataset
 	 * @param tableName - name of the table
 	 * @param statProps - map of statistical properties
 	 * @throws IOException - file write permission issues
