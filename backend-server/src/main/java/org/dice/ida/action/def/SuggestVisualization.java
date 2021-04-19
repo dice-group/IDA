@@ -47,11 +47,12 @@ public class SuggestVisualization implements Action {
 					if (key.contains("|")) {
 						key = key.replace("|", " or ");
 					}
+					param = IDAConst.PARAM_NAME_MAP.getOrDefault(param, param);
 					paramSuggestionMap.put(param, key);
 				}
 				suggestionMap.put(viz, paramSuggestionMap);
 			}
-			payload.put("suggestionData", new HashMap<>(){{
+			payload.put("suggestionData", new HashMap<>() {{
 				put("suggestedParams", suggestionMap);
 				put("vizInfo", rdfUtil.getVisualizationInfo());
 			}});
