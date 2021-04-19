@@ -16,6 +16,7 @@ import IDAScatterPLot from "../visualizations/scatterplot/scatterplot";
 import IDAGroupedBarGraph from "../visualizations/groupedBarChart/groupedBarChart";
 import IDAGroupedBubbleChart from "../visualizations/groupedBubbleChart/groupedBubbleChart";
 import IDAScatterPlotMatrix from "../visualizations/scatterplotMatrix/scatterplotMatrix";
+import IDAVisualizationSuggestion from "../vizSuggestion/vizSuggestion";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -82,14 +83,16 @@ export default function ScrollableTabsButtonAuto(props) {
         return <IDALineChart data={tab.data} nodeId={tab.id} />;
       case "clustering":
         return <CustomizedTables data={tab.data} columns={tab.columns} nodeId={tab.id} />;
-		case "scatterplot":
-			return <IDAScatterPLot data={tab.data} nodeId={tab.id} />;
-		case "scatterplotmatrix":
-			return <IDAScatterPlotMatrix data={tab.data} nodeId={tab.id} />;
-		case "groupedBarchart":
+      case "scatterplot":
+        return <IDAScatterPLot data={tab.data} nodeId={tab.id} />;
+      case "scatterplotmatrix":
+        return <IDAScatterPlotMatrix data={tab.data} nodeId={tab.id} />;
+      case "groupedBarchart":
         return <IDAGroupedBarGraph data={tab.data} nodeId={tab.id} />;
       case "groupedBubblechart":
         return <IDAGroupedBubbleChart data={tab.data} nodeId={tab.id} />;
+      case "suggestion":
+        return <IDAVisualizationSuggestion data={tab.data} nodeId={tab.id} tableName={tab.fileName} />;
       default:
         return null;
     }

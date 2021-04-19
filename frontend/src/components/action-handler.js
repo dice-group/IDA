@@ -167,6 +167,10 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             addVisualizationEntry(props, payload.bubbleChartData, "Grouped Bubble Chart", "groupedBubblechart", payload.activeDS);
             break;
         }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_VIZ_SUGGESTION: {
+            addAnalysisEntry(props, payload.suggestionData, "Visualization Suggestion", "suggestion", payload.activeDS, payload.activeTable, []);
+            break;
+        }
         default:
     }
 }
