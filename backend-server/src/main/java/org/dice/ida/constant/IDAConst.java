@@ -311,8 +311,8 @@ public interface IDAConst {
 	public static final Map<String, String> PARAM_NAME_MAP = new HashMap<>() {{
 		put("X-Axis", "X-Axis");
 		put("Y-Axis", "Y-Axis");
-		put("Bubble_Label", "label of the bubbles");
-		put("Bubble_Size", "size of the bubbles");
+		put("Bubble_Label", "Label of the bubbles");
+		put("Bubble_Size", "Size of the bubbles");
 		put("Temporal_Column", "X-Axis (Temporal data)");
 		put("Line_Label", "Line Labels");
 		put("Line_Value", "Line Values");
