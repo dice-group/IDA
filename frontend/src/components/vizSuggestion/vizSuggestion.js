@@ -65,6 +65,6 @@ export default class IDAVisualizationSuggestion extends Component {
           )
         }
       </div>
-    </>
+    </>;
   }
 }
