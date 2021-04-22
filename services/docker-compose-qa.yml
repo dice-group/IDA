@@ -34,7 +34,7 @@ services:
       - FUSEKI_URL=http://fuseki:3030/
       - FUSEKI_USER=admin
       - FUSEKI_PW=$FUSEKI_PW
-      - DB_PATH=/usr/local/tomcat/datasets
+      - DB_PATH=/usr/local/tomcat/datasets/
     networks:
       - ida-net
 volumes:
