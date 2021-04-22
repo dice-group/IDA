@@ -19,7 +19,7 @@
 @prefix transformation_type: <https://www.upb.de/ida/viz/data/transformation_type/> .
 @prefix representational_type: <https://www.upb.de/ida/viz/data/representational_type/> .
 @prefix representation_tree_node: <https://www.upb.de/ida/viz/data/representation_tree_node/> .
-@prefix ab: <https://www.upb.de/ida/datasets/> .s
+@prefix ab: <https://www.upb.de/ida/datasets/> .
 @base <https://www.upb.de/ida/viz/ontology/> .
 
 <https://www.upb.de/ida/viz/ontology/> rdf:type owl:Ontology ;
