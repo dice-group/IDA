@@ -33,6 +33,8 @@ public interface IDAConst {
 	public static final int UIA_GROUPED_BARGRAPH = 1009;
 	// Load grouped bubble chart
 	public static final int UIA_GROUPED_BUBBLECHART = 1010;
+	//Load scatter plot matrix
+	public static final int UIA_SCATTERPLOT_MATRIX = 1012;
 
 	/**
 	 * Pre-defined action codes
@@ -82,6 +84,8 @@ public interface IDAConst {
 
 	// Scatter plot
 	public static final String SCATTER_PLOT_LOADED = "The requested scatter plot has been loaded.";
+	// Scatter plot Matrix
+	public static final String SCATTER_PLOT_MATRIX_LOADED = "The requested scatter plot matrix has been loaded.";
 
 	// Bar graph
 	public static final String PARAM_FILTER_STRING = "records-selection";
@@ -160,6 +164,10 @@ public interface IDAConst {
 	public static final String LINE_CHART_PARAM_VALUE_COL = "line_value_column";
 	public static final String INVALID_DATE_COLUMN_MSG = " is not a date column";
 	public static final String INVALID_NUMERIC_COLUMN_MSG = " is not a numeric column";
+	public static final String LINE_CHART_LOADED = "The requested line chart has been loaded.";
+	public static final String LINE_CHART_TEMPORAL_PARAM = "Temporal_Column";
+	public static final String LINE_CHART_LABLE_PARAM = "Line_Label";
+	public static final String LINE_CHART_VALUE_PARAM = "Line_Value";
 
 	/**
 	 * Column data types
@@ -174,6 +182,12 @@ public interface IDAConst {
 	public static final String COUNT_OF_PREFIX = "Count of ";
 	public static final String LINE_CHART_DESC_PREFIX = "Line chart for ";
 	public static final String LINE_CHART_PROPERTY_NAME = "lineChartData";
+
+	/**
+	 * Visualization with List Paramter
+	 */
+
+	public static final String HAS_LIST_COLUMN = "hasListColumn";
 
 	/**
 	 * Prefixes for SPARQL queries
@@ -199,6 +213,7 @@ public interface IDAConst {
 	public static final String TRANSFORMATION_LABEL = "Transformation";
 	public static final String INSTANCE_PARAM_TYPE_KEY = "type";
 	public static final String INSTANCE_PARAM_TRANS_TYPE_KEY = "trans_type";
+	public static final String INSTANCE_PARAM_DEPENDENT_KEY = "dependentOn";
 	public static final String INSTANCE_PARAM_TYPE_UNIQUE = "unique";
 	public static final String INSTANCE_PARAM_TYPE_NON_UNIQUE = "non unique";
 	public static final String INSTANCE_PARAM_TYPE_NOT_REQUIRED = "not required";
@@ -246,6 +261,8 @@ public interface IDAConst {
 	String VIZ_TYPE_BAR_CHART = "bar_chart";
 	String VIZ_TYPE_BUBBLE_CHART = "bubble_chart";
 	String VIZ_TYPE_SCATTER_PLOT = "scatter_plot";
+	String VIZ_TYPE_LINE_CHART = "line_chart";
+	String VIZ_TYPE_SCATTER_PLOT_MATRIX = "scatter_plot_matrix";
 	String BUBBLE_LABEL_PARAM = "Bubble_Label";
 	String BUBBLE_SIZE_PARAM = "Bubble_Size";
 	String X_AXIS_PARAM = "X-Axis";
@@ -290,6 +307,9 @@ public interface IDAConst {
 		put("Y-Axis", "Y-Axis");
 		put("Bubble_Label", "label of the bubbles");
 		put("Bubble_Size", "size of the bubbles");
+		put("Temporal_Column", "X-Axis (Temporal data)");
+		put("Line_Label", "Line Labels");
+		put("Line_Value", "Line Values");
 	}};
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");

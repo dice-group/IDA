@@ -1,6 +1,17 @@
 package org.dice.ida.action.process;
 
-import org.dice.ida.action.def.*;
+import org.dice.ida.action.def.Action;
+import org.dice.ida.action.def.ListDataSetsAction;
+import org.dice.ida.action.def.LoadDataSetAction;
+import org.dice.ida.action.def.UploadDatasetAction;
+import org.dice.ida.action.def.SimpleTextAction;
+import org.dice.ida.action.def.SuggestVisualization;
+import org.dice.ida.action.def.ListVisualizationsAction;
+import org.dice.ida.action.def.VisualizeAction;
+import org.dice.ida.action.def.ClusterAction;
+import org.dice.ida.action.def.ClearConversationAction;
+import org.dice.ida.action.def.CauseExceptionAction;
+import org.dice.ida.action.def.DefaultAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -39,11 +50,10 @@ public class ActionMappingHelper {
 				action = appContext.getBean(SuggestVisualization.class);
 				break;
 			case LINE_CHART:
-				action = new LineChartAction();
-				break;
 			case BARCHART:
 			case BUBBLECHART:
 			case SCATTERPLOT:
+			case SCATTERPLOTMATRIX:
 				action = appContext.getBean(VisualizeAction.class);
 				break;
 			case CLUSTERING:

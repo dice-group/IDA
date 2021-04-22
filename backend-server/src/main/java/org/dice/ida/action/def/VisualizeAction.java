@@ -1,5 +1,8 @@
 package org.dice.ida.action.def;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.protobuf.Value;
 import org.apache.http.ParseException;
 import org.apache.http.client.utils.DateUtils;
 import org.dice.ida.constant.IDAConst;
@@ -14,25 +17,11 @@ import org.dice.ida.model.bubblechart.BubbleChartData;
 import org.dice.ida.model.bubblechart.BubbleChartItem;
 import org.dice.ida.model.groupedbargraph.GroupedBarGraphData;
 import org.dice.ida.model.groupedbubblechart.GroupedBubbleChartData;
+import org.dice.ida.model.linechart.LineChartData;
+import org.dice.ida.model.linechart.LineChartItem;
 import org.dice.ida.model.scatterplot.ScatterPlotData;
 import org.dice.ida.model.scatterplot.ScatterPlotItem;
-import org.dice.ida.util.DataUtil;
-import org.dice.ida.util.DialogFlowUtil;
-import org.dice.ida.util.RDFUtil;
-import org.dice.ida.util.ValidatorUtil;
-import org.dice.ida.util.TextUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.google.protobuf.Value;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import org.dice.ida.model.scatterplotmatrix.ScatterPlotMatrixData;
 import java.util.Map;
 import java.util.List;
 import java.util.Comparator;
@@ -45,6 +34,22 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Calendar;
 import java.util.TreeMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import org.dice.ida.util.DataUtil;
+import org.dice.ida.util.DialogFlowUtil;
+import org.dice.ida.util.RDFUtil;
+import org.dice.ida.util.ValidatorUtil;
+import org.dice.ida.util.TextUtil;
+import org.dice.ida.util.FileUtil;
+
 
 /**
  * Class to handle the any visualization
@@ -72,7 +77,13 @@ public class VisualizeAction implements Action {
 	private Map<String, Map<String, Double>> groupedGraphItems;
 	private Comparator<String> comparator;
 	private StringBuilder textMsg;
+	private boolean labelNeeded;
+	private String labelColumn;
 	private boolean groupingNeeded;
+	private List<String> lineChartXAxisLabels = new ArrayList<>();
+	private ArrayList<String> columnList = new ArrayList<>();
+	private String refColumn = null;
+
 
 	/**
 	 * @param paramMap            - parameters from dialogflow
@@ -81,6 +92,9 @@ public class VisualizeAction implements Action {
 	@Override
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse chatMessageResponse, ChatUserMessage message) throws IOException, IDAException, InvalidKeySpecException, NoSuchAlgorithmException {
 		textMsg = new StringBuilder(paramMap.get(IDAConst.PARAM_TEXT_MSG).toString());
+		List<String> columnNameList = new ArrayList<>();
+		Set<String> options = new HashSet<>();
+		boolean columnListVizProcessed = false;
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 			String vizType = paramMap.get(IDAConst.INTENT_NAME).toString();
 			payload = chatMessageResponse.getPayload();
@@ -102,28 +116,37 @@ public class VisualizeAction implements Action {
 			} else {
 				String intent = paramMap.get(IDAConst.INTENT_NAME).toString();
 				attributeList = new RDFUtil().getAttributeList(intent);
-				List<String> columnNameList = getColumnNames(attributeList, paramMap);
-				List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
-				columnMap = columnDetail.get(0);
-				columnUniquenessMap = columnDetail.get(1);
-				Set<String> options = processParameters(paramMap);
-				if (options.size() == 1 && columnNameList.size() == attributeList.size()) {
-					getParameters(paramMap);
-					groupingNeeded = false;
-					if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) && !intent.equals(Intent.SCATTERPLOT.getKey()) &&
-							!handleGroupingLogic(chatMessageResponse, paramMap)) {
-						chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-						return;
-					}
-					if (onTemporaryData) {
-						tableData = message.getActiveTableData();
-					} else {
-						if (groupingNeeded) {
-							columnNameList.add(paramMap.get("group_column").toString());
+				if (attributeList.containsValue(IDAConst.HAS_LIST_COLUMN)) {
+					columnListVizProcessed = processListAttribute(paramMap, vizType, datasetName, tableName, onTemporaryData, filterString, message);
+				} else {
+					columnNameList = getColumnNames(attributeList, paramMap);
+					List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
+					columnMap = columnDetail.get(0);
+					columnUniquenessMap = columnDetail.get(1);
+					options = processParameters(paramMap);
+				}
+
+				if ((options.size() == 1 && columnNameList.size() == attributeList.size()) || columnListVizProcessed) {
+					if ((options.size() == 1 && columnNameList.size() == attributeList.size())) {
+						getParameters(paramMap);
+						groupingNeeded = false;
+						if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) && !intent.equals(Intent.SCATTERPLOT.getKey()) && !intent.equals(Intent.LINE_CHART.getKey()) &&
+								!handleGroupingLogic(chatMessageResponse, paramMap)) {
+							chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
+							return;
 						}
-						tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString, columnMap);
+						if (onTemporaryData) {
+							tableData = message.getActiveTableData();
+							tableData = dataUtil.filterData(tableData, filterString, columnNameList, columnMap);
+						} else {
+							if (groupingNeeded) {
+								columnNameList.add(paramMap.get("group_column").toString());
+							}
+							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString, columnMap);
+						}
+						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
 					}
-					comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
+
 					switch (vizType) {
 						case IDAConst.VIZ_TYPE_BAR_CHART:
 							createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
@@ -154,6 +177,16 @@ public class VisualizeAction implements Action {
 							chatMessageResponse.setUiAction(IDAConst.UIA_SCATTERPLOT);
 							chatMessageResponse.setMessage(IDAConst.SCATTER_PLOT_LOADED);
 							break;
+						case IDAConst.VIZ_TYPE_LINE_CHART:
+							createLineChartResponse(paramMap);
+							chatMessageResponse.setUiAction(IDAConst.UIA_LINECHART);
+							chatMessageResponse.setMessage(IDAConst.LINE_CHART_LOADED);
+							break;
+						case IDAConst.VIZ_TYPE_SCATTER_PLOT_MATRIX:
+							createScatterPlotMatrixData(tableData, columnList, refColumn, labelColumn);
+							chatMessageResponse.setUiAction(IDAConst.UIA_SCATTERPLOT_MATRIX);
+							chatMessageResponse.setMessage(IDAConst.SCATTER_PLOT_MATRIX_LOADED);
+							break;
 						default:
 							chatMessageResponse.setMessage(IDAConst.BOT_SOMETHING_WRONG);
 							chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
@@ -166,6 +199,158 @@ public class VisualizeAction implements Action {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Method to process visualization with List type attribute
+	 *
+	 * @param paramMap        - param map from Dialogflow
+	 * @param vizType         - Name of the Visualization
+	 * @param datasetName     - Dataset Name
+	 * @param tableName       - Table Name
+	 * @param onTemporaryData - boolean to check if temporary data loaded
+	 * @param filterString    - filter String
+	 * @return - true if the list attributes are processed
+	 */
+	private boolean processListAttribute(Map<String, Object> paramMap, String vizType, String datasetName, String tableName, boolean onTemporaryData, String filterString, ChatUserMessage message) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, IDAException {
+		List<Map<String, String>> columnDetail;
+		ArrayList<String> columnListParameter = new ArrayList<>();
+		String selectAll = (String) paramMap.get("All_select");
+		boolean columnListVizProcessed = false;
+		instanceMap = new RDFUtil().getInstances(vizType);
+		List<String> attributeList = new ArrayList<>();
+		Map<String, String> attributeTypeMap = new HashMap<>();
+		instanceMap.keySet().forEach(instance -> attributeList.addAll(instanceMap.get(instance).keySet()));
+		for (String attribute : attributeList) {
+			instanceMap.keySet().forEach(instance -> attributeTypeMap.put(attribute, instanceMap.get(instance).get(attribute).get("type")));
+		}
+		Value paramVal = (Value) paramMap.get(attributeList.get(0));
+		if (!(selectAll == null && paramVal == null)) {
+			paramVal.getListValue().getValuesList().forEach(str -> columnListParameter.add(str.getStringValue()));
+			if (!selectAll.isEmpty()) {
+				columnList = getColumnList(datasetName, tableName);
+			} else {
+				columnList = columnListParameter;
+			}
+			columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnList, onTemporaryData);
+			columnMap = columnDetail.get(0);
+			columnList = filterColumns(columnList, attributeTypeMap.get("Column_List"));
+			if (columnList.size() < 2) {
+				textMsg = new StringBuilder("Please provide more than one Numeric columns");
+				dialogFlowUtil.deleteContext("get_ref");
+			} else {
+				refColumn = (String) paramMap.get(attributeList.get(1));
+				if (refColumn != null) {
+					if (columnMap.containsKey(refColumn)) {
+						columnList.add(refColumn);
+						labelNeeded = false;
+						if (handleLabelLogic(paramMap, attributeList)) {
+							if (labelNeeded) {
+								columnList.add(labelColumn);
+							}
+							if (onTemporaryData) {
+								tableData = message.getActiveTableData();
+								tableData = dataUtil.filterData(tableData, filterString, columnList, columnMap);
+							} else
+								tableData = dataUtil.getData(datasetName, tableName, columnList, filterString, columnMap);
+							columnListVizProcessed = true;
+						}
+					} else {
+						textMsg = new StringBuilder("Column <b>" + refColumn + "</b> doesn't exist in the table " + tableName);
+					}
+				}
+			}
+		}
+		return columnListVizProcessed;
+	}
+
+	/**
+	 * Method to populate the Scatter plot matrix data object in the response.
+	 */
+	private void createScatterPlotMatrixData(List<Map<String, String>> tableData, ArrayList<String> columnList, String ref_column, String labelColumn) {
+		ScatterPlotMatrixData scatterPlotMatrixData = new ScatterPlotMatrixData();
+		scatterPlotMatrixData.setReferenceColumn(ref_column);
+		scatterPlotMatrixData.setLabelColumn(labelColumn);
+		ArrayList<String> numericColumns;
+		numericColumns = (ArrayList<String>) columnList.clone();
+		numericColumns.remove(ref_column);
+		numericColumns.remove(labelColumn);
+		scatterPlotMatrixData.setColumns(numericColumns);
+		scatterPlotMatrixData.setItems(tableData);
+		payload.put("scatterPlotMatrixData", scatterPlotMatrixData);
+	}
+
+	/**
+	 * Method to filter column list bases on required data type.
+	 */
+	private ArrayList<String> filterColumns(ArrayList<String> columnList, String type) {
+
+		ArrayList<String> columnListTemp;
+		columnListTemp = (ArrayList<String>) columnList.clone();
+		for (String column : columnList) {
+			if (!columnMap.get(column).equalsIgnoreCase(type))
+				columnListTemp.remove(column);
+		}
+		return columnListTemp;
+	}
+
+	/**
+	 * Method to get list of columns from a table.
+	 *
+	 * @param datasetName - Data set name
+	 * @param tableName - Table Name
+	 * @return List of colums
+	 */
+	private ArrayList<String> getColumnList(String datasetName, String tableName) {
+
+		ObjectNode metaData = null;
+		ArrayList<String> columns = new ArrayList<>();
+		try {
+			metaData = new FileUtil().getDatasetMetaData(datasetName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		JsonNode fileDetails = metaData.get(IDAConst.FILE_DETAILS_ATTR);
+		for (int i = 0; i < fileDetails.size(); i++) {
+			if (tableName.equals(fileDetails.get(i).get(IDAConst.FILE_NAME_ATTR).asText())) {
+				JsonNode columnDetails = fileDetails.get(i).get(IDAConst.COLUMN_DETAILS_ATTR);
+				for (int j = 0; j < columnDetails.size(); j++)
+					columns.add(columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText());
+			}
+		}
+		return columns;
+	}
+
+	/**
+	 * Method to handle the chatbot flow for label in scatter plot matrix visualizations
+	 *
+	 * @param paramMap            - parameter map from dialogflow
+	 * @return - true if label flow is complete and false otherwise
+	 * @throws NoSuchAlgorithmException - dialogflow auth encryption algorithm is invalid
+	 * @throws IOException              - dialogflow credentials file does not exist
+	 * @throws InvalidKeySpecException  - dialogflow auth key invalid
+	 */
+	private boolean handleLabelLogic(Map<String, Object> paramMap, List<String> attributeList) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+		String islabelNeeded = paramMap.getOrDefault("labelNeeded", "").toString();
+		labelColumn = "";
+		if (islabelNeeded.isEmpty()) {
+			textMsg = new StringBuilder("Do you want to use label on the data points?");
+		} else if ("false".equals(islabelNeeded)) {
+			labelNeeded = false;
+			return true;
+		} else {
+			labelNeeded = true;
+			labelColumn = (String) paramMap.get(attributeList.get(2));
+			if (labelColumn.isEmpty()) {
+				textMsg = new StringBuilder("Please provide the Label column");
+			} else {
+				if (!columnMap.containsKey(labelColumn)) {
+					textMsg = new StringBuilder("Column " + labelColumn + " doesn't exist in the loaded table.");
+				} else
+					return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -193,7 +378,7 @@ public class VisualizeAction implements Action {
 			paramType = attributeType.isEmpty() ?
 					columnMap.get(paramMap.get(attributeName).toString()) :
 					attributeType;
-			options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty());
+			options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty(), paramMap);
 			if (createResponseForUser(options, i, attributeName, attributeType, paramMap, paramType)) {
 				break;
 			}
@@ -275,11 +460,12 @@ public class VisualizeAction implements Action {
 	 * @param isTypeFromUser - Was the type selected by user or fetched from metadata
 	 * @return - list of options for the user to choose from
 	 */
-	private Set<String> getFilteredInstances(String attribute, String attributeType, String columnName, boolean isTypeFromUser) {
+	private Set<String> getFilteredInstances(String attribute, String attributeType, String columnName, boolean isTypeFromUser, Map<String, Object> paramMap) throws IOException {
 		Map<String, Map<String, Map<String, String>>> filteredInstances = new HashMap<>();
 		String instanceParamType;
 		String instanceParamTransType;
 		Set<String> options = new HashSet<>();
+		boolean areValuesUnique;
 		for (String instance : instanceMap.keySet()) {
 			for (String param : instanceMap.get(instance).keySet()) {
 				instanceParamType = instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_TYPE_KEY).toLowerCase();
@@ -291,8 +477,13 @@ public class VisualizeAction implements Action {
 										(!isTypeFromUser && IDAConst.INSTANCE_PARAM_TYPE_NOT_REQUIRED.equals(instanceParamType)) ||
 										(IDAConst.PARAM_TYPE_TREE.get(attributeType) != null && IDAConst.PARAM_TYPE_TREE.get(attributeType).contains(instanceParamType))
 						)) {
-					if ((IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(instanceParamType) && !Boolean.parseBoolean(columnUniquenessMap.get(columnName))) ||
-							(IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(instanceParamType) && Boolean.parseBoolean(columnUniquenessMap.get(columnName)))) {
+					if (!instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY).isEmpty()) {
+						areValuesUnique = areCompositeColumnsUnique(columnName, instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY), paramMap);
+					} else {
+						areValuesUnique = Boolean.parseBoolean(columnUniquenessMap.get(columnName));
+					}
+					if ((IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(instanceParamType) && !areValuesUnique) ||
+							(IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(instanceParamType) && areValuesUnique)) {
 						break;
 					}
 					filteredInstances.put(instance, instanceMap.get(instance));
@@ -491,11 +682,11 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to process the bins for numeric labels along with grouping
 	 *
-	 * @param binSize 			- size of the bins
-	 * @param xAxisColumn 		- column for primary parameter
-	 * @param yAxisColumn 		- column for secondary parameter
-	 * @param yAxisColumnType 	- type of secondary parameter
-	 * @param groupColumn 		- column for grouping the labels
+	 * @param binSize         - size of the bins
+	 * @param xAxisColumn     - column for primary parameter
+	 * @param yAxisColumn     - column for secondary parameter
+	 * @param yAxisColumnType - type of secondary parameter
+	 * @param groupColumn     - column for grouping the labels
 	 */
 	private void processGroupedBinsForNumericLabels(int binSize, String xAxisColumn, String yAxisColumn, String yAxisColumnType, String groupColumn) {
 		String xValue;
@@ -514,7 +705,7 @@ public class VisualizeAction implements Action {
 		Map<String, Double> groupEntries = new HashMap<>();
 		Map<String, Map<String, Integer>> groupedLabelCounts = new HashMap<>();
 		Map<String, Integer> labelCounts = new HashMap<>();
-		for(String group: groups) {
+		for (String group : groups) {
 			groupEntries.put(group, 0.0);
 			labelCounts.put(group, 1);
 		}
@@ -594,12 +785,12 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to process the bins for date labels along with grouping
 	 *
-	 * @param binSize 			- size of the bins
-	 * @param binType 			- type of duration (days, weeks, months or years)
-	 * @param xAxisColumn 		- column for labels
-	 * @param yAxisColumn 		- column for values
-	 * @param yAxisColumnType 	- type of value column
-	 * @param groupColumn 		- column for grouping the labels
+	 * @param binSize         - size of the bins
+	 * @param binType         - type of duration (days, weeks, months or years)
+	 * @param xAxisColumn     - column for labels
+	 * @param yAxisColumn     - column for values
+	 * @param yAxisColumnType - type of value column
+	 * @param groupColumn     - column for grouping the labels
 	 */
 	private void processGroupedBinsForDateLabels(int binSize, String binType, String xAxisColumn, String yAxisColumn, String yAxisColumnType, String groupColumn) {
 		String xValue;
@@ -615,7 +806,7 @@ public class VisualizeAction implements Action {
 		Map<String, Integer> labelCounts = new HashMap<>(initializeGraphItemsForDateBins(binSize, binType, xAxisColumn, calendar));
 		Map<String, Double> groupEntries = new HashMap<>();
 		Map<String, Integer> lblCounts = new HashMap<>();
-		for(String group: groups) {
+		for (String group : groups) {
 			groupEntries.put(group, 0.0);
 			lblCounts.put(group, 0);
 		}
@@ -901,12 +1092,12 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to handle the chatbot flow for grouping the visualizations
 	 *
-	 * @param chatMessageResponse 			- instance of the chatbot response
-	 * @param paramMap 						- parameter map from dialogflow
-	 * @return 								- true if grouping flow is complete and false otherwise
-	 * @throws NoSuchAlgorithmException 	- dialogflow auth encryption algorithm is invalid
-	 * @throws IOException 					- dialogflow credentials file does not exist
-	 * @throws InvalidKeySpecException 		- dialogflow auth key invalid
+	 * @param chatMessageResponse - instance of the chatbot response
+	 * @param paramMap            - parameter map from dialogflow
+	 * @return - true if grouping flow is complete and false otherwise
+	 * @throws NoSuchAlgorithmException - dialogflow auth encryption algorithm is invalid
+	 * @throws IOException              - dialogflow credentials file does not exist
+	 * @throws InvalidKeySpecException  - dialogflow auth key invalid
 	 */
 	private boolean handleGroupingLogic(ChatMessageResponse chatMessageResponse, Map<String, Object> paramMap) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		String isGroupNeeded = paramMap.getOrDefault("isGrouped", "").toString();
@@ -933,4 +1124,211 @@ public class VisualizeAction implements Action {
 		}
 	}
 
+	/**
+	 * Method to check the uniqueness of values of multiple columns in a table combined.
+	 *
+	 * @param primaryCol    - main parameter
+	 * @param dependentCols - comma separated value od secondary parameters
+	 * @param paramMap      - parameter map from the dialogflow
+	 * @return boolean value representing the uniqueness
+	 * @throws IOException - If the dataset or table name is invalid
+	 */
+	private boolean areCompositeColumnsUnique(String primaryCol, String dependentCols, Map<String, Object> paramMap) throws IOException {
+		boolean areAllUnique = true;
+		List<String> columnsLst = new ArrayList<>();
+		HashSet<String> combinedValue = new HashSet<>();
+		columnsLst.add(primaryCol);
+		for (String param : dependentCols.split(",")) {
+			if (paramMap.get(param) != null && !paramMap.get(param).toString().isEmpty()) {
+				columnsLst.add(paramMap.get(param).toString());
+			}
+		}
+		for (String col : columnsLst) {
+			if (!Boolean.parseBoolean(columnUniquenessMap.get(col))) {
+				areAllUnique = false;
+			}
+		}
+		if (areAllUnique) {
+			return areAllUnique;
+		}
+		List<Map<String, String>> data = dataUtil.getData(payload.get("activeDS").toString(), payload.get("activeTable").toString(), columnsLst, paramMap.get(IDAConst.PARAM_FILTER_STRING).toString(), columnMap);
+		List<String> rowVal;
+		for (Map<String, String> row : data) {
+			rowVal = new ArrayList<>();
+			for (String col : columnsLst) {
+				rowVal.add(row.get(col));
+			}
+			if (combinedValue.contains(String.join(" | ", rowVal))) {
+				return false;
+			} else {
+				combinedValue.add(String.join(" | ", rowVal));
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Method to create line chart data based on user options.
+	 *
+	 * @param dateColumn  - column to be mapped to X-Axis
+	 * @param labelColumn - column to be mapped to line labels
+	 * @param valueColumn - Column to be mapped to Y-Axis
+	 * @param valueType   - Type of transformation if the Date & Line labels are repeating
+	 * @return - line chart data
+	 */
+	private Map<String, Map<String, Double>> createLineChartData(String dateColumn, String labelColumn, String valueColumn, String valueType) {
+		Map<String, Double> labelData = new TreeMap<>();
+		String date;
+		String label;
+		double value;
+		Map<String, Map<String, Double>> chartData = new HashMap<>();
+		Calendar calendar = Calendar.getInstance();
+		comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DATE);
+		Map<String, Map<String, Integer>> labelCountsMap = new HashMap<>();
+		Map<String, Integer> labelCounts;
+
+		createlineChartXAxisLabels(calendar, dateColumn);
+		for (Map<String, String> row : tableData) {
+			date = row.get(dateColumn).trim();
+			label = row.get(labelColumn);
+			value = 0.0;
+			try {
+				value = labelColumn.equals(valueColumn) ? 1.0 : Double.parseDouble(row.get(valueColumn));
+			} catch (NumberFormatException ex) {
+				System.out.println(ex.getMessage());
+			}
+			labelData = new TreeMap<>(comparator);
+			labelCounts = new HashMap<>();
+			if (chartData.containsKey(label)) {
+				labelData = chartData.get(label);
+				labelCounts = labelCountsMap.get(label);
+			} else {
+				for (String l : lineChartXAxisLabels) {
+					labelData.put(l, 0.0);
+					labelCounts.put(l, 0);
+				}
+			}
+			labelCounts.put(date, labelCounts.get(date) + 1);
+			labelCountsMap.put(label, labelCounts);
+			updateLineChartData(chartData, labelData, label, date, valueType, value);
+		}
+		if(IDAConst.TRANSFORMATION_TYPE_AVG.equals(valueType)) {
+			updateLinesWithAverage(chartData, labelCountsMap);
+		}
+		return chartData;
+	}
+
+	/**
+	 * Method to create the X-Axis labels for the line chart
+	 *
+	 * @param calendar - Calendar instance
+	 * @param dateColumn - Temporal column
+	 */
+	private void createlineChartXAxisLabels(Calendar calendar, String dateColumn) {
+		lineChartXAxisLabels = new ArrayList<>();
+		for (Map<String, String> object : tableData) {
+			String currentDate = object.get(dateColumn).trim();
+			try {
+				calendar.setTime(org.apache.commons.lang3.time.DateUtils.parseDateStrictly(currentDate, IDAConst.DATE_PATTERNS));
+			} catch (java.text.ParseException ex) {
+				ex.printStackTrace();
+				continue; // Ignore the row and continue with the next
+			}
+
+			if (!lineChartXAxisLabels.contains(currentDate)) {
+				lineChartXAxisLabels.add(currentDate);
+			}
+		}
+		lineChartXAxisLabels.sort(comparator);
+	}
+
+	/**
+	 * Method to update the line values of the line chart data after processing a row
+	 *
+	 * @param chartData - line chart data instance
+	 * @param labelData - line values for a label (Empty map for newly seen label or existing data for already seen label)
+	 * @param label - label of the line
+	 * @param date - date string for the row
+	 * @param valueType - Y-axis value type
+	 * @param value - Y-Axis value of the row
+	 */
+	private void updateLineChartData(Map<String, Map<String, Double>> chartData,Map<String, Double> labelData, String label, String date, String valueType, double value) {
+		double oldValue = labelData.getOrDefault(date, 0.0);
+		double newValue;
+		switch (valueType) {
+			case IDAConst.TRANSFORMATION_TYPE_COUNT:
+				newValue = oldValue + 1.0;
+				break;
+			case IDAConst.TRANSFORMATION_TYPE_AVG:
+			case IDAConst.TRANSFORMATION_TYPE_SUM:
+				newValue = oldValue + value;
+				break;
+			default:
+				newValue = value;
+				break;
+		}
+		labelData.put(date, newValue);
+		chartData.put(label, labelData);
+	}
+
+	/**
+	 * Method to update the line values with the average.
+	 *
+	 * @param chartData - line chart data
+	 * @param labelCountsMap - count of values for each labels to calculate the average
+	 */
+	private void updateLinesWithAverage(Map<String, Map<String, Double>> chartData, Map<String, Map<String, Integer>> labelCountsMap) {
+		Map<String, Integer> labelCounts;
+		for(String lineLabel: chartData.keySet()) {
+			labelCounts = labelCountsMap.get(lineLabel);
+			Map<String, Double> labelData = chartData.get(lineLabel);
+			for(String dateLabel: labelData.keySet()) {
+				labelData.put(dateLabel, labelData.get(dateLabel) / (labelCounts.get(dateLabel) > 0.0 ? labelCounts.get(dateLabel) : 1.0));
+			}
+			chartData.put(lineLabel, labelData);
+		}
+	}
+
+	/**
+	 * Method to populate the line chart data object in the response.
+	 */
+	private void createLineChartResponse(Map<String, Object> paramMap) {
+		LineChartData lineChartData = new LineChartData();
+		getParameters(paramMap);
+		String dateColumn = parameterMap.get(IDAConst.LINE_CHART_TEMPORAL_PARAM);
+		String labelColumn = parameterMap.get(IDAConst.LINE_CHART_LABLE_PARAM);
+		String valueColumn = parameterMap.get(IDAConst.LINE_CHART_VALUE_PARAM);
+		String valueType = parameterTypeMap.get(IDAConst.LINE_CHART_VALUE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+		Map<String, Map<String, Double>> chartData = createLineChartData(dateColumn, labelColumn, valueColumn, valueType.toLowerCase());
+		lineChartData.setxAxisLabel(dateColumn);
+		String yAxisLabel = valueColumn;
+		if (labelColumn.equals(valueColumn)) {
+			yAxisLabel = IDAConst.COUNT_OF_PREFIX + valueColumn;
+		}
+		lineChartData.setyAxisLabel(yAxisLabel);
+		lineChartData.setChartDesc(IDAConst.LINE_CHART_DESC_PREFIX + yAxisLabel + " across " + dateColumn);
+		List<Date> dateLabels = lineChartXAxisLabels.stream().map(l -> {
+			try {
+				return org.apache.commons.lang3.time.DateUtils.parseDate(l, IDAConst.DATE_PATTERNS);
+			} catch (java.text.ParseException e) {
+				System.out.println("Date parse exception:" + l);
+			}
+			return new Date();
+		}).collect(Collectors.toList());
+		lineChartData.setxAxisLabels(dateLabels);
+		List<LineChartItem> lines = new ArrayList<>();
+		for (String label : chartData.keySet()) {
+			Map<String, Double> labelData = chartData.get(label);
+			LineChartItem lineChartItem = new LineChartItem();
+			lineChartItem.setLabel(label);
+			List<Double> values = new ArrayList<>();
+			for (String key : labelData.keySet()) {
+				values.add(labelData.get(key));
+			}
+			lineChartItem.setLineValues(values);
+			lines.add(lineChartItem);
+		}
+		lineChartData.setLines(lines);
+		payload.put("lineChartData", lineChartData);
+	}
 }
