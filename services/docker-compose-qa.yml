@@ -29,12 +29,12 @@ services:
     image: $REGISTRY/ida/backend-server:$VERSION
     volumes:
       - "/home/ida_mngr/ida-qa-logs:/usr/local/tomcat/logs"
-      - "/home/ida_mngr/ida-datasets/:/build/backend-server/datasets"
+      - "/home/ida_mngr/ida-datasets/:/usr/local/tomcat/datasets"
     environment:
       - FUSEKI_URL=http://fuseki:3030/
       - FUSEKI_USER=admin
       - FUSEKI_PW=$FUSEKI_PW
-      - DB_PATH=/build/backend-server/datasets/
+      - DB_PATH=/usr/local/tomcat/datasets
     networks:
       - ida-net
 volumes:
