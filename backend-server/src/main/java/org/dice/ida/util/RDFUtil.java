@@ -12,6 +12,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.model.suggestion.VisualizationInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -235,7 +236,7 @@ public class RDFUtil {
 		return suggestionProp;
 	}
 
-	public Map<String, Map<String, String>> getVisualizationInfo() {
+	public Map<String, VisualizationInfo> getVisualizationInfo() {
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
 				"SELECT DISTINCT ?viz ?desc ?link ?label " +
 				"WHERE {" +
@@ -252,16 +253,15 @@ public class RDFUtil {
 		if (attributeResultSet == null) {
 			return null;
 		}
-		Map<String, Map<String, String>> vizInfo = new HashMap<>();
+		Map<String, VisualizationInfo> vizInfoMap = new HashMap<>();
 		while (attributeResultSet.hasNext()) {
 			QuerySolution querySolution = attributeResultSet.next();
-			Map<String, String> info = new HashMap<>(){{
-				put("description", querySolution.get("desc").asLiteral().getString());
-				put("link", querySolution.get("link").asLiteral().getString());
-				put("linkLabel", querySolution.get("label").asLiteral().getString());
-			}};
-			vizInfo.put(querySolution.get("viz").asLiteral().getString(), info);
+			VisualizationInfo visualizationInfo = new VisualizationInfo();
+			visualizationInfo.setDescription(querySolution.get("desc").asLiteral().getString());
+			visualizationInfo.setLink(querySolution.get("link").asLiteral().getString());
+			visualizationInfo.setLinkLabel(querySolution.get("label").asLiteral().getString());
+			vizInfoMap.put(querySolution.get("viz").asLiteral().getString(), visualizationInfo);
 		}
-		return vizInfo;
+		return vizInfoMap;
 	}
 }

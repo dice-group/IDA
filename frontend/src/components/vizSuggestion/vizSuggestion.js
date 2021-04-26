@@ -18,8 +18,7 @@ export default class IDAVisualizationSuggestion extends Component {
 
   constructor(props) {
     super(props);
-    this.suggestionData = props.data.suggestedParams;
-    this.vizInfo = props.data.vizInfo;
+    this.suggestionData = props.data;
     this.nodeId = props.nodeId;
     this.tableName = props.tableName;
   }
@@ -32,27 +31,27 @@ export default class IDAVisualizationSuggestion extends Component {
       </Typography>
       <div className="m-2">
         {
-          Object.keys(this.suggestionData).map(
-            (vizName, i) => (
+          this.suggestionData.map(
+            (viz, i) => (
               <Accordion key={i} defaultExpanded={i === 0}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} id={this.nodeId + "-" + vizName}>
-                  <Typography varient="h5"><b>{vizName}</b></Typography>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} id={this.nodeId + "-" + viz.vizName}>
+                  <Typography varient="h5"><b>{viz.vizName}</b></Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
                       <Typography varient="h6">
-                        {this.vizInfo[`${vizName}`].description}
-                      For more information you can go to <a target="_blank" href={this.vizInfo[`${vizName}`].link}>{this.vizInfo[`${vizName}`].linkLabel}<LaunchIcon fontSize="small" /></a>
+                        {viz.visualizationInfo.description}
+                      For more information you can go to <a target="_blank" href={viz.visualizationInfo.link}>{viz.visualizationInfo.linkLabel}<LaunchIcon fontSize="small" /></a>
                       </Typography>
                     </Grid>
                     <Grid container item xs={12}>
                       {
-                        Object.keys(this.suggestionData[`${vizName}`]).map(
-                          (param, j) => (
+                        viz.suggestionParamList.map(
+                          (entry, j) => (
                             <Grid item xs={6} md={4} lg={2} key={j}>
-                              <Typography varient="h5">{param}:</Typography>
-                              <b>{this.suggestionData[`${vizName}`][`${param}`]}</b>
+                              <Typography varient="h5">{entry.param}:</Typography>
+                              <b>{entry.value}</b>
                             </Grid>
                           )
                         )

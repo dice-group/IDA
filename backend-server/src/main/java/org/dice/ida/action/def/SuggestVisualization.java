@@ -3,6 +3,9 @@ package org.dice.ida.action.def;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.model.suggestion.SuggestionData;
+import org.dice.ida.model.suggestion.SuggestionParam;
+import org.dice.ida.model.suggestion.VisualizationInfo;
 import org.dice.ida.util.RDFUtil;
 import org.dice.ida.util.SuggestionUtil;
 import org.dice.ida.util.ValidatorUtil;
@@ -13,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 @Component
 public class SuggestVisualization implements Action {
@@ -30,18 +34,19 @@ public class SuggestVisualization implements Action {
 			String tableName = payload.get("activeTable").toString();
 			Map<String, Map<String, Double>> statProps = suggestionUtil.getStatProps(datasetName, tableName);
 			Map<String, Map<String, List<String>>> suggestionParam = rdfUtil.getSuggestionParamters();
-			Map<String, Map<String, String>> suggestionMap = new HashMap<>();
 
+			Map<String, VisualizationInfo> vizInfoMap = rdfUtil.getVisualizationInfo();
+			List<SuggestionData> suggestionResponse = new ArrayList<>();
 			for (String viz : suggestionParam.keySet()) {
 				Map<String, List<String>> paramList = suggestionParam.get(viz);
-				Map<String, String> paramSuggestionMap = new HashMap<>();
+				List<SuggestionParam> suggestionParamList = new ArrayList<>();
+				Map<String, String> vizParams = new HashMap<>();
 				for (String param : paramList.keySet()) {
-
 					Map<String, Double> attributeList = statProps.get(paramList.get(param).get(0));
 					String attributeProperty = paramList.get(param).get(1);
 					String key;
 					if (attributeList.isEmpty()) {
-						paramSuggestionMap = new HashMap<>();
+						suggestionParamList = new ArrayList<>();
 						break;
 					}
 					if (attributeProperty.equals("min"))
@@ -51,17 +56,20 @@ public class SuggestVisualization implements Action {
 					if (key.contains("|")) {
 						key = key.replace("|", " or ");
 					}
+					vizParams.put(param, key);
 					param = IDAConst.PARAM_NAME_MAP.getOrDefault(param, param);
-					paramSuggestionMap.put(param, key);
+					suggestionParamList.add(new SuggestionParam(param, key));
 				}
-				if (!paramSuggestionMap.isEmpty()) {
-					suggestionMap.put(viz, paramSuggestionMap);
+				if(!suggestionParamList.isEmpty()){
+					SuggestionData suggestionData = new SuggestionData();
+					suggestionData.setVizName(viz);
+					suggestionData.setVisualizationInfo(vizInfoMap.get(viz));
+					suggestionData.setSuggestionParamList(suggestionParamList);
+					suggestionData.setVisualizationParams(vizParams);
+					suggestionResponse.add(suggestionData);
 				}
 			}
-			payload.put("suggestionData", new HashMap<>() {{
-				put("suggestedParams", suggestionMap);
-				put("vizInfo", rdfUtil.getVisualizationInfo());
-			}});
+			payload.put("suggestionData", suggestionResponse);
 			chatMessageResponse.setUiAction(IDAConst.UIA_LOAD_SUGGESTION);
 			chatMessageResponse.setMessage(IDAConst.SUGGESTION_LOADED);
 		}
