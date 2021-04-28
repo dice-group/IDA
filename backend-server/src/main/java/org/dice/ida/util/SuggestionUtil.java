@@ -85,7 +85,7 @@ public class SuggestionUtil {
 			for (String column2 : columnList) {
 				if (!column1.equalsIgnoreCase(column2)) {
 					Double covariance = getCovariancePair(columnData, column1, column2);
-					covarianceMatrix.put(column1 + "|" + column2, covariance);
+					covarianceMatrix.put(column1 + "|" + column2, Math.abs(covariance));
 				}
 			}
 		}

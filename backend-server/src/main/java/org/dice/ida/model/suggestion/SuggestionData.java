@@ -2,12 +2,23 @@ package org.dice.ida.model.suggestion;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SuggestionData {
 	private String vizName;
 	private VisualizationInfo visualizationInfo;
 	private List<SuggestionParam> suggestionParamList;
 	private Map<String, String> visualizationParams;
+
+	public Map<String, Set<String>> getVisualizationParamTypeList() {
+		return visualizationParamTypeList;
+	}
+
+	public void setVisualizationParamTypeList(Map<String, Set<String>> visualizationParamTypeList) {
+		this.visualizationParamTypeList = visualizationParamTypeList;
+	}
+
+	private Map<String, Set<String>> visualizationParamTypeList;
 
 	public String getVizName() {
 		return vizName;

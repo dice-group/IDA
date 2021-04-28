@@ -196,6 +196,19 @@ public class RDFUtil {
 		model = null;
 		return attributeMap;
 	}
+	public String getVizIntent(String viz) {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?s  " +
+				"WHERE { " +
+				"?s rdf:type ivoc:Visualization ;" +
+				"rdfs:label '"+viz+"'@en ;" +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		QuerySolution querySolution = attributeResultSet.next();
+		String vizIntent = querySolution.get("s").asNode().toString();
+
+		return vizIntent.substring(vizIntent.lastIndexOf("/")+1);
+	}
 
 	public Map<String, Map<String, List<String>>> getSuggestionParamters() {
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
