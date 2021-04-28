@@ -93,11 +93,11 @@ class DSUploadWizard extends React.Component {
 		const filesName = Object.assign([], this.state.filesName);
 		let notCSVFilesCount = 0;
 		Array.from(ev.target.files).forEach((f) => {
-			if (f.type === "text/csv" && !filesName.includes(f.name)) {
+			if (f.name.split('.').pop() === 'csv' && !filesName.includes(f.name)) {
 				// Making sure user selected csv file
 				files.push(f);
 				filesName.push(f.name);
-			} else if (f.type !== "text/csv") {
+			} else if (f.name.split('.').pop() !== 'csv') {
 				notCSVFilesCount++;
 			}
 		});
