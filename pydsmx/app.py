@@ -16,7 +16,9 @@ cors = CORS(app)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['TEMP_FOLDER'] = 'temp-uploads'
-app.config['DS_FOLDER'] = 'datasets'
+app.config['DS_FOLDER'] = '/Users/maqbool/ida-datasets'
+# IDA supports "dd/MM/yyyy", "dd MMM", "MMM YYYY", "dd/MM/yyyy HH:mm:ss", "dd-MMM-yyyy", "MMMM-yyyy", "YYYY"
+app.config['DATE_FORMAT'] = 'dd/MM/yyyy'
 app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum file size 5mb
 
 FUSEKI_URL = os.environ.get('FUSEKI_URL', 'http://localhost:3030/')
@@ -72,9 +74,14 @@ def upload_file():
 					elif d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
 						data_type = "numeric"
 
-					file_cols_md.append(
-						{"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
-						 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique})
+					if data_type = 'date':
+						file_cols_md.append(
+							{"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
+							 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique, "dataFormat": app.config.get('DATE_FORMAT')})
+					else:
+						file_cols_md.append(
+							{"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
+							 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique})
 
 				files_meta_data.append(
 					{

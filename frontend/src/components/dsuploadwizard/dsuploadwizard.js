@@ -433,6 +433,19 @@ class DSUploadWizard extends React.Component {
 																		<option value="string">String</option>
 																		<option value="numeric">Numeric</option>
 																	</select>
+
+																	<select style={{display: e.colType === "date" ? "block" : "none", width: '60%'}}
+																			value={e.dataFormat}
+																			name={`filesMd[${i}].fileColMd[${b}].dataFormat`}
+																			onChange={this.handleChange}>
+																		<option value="dd/MM/yyyy">dd/MM/yyyy</option>
+																		<option value="dd-MMM-yyyy">dd-MMM-yyyy</option>
+																		<option value="MMMM-yyyy">MMMM-yyyy</option>
+																		<option value="MMM YYYY">MMM YYYY</option>
+																		<option value="dd MMM">dd MMM</option>
+																		<option value="dd/MM/yyyy HH:mm:ss">dd/MM/yyyy HH:mm:ss</option>
+																		<option value="YYYY">YYYY</option>
+																	</select>
 																</td>
 																<td>{e.isUnique ? "Yes" : "No"}</td>
 															</tr>
