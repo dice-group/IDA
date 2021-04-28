@@ -14,9 +14,8 @@ import pandas as pd
 app = Flask(__name__)
 cors = CORS(app)
 
-app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['TEMP_FOLDER'] = 'temp-uploads'
-app.config['DS_FOLDER'] = '/Users/maqbool/ida-datasets'
+app.config['DS_FOLDER'] = 'datasets'
 # IDA supports "dd/MM/yyyy", "dd MMM", "MMM YYYY", "dd/MM/yyyy HH:mm:ss", "dd-MMM-yyyy", "MMMM-yyyy", "YYYY"
 app.config['DATE_FORMAT'] = 'dd/MM/yyyy'
 app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum file size 5mb
@@ -74,14 +73,13 @@ def upload_file():
 					elif d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
 						data_type = "numeric"
 
-					if data_type = 'date':
-						file_cols_md.append(
-							{"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
-							 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique, "dataFormat": app.config.get('DATE_FORMAT')})
-					else:
-						file_cols_md.append(
-							{"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
-							 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique})
+					row = {"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
+							 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique}
+
+					if data_type == 'date':
+						row["dataFormat"] = app.config.get('DATE_FORMAT')
+
+					file_cols_md.append(row)
 
 				files_meta_data.append(
 					{
@@ -134,13 +132,33 @@ def save_metadata():
 									 auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
 
 				if resp.status_code == 200:
-					dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
-					with open(os.path.join(dsdirpath, 'dsmd.json'), 'w') as  metadata_file:
-						metadata_file.write(json.dumps(metadata))
+					# Extracting entities from Metadata
+					entity_columns = {}
+					date_columns = {}
 
-					# Moving dataset folder from temp directory to dataset directory
-					shutil.move(dsdirpath, os.path.join(app.config.get('DS_FOLDER'), dsName))
-					return {"message": "Successfully uploaded dataset"}, 200
+					for i in metadata.get('filesMd'):
+						for j in i.get('fileColMd'):
+							colName = j.get('colName').strip()
+							entity_columns[colName] = [colName]
+
+							if j.get('colType') == 'date':
+								date_columns[colName] = [colName]
+
+					# Updating entities
+					resp_entds = requests.post("http://localhost:8080/addentities", headers={'Content-type': 'application/json'},json={"entityId": "dataset_name","entityList": {dsName: [dsName]}})
+					resp_entcol = requests.post("http://localhost:8080/addentities", headers={'Content-type': 'application/json'},json={"entityId": "column_name","entityList": entity_columns})
+					resp_entdate = requests.post("http://localhost:8080/addentities", headers={'Content-type': 'application/json'},json={"entityId": "date_columns","entityList": date_columns})
+
+					if resp_entds.status_code == 200 and resp_entcol.status_code == 200 and resp_entdate.status_code == 200:
+						dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
+						with open(os.path.join(dsdirpath, 'dsmd.json'), 'w') as  metadata_file:
+							metadata_file.write(json.dumps(metadata))
+
+						# Moving dataset folder from temp directory to dataset directory
+						shutil.move(dsdirpath, os.path.join(app.config.get('DS_FOLDER'), dsName))
+						return {"message": "Successfully uploaded dataset"}, 200
+					else:
+						return {"message": "[Dialogflow] Error occurred while updating entities"}, 500
 			else:
 				return {'message': 'dataset with name ' + dsName + ' already exists!'}, 409
 		else:
