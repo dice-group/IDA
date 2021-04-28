@@ -502,8 +502,9 @@ instance:line_chart_4 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/scatter_plot_1
 instance:scatter_plot_1 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:x_axis_unique ,
-                                               instance_param:y_axis_not_required ;
+                        ivoop:hasInstanceParam instance_param:reference_values ,
+                                               instance_param:x_axis_numeric ,
+                                               instance_param:y_axis_numeric ;
                         rdfs:label "Scatter Plot Instance 1" .
 
 
@@ -700,6 +701,14 @@ instance_param:reference_column rdf:type owl:NamedIndividual ,
                                 rdfs:label "Reference Column"@en .
 
 
+###  https://www.upb.de/ida/viz/data/instance_param/reference_values
+instance_param:reference_values rdf:type owl:NamedIndividual ,
+                                         ivoc:InstanceParam ;
+                                ivoop:hasRepType representational_type:NotRequired ;
+                                ivoop:representedParam parameter:ref_values ;
+                                rdfs:label "Reference Values"@en .
+
+
 ###  https://www.upb.de/ida/viz/data/instance_param/x_axis_bins
 instance_param:x_axis_bins rdf:type owl:NamedIndividual ,
                                     ivoc:InstanceParam ;
@@ -714,6 +723,14 @@ instance_param:x_axis_non_unique rdf:type owl:NamedIndividual ,
                                  ivoop:hasRepType representational_type:NonUnique ;
                                  ivoop:representedParam parameter:x_axis ;
                                  rdfs:label "X-Axis Non Unique"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/x_axis_numeric
+instance_param:x_axis_numeric rdf:type owl:NamedIndividual ,
+                                       ivoc:InstanceParam ;
+                              ivoop:hasRepType representational_type:Numeric ;
+                              ivoop:representedParam parameter:x_axis ;
+                              rdfs:label "X-Axis Numeric"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/instance_param/x_axis_unique
@@ -806,6 +823,14 @@ parameter:line_value rdf:type owl:NamedIndividual ,
                      ivoop:hasRepType representational_type:Numeric ;
                      ivodp:hasPriority 3 ;
                      rdfs:label "Line_Value"@en .
+
+
+###  https://www.upb.de/ida/viz/data/parameter/ref_values
+parameter:ref_values rdf:type owl:NamedIndividual ,
+                              ivoc:Parameter ;
+                     ivoop:hasRepType representational_type:Nominal ;
+                     ivodp:hasPriority 3 ;
+                     rdfs:label "Reference_Values"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/parameter/reference_column
@@ -1270,14 +1295,9 @@ visualization:line_chart rdf:type owl:NamedIndividual ,
 visualization:scatter_plot rdf:type owl:NamedIndividual ,
                                     ivoc:Visualization ;
                            ivoop:hasInformation information:ScatterPlot ;
-                           ivoop:hasInstance instance:scatter_plot_1 ,
-                                             instance:scatter_plot_2 ,
-                                             instance:scatter_plot_3 ,
-                                             instance:scatter_plot_4 ,
-                                             instance:scatter_plot_5 ,
-                                             instance:scatter_plot_6 ,
-                                             instance:scatter_plot_7 ;
-                           ivoop:hasParam parameter:x_axis ,
+                           ivoop:hasInstance instance:scatter_plot_1 ;
+                           ivoop:hasParam parameter:ref_values ,
+                                          parameter:x_axis ,
                                           parameter:y_axis ;
                            ivoop:hasSuggestionParamValue suggestion_param:scatterplot_x_value ,
                                                          suggestion_param:scatterplot_y_value ;

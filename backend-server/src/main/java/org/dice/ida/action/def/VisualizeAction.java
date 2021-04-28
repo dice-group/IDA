@@ -22,6 +22,7 @@ import org.dice.ida.model.linechart.LineChartItem;
 import org.dice.ida.model.scatterplot.ScatterPlotData;
 import org.dice.ida.model.scatterplot.ScatterPlotItem;
 import org.dice.ida.model.scatterplotmatrix.ScatterPlotMatrixData;
+
 import java.util.Map;
 import java.util.List;
 import java.util.Comparator;
@@ -34,8 +35,10 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Calendar;
 import java.util.TreeMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -43,6 +46,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+
 import org.dice.ida.util.DataUtil;
 import org.dice.ida.util.DialogFlowUtil;
 import org.dice.ida.util.RDFUtil;
@@ -172,8 +176,7 @@ public class VisualizeAction implements Action {
 							chatMessageResponse.setMessage(IDAConst.BC_LOADED);
 							break;
 						case IDAConst.VIZ_TYPE_SCATTER_PLOT:
-							createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
-							createScatterPlotResponse();
+							createScatterPlotData();
 							chatMessageResponse.setUiAction(IDAConst.UIA_SCATTERPLOT);
 							chatMessageResponse.setMessage(IDAConst.SCATTER_PLOT_LOADED);
 							break;
@@ -298,7 +301,7 @@ public class VisualizeAction implements Action {
 	 * Method to get list of columns from a table.
 	 *
 	 * @param datasetName - Data set name
-	 * @param tableName - Table Name
+	 * @param tableName   - Table Name
 	 * @return List of colums
 	 */
 	private ArrayList<String> getColumnList(String datasetName, String tableName) {
@@ -324,7 +327,7 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to handle the chatbot flow for label in scatter plot matrix visualizations
 	 *
-	 * @param paramMap            - parameter map from dialogflow
+	 * @param paramMap - parameter map from dialogflow
 	 * @return - true if label flow is complete and false otherwise
 	 * @throws NoSuchAlgorithmException - dialogflow auth encryption algorithm is invalid
 	 * @throws IOException              - dialogflow credentials file does not exist
@@ -1029,24 +1032,6 @@ public class VisualizeAction implements Action {
 	}
 
 	/**
-	 * Method to create a response object for scatter plot
-	 */
-	private void createScatterPlotResponse() {
-		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM);
-		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
-		String xAxisColumnType = parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-		String yAxisColumnType = parameterTypeMap.get(IDAConst.Y_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-		String yAxisLabel = IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(xAxisColumnType) ? yAxisColumn : yAxisColumnType + " " + yAxisColumn;
-		String graphLabel = "Scatter plot for " + xAxisColumn + " and " + yAxisLabel;
-		List<ScatterPlotItem> ScatterPlotItemList = new ArrayList<>();
-		for (String label : graphItems.keySet().stream().sorted(comparator).collect(Collectors.toList())) {
-			ScatterPlotItemList.add(new ScatterPlotItem(label, graphItems.get(label)));
-		}
-		payload.put("scatterPlotData", new ScatterPlotData(graphLabel, ScatterPlotItemList, xAxisColumn, yAxisLabel));
-
-	}
-
-	/**
 	 * Method to create a response object based on graph items for bubble graph
 	 *
 	 * @param dsName    - name of the dataset
@@ -1212,7 +1197,7 @@ public class VisualizeAction implements Action {
 			labelCountsMap.put(label, labelCounts);
 			updateLineChartData(chartData, labelData, label, date, valueType, value);
 		}
-		if(IDAConst.TRANSFORMATION_TYPE_AVG.equals(valueType)) {
+		if (IDAConst.TRANSFORMATION_TYPE_AVG.equals(valueType)) {
 			updateLinesWithAverage(chartData, labelCountsMap);
 		}
 		return chartData;
@@ -1221,7 +1206,7 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to create the X-Axis labels for the line chart
 	 *
-	 * @param calendar - Calendar instance
+	 * @param calendar   - Calendar instance
 	 * @param dateColumn - Temporal column
 	 */
 	private void createlineChartXAxisLabels(Calendar calendar, String dateColumn) {
@@ -1247,12 +1232,12 @@ public class VisualizeAction implements Action {
 	 *
 	 * @param chartData - line chart data instance
 	 * @param labelData - line values for a label (Empty map for newly seen label or existing data for already seen label)
-	 * @param label - label of the line
-	 * @param date - date string for the row
+	 * @param label     - label of the line
+	 * @param date      - date string for the row
 	 * @param valueType - Y-axis value type
-	 * @param value - Y-Axis value of the row
+	 * @param value     - Y-Axis value of the row
 	 */
-	private void updateLineChartData(Map<String, Map<String, Double>> chartData,Map<String, Double> labelData, String label, String date, String valueType, double value) {
+	private void updateLineChartData(Map<String, Map<String, Double>> chartData, Map<String, Double> labelData, String label, String date, String valueType, double value) {
 		double oldValue = labelData.getOrDefault(date, 0.0);
 		double newValue;
 		switch (valueType) {
@@ -1274,15 +1259,15 @@ public class VisualizeAction implements Action {
 	/**
 	 * Method to update the line values with the average.
 	 *
-	 * @param chartData - line chart data
+	 * @param chartData      - line chart data
 	 * @param labelCountsMap - count of values for each labels to calculate the average
 	 */
 	private void updateLinesWithAverage(Map<String, Map<String, Double>> chartData, Map<String, Map<String, Integer>> labelCountsMap) {
 		Map<String, Integer> labelCounts;
-		for(String lineLabel: chartData.keySet()) {
+		for (String lineLabel : chartData.keySet()) {
 			labelCounts = labelCountsMap.get(lineLabel);
 			Map<String, Double> labelData = chartData.get(lineLabel);
-			for(String dateLabel: labelData.keySet()) {
+			for (String dateLabel : labelData.keySet()) {
 				labelData.put(dateLabel, labelData.get(dateLabel) / (labelCounts.get(dateLabel) > 0.0 ? labelCounts.get(dateLabel) : 1.0));
 			}
 			chartData.put(lineLabel, labelData);
@@ -1331,4 +1316,34 @@ public class VisualizeAction implements Action {
 		lineChartData.setLines(lines);
 		payload.put("lineChartData", lineChartData);
 	}
+
+	/**
+	 * Method to create scatterplot data from given parameter values.
+	 */
+	private void createScatterPlotData() {
+		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM);
+		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
+		String referenceColumn = parameterMap.get(IDAConst.REFERENCE_VALUES_PARAM);
+		String graphLabel = "Scatter plot for " + xAxisColumn + " and " + yAxisColumn;
+		List<ScatterPlotItem> scatterPlotItemList = new ArrayList<>();
+		double xValue;
+		double yValue;
+		String refValue;
+		for (Map<String, String> entry : tableData) {
+			refValue = entry.get(referenceColumn);
+			try {
+				yValue = Double.parseDouble(entry.get(yAxisColumn));
+			} catch (Exception ex) {
+				yValue = 0.0;
+			}
+			try {
+				xValue = Double.parseDouble(entry.get(xAxisColumn));
+			} catch (Exception ex) {
+				xValue = 0.0;
+			}
+			scatterPlotItemList.add(new ScatterPlotItem(xValue, yValue, refValue));
+		}
+		payload.put("scatterPlotData", new ScatterPlotData(graphLabel, scatterPlotItemList, xAxisColumn, yAxisColumn));
+	}
+
 }

@@ -273,6 +273,7 @@ public interface IDAConst {
 	String BUBBLE_SIZE_PARAM = "Bubble_Size";
 	String X_AXIS_PARAM = "X-Axis";
 	String Y_AXIS_PARAM = "Y-Axis";
+	String REFERENCE_VALUES_PARAM = "Reference_Values";
 
 	public static final String PARAMETER_TYPE_BIN_SIZE = "bin_size";
 	public static final String PARAMETER_TYPE_DURATION_UNIT = "unit";
@@ -316,6 +317,7 @@ public interface IDAConst {
 		put("Temporal_Column", "X-Axis (Temporal data)");
 		put("Line_Label", "Line Labels");
 		put("Line_Value", "Line Values");
+		put("Reference_Values", "Reference Values");
 	}};
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");
