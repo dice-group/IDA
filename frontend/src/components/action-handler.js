@@ -69,7 +69,7 @@ function addAnalysisEntry(props, analysisData, label, name, activeDSName, tableN
     props.setDetails(treeData);
     props.setActiveTable(tableName);
     props.setActiveDS(activeDSName);
-    props.setActiveTableData(analysisData);
+    name === "clustering" && props.setActiveTableData(analysisData);
     updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName);
 }
 

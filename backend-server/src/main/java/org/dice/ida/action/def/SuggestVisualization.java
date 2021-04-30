@@ -56,7 +56,13 @@ public class SuggestVisualization implements Action {
 				instanceMap = rdfUtil.getInstances(vizIntent);
 				Map<String, List<String>> paramList = suggestionParam.get(viz);
 				List<SuggestionParam> suggestionParamList = new ArrayList<>();
-				Map<String, String> vizParams = new HashMap<>();
+				Map<String, String> vizParams = new HashMap<>(){{
+					put(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE, "1.0");
+					put(IDAConst.INTENT_NAME, vizIntent);
+					put(IDAConst.PARAM_FILTER_STRING, "all");
+					put(IDAConst.PARAM_TEXT_MSG, "Suggested visualization rendered");
+					put("isGrouped", "false");
+				}};
 				for (String param : paramList.keySet()) {
 					Map<String, Double> attributeList = statProps.get(paramList.get(param).get(0));
 					String attributeProperty = paramList.get(param).get(1);
@@ -75,10 +81,10 @@ public class SuggestVisualization implements Action {
 					vizParams.put(param, key);
 					paramMap.put(param, key);
 					columnNameList.add(key);
-					param = IDAConst.PARAM_NAME_MAP.getOrDefault(param, param);
-					suggestionParamList.add(new SuggestionParam(param, key));
+					String paramLabel = IDAConst.PARAM_NAME_MAP.getOrDefault(param, param);
+					suggestionParamList.add(new SuggestionParam(paramLabel, key, param));
 				}
-				paramMap.put(IDAConst.PARAM_FILTER_STRING, "All");
+				paramMap.put(IDAConst.PARAM_FILTER_STRING, IDAConst.BG_FILTER_ALL);
 				if (columnNameList.size() > 0) {
 					for (Integer attrpos : attributeListViz.keySet()) {
 						List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, false);

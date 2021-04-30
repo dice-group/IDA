@@ -6,6 +6,14 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import LaunchIcon from "@material-ui/icons/Launch";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 
 import "./vizSuggestion.css";
 
@@ -14,24 +22,85 @@ export default class IDAVisualizationSuggestion extends Component {
   suggestionData = {};
   nodeId = "";
   tableName = "";
-  vizInfo = {};
+  vizInfo = [];
+  paramData = {};
+  props;
 
   constructor(props) {
     super(props);
+    this.props = props;
     this.suggestionData = props.data;
     this.nodeId = props.nodeId;
     this.tableName = props.tableName;
+    this.vizInfo = [];
+    this.suggestionData.forEach((viz) => {
+      let suggestionParams = [];
+      let vizParams = [];
+      Object.keys(viz.visualizationParamTypeList).forEach((param, typeParamIndex) => {
+        const typesList = viz.visualizationParamTypeList[`${param}`];
+        if (typeParamIndex === 0 && typesList.length === 1) {
+          suggestionParams = [viz.suggestionParamList];
+          vizParams = [viz.visualizationParams];
+        } else if (typeParamIndex === 0 && typesList.length > 1) {
+          typesList.forEach((type) => {
+            const sParams = JSON.parse(JSON.stringify(viz.suggestionParamList));
+            const vParams = JSON.parse(JSON.stringify(viz.visualizationParams));
+            const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
+            sParams[index].value += " (" + type + ")";
+            vParams[`${param}_type`] = type;
+            suggestionParams.push(sParams);
+            vizParams.push(vParams);
+          });
+        } else if (typesList.length > 1) {
+          let updatedSuggestionParams = [];
+          let updatedVizParams = [];
+          typesList.forEach((type) => {
+            suggestionParams.forEach((paramList) => {
+              const sParams = JSON.parse(JSON.stringify(paramList));
+              const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
+              sParams[index].value += " (" + type + ")";
+              updatedSuggestionParams.push(sParams);
+            });
+            vizParams.forEach((vParamList) => {
+              const vParams = JSON.parse(JSON.stringify(vParamList));
+              vParams[`${param}_type`] = type;
+              updatedVizParams.push(vParams);
+            });
+          });
+          suggestionParams = updatedSuggestionParams;
+          vizParams = updatedVizParams;
+        }
+      });
+      this.vizInfo.push({
+        vizName: viz.vizName,
+        visualizationInfo: viz.visualizationInfo,
+        suggestionInfo: {
+          suggestionParams: suggestionParams,
+          vizParams: vizParams
+        }
+      });
+    });
+  }
+
+  drawVisualization(vizParams) {
+    if (!this.props.isChatbotOpen) {
+      this.props.setIsChatbotOpen(true);
+    }
+    const elem = document.getElementById("chat-input");
+    elem.value = "Draw " + vizParams.intentname;
+    document.getElementById("send-btn").setAttribute("data-params", JSON.stringify(vizParams));
+    document.getElementById("send-btn").click();
   }
 
   render() {
     return <>
       <Typography varient="h5" className="mb-2 p-3">
         Suggested parameters for available visualizations for the <b>{this.tableName}</b> table are listed below.
-        You can render these visualizations in new tabs by asking the chatbot to draw them (For Eg: <i>"draw a bar chart"</i>).
+        You can render these visualizations in new tabs by clicking the 'Draw' button.
       </Typography>
       <div className="m-2">
         {
-          this.suggestionData.map(
+          this.vizInfo.map(
             (viz, i) => (
               <Accordion key={i} defaultExpanded={i === 0}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} id={this.nodeId + "-" + viz.vizName}>
@@ -45,18 +114,48 @@ export default class IDAVisualizationSuggestion extends Component {
                       For more information you can go to <a target="_blank" href={viz.visualizationInfo.link}>{viz.visualizationInfo.linkLabel}<LaunchIcon fontSize="small" /></a>
                       </Typography>
                     </Grid>
-                    <Grid container item xs={12}>
-                      {
-                        viz.suggestionParamList.map(
-                          (entry, j) => (
-                            <Grid item xs={6} md={4} lg={2} key={j}>
-                              <Typography varient="h5">{entry.param}:</Typography>
-                              <b>{entry.value}</b>
-                            </Grid>
-                          )
-                        )
-                      }
-                    </Grid>
+                    {
+                      <Grid container item xs={12}>
+                        <TableContainer component={Paper}>
+                          <Table aria-label="suggestion table">
+                            <TableHead>
+                              <TableRow>
+                                {
+                                  viz.suggestionInfo.suggestionParams[0].map(
+                                    (entry, j) => (
+                                      <TableCell align="center" key={j}>
+                                        <b>{entry.param}</b>
+                                      </TableCell>
+                                    )
+                                  )
+                                }
+                                <TableCell align="center"></TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {
+                                viz.suggestionInfo.suggestionParams.map(
+                                  (suggestionParamList, rowIndex) => ((
+                                    <TableRow key={rowIndex}>
+                                      {
+                                        suggestionParamList.map(
+                                          (row, j) => (
+                                            <TableCell align="center" key={j}>{row.value}</TableCell>
+                                          )
+                                        )
+                                      }
+                                      <TableCell align="center">
+                                        <Button variant="contained" color="primary" onClick={() => this.drawVisualization(viz.suggestionInfo.vizParams[rowIndex])}>Draw</Button>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))
+                                )
+                              }
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Grid>
+                    }
                   </Grid>
                 </AccordionDetails>
               </Accordion>

@@ -61,7 +61,7 @@ export default function ScrollableTabsButtonAuto(props) {
   const value = props.selectedNodeId || data.id;
   const handleChange = (event, newValue) => {
     props.setSelectedNodeId(newValue);
-    const selectedTab = tabs.find((tab) => tab.id === newValue && (tab.type === "table" || tab.type === "clustering")) || {};
+    const selectedTab = tabs.find((tab) => tab.id === newValue && (tab.type === "table" || tab.type === "clustering" || tab.type === "suggestion")) || {};
     props.setActiveTable(selectedTab.fileName || "");
     if (selectedTab.type === "clustering") {
       props.setActiveTableData(selectedTab.data);
@@ -92,7 +92,7 @@ export default function ScrollableTabsButtonAuto(props) {
       case "groupedBubblechart":
         return <IDAGroupedBubbleChart data={tab.data} nodeId={tab.id} />;
       case "suggestion":
-        return <IDAVisualizationSuggestion data={tab.data} nodeId={tab.id} tableName={tab.fileName} />;
+        return <IDAVisualizationSuggestion data={tab.data} nodeId={tab.id} tableName={tab.fileName} isChatbotOpen={props.isChatbotOpen} setIsChatbotOpen={props.setIsChatbotOpen} />;
       default:
         return null;
     }
