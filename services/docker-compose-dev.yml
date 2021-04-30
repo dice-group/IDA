@@ -30,10 +30,6 @@ services:
     volumes:
       -  "../pydsmx/:/app/"
       - "~/ida-datasets/:/app/datasets"
-    environment:
-      - FUSEKI_URL=http://fuseki:3030/
-      - FUSEKI_USER=admin
-      - FUSEKI_PW=$FUSEKI_PW
     networks:
       - ida-net
   ida-backend:
