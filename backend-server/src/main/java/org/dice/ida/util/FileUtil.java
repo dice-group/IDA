@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -146,6 +148,10 @@ public class FileUtil {
 	 * @return File System path of the file
 	 */
 	public String fetchSysFilePath(String dsName) {
-		return System.getenv("DB_PATH") + dsName;
+		String path = System.getenv("DB_PATH");
+		if (! Files.exists(Paths.get(path))) {
+			path = "/home/ida_mngr/ida-datasets/";
+		}
+		return path + dsName;
 	}
 }
