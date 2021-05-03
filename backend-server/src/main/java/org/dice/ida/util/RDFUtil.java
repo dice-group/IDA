@@ -11,6 +11,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 import org.dice.ida.constant.IDAConst;
 import org.springframework.stereotype.Component;
 
@@ -195,5 +198,20 @@ public class RDFUtil {
 		}
 		model = null;
 		return attributeMap;
+	}
+
+	public String addDatasetName(String dsName) {
+		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/> INSERT DATA { <https://www.upb.de/ida/datasets/" + dsName + ">  ab:names '" + dsName + "' ; . }";
+		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
+			try {
+				UpdateRequest update = UpdateFactory.create(queryString);
+				UpdateExecutionFactory.createRemote(update, dbHost + "ida_viz").execute();
+				return "true";
+			} catch (Exception ex) {
+				return "false";
+			}
+		} else {
+			return "false";
+		}
 	}
 }

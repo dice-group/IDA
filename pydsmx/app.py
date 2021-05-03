@@ -20,9 +20,8 @@ app.config['DS_FOLDER'] = 'datasets'
 app.config['DATE_FORMAT'] = 'dd/MM/yyyy'
 app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum file size 5mb
 
-FUSEKI_URL = os.environ.get('FUSEKI_URL', 'http://localhost:3030/')
-FUSEKI_USER = os.environ.get('FUSEKI_USER', '')
-FUSEKI_PASSWORD = os.environ.get('FUSEKI_PW', '')
+# http://localhost:8080 for not using Docker
+API_URL = '/ida-ws'
 
 
 @app.route('/', methods=['POST'])
@@ -74,7 +73,7 @@ def upload_file():
 						data_type = "numeric"
 
 					row = {"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
-							 "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique}
+						   "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique}
 
 					if data_type == 'date':
 						row["dataFormat"] = app.config.get('DATE_FORMAT')
@@ -121,17 +120,14 @@ def save_metadata():
 		dsName = metadata["dsName"].lower().strip()
 
 		if re.search(r"(^[A-Za-z0-9\-_]+$)", dsName):
-			resp = requests.post(FUSEKI_URL + "ida_viz/query", data={
-				"query": "SELECT ?subject ?predicate ?object WHERE {   ?subject ?predicate '" + dsName + "' }"}, auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
-			isNameUnique = False if len(resp.json()["results"]["bindings"]) > 0 else True
+
+			resp = requests.get(API_URL + "/datasetexist", params={'dsName': dsName})
+			isNameUnique = True if resp.text == 'false' else False
 
 			if isNameUnique:
-				resp = requests.post(FUSEKI_URL + "ida_viz/update", data={
-					"update": "PREFIX ab: <https://www.upb.de/ida/datasets/> INSERT DATA { <https://www.upb.de/ida/datasets/" + dsName
-							  + ">  ab:names '" + dsName + "' ; ab:paths '/docs/dowloads'. }"},
-									 auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
-
-				if resp.status_code == 200:
+				resp = requests.post(API_URL + "/adddataset", params={'dsName': dsName})
+				success = True if resp.text == 'true' else False
+				if success:
 					# Extracting entities from Metadata
 					entity_columns = {}
 					date_columns = {}
@@ -145,9 +141,9 @@ def save_metadata():
 								date_columns[colName] = [colName]
 
 					# Updating entities
-					resp_entds = requests.post("http://localhost:8080/addentities", headers={'Content-type': 'application/json'},json={"entityId": "dataset_name","entityList": {dsName: [dsName]}})
-					resp_entcol = requests.post("http://localhost:8080/addentities", headers={'Content-type': 'application/json'},json={"entityId": "column_name","entityList": entity_columns})
-					resp_entdate = requests.post("http://localhost:8080/addentities", headers={'Content-type': 'application/json'},json={"entityId": "date_columns","entityList": date_columns})
+					resp_entds = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},json={"entityId": "dataset_name","entityList": {dsName: [dsName]}})
+					resp_entcol = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},json={"entityId": "column_name","entityList": entity_columns})
+					resp_entdate = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},json={"entityId": "date_columns","entityList": date_columns})
 
 					if resp_entds.status_code == 200 and resp_entcol.status_code == 200 and resp_entdate.status_code == 200:
 						dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
