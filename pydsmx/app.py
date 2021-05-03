@@ -21,7 +21,7 @@ app.config['DATE_FORMAT'] = 'dd/MM/yyyy'
 app.config['MAX_CONTENT_LENGTH'] = 5000000  # Maximum file size 5mb
 
 # http://localhost:8080 for not using Docker
-API_URL = '/ida-ws'
+API_URL = os.getenv('API_URL')
 
 
 @app.route('/', methods=['POST'])

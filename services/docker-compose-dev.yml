@@ -30,6 +30,8 @@ services:
     volumes:
       -  "../pydsmx/:/app/"
       - "~/ida-datasets/:/app/datasets"
+    environment:
+      - API_URL=http://ida-backend:8080
     networks:
       - ida-net
   ida-backend:
