@@ -41,7 +41,7 @@ export default function IDANavbar(props) {
         tabs.push(selectedNode);
         props.setTabs(tabs);
       }
-      if (selectedNode.type === "table" || selectedNode.type === "clustering") {
+      if (selectedNode.type === "table" || selectedNode.type === "clustering" || selectedNode.type === "suggestion") {
         props.setActiveTable(selectedNode.fileName);
         if (selectedNode.type === "clustering") {
           props.setActiveTableData(selectedNode.data);
