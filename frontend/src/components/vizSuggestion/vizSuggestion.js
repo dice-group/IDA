@@ -87,7 +87,7 @@ export default class IDAVisualizationSuggestion extends Component {
       suggestionParams.forEach((paramList) => {
         const sParams = JSON.parse(JSON.stringify(paramList));
         const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
-        sParams[index].value += " (" + type + ")";
+        sParams[`${index}`].value += " (" + type + ")";
         updatedSuggestionParams.push(sParams);
       });
       vizParams.forEach((vParamList) => {
