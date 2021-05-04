@@ -38,21 +38,19 @@ export default class IDAVisualizationSuggestion extends Component {
       let vizParams = [];
       Object.keys(viz.visualizationParamTypeList).forEach((param, typeParamIndex) => {
         const typesList = viz.visualizationParamTypeList[`${param}`];
-        if (typeParamIndex === 0 && typesList.length === 1) {
-          suggestionParams = [viz.suggestionParamList];
-          vizParams = [viz.visualizationParams];
-        } else if (typeParamIndex === 0 && typesList.length > 1) {
-          typesList.forEach((type) => {
-            const sParams = JSON.parse(JSON.stringify(viz.suggestionParamList));
-            const vParams = JSON.parse(JSON.stringify(viz.visualizationParams));
-            const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
-            sParams[`${index}`].value += " (" + type + ")";
-            vParams[`${param}_type`] = type;
-            suggestionParams.push(sParams);
-            vizParams.push(vParams);
-          });
+        if (typeParamIndex === 0) {
+          if (typesList.length <= 1) {
+            suggestionParams = [viz.suggestionParamList];
+            vizParams = [viz.visualizationParams];
+          } else {
+            const updatedParams = this.initializeParams(viz, typesList, suggestionParams, vizParams, param);
+            suggestionParams = updatedParams.suggestionParams;
+            vizParams = updatedParams.vizParams;
+          }
         } else if (typesList.length > 1) {
-          this.getUpdatedParams(typesList, suggestionParams, vizParams, param);
+          const updatedParams = this.getUpdatedParams(typesList, suggestionParams, vizParams, param);
+          suggestionParams = updatedParams.updatedSuggestionParams;
+          vizParams = updatedParams.updatedVizParams;
         }
       });
       this.vizInfo.push({
@@ -64,6 +62,22 @@ export default class IDAVisualizationSuggestion extends Component {
         }
       });
     });
+  }
+
+  initializeParams(viz, typesList, suggestionParams, vizParams, param) {
+    typesList.forEach((type) => {
+      const sParams = JSON.parse(JSON.stringify(viz.suggestionParamList));
+      const vParams = JSON.parse(JSON.stringify(viz.visualizationParams));
+      const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
+      sParams[`${index}`].value += " (" + type + ")";
+      vParams[`${param}_type`] = type;
+      suggestionParams.push(sParams);
+      vizParams.push(vParams);
+    });
+    return {
+      suggestionParams,
+      vizParams
+    };
   }
 
   getUpdatedParams(typesList, suggestionParams, vizParams, param) {
@@ -82,8 +96,10 @@ export default class IDAVisualizationSuggestion extends Component {
         updatedVizParams.push(vParams);
       });
     });
-    suggestionParams = updatedSuggestionParams;
-    vizParams = updatedVizParams;
+    return {
+      updatedSuggestionParams,
+      updatedVizParams
+    };
   }
 
   drawVisualization(vizParams) {
