@@ -46,40 +46,44 @@ export default class IDAVisualizationSuggestion extends Component {
             const sParams = JSON.parse(JSON.stringify(viz.suggestionParamList));
             const vParams = JSON.parse(JSON.stringify(viz.visualizationParams));
             const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
-            sParams[index].value += " (" + type + ")";
+            sParams[`${index}`].value += " (" + type + ")";
             vParams[`${param}_type`] = type;
             suggestionParams.push(sParams);
             vizParams.push(vParams);
           });
         } else if (typesList.length > 1) {
-          let updatedSuggestionParams = [];
-          let updatedVizParams = [];
-          typesList.forEach((type) => {
-            suggestionParams.forEach((paramList) => {
-              const sParams = JSON.parse(JSON.stringify(paramList));
-              const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
-              sParams[index].value += " (" + type + ")";
-              updatedSuggestionParams.push(sParams);
-            });
-            vizParams.forEach((vParamList) => {
-              const vParams = JSON.parse(JSON.stringify(vParamList));
-              vParams[`${param}_type`] = type;
-              updatedVizParams.push(vParams);
-            });
-          });
-          suggestionParams = updatedSuggestionParams;
-          vizParams = updatedVizParams;
+          this.getUpdatedParams(typesList, suggestionParams, vizParams, param);
         }
       });
       this.vizInfo.push({
         vizName: viz.vizName,
         visualizationInfo: viz.visualizationInfo,
         suggestionInfo: {
-          suggestionParams: suggestionParams,
-          vizParams: vizParams
+          suggestionParams,
+          vizParams
         }
       });
     });
+  }
+
+  getUpdatedParams(typesList, suggestionParams, vizParams, param) {
+    let updatedSuggestionParams = [];
+    let updatedVizParams = [];
+    typesList.forEach((type) => {
+      suggestionParams.forEach((paramList) => {
+        const sParams = JSON.parse(JSON.stringify(paramList));
+        const index = sParams.findIndex((paramEntry) => paramEntry.attributeName === param);
+        sParams[index].value += " (" + type + ")";
+        updatedSuggestionParams.push(sParams);
+      });
+      vizParams.forEach((vParamList) => {
+        const vParams = JSON.parse(JSON.stringify(vParamList));
+        vParams[`${param}_type`] = type;
+        updatedVizParams.push(vParams);
+      });
+    });
+    suggestionParams = updatedSuggestionParams;
+    vizParams = updatedVizParams;
   }
 
   drawVisualization(vizParams) {
@@ -145,7 +149,7 @@ export default class IDAVisualizationSuggestion extends Component {
                                         )
                                       }
                                       <TableCell align="center">
-                                        <Button variant="contained" color="primary" onClick={() => this.drawVisualization(viz.suggestionInfo.vizParams[rowIndex])}>Draw</Button>
+                                        <Button variant="contained" color="primary" onClick={() => this.drawVisualization(viz.suggestionInfo.vizParams[`${rowIndex}`])}>Draw</Button>
                                       </TableCell>
                                     </TableRow>
                                   ))

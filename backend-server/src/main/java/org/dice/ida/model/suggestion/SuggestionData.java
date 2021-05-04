@@ -9,6 +9,7 @@ public class SuggestionData {
 	private VisualizationInfo visualizationInfo;
 	private List<SuggestionParam> suggestionParamList;
 	private Map<String, String> visualizationParams;
+	private Map<String, Set<String>> visualizationParamTypeList;
 
 	public Map<String, Set<String>> getVisualizationParamTypeList() {
 		return visualizationParamTypeList;
@@ -17,8 +18,6 @@ public class SuggestionData {
 	public void setVisualizationParamTypeList(Map<String, Set<String>> visualizationParamTypeList) {
 		this.visualizationParamTypeList = visualizationParamTypeList;
 	}
-
-	private Map<String, Set<String>> visualizationParamTypeList;
 
 	public String getVizName() {
 		return vizName;
