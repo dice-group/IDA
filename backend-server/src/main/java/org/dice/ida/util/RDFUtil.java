@@ -212,7 +212,7 @@ public class RDFUtil {
 				"?s rdf:type ivoc:Visualization ;" +
 				"rdfs:label '" + viz + "'@en ;" +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		QuerySolution querySolution = attributeResultSet.next();
 		String vizIntent = querySolution.get("s").asNode().toString();
 
@@ -234,7 +234,7 @@ public class RDFUtil {
 				"  ?statProp rdfs:label ?propLabel ." +
 				"  ?cond rdfs:label ?condLabel" +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -271,7 +271,7 @@ public class RDFUtil {
 				"  ?ref   ivodp:link ?link ;" +
 				"         rdfs:label ?label ." +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
