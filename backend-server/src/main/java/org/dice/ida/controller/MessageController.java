@@ -6,7 +6,11 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
+import org.dice.ida.model.EntityUpdateRequest;
+import org.dice.ida.util.DialogFlowAdminUtil;
 import org.dice.ida.util.DialogFlowUtil;
+import org.dice.ida.util.FileUtil;
+import org.dice.ida.util.RDFUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
@@ -53,6 +58,18 @@ public class MessageController {
 
 	@Autowired
 	private VisualizeAction visualizeAction;
+
+	@Autowired
+	private DialogFlowAdminUtil dialogFlowAdminUtil;
+
+	@Autowired
+	private FileUtil fileUtil;
+
+	@Autowired
+	private RDFUtil rdfUtil;
+
+
+>>>>>>> ida-171-data-upload
 
 	/**
 	 * Method to check the availability of the rest service
@@ -117,4 +134,21 @@ public class MessageController {
 		return response;
 	}
 
+	@CrossOrigin(origins = "*", allowCredentials = "true")
+	@RequestMapping(value = "/addentities", method = RequestMethod.POST)
+	public String addColumnEntities(@RequestBody EntityUpdateRequest entityUpdateRequest) throws Exception {
+		return dialogFlowAdminUtil.addValuesToEntity(entityUpdateRequest.getEntityId(), entityUpdateRequest.getEntityList());
+	}
+
+	@CrossOrigin(origins = "*", allowCredentials = "true")
+	@RequestMapping(value = "/datasetexist", method = RequestMethod.GET)
+	public boolean checkDatasetExist(@RequestParam String dsName) throws Exception {
+		return fileUtil.datasetExists(dsName);
+	}
+
+	@CrossOrigin(origins = "*", allowCredentials = "true")
+	@RequestMapping(value = "/adddataset", method = RequestMethod.POST)
+	public String addDatasetName(@RequestParam String dsName) throws Exception {
+		return rdfUtil.addDatasetName(dsName);
+	}
 }

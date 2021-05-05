@@ -7,22 +7,32 @@ services:
       - 4200:80
     networks:
       - ida-net
-  ida-backend:
-    image: $REGISTRY/ida/backend-server:$VERSION
-    volumes:
-      - "/home/ida_mngr/ida-qa-logs:/usr/local/tomcat/logs"
-    environment:
-      - FUSEKI_URL=http://fuseki:3030/
-      - FUSEKI_USER=admin
-      - FUSEKI_PW=$FUSEKI_PW
-    networks:
-      - ida-net
   fuseki:
     image: $REGISTRY/ida/fuseki-server:$VERSION
     environment:
       - ADMIN_PASSWORD=$FUSEKI_PW
     volumes:
       - fuseki-storage:/fuseki
+    networks:
+      - ida-net
+  pydsmx:
+    image: $REGISTRY/ida/pydsmx:$VERSION
+    volumes:
+      - "/home/ida_mngr/ida-datasets/:/app/datasets"
+    environment:
+      - API_URL=http://ida-backend:8080
+    networks:
+      - ida-net
+  ida-backend:
+    image: $REGISTRY/ida/backend-server:$VERSION
+    volumes:
+      - "/home/ida_mngr/ida-qa-logs:/usr/local/tomcat/logs"
+      - "/home/ida_mngr/ida-datasets/:/usr/local/tomcat/datasets"
+    environment:
+      - FUSEKI_URL=http://fuseki:3030/
+      - FUSEKI_USER=admin
+      - FUSEKI_PW=$FUSEKI_PW
+      - DB_PATH=/usr/local/tomcat/datasets/
     networks:
       - ida-net
 volumes:

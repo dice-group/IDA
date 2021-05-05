@@ -11,6 +11,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.suggestion.VisualizationInfo;
 import org.springframework.stereotype.Component;
@@ -38,9 +41,9 @@ public class RDFUtil {
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
 	 * @return It takes query string as its parameter and returns the result set after executing the query.
 	 */
-	private ResultSet getResultFromQuery(String queryString) {
-		QueryExecution queryExecution;
-		ResultSet resultSet;
+	public ResultSet getResultFromQuery(String queryString) {
+		QueryExecution queryExecution = null;
+		ResultSet resultSet = null;
 		Query query = QueryFactory.create(queryString);
 
 		/*
@@ -57,7 +60,7 @@ public class RDFUtil {
 					model.read(path);
 					queryExecution = QueryExecutionFactory.create(query, model);
 				} catch (NullPointerException ex) {
-					return null;
+					resultSet = null;
 				}
 			} else {
 				try {
@@ -65,7 +68,7 @@ public class RDFUtil {
 					conn = (RDFConnectionFuseki) builder.build();
 					queryExecution = conn.query(query);
 				} catch (Exception ex) {
-					return null;
+					resultSet = null;
 				} finally {
 					conn.close();
 				}
@@ -73,16 +76,20 @@ public class RDFUtil {
 		} else {
 			queryExecution = QueryExecutionFactory.create(query, model);
 		}
+
 		if (queryExecution != null) {
 			try {
 				resultSet = ResultSetFactory.copyResults(queryExecution.execSelect());
-				queryExecution.close();
-				return resultSet;
 			} catch (Exception e) {
-				return null;
+				resultSet = null;
+			} finally {
+				if (conn != null) {
+					conn.close();
+				}
+				queryExecution.close();
 			}
 		}
-		return null;
+		return resultSet;
 	}
 
 	/**
@@ -196,7 +203,6 @@ public class RDFUtil {
 		model = null;
 		return attributeMap;
 	}
-
 	public String getVizIntent(String viz) {
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
 				"SELECT DISTINCT ?s  " +
@@ -277,5 +283,37 @@ public class RDFUtil {
 			vizInfoMap.put(querySolution.get("viz").asLiteral().getString(), visualizationInfo);
 		}
 		return vizInfoMap;
+	}
+
+	public String addDatasetName(String dsName) {
+		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/> INSERT DATA { <https://www.upb.de/ida/datasets/" + dsName + ">  ab:names '" + dsName + "' ; . }";
+		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
+			try {
+				UpdateRequest update = UpdateFactory.create(queryString);
+				UpdateExecutionFactory.createRemote(update, dbHost + "ida_ds").execute();
+				return "true";
+			} catch (Exception ex) {
+				return "false";
+			}
+		} else {
+			return "false";
+		}
+	}
+
+	public ResultSet getListOfDatasets(String queryString) {
+		QueryExecution queryExecution = null;
+		ResultSet resultSet = null;
+		try {
+			RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + "ida_ds");
+			conn = (RDFConnectionFuseki) builder.build();
+			queryExecution = conn.query(queryString);
+			resultSet = ResultSetFactory.copyResults(queryExecution.execSelect());
+		} catch (Exception ex) {
+			resultSet = null;
+		} finally {
+			conn.close();
+			queryExecution.close();
+		}
+		return resultSet;
 	}
 }

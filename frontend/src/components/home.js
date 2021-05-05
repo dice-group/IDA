@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 // import ChatBot from "./chatbot/chatBot";
 import ChatApp from "./chatbot/chatbotcomp";
+import DSUploadWizard from "./dsuploadwizard/dsuploadwizard";
 import IDANavbar from "./navbar/navbar";
 import TabsWrappedLabel from "./tabs/tabs";
 import AppBar from "@material-ui/core/AppBar";
@@ -39,6 +40,7 @@ export default function Home(props) {
 	const [activeTable, setActiveTable] = useState("");
 	const [tabs, setTabs] = useState([]);
 	const [isChatbotOpen, setIsChatbotOpen] = useState(true);
+	const [isdsUploadWizardOpen, setdsUploadWizardOpen] = useState(false);
 	const [activeTableData, setActiveTableData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const buttonRef = useRef(null);
@@ -89,6 +91,10 @@ export default function Home(props) {
 	const handleContextPopoverClose = () => {
 		setAnchorEl(null);
 	};
+
+	const closeUploadWizard = () => {
+		setdsUploadWizardOpen(false);
+	}
 	return (
 		<>
 			<CssBaseline />
@@ -206,9 +212,11 @@ export default function Home(props) {
 					activeTableData={activeTableData}
 					setActiveTableData={setActiveTableData}
 					setContexts={setContexts}
+					setdsUploadWizardOpen={setdsUploadWizardOpen}
 				/>
 
 			</div>
+			<DSUploadWizard isOpen={isdsUploadWizardOpen} close={closeUploadWizard}/>
 		</>
 	);
 }

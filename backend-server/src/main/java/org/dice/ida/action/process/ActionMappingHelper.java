@@ -1,9 +1,9 @@
 package org.dice.ida.action.process;
 
-
 import org.dice.ida.action.def.Action;
 import org.dice.ida.action.def.ListDataSetsAction;
 import org.dice.ida.action.def.LoadDataSetAction;
+import org.dice.ida.action.def.UploadDatasetAction;
 import org.dice.ida.action.def.SimpleTextAction;
 import org.dice.ida.action.def.SuggestVisualization;
 import org.dice.ida.action.def.ListVisualizationsAction;
@@ -34,9 +34,9 @@ public class ActionMappingHelper {
 			case HELP:
 				action = appContext.getBean(SimpleTextAction.class);
 				break;
-//			case UPLOAD_DATASET:
-//				 TODO: do something
-//				break;
+			case UPLOAD_DATASET:
+				 action = appContext.getBean(UploadDatasetAction.class);
+				break;
 			case LOAD_DATASET:
 				action = appContext.getBean(LoadDataSetAction.class);
 				break;
