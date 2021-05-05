@@ -1088,7 +1088,7 @@ public class VisualizeAction implements Action {
 		String isGroupNeeded = paramMap.getOrDefault("isGrouped", "").toString();
 		if (isGroupNeeded.isEmpty()) {
 			dialogFlowUtil.setContext("get_group_needed");
-			chatMessageResponse.setMessage("Do you want to group the data?");
+			chatMessageResponse.setMessage("Do you want to further sub-divide your data into groups?");
 			return false;
 		} else if ("false".equals(isGroupNeeded)) {
 			groupingNeeded = false;
