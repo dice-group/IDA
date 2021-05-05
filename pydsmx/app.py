@@ -123,6 +123,7 @@ def save_metadata():
 
 			resp = requests.get(API_URL + "/datasetexist", params={'dsName': dsName})
 			isNameUnique = True if resp.text == 'false' else False
+			print("\n\n", resp.text, " ", isNameUnique, "\n\n")
 
 			if isNameUnique:
 				resp = requests.post(API_URL + "/adddataset", params={'dsName': dsName})
