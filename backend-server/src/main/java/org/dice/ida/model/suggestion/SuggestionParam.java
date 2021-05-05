@@ -1,5 +1,6 @@
 package org.dice.ida.model.suggestion;
 
+
 public class SuggestionParam {
 	private String param;
 	private String value;
@@ -33,5 +34,18 @@ public class SuggestionParam {
 
 	public void setAttributeName(String attributeName) {
 		this.attributeName = attributeName;
+	}
+
+	@Override
+	public String toString() {
+		return "Suggestion Param [param=" + param + ", value=" + value + ", attribute=" + attributeName + "]";
+	}
+
+	@Override
+	public boolean equals(Object obj2) {
+		if (!(obj2 instanceof SuggestionParam)) {
+			return false;
+		}
+		return this.toString().equals(obj2.toString());
 	}
 }
