@@ -68,9 +68,6 @@ public class MessageController {
 	@Autowired
 	private RDFUtil rdfUtil;
 
-
->>>>>>> ida-171-data-upload
-
 	/**
 	 * Method to check the availability of the rest service
 	 *
