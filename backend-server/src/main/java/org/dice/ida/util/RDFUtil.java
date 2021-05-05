@@ -41,7 +41,7 @@ public class RDFUtil {
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
 	 * @return It takes query string as its parameter and returns the result set after executing the query.
 	 */
-	public ResultSet getResultFromQuery(String queryString) {
+	public ResultSet getResultFromQuery(String queryString, String dsName) {
 		QueryExecution queryExecution = null;
 		ResultSet resultSet = null;
 		Query query = QueryFactory.create(queryString);
@@ -55,8 +55,10 @@ public class RDFUtil {
 			 */
 			if (dbHost == null || dbHost.isEmpty() || dbHost.isBlank()) {
 				try {
+					String resourceName = dsName.equals("ida_viz") ? "visualization_model/ida_viz_model.ttl" : "visualization_model/ida_ds_model.ttl";
+
 					model = ModelFactory.createDefaultModel();
-					String path = Objects.requireNonNull(getClass().getClassLoader().getResource("visualization_model/ida_viz_model.ttl")).getFile();
+					String path = Objects.requireNonNull(getClass().getClassLoader().getResource(resourceName)).getFile();
 					model.read(path);
 					queryExecution = QueryExecutionFactory.create(query, model);
 				} catch (NullPointerException ex) {
@@ -64,7 +66,7 @@ public class RDFUtil {
 				}
 			} else {
 				try {
-					RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + "ida_viz");
+					RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + dsName);
 					conn = (RDFConnectionFuseki) builder.build();
 					queryExecution = conn.query(query);
 				} catch (Exception ex) {
@@ -137,7 +139,7 @@ public class RDFUtil {
 				"    ?dependentParam rdfs:label ?dependentCol" +
 				"  }" +
 				"} ORDER BY ASC(?priority)";
-		ResultSet instancesResultSet = getResultFromQuery(queryString);
+		ResultSet instancesResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (instancesResultSet == null) {
 			return instanceMap;
 		}
@@ -187,7 +189,7 @@ public class RDFUtil {
 				"  ?param rdfs:label ?paramLabel ." +
 				"  ?param ivodp:hasPriority ?priority . " +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -298,22 +300,5 @@ public class RDFUtil {
 		} else {
 			return "false";
 		}
-	}
-
-	public ResultSet getListOfDatasets(String queryString) {
-		QueryExecution queryExecution = null;
-		ResultSet resultSet = null;
-		try {
-			RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + "ida_ds");
-			conn = (RDFConnectionFuseki) builder.build();
-			queryExecution = conn.query(queryString);
-			resultSet = ResultSetFactory.copyResults(queryExecution.execSelect());
-		} catch (Exception ex) {
-			resultSet = null;
-		} finally {
-			conn.close();
-			queryExecution.close();
-		}
-		return resultSet;
 	}
 }
