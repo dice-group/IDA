@@ -41,7 +41,7 @@ public class FileUtil {
 	 * @return - An ArrayList object containing names of available datasets
 	 */
 	public ArrayList<String> getListOfDatasets() {
-		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?object WHERE { ?subject <https://www.upb.de/ida/datasets/names> ?object }");
+		ResultSet results = new RDFUtil().getListOfDatasets("SELECT ?object WHERE { ?subject <https://www.upb.de/ida/datasets/names> ?object }");
 		while (results.hasNext()) {
 			datasetsList.add(results.next().get("?object").toString());
 		}

@@ -205,7 +205,7 @@ public class RDFUtil {
 		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
 			try {
 				UpdateRequest update = UpdateFactory.create(queryString);
-				UpdateExecutionFactory.createRemote(update, dbHost + "ida_viz").execute();
+				UpdateExecutionFactory.createRemote(update, dbHost + "ida_ds").execute();
 				return "true";
 			} catch (Exception ex) {
 				return "false";
@@ -213,5 +213,22 @@ public class RDFUtil {
 		} else {
 			return "false";
 		}
+	}
+
+	public ResultSet getListOfDatasets(String queryString) {
+		QueryExecution queryExecution = null;
+		ResultSet resultSet = null;
+		try {
+			RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + "ida_ds");
+			conn = (RDFConnectionFuseki) builder.build();
+			queryExecution = conn.query(queryString);
+			resultSet = ResultSetFactory.copyResults(queryExecution.execSelect());
+		} catch (Exception ex) {
+			resultSet = null;
+		} finally {
+			conn.close();
+			queryExecution.close();
+		}
+		return resultSet;
 	}
 }
