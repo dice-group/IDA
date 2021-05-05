@@ -1,6 +1,6 @@
 
 # [IDA](https://github.com/dice-group/IDA/)
-Software Campus project repository for Intelligent Data Science Chatbot
+Software Campus project for Intelligent Data Science Chatbot
 
 ## [Project Description](https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/)
 
