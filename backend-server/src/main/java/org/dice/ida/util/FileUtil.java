@@ -36,19 +36,6 @@ public class FileUtil {
 	private final ArrayList<String> datasetsList = new ArrayList<>();
 
 	/**
-	 * A simple method which reads available datasets and return them
-	 *
-	 * @return - An ArrayList object containing names of available datasets
-	 */
-	public ArrayList<String> getListOfDatasets() {
-		ResultSet results = new RDFUtil().getListOfDatasets("SELECT ?object WHERE { ?subject <https://www.upb.de/ida/datasets/names> ?object }");
-		while (results.hasNext()) {
-			datasetsList.add(results.next().get("?object").toString());
-		}
-		return datasetsList;
-	}
-
-	/**
 	 * Method to generate a collection of rows from a csv file in List<Map<String,
 	 * String>> format
 	 *
@@ -137,8 +124,21 @@ public class FileUtil {
 	 * @return - if dataset exists
 	 */
 	public boolean datasetExists(String dsName) {
-		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '"+dsName+"' }");
+		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '"+dsName+"' }", "ida_ds");
 		return (results != null) && results.hasNext();
+	}
+
+	/**
+	 * A simple method which reads available datasets and return them
+	 *
+	 * @return - An ArrayList object containing names of available datasets
+	 */
+	public ArrayList<String> getListOfDatasets() {
+		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?object WHERE { ?subject <https://www.upb.de/ida/datasets/names> ?object }", "ida_ds");
+		while (results.hasNext()) {
+			datasetsList.add(results.next().get("?object").toString());
+		}
+		return datasetsList;
 	}
 
 	/**
