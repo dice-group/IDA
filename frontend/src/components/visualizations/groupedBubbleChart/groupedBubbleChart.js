@@ -42,7 +42,7 @@ export default class IDAGroupedBubbleChart extends Component {
     drawGraph() {
         const pack = (data) => d3.pack()
             .size([this.width - 2, this.height - 2])
-            .padding(3)
+            .padding(30)
             (d3.hierarchy(data)
                 .sum((d) => d.value)
                 .sort((a, b) => b.value - a.value));
@@ -77,22 +77,22 @@ export default class IDAGroupedBubbleChart extends Component {
         node.append("circle")
             .attr("r", (d) => d.r)
             .attr("fill", (d) => color(d.height));
+        node.append("text")
+            .attr("dy", (d) => d.children ? (-d.r + (d.r / 3)) : ".2em")
+            .style("text-anchor", "middle")
+            .text((d) => d.data.name.trim())
+            .attr("font-family", "sans-serif")
+            .attr("font-size", (d) => Math.min(d.r / 7, 12) + "px")
+            .attr("fill", (d) => d.children ? "#000" : "#FFF")
+            .style("visibility", (d) => d.parent ? "visible" : "hidden");
 
         const leaf = node.filter((d) => !d.children);
 
         leaf.select("circle")
             .attr("id", (d) => (d.leafUid = uid("leaf")).id);
 
-        leaf.append("text")
-            .attr("dy", ".2em")
-            .style("text-anchor", "middle")
-            .text((d) => d.data.name)
-            .attr("font-family", "sans-serif")
-            .attr("font-size", (d) => d.r / 5)
-            .attr("fill", "#FFF");
-
         node.append("title")
-            .text((d) => `${d.ancestors().map((d) => d.data.name).reverse().join("-")}:\n${format(d.value)}`);
+            .text((d) => `${d.ancestors().map((d) => d.data.name.trim()).reverse().join("-")}:\n${format(d.value)}`);
 
         const zoom = d3.zoom()
             .scaleExtent([0.1, Infinity])
