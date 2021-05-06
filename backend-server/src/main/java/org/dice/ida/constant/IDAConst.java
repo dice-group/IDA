@@ -281,6 +281,8 @@ public interface IDAConst {
 	public static final String LABEL_PATTERN_MONTH = "MMMM-yyyy";
 	public static final String LABEL_PATTERN_YEAR = "yyyy";
 	public static final String ATTRIBUTE_TYPE_SUFFIX = "_type";
+	public static final String ATTRIBUTE_CHOICE_SUFFIX = "_choice";
+
 
 	/**
 	 * Clustering Parameters

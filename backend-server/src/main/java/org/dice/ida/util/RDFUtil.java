@@ -192,4 +192,31 @@ public class RDFUtil {
 		model = null;
 		return attributeMap;
 	}
+
+	public Map<String, Boolean> getAttributeOptionalMap(String vizName) {
+		Map<String, Boolean> attributeOptionalMap = new TreeMap<>();
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?paramLabel ?isoptional " +
+				"WHERE { " +
+				"  visualization:" + vizName + " ?p ?o ;" +
+				"                               ivoop:hasParam ?param . " +
+				"  ?param rdfs:label ?paramLabel ." +
+				"  ?param ivodp:isOptional ?isoptional  " +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String param = querySolution.get("paramLabel").asLiteral().getString();
+			boolean optional = (boolean) querySolution.get("isoptional").asNode().getLiteralValue();
+			attributeOptionalMap.put(param,optional);
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
+		return attributeOptionalMap;
+	}
 }

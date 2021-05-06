@@ -184,6 +184,15 @@ ivodp:hasPriority rdf:type owl:DatatypeProperty ;
                   rdfs:label "priority"@en .
 
 
+###  https://www.upb.de/ida/viz/ontology/data-property/isOptional
+ivodp:isOptional rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf owl:topDataProperty ;
+                 rdfs:domain ivoc:Parameter ;
+                 rdfs:range xsd:boolean ;
+                 dc:description "True if the parameter is optional for the visualization" ;
+                 rdfs:label "isOptional" .
+
+
 ###  https://www.upb.de/ida/viz/ontology/data-property/link
 ivodp:link rdf:type owl:DatatypeProperty ;
            rdfs:subPropertyOf owl:topDataProperty ;
@@ -740,6 +749,7 @@ parameter:bubble_label rdf:type owl:NamedIndividual ,
                        ivoop:hasParamTree representation_tree:tree_1 ;
                        ivoop:hasRepType representational_type:Categorical ;
                        ivodp:hasPriority 1 ;
+                       ivodp:isOptional "false"^^xsd:boolean ;
                        rdfs:label "Bubble_Label"@en .
 
 
@@ -748,6 +758,7 @@ parameter:bubble_size rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasPriority 2 ;
+                      ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Bubble_Size"@en .
 
 
@@ -756,6 +767,7 @@ parameter:column_list rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasPriority 1 ;
+                      ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Column_List"@en .
 
 
@@ -764,6 +776,7 @@ parameter:line_label rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Nominal ;
                      ivodp:hasPriority 2 ;
+                     ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Label"@en .
 
 
@@ -772,6 +785,7 @@ parameter:line_value rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Numeric ;
                      ivodp:hasPriority 3 ;
+                     ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Value"@en .
 
 
@@ -780,6 +794,7 @@ parameter:ref_values rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Nominal ;
                      ivodp:hasPriority 3 ;
+                     ivodp:isOptional "true"^^xsd:boolean ;
                      rdfs:label "Reference_Values"@en .
 
 
@@ -796,6 +811,7 @@ parameter:temporal_column rdf:type owl:NamedIndividual ,
                                    ivoc:Parameter ;
                           ivoop:hasRepType representational_type:Date ;
                           ivodp:hasPriority 1 ;
+                          ivodp:isOptional "false"^^xsd:boolean ;
                           rdfs:label "Temporal_Column"@en .
 
 
@@ -805,6 +821,7 @@ parameter:x_axis rdf:type owl:NamedIndividual ,
                  ivoop:hasParamTree representation_tree:tree_1 ;
                  ivoop:hasRepType representational_type:Categorical ;
                  ivodp:hasPriority 1 ;
+                 ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "X-Axis"@en .
 
 
@@ -813,6 +830,7 @@ parameter:y_axis rdf:type owl:NamedIndividual ,
                           ivoc:Parameter ;
                  ivoop:hasRepType representational_type:Numeric ;
                  ivodp:hasPriority 2 ;
+                 ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "Y-Axis"@en .
 
 
@@ -1152,6 +1170,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                   ivoc:Parameter ;
                          ivoop:hasRepType representational_type:Nominal ;
                          ivodp:hasPriority 3 ;
+                         ivodp:isOptional "false"^^xsd:boolean ;
                          rdfs:label "ScatterPlotMatrix_Label" .
 
 
@@ -1159,6 +1178,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 :hasListColumn rdf:type owl:NamedIndividual ,
                         ivoc:Parameter ;
                ivodp:hasPriority 4 ;
+               ivodp:isOptional "false"^^xsd:boolean ;
                rdfs:label "hasListColumn" .
 
 
@@ -1166,8 +1186,8 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 #    Annotations
 #################################################################
 
-<https://www.upb.de/ida/ontology/DataType> rdfs:label "data type"^^xsd:string ;
-                                           rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string .
+<https://www.upb.de/ida/ontology/DataType> rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string ;
+                                           rdfs:label "data type"^^xsd:string .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
