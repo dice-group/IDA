@@ -20,7 +20,7 @@ services:
     volumes:
       - "/home/ida_mngr/ida-datasets/:/app/datasets"
     environment:
-      - API_URL=/ida-ws
+      - API_URL=http://ida-backend:8080
     networks:
       - ida-net
   ida-backend:
