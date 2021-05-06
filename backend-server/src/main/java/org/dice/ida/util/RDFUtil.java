@@ -15,12 +15,16 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.model.suggestion.VisualizationInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.Objects;
+
 
 /**
  * Utility Class containing RDF query functions.
@@ -29,9 +33,9 @@ import java.util.TreeMap;
  */
 @Component
 public class RDFUtil {
+	private static final String dbHost = System.getenv("FUSEKI_URL");
 	private Model model;
 	private RDFConnectionFuseki conn = null;
-	private static final String dbHost = System.getenv("FUSEKI_URL");
 
 	/**
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
@@ -155,9 +159,9 @@ public class RDFUtil {
 			instanceParam.put(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY, dependentParam);
 			instance = instanceMap.getOrDefault(instanceLabel, new TreeMap<>());
 			paramLabel = resource.get("paramLabel").asLiteral().getString();
-			if(instance.containsKey(paramLabel)){
+			if (instance.containsKey(paramLabel)) {
 				instance.get(paramLabel).put(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY, instance.get(paramLabel).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY) + "," + dependentParam);
-			}else{
+			} else {
 				instance.put(resource.get("paramLabel").asLiteral().getString(), instanceParam);
 			}
 			instanceMap.put(instanceLabel, instance);
@@ -200,6 +204,88 @@ public class RDFUtil {
 		}
 		model = null;
 		return attributeMap;
+	}
+
+	public String getVizIntent(String viz) {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?s  " +
+				"WHERE { " +
+				"?s rdf:type ivoc:Visualization ;" +
+				"rdfs:label '" + viz + "'@en ;" +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		QuerySolution querySolution = attributeResultSet.next();
+		String vizIntent = querySolution.get("s").asNode().toString();
+
+		return vizIntent.substring(vizIntent.lastIndexOf("/") + 1);
+	}
+
+	public Map<String, Map<String, List<String>>> getSuggestionParamters() {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?viz ?paramLabel ?propLabel ?condLabel " +
+				"WHERE { " +
+				"  ?s rdf:type ivoc:Visualization ;" +
+				"     ?p ?o ;" +
+				"     rdfs:label ?viz ;" +
+				"     ivoop:hasSuggestionParamValue ?suggest ." +
+				"  ?suggest ivoop:hasVizParam  ?Param ;" +
+				"           ivoop:hasStatisticalProperty ?statProp ;" +
+				"           ivoop:hasStatPropertyCondition ?cond ." +
+				"  ?Param rdfs:label ?paramLabel ." +
+				"  ?statProp rdfs:label ?propLabel ." +
+				"  ?cond rdfs:label ?condLabel" +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		if (attributeResultSet == null) {
+			return null;
+		}
+		Map<String, Map<String, List<String>>> suggestionProp = new HashMap<>();
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String Viz = querySolution.get("viz").asLiteral().getString();
+			Map<String, List<String>> vizData = new HashMap<>();
+			if (suggestionProp.containsKey(Viz))
+				vizData = suggestionProp.get(Viz);
+			String paramLabel = querySolution.get("paramLabel").asLiteral().getString();
+			String propLabel = querySolution.get("propLabel").asLiteral().getString();
+			String condLabel = querySolution.get("condLabel").asLiteral().getString();
+
+			vizData.put(paramLabel, new ArrayList<>() {{
+				add(propLabel);
+				add(condLabel);
+			}});
+			suggestionProp.put(Viz, vizData);
+		}
+		return suggestionProp;
+	}
+
+	public Map<String, VisualizationInfo> getVisualizationInfo() {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?viz ?desc ?link ?label " +
+				"WHERE {" +
+				"  ?s rdf:type ivoc:Visualization ;" +
+				"     ?p ?o ;" +
+				"     rdfs:label ?viz ;" +
+				"     ivoop:hasInformation ?info ." +
+				"  ?info  dc:description  ?desc ;" +
+				"         ivoop:hasReference ?ref ." +
+				"  ?ref   ivodp:link ?link ;" +
+				"         rdfs:label ?label ." +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		if (attributeResultSet == null) {
+			return null;
+		}
+		Map<String, VisualizationInfo> vizInfoMap = new HashMap<>();
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			VisualizationInfo visualizationInfo = new VisualizationInfo();
+			visualizationInfo.setDescription(querySolution.get("desc").asLiteral().getString());
+			visualizationInfo.setLink(querySolution.get("link").asLiteral().getString());
+			visualizationInfo.setLinkLabel(querySolution.get("label").asLiteral().getString());
+			vizInfoMap.put(querySolution.get("viz").asLiteral().getString(), visualizationInfo);
+		}
+		return vizInfoMap;
 	}
 
 	public String addDatasetName(String dsName) {

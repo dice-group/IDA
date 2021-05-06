@@ -1,5 +1,6 @@
 package org.dice.ida.controller;
 
+import org.dice.ida.action.def.VisualizeAction;
 import org.dice.ida.chatbot.IDAChatBot;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
@@ -26,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 import java.util.concurrent.Callable;
+
 import org.slf4j.Logger;
 
 /**
@@ -53,6 +55,9 @@ public class MessageController {
 	@Autowired
 	@Qualifier("logger")
 	private Logger log;
+
+	@Autowired
+	private VisualizeAction visualizeAction;
 
 	@Autowired
 	private DialogFlowAdminUtil dialogFlowAdminUtil;
@@ -90,8 +95,15 @@ public class MessageController {
 		return () -> {
 			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t user message:\t" + message.getMessage().trim());
 			try {
-				idaChatBot.processMessage(message);
-			} catch(IDAException e) {
+				if (message.isRenderSuggestion()) {
+					Map<String, Object> dataMap = response.getPayload();
+					dataMap.put("activeDS", message.getActiveDS());
+					dataMap.put("activeTable", message.getActiveTable());
+					visualizeAction.performAction(message.getSuggestionParams(), response, message);
+				} else {
+					idaChatBot.processMessage(message);
+				}
+			} catch (IDAException e) {
 				StringBuffer logMessage = new StringBuffer();
 				logMessage.append("[EXCEPTION] - ");
 				log.error(logMessage.toString(), e);
@@ -105,7 +117,7 @@ public class MessageController {
 				response.setUiAction(IDAConst.UAC_NRMLMSG);
 			}
 			chatLog.info("Context list: " + dialogFlowUtil.getActiveContextList());
-			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage() +"\n");
+			chatLog.info("session id:\t" + idaChatBot.fetchDfSessionId() + "\t Response:\t" + response.getMessage() + "\n");
 			return response;
 		};
 	}

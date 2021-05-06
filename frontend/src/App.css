@@ -50,4 +50,5 @@ div.tooltip {
   border-radius: 3px;
   pointer-events: none;
   word-break: break-word;
+  z-index: 3000;
 }

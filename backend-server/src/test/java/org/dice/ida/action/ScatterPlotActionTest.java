@@ -27,25 +27,25 @@ public class ScatterPlotActionTest {
 	void testScatterPlotFlow() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw scatter plot");
-		chatUserMessage.setActiveDS("covid19");
-		chatUserMessage.setActiveTable("Case_Time_Series.csv");
+		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("daily confirm cases");
+		chatUserMessage.setMessage("density");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("bins");
+		chatUserMessage.setMessage("gdp");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("10");
-		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("total confirm cases");
-		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("average");
-
+		chatUserMessage.setMessage("region");
 		ChatMessageResponse chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		ScatterPlotData scatterPlotData = (ScatterPlotData) chatMessageResponse.getPayload().get("scatterPlotData");
-		List<ScatterPlotItem> scatterPlotItemList = new ArrayList<>();
-		scatterPlotItemList.add(new ScatterPlotItem("0.0 - 9.0", 1.3333333333333333));
+		List<ScatterPlotItem> scatterPlotItemList = new ArrayList<>() {{
+			add(new ScatterPlotItem(48.0, 700.0, "ASIA (EX. NEAR EAST)         "));
+			add(new ScatterPlotItem(124.6, 4500.0, "EASTERN EUROPE                     "));
+			add(new ScatterPlotItem(13.8, 6000.0, "NORTHERN AFRICA                    "));
+			add(new ScatterPlotItem(290.4, 8000.0, "OCEANIA                            "));
+			add(new ScatterPlotItem(152.1, 19000.0, "WESTERN EUROPE                     "));
+		}};
 		assertNotNull(scatterPlotData);
 		assertEquals(scatterPlotData.getItems(), scatterPlotItemList);
 		sessionUtil.resetSessionId();

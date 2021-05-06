@@ -1,18 +1,18 @@
-table {
+table.ida-table {
   min-width: 100%;
 }
 
-thead .MuiTableCell-head {
+table.ida-table thead .MuiTableCell-head {
   background-color: #4f8bff;
   color: #fff;
   font-size: 13px;
 }
 
-tbody .MuiTableCell-body {
+table.ida-table tbody .MuiTableCell-body {
   font-size: 12px;
 }
 
-tbody tr:nth-of-type(odd) {
+table.ida-table tbody tr:nth-of-type(odd) {
   background-color: rgba(0, 0, 0, 0.04);
 }
 
