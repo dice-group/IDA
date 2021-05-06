@@ -127,7 +127,7 @@ public class SuggestionUtil {
 	 */
 	private List<Map<String, String>> getColumnData(String datasetName, String tableName, Map<String, String> columnMap) throws Exception {
 		List<Map<String, String>> extractedData = new ArrayList<>();
-		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+		String path = new FileUtil().fetchSysFilePath(datasetName + "/" + tableName);
 		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
 		for (Map<String, String> rowData : fileData) {
 			Map<String, String> dataRow = new HashMap<>();

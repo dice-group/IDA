@@ -29,11 +29,11 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DehazeOutlinedIcon from "@material-ui/icons/DehazeOutlined";
 import ViewAgendaOutlinedIcon from "@material-ui/icons/ViewAgendaOutlined";
-import {IDA_CONSTANTS} from "../constants";
+import { IDA_CONSTANTS } from "../constants";
 
 import axios from "axios";
 
@@ -102,9 +102,9 @@ class DSUploadWizard extends React.Component {
 			}
 		});
 		if (files.length > 0) {
-			this.setState({isFileSelected: true, files, enableNextButton: true, filesName});
+			this.setState({ isFileSelected: true, files, enableNextButton: true, filesName });
 		} else {
-			this.setState({isFileSelected: false, enableNextButton: false, files: []});
+			this.setState({ isFileSelected: false, enableNextButton: false, files: [] });
 		}
 		if (notCSVFilesCount > 0) {
 			this.setState({
@@ -122,15 +122,15 @@ class DSUploadWizard extends React.Component {
 		filesName.splice(files[0].name, 1);
 		files.splice(index, 1);
 
-		this.setState({files, filesName});
+		this.setState({ files, filesName });
 		if (!files.length) {
-			this.setState({isFileSelected: false});
+			this.setState({ isFileSelected: false });
 		}
 	}
 
 	handleNext = () => {
 		if (this.state.activeStep === 0) {
-			this.setState({enableLoader: true, enableNextButton: false});
+			this.setState({ enableLoader: true, enableNextButton: false });
 			let formData = new FormData();
 			const files = this.state.files;
 			for (let i = 0; i < files.length; i++) {
@@ -164,7 +164,7 @@ class DSUploadWizard extends React.Component {
 			});
 		} else if (this.state.activeStep === 1) {
 			if (this.state.metaData.dsName.trim()) {
-				this.setState({enableLoader: true, enableNextButton: false});
+				this.setState({ enableLoader: true, enableNextButton: false });
 				axios.post(IDA_CONSTANTS.PYDSMX_BASE + "/savemetadata", {
 					udsi: this.state.udsi,
 					metadata: this.state.metaData
@@ -189,7 +189,7 @@ class DSUploadWizard extends React.Component {
 					})
 				})
 			} else {
-				this.setState({showError: true, errorMsg: "Please provide dataset name"});
+				this.setState({ showError: true, errorMsg: "Please provide dataset name" });
 			}
 		}
 	};
@@ -217,7 +217,7 @@ class DSUploadWizard extends React.Component {
 		} else {
 			newMetaData[name] = target.value;
 		}
-		this.setState({metaData: newMetaData});
+		this.setState({ metaData: newMetaData });
 	}
 
 	handleYes = () => {
@@ -265,22 +265,22 @@ class DSUploadWizard extends React.Component {
 	}
 
 	fileUploadBtnRef = (e) => {
-		this.setState({fileUploadBtn: e});
+		this.setState({ fileUploadBtn: e });
 	}
 
 	manageAccordion = (idx) => {
 		let panelsArr = Object.assign([], this.state.expandPanels);
 		panelsArr[idx] = !panelsArr[idx];
-		this.setState({expandPanels: panelsArr});
+		this.setState({ expandPanels: panelsArr });
 	}
 
 	toggleCollapseAll = (collapseAll) => {
 		let panelsArr = Object.assign([], this.state.expandPanels);
-		this.setState({expandPanels: panelsArr.fill(collapseAll)});
+		this.setState({ expandPanels: panelsArr.fill(collapseAll) });
 	}
 
 	render() {
-		const {classes} = this.props;
+		const { classes } = this.props;
 		const renderFileUpload = () => {
 			if (!this.state.enableLoader) {
 				if (!this.state.isFileSelected) {
@@ -291,11 +291,11 @@ class DSUploadWizard extends React.Component {
 								display: !this.state.enableLoader ? "block" : "none"
 							}}>
 								<IconButton color="primary" aria-label="upload picture" component="span">
-									<BackupOutlinedIcon style={{fontSize: 80}}/>
+									<BackupOutlinedIcon style={{ fontSize: 80 }} />
 								</IconButton>
 							</label>
-							<CircularProgress style={{display: this.state.enableLoader ? "block" : "none"}}/>
-							<div style={{textAlign: "center"}}>Select dataset (single file or multiple).. <br/>You can
+							<CircularProgress style={{ display: this.state.enableLoader ? "block" : "none" }} />
+							<div style={{ textAlign: "center" }}>Select dataset (single file or multiple).. <br />You can
 								only select
 								<b> .csv</b> files
 							</div>
@@ -305,20 +305,20 @@ class DSUploadWizard extends React.Component {
 					let filesRow = [];
 					for (var i = 0; i < this.state.files.length; i++) {
 						let a = i;
-						filesRow.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon/> </ListItemIcon><ListItemText
-							primary={this.state.files[i].name}/><ListItemSecondaryAction><IconButton edge="end"
-																									 aria-label="delete"
-																									 onClick={() => {
-																										 this.removeFile(a);
-																									 }}><DeleteOutlinedIcon/></IconButton></ListItemSecondaryAction></ListItem>)
+						filesRow.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText
+							primary={this.state.files[i].name} /><ListItemSecondaryAction><IconButton edge="end"
+								aria-label="delete"
+								onClick={() => {
+									this.removeFile(a);
+								}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>)
 					}
-					return <div><h5 style={{padding: "10px 0", textAlign: "center", color: "#444"}}>Selected
+					return <div><h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected
 						file(s)</h5><List><ListItem button onClick={this.addMoreFiles}> <ListItemIcon>
-						<AddCircleOutlineIcon/> </ListItemIcon> <ListItemText primary="Add more files.."/>
-					</ListItem>{filesRow}</List></div>;
+							<AddCircleOutlineIcon /> </ListItemIcon> <ListItemText primary="Add more files.." />
+						</ListItem>{filesRow}</List></div>;
 				}
 			} else {
-				return <div className="upload-dataset-box"><CircularProgress/></div>;
+				return <div className="upload-dataset-box"><CircularProgress /></div>;
 			}
 		};
 
@@ -327,67 +327,67 @@ class DSUploadWizard extends React.Component {
 				if (this.state.metaData) {
 					return (<div className="meta-data-box">
 						<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file.
-							IDA uses these files to perform various operations. Here you can change some relavant fields
-							kindly go through them all and change them as you like.
+						IDA uses these files to perform various operations. Here you can change some relavant fields
+						kindly go through them all and change them as you like.
 						</div>
 						<form>
-							<table style={{marginLeft: "16px"}}>
+							<table style={{ marginLeft: "16px" }}>
 								<tr>
 									<td width="15%" className="heading required">Dataset name</td>
 									<td><input type="text" name="dsName" value={this.state.metaData.dsName}
-											   onChange={this.handleChange}/></td>
+										onChange={this.handleChange} /></td>
 								</tr>
 								<tr>
 									<td width="15%" className="heading">Dataset description</td>
 									<td><input type="text" name="dsDesc" value={this.state.metaData.dsDesc}
-											   onChange={this.handleChange}/></td>
+										onChange={this.handleChange} /></td>
 								</tr>
 							</table>
-							<br/>
-							<div style={{marginLeft: "16px"}}> This dataset
+							<br />
+							<div style={{ marginLeft: "16px" }}> This dataset
 								contains {this.state.metaData.filesMd.length} files.
 							</div>
-							<div style={{display: this.state.metaData.filesMd.length > 1 ? "block" : "none"}}
-								 class="collapse-btns">
+							<div style={{ display: this.state.metaData.filesMd.length > 1 ? "block" : "none" }}
+								class="collapse-btns">
 								<Tooltip classes={classes} title="Collapse all">
-									<IconButton component="span" style={{float: "right"}} onClick={() => {
+									<IconButton component="span" style={{ float: "right" }} onClick={() => {
 										this.toggleCollapseAll(false);
 									}}>
-										<DehazeOutlinedIcon/>
+										<DehazeOutlinedIcon />
 									</IconButton>
 								</Tooltip>
 								<Tooltip classes={classes} title="Expand all">
-									<IconButton component="span" style={{float: "right"}} onClick={() => {
+									<IconButton component="span" style={{ float: "right" }} onClick={() => {
 										this.toggleCollapseAll(true);
 									}}>
-										<ViewAgendaOutlinedIcon/>
+										<ViewAgendaOutlinedIcon />
 									</IconButton>
 								</Tooltip>
 							</div>
-							<br/>
+							<br />
 							{this.state.metaData.filesMd.map((f, i) => {
 								return (
 									<div>
 										<Accordion classes={classes} expanded={this.state.expandPanels[i]}
-												   onChange={() => {
-													   this.manageAccordion(i);
-												   }}>
+											onChange={() => {
+												this.manageAccordion(i);
+											}}>
 											<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ?
-												<ExpandMoreIcon/> : ""}
-															  style={{width: "100%"}}>{i + 1}. {f.fileName}</AccordionSummary>
-											<AccordionDetails style={{flexDirection: "column"}}>
+												<ExpandMoreIcon /> : ""}
+												style={{ width: "100%" }}>{i + 1}. {f.fileName}</AccordionSummary>
+											<AccordionDetails style={{ flexDirection: "column" }}>
 												<table>
 													<tr>
 														<td className="heading">Display name</td>
 														<td><input type="text" value={f.displayName}
-																   name={`filesMd[${i}].displayName`}
-																   onChange={this.handleChange}/></td>
+															name={`filesMd[${i}].displayName`}
+															onChange={this.handleChange} /></td>
 													</tr>
 													<tr>
 														<td className="heading">File description</td>
 														<td><input type="text" value={f.fileDesc}
-																   name={`filesMd[${i}].fileDesc`}
-																   onChange={this.handleChange}/></td>
+															name={`filesMd[${i}].fileDesc`}
+															onChange={this.handleChange} /></td>
 													</tr>
 													<tr>
 														<td className="heading">Columns count</td>
@@ -400,57 +400,57 @@ class DSUploadWizard extends React.Component {
 												</table>
 												<table>
 													<thead>
-													<td className="heading">Column index</td>
-													<td className="heading">Column name</td>
-													<td className="heading">Column description</td>
-													<td className="heading">Column attribute</td>
-													<td className="heading">Column type<Tooltip classes={classes} arrow
-																								title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon
-														style={{
-															fontSize: 18,
-															color: "#F57C00",
-															marginLeft: "3px"
-														}}/></Tooltip></td>
-													<td className="heading">Contains unique values</td>
+														<td className="heading">Column index</td>
+														<td className="heading">Column name</td>
+														<td className="heading">Column description</td>
+														<td className="heading">Column attribute</td>
+														<td className="heading">Column type<Tooltip classes={classes} arrow
+															title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon
+																style={{
+																	fontSize: 18,
+																	color: "#F57C00",
+																	marginLeft: "3px"
+																}} /></Tooltip></td>
+														<td className="heading">Contains unique values</td>
 													</thead>
 													<tbody>
-													{f.fileColMd.map((e, b) => {
-														return (
-															<tr key={b}>
-																<td>{e.colIndex}</td>
-																<td><input value={e.colName}
-																		   name={`filesMd[${i}].fileColMd[${b}].colName`}
-																		   onChange={this.handleChange}/></td>
-																<td><input value={e.colDesc}
-																		   name={`filesMd[${i}].fileColMd[${b}].colDesc`}
-																		   onChange={this.handleChange}/></td>
-																<td>{e.colAttr}</td>
-																<td>
-																	<select value={e.colType}
+														{f.fileColMd.map((e, b) => {
+															return (
+																<tr key={b}>
+																	<td>{e.colIndex}</td>
+																	<td><input value={e.colName}
+																		name={`filesMd[${i}].fileColMd[${b}].colName`}
+																		onChange={this.handleChange} /></td>
+																	<td><input value={e.colDesc}
+																		name={`filesMd[${i}].fileColMd[${b}].colDesc`}
+																		onChange={this.handleChange} /></td>
+																	<td>{e.colAttr}</td>
+																	<td>
+																		<select value={e.colType}
 																			name={`filesMd[${i}].fileColMd[${b}].colType`}
 																			onChange={this.handleChange}>
-																		<option value="date">Date</option>
-																		<option value="string">String</option>
-																		<option value="numeric">Numeric</option>
-																	</select>
+																			<option value="date">Date</option>
+																			<option value="string">String</option>
+																			<option value="numeric">Numeric</option>
+																		</select>
 
-																	<select style={{display: e.colType === "date" ? "block" : "none", width: '60%'}}
+																		<select style={{ display: e.colType === "date" ? "block" : "none", width: '60%' }}
 																			value={e.dataFormat}
 																			name={`filesMd[${i}].fileColMd[${b}].dataFormat`}
 																			onChange={this.handleChange}>
-																		<option value="dd/MM/yyyy">dd/MM/yyyy</option>
-																		<option value="dd-MMM-yyyy">dd-MMM-yyyy</option>
-																		<option value="MMMM-yyyy">MMMM-yyyy</option>
-																		<option value="MMM YYYY">MMM YYYY</option>
-																		<option value="dd MMM">dd MMM</option>
-																		<option value="dd/MM/yyyy HH:mm:ss">dd/MM/yyyy HH:mm:ss</option>
-																		<option value="YYYY">YYYY</option>
-																	</select>
-																</td>
-																<td>{e.isUnique ? "Yes" : "No"}</td>
-															</tr>
-														)
-													})}
+																			<option value="dd/MM/yyyy">dd/MM/yyyy</option>
+																			<option value="dd-MMM-yyyy">dd-MMM-yyyy</option>
+																			<option value="MMMM-yyyy">MMMM-yyyy</option>
+																			<option value="MMM YYYY">MMM YYYY</option>
+																			<option value="dd MMM">dd MMM</option>
+																			<option value="dd/MM/yyyy HH:mm:ss">dd/MM/yyyy HH:mm:ss</option>
+																			<option value="YYYY">YYYY</option>
+																		</select>
+																	</td>
+																	<td>{e.isUnique ? "Yes" : "No"}</td>
+																</tr>
+															)
+														})}
 													</tbody>
 
 												</table>
@@ -464,7 +464,7 @@ class DSUploadWizard extends React.Component {
 					</div>);
 				}
 			} else {
-				return <div className="upload-dataset-box"><CircularProgress/></div>;
+				return <div className="upload-dataset-box"><CircularProgress /></div>;
 			}
 		};
 
@@ -474,11 +474,6 @@ class DSUploadWizard extends React.Component {
 					open={this.props.isOpen}
 					fullWidth
 					maxWidth="lg"
-					PaperProps={{
-						style: {
-							minHeight: "800px"
-						}
-					}}
 				>
 					<DialogTitle id="draggable-dialog-title">
 						Upload dataset wizard
@@ -497,7 +492,7 @@ class DSUploadWizard extends React.Component {
 					</Stepper>
 					<DialogContent>
 						<DialogContentText id="alert-dialog-description">
-							<div style={{display: this.state.activeStep === 0 ? "block" : "none"}}>
+							<div style={{ display: this.state.activeStep === 0 ? "block" : "none" }}>
 								<input
 									type="file"
 									accept="text/csv"
@@ -509,13 +504,13 @@ class DSUploadWizard extends React.Component {
 								/>
 								{renderFileUpload()}
 							</div>
-							<div style={{display: this.state.activeStep === 1 ? "block" : "none"}}>
+							<div style={{ display: this.state.activeStep === 1 ? "block" : "none" }}>
 								{renderMetaDataForm()}
 							</div>
-							<div style={{display: this.state.activeStep === 2 ? "block" : "none"}}>
+							<div style={{ display: this.state.activeStep === 2 ? "block" : "none" }}>
 								<div className="upload-dataset-box">
-									<CloudDoneOutlinedIcon style={{fontSize: 80, color: "#4CAF50"}}/>
-									<div style={{textAlign: "center"}}>Your dataset was uploaded successfully.<br/>You
+									<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
+									<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />You
 										can start using it now.
 									</div>
 								</div>
@@ -548,16 +543,16 @@ class DSUploadWizard extends React.Component {
 							Cancel dataset upload
 						</Button>
 						<Button onClick={this.handleClose} color="primary" variant="outlined"
-								style={{textTransform: "Capitalize", display: this.state.showOkBtn ? "block" : "none"}}>
+							style={{ textTransform: "Capitalize", display: this.state.showOkBtn ? "block" : "none" }}>
 							Close
 						</Button>
 					</DialogActions>
 				</Dialog>
 				<Snackbar
-					anchorOrigin={{vertical: "top", horizontal: "center"}}
+					anchorOrigin={{ vertical: "top", horizontal: "center" }}
 					open={this.state.showError}
 					onClose={() => {
-						this.setState({showError: false});
+						this.setState({ showError: false });
 					}}
 					autoHideDuration="5000"
 				>
@@ -576,12 +571,12 @@ class DSUploadWizard extends React.Component {
 					</DialogContent>
 					<DialogActions>
 						<Button onClick={this.handleYes} color="primary" color="secondary"
-								style={{textTransform: "Capitalize"}}>
+							style={{ textTransform: "Capitalize" }}>
 							Yes!
 						</Button>
 						<Button onClick={() => {
-							this.setState({showConfirm: false});
-						}} color="primary" variant="outlined" style={{textTransform: "Capitalize"}}>
+							this.setState({ showConfirm: false });
+						}} color="primary" variant="outlined" style={{ textTransform: "Capitalize" }}>
 							No
 						</Button>
 					</DialogActions>

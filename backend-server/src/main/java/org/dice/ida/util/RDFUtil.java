@@ -205,6 +205,7 @@ public class RDFUtil {
 		model = null;
 		return attributeMap;
 	}
+
 	public String getVizIntent(String viz) {
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
 				"SELECT DISTINCT ?s  " +

@@ -185,7 +185,7 @@ public class ClusterAction implements Action {
 		boolean columnExist = true;
 		Value paramVal = (Value) column_list;
 		paramVal.getListValue().getValuesList().forEach(str -> columnList.add(str.getStringValue()));
-		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+		String path = new FileUtil().fetchSysFilePath(datasetName + "/" + tableName);
 		CSVLoader loader = new CSVLoader();
 		loader.setSource(getDataReadyForClustering(path));
 		data = loader.getDataSet();

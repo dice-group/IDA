@@ -124,7 +124,7 @@ public class FileUtil {
 	 * @return - if dataset exists
 	 */
 	public boolean datasetExists(String dsName) {
-		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '"+dsName+"' }", "ida_ds");
+		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '" + dsName + "' }", "ida_ds");
 		return (results != null) && results.hasNext();
 	}
 
@@ -149,8 +149,8 @@ public class FileUtil {
 	 */
 	public String fetchSysFilePath(String dsName) {
 		String path = System.getenv("DB_PATH");
-		if (! Files.exists(Paths.get(path))) {
-			path = "/home/ida_mngr/ida-datasets/";
+		if (path == null) {
+			path = getClass().getClassLoader().getResource("datasets/").getFile();
 		}
 		return path + dsName;
 	}

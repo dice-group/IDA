@@ -68,6 +68,8 @@ public class MessageController {
 	@Autowired
 	private RDFUtil rdfUtil;
 
+
+
 	/**
 	 * Method to check the availability of the rest service
 	 *
