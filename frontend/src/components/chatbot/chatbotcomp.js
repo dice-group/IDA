@@ -1,13 +1,15 @@
 import React from "react";
 import axios from "axios";
 import "./chatbotcomp.css";
-import {IDA_CONSTANTS} from "../constants";
+import { IDA_CONSTANTS } from "../constants";
 import idaChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
 import CloseIcon from "@material-ui/icons/Close";
 import Draggable from "react-draggable";
 
 export default class ChatApp extends React.Component {
+
+	suggestionParams = null;
 
 	constructor(props) {
 		super(props);
@@ -54,6 +56,14 @@ export default class ChatApp extends React.Component {
 		}
 	}
 
+	onSendClick = (e) => {
+		this.suggestionParams = JSON.parse(e.currentTarget.getAttribute("data-params"));
+		this.messageSend({
+			keyCode: 13,
+			target: document.getElementById("chat-input")
+		});
+	}
+
 	messageSend = (e) => {
 		let msgs = [...this.state.messages];
 		const userMsgs = this.state.messages.filter((v) => v.sender === "user");
@@ -71,7 +81,9 @@ export default class ChatApp extends React.Component {
 				activeDS: this.props.activeDS,
 				activeTable: this.props.activeTable,
 				activeTableData: this.props.activeTableData,
-				temporaryData: !!this.props.activeTableData
+				temporaryData: !!this.props.activeTableData,
+				suggestionParams: this.suggestionParams,
+				renderSuggestion: !!this.suggestionParams
 			};
 			msgs = [...msgs, msg];
 			this.setState({
@@ -83,10 +95,11 @@ export default class ChatApp extends React.Component {
 			this.processMessage(msg);
 		}
 		this.state.iterator !== -1 && this.msgIterator(e, userMsgs);
+		this.suggestionParams = null;
 	}
 
 	processMessage = (msg) => {
-		axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, {withCredentials: true,},)
+		axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
 			.then((response) => {
 				this.showMessage(response.data.message, response.data.timestamp);
 				const actionCode = response.data.uiAction;
@@ -101,10 +114,10 @@ export default class ChatApp extends React.Component {
 					this.showMessage(IDA_CONSTANTS.ERROR_MESSAGE, Date.now());
 				}
 			}).finally(() => {
-			this.setState({
-				hideProgress: true
+				this.setState({
+					hideProgress: true
+				});
 			});
-		});
 	}
 
 	idaElementParser(msg) {
@@ -125,7 +138,7 @@ export default class ChatApp extends React.Component {
 				const attrsExtract = token.match(regex);
 				const eleExtract = token.match(/<([^\s>]+)(\s|>)+/)[1];
 
-				let idaBtn = {name: eleExtract};
+				let idaBtn = { name: eleExtract };
 
 				attrsExtract.forEach((e) => {
 					var attrs = e.split("=");
@@ -147,7 +160,7 @@ export default class ChatApp extends React.Component {
 
 		return React.createElement(idaEles[el.name], {
 			onClick: () => {
-				this.messageSend({keyCode: 13, target: {value: el.msg}});
+				this.messageSend({ keyCode: 13, target: { value: el.msg } });
 			}, // mimicking message sent from input field
 			className: el.style
 		}, el.value);
@@ -181,11 +194,11 @@ export default class ChatApp extends React.Component {
 	}
 
 	dragStart = () => {
-		this.setState({beingDragged: true});
+		this.setState({ beingDragged: true });
 	}
 
 	dragEnd = () => {
-		this.setState({beingDragged: false});
+		this.setState({ beingDragged: false });
 	}
 
 	render() {
@@ -199,7 +212,7 @@ export default class ChatApp extends React.Component {
 								{this.state.title}
 							</div>
 							<div>
-								<CloseIcon onClick={this.handlebutton} className="chatbot-close"/>
+								<CloseIcon onClick={this.handlebutton} className="chatbot-close" />
 							</div>
 						</div>
 						<div className="chatbox-chat-area">
@@ -227,14 +240,14 @@ export default class ChatApp extends React.Component {
 																		return this.idaElementRenderer(token);
 																	} else {
 																		return <span
-																			dangerouslySetInnerHTML={{__html: token}}/>;
+																			dangerouslySetInnerHTML={{ __html: token }} />;
 																	}
 																})
 															}</div>
 															<div
 																className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
 														</div>
-														<div className="agent-pic" key={Math.random()}/>
+														<div className="agent-pic" key={Math.random()} />
 													</div>
 												</div>
 											);
@@ -244,8 +257,9 @@ export default class ChatApp extends React.Component {
 							</div>
 						</div>
 						<div className="chat-area-input clearfix">
-							<IDALinearProgress hide={this.state.hideProgress}/>
-							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend}/>
+							<IDALinearProgress hide={this.state.hideProgress} />
+							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} />
+							<button hidden id="send-btn" onClick={this.onSendClick}></button>
 						</div>
 					</div>
 				</Draggable>
