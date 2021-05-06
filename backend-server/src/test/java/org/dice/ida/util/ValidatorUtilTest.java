@@ -52,7 +52,7 @@ public class ValidatorUtilTest {
 		IDAException exception = assertThrows(IDAException.class, () -> ValidatorUtil.areParametersValid("", "", null, false));
 		assertEquals(IDAConst.BOT_LOAD_DS_BEFORE, exception.getMessage());
 		exception = assertThrows(IDAException.class, () -> ValidatorUtil.areParametersValid("testDS", "", columnList, false));
-		assertEquals(IDAConst.DS_DOES_NOT_EXIST_MSG, exception.getMessage());
+		assertEquals("testDS " + IDAConst.DS_DOES_NOT_EXIST_MSG, exception.getMessage());
 		exception = assertThrows(IDAException.class, () -> ValidatorUtil.areParametersValid("covid19", "", columnList, false));
 		assertEquals(IDAConst.BOT_SELECT_TABLE, exception.getMessage());
 		exception = assertThrows(IDAException.class, () -> ValidatorUtil.areParametersValid("covid19", "testTable", columnList, false));
