@@ -147,7 +147,7 @@ export default class CustomizedTables extends Component {
             ).map((row, index) => (
               <TableRow key={index} component="tr" className="ida-table-row">
                 {this.keysName.map((colName, index) => (
-                  <TableCell align="left" component="th" scope="row" key={index} >{row[colName["key"]]}</TableCell>
+                  <TableCell align="left" component="th" scope="row" key={index} >{row[colName["key"].trim()]}</TableCell>
                 ))}
               </TableRow>
             ))}
