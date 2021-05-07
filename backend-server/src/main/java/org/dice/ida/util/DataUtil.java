@@ -130,7 +130,7 @@ public class DataUtil {
 				JsonNode columnDetails = fileDetails.get(i).get(IDAConst.COLUMN_DETAILS_ATTR);
 				String columnName;
 				for (int j = 0; j < columnDetails.size(); j++) {
-					columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
+					columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText().strip();
 					columns.add(columnName);
 					columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
 				}
