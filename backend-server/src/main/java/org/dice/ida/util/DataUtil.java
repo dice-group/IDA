@@ -142,7 +142,7 @@ public class DataUtil {
 			Map<String, String> dataRow = new HashMap<>();
 			for (String column : columns) {
 				// Getting data only from required columns
-				String columnValue = fileData.get(i).get(column);
+				String columnValue = fileData.get(i).get(column).strip().replaceAll("^[\'\"](.*)[\'\"]$", "$1");
 				if(columnTypeMap.get(column).equalsIgnoreCase("Numeric"))
 					dataRow.put(column, (columnValue.replaceAll(",",".")));
 				else

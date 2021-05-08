@@ -24,9 +24,7 @@ jobs:
             cp -r ~/datasets/* backend-server/src/main/resources/datasets/
             cp ~/resources/prod/ida-chatbot-dialogflow.json backend-server/src/main/resources/
             cp ~/resources/prod/ida-chatbot-dialogflow-admin.json backend-server/src/main/resources/
-    - name: Test
-      run: mvn test -P prod --file backend-server/pom.xml
     - name: Build with Maven
-      run: mvn clean install -P prod --file backend-server/pom.xml && mvn package -P prod --file backend-server/pom.xml
+      run: mvn clean install -P prod --file backend-server/pom.xml
     - name: Upload code coverage report
       uses: codecov/codecov-action@v1

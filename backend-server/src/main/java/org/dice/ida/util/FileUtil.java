@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import org.apache.jena.query.ResultSet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class FileUtil {
 		CsvMapper csvMapper = new CsvMapper();
 
 		// Read data from CSV file
-		List<Object> readAll = csvMapper.readerFor(Map.class).with(csvSchema).readValues(input).readAll();
+		List<Object> readAll = csvMapper.enable(CsvParser.Feature.SKIP_EMPTY_LINES).readerFor(Map.class).with(csvSchema).readValues(input).readAll();
 		List<Map<String, String>> resMapList = new ArrayList<>();
 		for (Object entry : readAll) {
 			resMapList.add((Map<String, String>) entry);
