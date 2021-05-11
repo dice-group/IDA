@@ -72,14 +72,17 @@ def upload_file():
 					elif d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
 						data_type = "numeric"
 
+					cl = col_name
+					col_name = col_name.lower().strip()
 					row = {"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
-						   "colAttr": col_name, "isUnique": pd.Series(ds[col_name]).is_unique}
+						   "colAttr": col_name, "isUnique": pd.Series(ds[cl]).is_unique}
 
 					if data_type == 'date':
 						row["dataFormat"] = app.config.get('DATE_FORMAT')
 
 					file_cols_md.append(row)
 
+				file_name = file_name.lower().strip()
 				files_meta_data.append(
 					{
 						"fileName": file_name,
@@ -104,7 +107,7 @@ def upload_file():
 				"dsDesc": "",
 				"filesMd": files_meta_data
 			}
-			response = {"metadata": meta_data, "message": "dataset to uploaded successfully", "udsi": udsi}
+			response = {"metadata": meta_data, "message": "Dataset to uploaded successfully", "udsi": udsi}
 			status_code = 200
 
 		return response, status_code
@@ -134,7 +137,7 @@ def save_metadata():
 
 					for i in metadata.get('filesMd'):
 						for j in i.get('fileColMd'):
-							colName = j.get('colName').strip()
+							colName = j.get('colName').lower().strip()
 							entity_columns[colName] = [colName]
 
 							if j.get('colType') == 'date':
@@ -147,7 +150,7 @@ def save_metadata():
 
 					if resp_entds.status_code == 200 and resp_entcol.status_code == 200 and resp_entdate.status_code == 200:
 						dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
-						with open(os.path.join(dsdirpath, 'dsmd.json'), 'w') as  metadata_file:
+						with open(os.path.join(dsdirpath, 'dsmd.json'), 'w') as metadata_file:
 							metadata_file.write(json.dumps(metadata))
 
 						# Moving dataset folder from temp directory to dataset directory
