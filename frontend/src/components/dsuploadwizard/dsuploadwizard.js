@@ -208,14 +208,14 @@ class DSUploadWizard extends React.Component {
 			let firstIndex = tokens[0].match(/(\d+)/)[0];
 
 			if (depth === 2) {
-				newMetaData[firstKey][firstIndex][attr] = target.value;
+				newMetaData[firstKey][firstIndex][attr] = target.value.toLowerCase().trim();
 			} else if (depth === 3) {
 				let secondKey = tokens[1].split("[")[0];
 				let secondIndex = tokens[1].match(/(\d+)/)[0];
-				newMetaData[firstKey][firstIndex][secondKey][secondIndex][attr] = target.value;
+				newMetaData[firstKey][firstIndex][secondKey][secondIndex][attr] = target.value.toLowerCase().trim();
 			}
 		} else {
-			newMetaData[name] = target.value;
+			newMetaData[name] = target.value.toLowerCase().trim();
 		}
 		this.setState({ metaData: newMetaData });
 	}
