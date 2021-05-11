@@ -5,12 +5,23 @@ public class ScatterPlotItem {
 	private Double x;
 	private Double y;
 	private String reference;
+	private String label;
 
-	public ScatterPlotItem(Double x, Double y, String reference) {
+
+	public ScatterPlotItem(Double x, Double y, String reference, String label ) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.reference = reference;
+		this.label = label;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public Double getX() {

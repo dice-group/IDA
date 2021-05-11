@@ -268,6 +268,7 @@ public interface IDAConst {
 	String X_AXIS_PARAM = "X-Axis";
 	String Y_AXIS_PARAM = "Y-Axis";
 	String REFERENCE_VALUES_PARAM = "Reference_Values";
+	String SCATTER_PLOT_LABEL_PARAM = "Scatterplot_Label";
 
 	public static final String PARAMETER_TYPE_BIN_SIZE = "bin_size";
 	public static final String PARAMETER_TYPE_DURATION_UNIT = "unit";
@@ -314,6 +315,7 @@ public interface IDAConst {
 		put("Line_Label", "Line Labels");
 		put("Line_Value", "Line Values");
 		put("Reference_Values", "Reference Values");
+		put("Scatterplot_Label", "label for scatter plot");
 	}};
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");

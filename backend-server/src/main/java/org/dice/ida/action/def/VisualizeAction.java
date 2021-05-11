@@ -1345,12 +1345,15 @@ public class VisualizeAction implements Action {
 		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM);
 		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
 		String referenceColumn = parameterMap.get(IDAConst.REFERENCE_VALUES_PARAM);
+		String labelColumn = parameterMap.get(IDAConst.SCATTER_PLOT_LABEL_PARAM);
 		String graphLabel = "Scatter plot for " + xAxisColumn + " and " + yAxisColumn;
 		List<ScatterPlotItem> scatterPlotItemList = new ArrayList<>();
 		double xValue;
 		double yValue;
 		String refValue;
+		String labelValue;
 		for (Map<String, String> entry : tableData) {
+			labelValue = entry.get(labelColumn);
 			refValue = entry.get(referenceColumn);
 			try {
 				yValue = Double.parseDouble(entry.get(yAxisColumn));
@@ -1362,7 +1365,7 @@ public class VisualizeAction implements Action {
 			} catch (Exception ex) {
 				xValue = 0.0;
 			}
-			scatterPlotItemList.add(new ScatterPlotItem(xValue, yValue, refValue));
+			scatterPlotItemList.add(new ScatterPlotItem(xValue, yValue, refValue, labelValue));
 		}
 		payload.put("scatterPlotData", new ScatterPlotData(graphLabel, scatterPlotItemList, xAxisColumn, yAxisColumn));
 	}
