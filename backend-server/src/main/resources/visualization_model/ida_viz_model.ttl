@@ -1161,7 +1161,7 @@ suggestion_param:line_chart_temporal_value rdf:type owl:NamedIndividual ,
 suggestion_param:scatterplot_reference_values rdf:type owl:NamedIndividual ,
                                                        ivoc:SuggestionParam ;
                                               ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
-                                              ivoop:hasStatisticalProperty statistical_prop:standard_deviation_nominal ;
+                                              ivoop:hasStatisticalProperty statistical_prop:standard_deviation ;
                                               ivoop:hasVizParam parameter:Scatterplot_label ;
                                               rdfs:label "Scatter Plot Label Values" .
 
@@ -1169,7 +1169,7 @@ suggestion_param:scatterplot_reference_values rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/suggestion_param/scatterplot_x_value
 suggestion_param:scatterplot_x_value rdf:type owl:NamedIndividual ,
                                               ivoc:SuggestionParam ;
-                                     ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                     ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
                                      ivoop:hasStatisticalProperty statistical_prop:covariance ;
                                      ivoop:hasVizParam parameter:x_axis ;
                                      rdfs:label "Scatter Plot X Value" .
@@ -1178,7 +1178,7 @@ suggestion_param:scatterplot_x_value rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/suggestion_param/scatterplot_y_value
 suggestion_param:scatterplot_y_value rdf:type owl:NamedIndividual ,
                                               ivoc:SuggestionParam ;
-                                     ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                     ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
                                      ivoop:hasStatisticalProperty statistical_prop:covariance ;
                                      ivoop:hasVizParam parameter:y_axis ;
                                      rdfs:label "Scatter Plot Y Value" .
