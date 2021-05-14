@@ -17,7 +17,7 @@ public class LoadDataSetAction implements Action {
 	public void performAction(Map<String, Object> paramMap, ChatMessageResponse resp, ChatUserMessage message) throws IOException {
 		FileUtil fileUtil = new FileUtil();
 		// Check if datasetName is provided
-		String datasetName = paramMap.get(IDAConst.PARAM_DATASET_NAME).toString();
+		String datasetName = paramMap.get(IDAConst.PARAM_DATASET_NAME).toString().toLowerCase();
 		if (datasetName != null && !datasetName.isEmpty()) {
 			if (fileUtil.datasetExists(datasetName)) {
 				Map<String, Object> dataMap = resp.getPayload();

@@ -1,8 +1,9 @@
-import React, {useRef, useState} from "react";
-import {makeStyles} from "@material-ui/core/styles";
+import React, { useRef, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 // import ChatBot from "./chatbot/chatBot";
 import ChatApp from "./chatbot/chatbotcomp";
+import DSUploadWizard from "./dsuploadwizard/dsuploadwizard";
 import IDANavbar from "./navbar/navbar";
 import TabsWrappedLabel from "./tabs/tabs";
 import AppBar from "@material-ui/core/AppBar";
@@ -13,7 +14,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChatIcon from "@material-ui/icons/Chat";
 import InfoIcon from "@material-ui/icons/Info";
 import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
-import {Fab, Hidden, Typography, IconButton, Zoom} from "@material-ui/core";
+import { Fab, Hidden, Typography, IconButton, Zoom } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import Popover from "@material-ui/core/Popover";
 import CopyrightIcon from "@material-ui/icons/Copyright";
@@ -39,6 +40,7 @@ export default function Home(props) {
 	const [activeTable, setActiveTable] = useState("");
 	const [tabs, setTabs] = useState([]);
 	const [isChatbotOpen, setIsChatbotOpen] = useState(true);
+	const [isdsUploadWizardOpen, setdsUploadWizardOpen] = useState(false);
 	const [activeTableData, setActiveTableData] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const buttonRef = useRef(null);
@@ -54,6 +56,8 @@ export default function Home(props) {
 				tabs={tabs}
 				setTabs={setTabs}
 				setActiveTableData={setActiveTableData}
+				isChatbotOpen={isChatbotOpen}
+				setIsChatbotOpen={setIsChatbotOpen}
 			/>
 		}
 	}
@@ -87,13 +91,17 @@ export default function Home(props) {
 	const handleContextPopoverClose = () => {
 		setAnchorEl(null);
 	};
+
+	const closeUploadWizard = () => {
+		setdsUploadWizardOpen(false);
+	}
 	return (
 		<>
-			<CssBaseline/>
+			<CssBaseline />
 			<AppBar>
 				<Toolbar>
 					<Hidden mdUp>
-						<MenuIcon onClick={toggleNavWindow}/>
+						<MenuIcon onClick={toggleNavWindow} />
 					</Hidden>
 					<Typography variant="h6" className={classes.title} align="center">
 						Intelligent Data Science Chatbot
@@ -125,23 +133,23 @@ export default function Home(props) {
 						</div>
 					</Popover>
 					<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/"
-					   target="_blank">
-						<IconButton style={{color: "#fff", marginRight: "10px"}} aria-label="info about the project">
-							<InfoIcon/>
+						target="_blank">
+						<IconButton style={{ color: "#fff", marginRight: "10px" }} aria-label="info about the project">
+							<InfoIcon />
 						</IconButton>
 					</a>
-					<IconButton size="small" style={{color: "#fff"}} aria-label="toggle" onClick={toggleChatWindow}>
+					<IconButton size="small" style={{ color: "#fff" }} aria-label="toggle" onClick={toggleChatWindow}>
 						{
 							isChatbotOpen ? (
 								<Zoom in={isChatbotOpen} mountOnEnter unmountOnExit>
-									<SpeakerNotesOffIcon/>
+									<SpeakerNotesOffIcon />
 								</Zoom>
 							) : null
 						}
 						{
 							!isChatbotOpen ? (
 								<Zoom direction="left" in={!isChatbotOpen} mountOnEnter unmountOnExit>
-									<ChatIcon/>
+									<ChatIcon />
 								</Zoom>
 							) : null
 						}
@@ -149,7 +157,7 @@ export default function Home(props) {
 					</IconButton>
 				</Toolbar>
 			</AppBar>
-			<Toolbar/>
+			<Toolbar />
 			<div className={navBarClass}>
 				<Grid container>
 					<Grid item className={"nav-bar-container"}>
@@ -174,9 +182,9 @@ export default function Home(props) {
 						</div>
 						<Hidden mdDown>
 							<Fab size="small" color="primary" aria-label="toggle" className={"navbar-toggle-icon"}
-								 onClick={toggleNavBar}>
+								onClick={toggleNavBar}>
 								{
-									loaded && (navBarVisiblity ? <ChevronLeftIcon/> : <ChevronRightIcon/>)
+									loaded && (navBarVisiblity ? <ChevronLeftIcon /> : <ChevronRightIcon />)
 								}
 							</Fab>
 						</Hidden>
@@ -204,9 +212,11 @@ export default function Home(props) {
 					activeTableData={activeTableData}
 					setActiveTableData={setActiveTableData}
 					setContexts={setContexts}
+					setdsUploadWizardOpen={setdsUploadWizardOpen}
 				/>
 
 			</div>
+			<DSUploadWizard isOpen={isdsUploadWizardOpen} close={closeUploadWizard}/>
 		</>
 	);
 }

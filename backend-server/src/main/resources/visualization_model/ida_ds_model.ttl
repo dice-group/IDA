@@ -1,0 +1,4 @@
+@prefix ab: <https://www.upb.de/ida/datasets/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<https://www.upb.de/ida/datasets/covid19> ab:names "covid19"^^xsd:string ; .
+<https://www.upb.de/ida/datasets/countries> ab:names "countries"^^xsd:string ; .

@@ -69,7 +69,7 @@ function addAnalysisEntry(props, analysisData, label, name, activeDSName, tableN
     props.setDetails(treeData);
     props.setActiveTable(tableName);
     props.setActiveDS(activeDSName);
-    props.setActiveTableData(analysisData);
+    name === "clustering" && props.setActiveTableData(analysisData);
     updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName);
 }
 
@@ -86,10 +86,10 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
                 fileName: "dsmd.json",
 				dsName: metaData.dsName
             }];
-            data.forEach((table) =>
+            data.forEach((table, idx) =>
                 children.push({
                     id: metaData.dsName + "_" + table.name,
-                    name: table.name,
+                    name: metaData.filesMd[parseInt(idx, 10)].displayName,
                     type: "table",
                     data: table.data,
                     fileName: table.name,
@@ -167,6 +167,13 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             addVisualizationEntry(props, payload.bubbleChartData, "Grouped Bubble Chart", "groupedBubblechart", payload.activeDS);
             break;
         }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_VIZ_SUGGESTION: {
+            addAnalysisEntry(props, payload.suggestionData, "Visualization Suggestion", "suggestion", payload.activeDS, payload.activeTable, []);
+            break;
+        }
+		case IDA_CONSTANTS.UI_ACTION_CODES.UAC_UPLDDTMSG: {
+			props.setdsUploadWizardOpen(true);
+		}
         default:
     }
 }

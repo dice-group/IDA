@@ -109,8 +109,8 @@ public class ValidatorUtil {
 		if (isStringEmpty(dsName)) {
 			throw new IDAException(IDAConst.BOT_LOAD_DS_BEFORE);
 		}
-		if(dsPathMap.get(dsName) == null) {
-			throw new IDAException(IDAConst.DS_DOES_NOT_EXIST_MSG);
+		if(! new FileUtil().datasetExists(dsName)) {
+			throw new IDAException(dsName + " " + IDAConst.DS_DOES_NOT_EXIST_MSG);
 		}
 		if (isStringEmpty(tableName)) {
 			throw new IDAException(IDAConst.BOT_SELECT_TABLE);

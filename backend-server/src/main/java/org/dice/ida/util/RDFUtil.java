@@ -11,13 +11,20 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 import org.dice.ida.constant.IDAConst;
+import org.dice.ida.model.suggestion.VisualizationInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.Objects;
+
 
 /**
  * Utility Class containing RDF query functions.
@@ -26,17 +33,17 @@ import java.util.TreeMap;
  */
 @Component
 public class RDFUtil {
+	private static final String dbHost = System.getenv("FUSEKI_URL");
 	private Model model;
 	private RDFConnectionFuseki conn = null;
-	private static final String dbHost = System.getenv("FUSEKI_URL");
 
 	/**
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
 	 * @return It takes query string as its parameter and returns the result set after executing the query.
 	 */
-	private ResultSet getResultFromQuery(String queryString) {
-		QueryExecution queryExecution;
-		ResultSet resultSet;
+	public ResultSet getResultFromQuery(String queryString, String dsName) {
+		QueryExecution queryExecution = null;
+		ResultSet resultSet = null;
 		Query query = QueryFactory.create(queryString);
 
 		/*
@@ -48,20 +55,22 @@ public class RDFUtil {
 			 */
 			if (dbHost == null || dbHost.isEmpty() || dbHost.isBlank()) {
 				try {
+					String resourceName = dsName.equals("ida_viz") ? "visualization_model/ida_viz_model.ttl" : "visualization_model/ida_ds_model.ttl";
+
 					model = ModelFactory.createDefaultModel();
-					String path = Objects.requireNonNull(getClass().getClassLoader().getResource("visualization_model/ida_viz_model.ttl")).getFile();
+					String path = Objects.requireNonNull(getClass().getClassLoader().getResource(resourceName)).getFile();
 					model.read(path);
 					queryExecution = QueryExecutionFactory.create(query, model);
 				} catch (NullPointerException ex) {
-					return null;
+					resultSet = null;
 				}
 			} else {
 				try {
-					RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + "ida_viz");
+					RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + dsName);
 					conn = (RDFConnectionFuseki) builder.build();
 					queryExecution = conn.query(query);
 				} catch (Exception ex) {
-					return null;
+					resultSet = null;
 				} finally {
 					conn.close();
 				}
@@ -69,16 +78,20 @@ public class RDFUtil {
 		} else {
 			queryExecution = QueryExecutionFactory.create(query, model);
 		}
+
 		if (queryExecution != null) {
 			try {
 				resultSet = ResultSetFactory.copyResults(queryExecution.execSelect());
-				queryExecution.close();
-				return resultSet;
 			} catch (Exception e) {
-				return null;
+				resultSet = null;
+			} finally {
+				if (conn != null) {
+					conn.close();
+				}
+				queryExecution.close();
 			}
 		}
-		return null;
+		return resultSet;
 	}
 
 	/**
@@ -126,7 +139,7 @@ public class RDFUtil {
 				"    ?dependentParam rdfs:label ?dependentCol" +
 				"  }" +
 				"} ORDER BY ASC(?priority)";
-		ResultSet instancesResultSet = getResultFromQuery(queryString);
+		ResultSet instancesResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (instancesResultSet == null) {
 			return instanceMap;
 		}
@@ -146,9 +159,9 @@ public class RDFUtil {
 			instanceParam.put(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY, dependentParam);
 			instance = instanceMap.getOrDefault(instanceLabel, new TreeMap<>());
 			paramLabel = resource.get("paramLabel").asLiteral().getString();
-			if(instance.containsKey(paramLabel)){
+			if (instance.containsKey(paramLabel)) {
 				instance.get(paramLabel).put(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY, instance.get(paramLabel).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY) + "," + dependentParam);
-			}else{
+			} else {
 				instance.put(resource.get("paramLabel").asLiteral().getString(), instanceParam);
 			}
 			instanceMap.put(instanceLabel, instance);
@@ -176,7 +189,7 @@ public class RDFUtil {
 				"  ?param rdfs:label ?paramLabel ." +
 				"  ?param ivodp:hasPriority ?priority . " +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -191,5 +204,102 @@ public class RDFUtil {
 		}
 		model = null;
 		return attributeMap;
+	}
+
+	public String getVizIntent(String viz) {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?s  " +
+				"WHERE { " +
+				"?s rdf:type ivoc:Visualization ;" +
+				"rdfs:label '" + viz + "'@en ;" +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		QuerySolution querySolution = attributeResultSet.next();
+		String vizIntent = querySolution.get("s").asNode().toString();
+
+		return vizIntent.substring(vizIntent.lastIndexOf("/") + 1);
+	}
+
+	public Map<String, Map<String, List<String>>> getSuggestionParamters() {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?viz ?paramLabel ?propLabel ?condLabel " +
+				"WHERE { " +
+				"  ?s rdf:type ivoc:Visualization ;" +
+				"     ?p ?o ;" +
+				"     rdfs:label ?viz ;" +
+				"     ivoop:hasSuggestionParamValue ?suggest ." +
+				"  ?suggest ivoop:hasVizParam  ?Param ;" +
+				"           ivoop:hasStatisticalProperty ?statProp ;" +
+				"           ivoop:hasStatPropertyCondition ?cond ." +
+				"  ?Param rdfs:label ?paramLabel ." +
+				"  ?statProp rdfs:label ?propLabel ." +
+				"  ?cond rdfs:label ?condLabel" +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		if (attributeResultSet == null) {
+			return null;
+		}
+		Map<String, Map<String, List<String>>> suggestionProp = new HashMap<>();
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String Viz = querySolution.get("viz").asLiteral().getString();
+			Map<String, List<String>> vizData = new HashMap<>();
+			if (suggestionProp.containsKey(Viz))
+				vizData = suggestionProp.get(Viz);
+			String paramLabel = querySolution.get("paramLabel").asLiteral().getString();
+			String propLabel = querySolution.get("propLabel").asLiteral().getString();
+			String condLabel = querySolution.get("condLabel").asLiteral().getString();
+
+			vizData.put(paramLabel, new ArrayList<>() {{
+				add(propLabel);
+				add(condLabel);
+			}});
+			suggestionProp.put(Viz, vizData);
+		}
+		return suggestionProp;
+	}
+
+	public Map<String, VisualizationInfo> getVisualizationInfo() {
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?viz ?desc ?link ?label " +
+				"WHERE {" +
+				"  ?s rdf:type ivoc:Visualization ;" +
+				"     ?p ?o ;" +
+				"     rdfs:label ?viz ;" +
+				"     ivoop:hasInformation ?info ." +
+				"  ?info  dc:description  ?desc ;" +
+				"         ivoop:hasReference ?ref ." +
+				"  ?ref   ivodp:link ?link ;" +
+				"         rdfs:label ?label ." +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		if (attributeResultSet == null) {
+			return null;
+		}
+		Map<String, VisualizationInfo> vizInfoMap = new HashMap<>();
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			VisualizationInfo visualizationInfo = new VisualizationInfo();
+			visualizationInfo.setDescription(querySolution.get("desc").asLiteral().getString());
+			visualizationInfo.setLink(querySolution.get("link").asLiteral().getString());
+			visualizationInfo.setLinkLabel(querySolution.get("label").asLiteral().getString());
+			vizInfoMap.put(querySolution.get("viz").asLiteral().getString(), visualizationInfo);
+		}
+		return vizInfoMap;
+	}
+
+	public String addDatasetName(String dsName) {
+		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/> INSERT DATA { <https://www.upb.de/ida/datasets/" + dsName + ">  ab:names '" + dsName + "' ; . }";
+		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
+			try {
+				UpdateRequest update = UpdateFactory.create(queryString);
+				UpdateExecutionFactory.createRemote(update, dbHost + "ida_ds").execute();
+				return "true";
+			} catch (Exception ex) {
+				return "false";
+			}
+		} else {
+			return "false";
+		}
 	}
 }

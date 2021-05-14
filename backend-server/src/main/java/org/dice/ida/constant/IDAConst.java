@@ -35,6 +35,8 @@ public interface IDAConst {
 	public static final int UIA_GROUPED_BUBBLECHART = 1010;
 	//Load scatter plot matrix
 	public static final int UIA_SCATTERPLOT_MATRIX = 1012;
+	//Load Suggestion
+	public static final int UIA_LOAD_SUGGESTION = 1013;
 
 	/**
 	 * Pre-defined action codes
@@ -86,7 +88,8 @@ public interface IDAConst {
 	public static final String SCATTER_PLOT_LOADED = "The requested scatter plot has been loaded.";
 	// Scatter plot Matrix
 	public static final String SCATTER_PLOT_MATRIX_LOADED = "The requested scatter plot matrix has been loaded.";
-
+	//Suggestion Loaded
+	public static final String SUGGESTION_LOADED = "Graphs suggestions has been loaded.";
 	// Bar graph
 	public static final String PARAM_FILTER_STRING = "records-selection";
 	public static final String PARAM_XAXIS_NAME = "x-axis";
@@ -209,7 +212,10 @@ public interface IDAConst {
 			"prefix instance_param: <https://www.upb.de/ida/viz/data/instance_param/> \n" +
 			"prefix representation_tree: <https://www.upb.de/ida/viz/data/representation_tree/> \n" +
 			"prefix representational_type: <https://www.upb.de/ida/viz/data/representational_type/> \n" +
-			"prefix representation_tree_node: <https://www.upb.de/ida/viz/data/representation_tree_node/>\n";
+			"prefix representation_tree_node: <https://www.upb.de/ida/viz/data/representation_tree_node/>\n"+
+			"PREFIX suggestion_param: <https://www.upb.de/ida/viz/data/suggestion_param/>\n" +
+			"PREFIX statistical_prop: <https://www.upb.de/ida/viz/data/statistical_property/>\n" +
+			"PREFIX statistical_prop_condition: <https://www.upb.de/ida/viz/data/statistical_property_condition/>";
 	public static final String TRANSFORMATION_LABEL = "Transformation";
 	public static final String INSTANCE_PARAM_TYPE_KEY = "type";
 	public static final String INSTANCE_PARAM_TRANS_TYPE_KEY = "trans_type";
@@ -267,6 +273,7 @@ public interface IDAConst {
 	String BUBBLE_SIZE_PARAM = "Bubble_Size";
 	String X_AXIS_PARAM = "X-Axis";
 	String Y_AXIS_PARAM = "Y-Axis";
+	String REFERENCE_VALUES_PARAM = "Reference_Values";
 
 	public static final String PARAMETER_TYPE_BIN_SIZE = "bin_size";
 	public static final String PARAMETER_TYPE_DURATION_UNIT = "unit";
@@ -305,11 +312,12 @@ public interface IDAConst {
 	public static final Map<String, String> PARAM_NAME_MAP = new HashMap<>() {{
 		put("X-Axis", "X-Axis");
 		put("Y-Axis", "Y-Axis");
-		put("Bubble_Label", "label of the bubbles");
-		put("Bubble_Size", "size of the bubbles");
+		put("Bubble_Label", "Label of the bubbles");
+		put("Bubble_Size", "Size of the bubbles");
 		put("Temporal_Column", "X-Axis (Temporal data)");
 		put("Line_Label", "Line Labels");
 		put("Line_Value", "Line Values");
+		put("Reference_Values", "Reference Values");
 	}};
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");
@@ -328,4 +336,9 @@ public interface IDAConst {
 		put("Average", "Average of values");
 	}};
 	public static final String PARAM_TYPE_NON_BIN = "As it is";
+	String STATS_DIR = "stat_props";
+	String COLUMN_SD_NOMINAL = "Standard Deviation Nominal";
+	String COLUMN_SD_NUMERIC = "Standard Deviation";
+	String COVARIANCE_MATRIX = "Covariance";
+	String COLUMN_SD_TEMPORAL = "Standard Deviation Temporal";
 }

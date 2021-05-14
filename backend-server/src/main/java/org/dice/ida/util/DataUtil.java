@@ -32,7 +32,7 @@ public class DataUtil {
 	 */
 	public List<Map<String, String>> getData(String datasetName, String tableName, List<String> columns, String filterText, Map<String,String> columnMap ) throws IOException {
 		List<Map<String, String>> extractedData = new ArrayList<>();
-		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+		String path = new FileUtil().fetchSysFilePath( datasetName + "/" + tableName);
 		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
 		int rangeStart = 0;
 		int rangeEnd = 0;
@@ -120,7 +120,7 @@ public class DataUtil {
 		Map<String, String> columnTypeMap = new HashMap<>();
 		List<String> columns = new ArrayList<>();
 		List<Map<String, String>> extractedData = new ArrayList<>();
-		String path = new FileUtil().fetchSysFilePath("datasets/" + datasetName + "/" + tableName);
+		String path = new FileUtil().fetchSysFilePath( datasetName + "/" + tableName);
 		List<Map<String, String>> fileData = new FileUtil().convertToMap(new File(path));
 		ObjectNode metaData = new FileUtil().getDatasetMetaData(datasetName);
 		JsonNode fileDetails = metaData.get(IDAConst.FILE_DETAILS_ATTR);
@@ -130,7 +130,7 @@ public class DataUtil {
 				JsonNode columnDetails = fileDetails.get(i).get(IDAConst.COLUMN_DETAILS_ATTR);
 				String columnName;
 				for (int j = 0; j < columnDetails.size(); j++) {
-					columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
+					columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText().strip();
 					columns.add(columnName);
 					columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
 				}
@@ -142,7 +142,7 @@ public class DataUtil {
 			Map<String, String> dataRow = new HashMap<>();
 			for (String column : columns) {
 				// Getting data only from required columns
-				String columnValue = fileData.get(i).get(column);
+				String columnValue = fileData.get(i).get(column).strip().replaceAll("^[\'\"](.*)[\'\"]$", "$1");
 				if(columnTypeMap.get(column).equalsIgnoreCase("Numeric"))
 					dataRow.put(column, (columnValue.replaceAll(",",".")));
 				else
