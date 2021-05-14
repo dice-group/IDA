@@ -5,7 +5,7 @@ public class ScatterPlotItem {
 	private Double x;
 	private Double y;
 	private String reference;
-	private String label;
+	private String labelColumn;
 
 
 	public ScatterPlotItem(Double x, Double y, String reference, String label ) {
@@ -13,15 +13,15 @@ public class ScatterPlotItem {
 		this.x = x;
 		this.y = y;
 		this.reference = reference;
-		this.label = label;
+		this.labelColumn = label;
 	}
 
-	public String getLabel() {
-		return label;
+	public String getLabelColumn() {
+		return labelColumn;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	public void setLabelColumn(String labelColumn) {
+		this.labelColumn = labelColumn;
 	}
 
 	public Double getX() {

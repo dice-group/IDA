@@ -132,7 +132,7 @@ export default class CustomizedTables extends Component {
   render() {
     return (
       <TableContainer component={Paper}>
-        <Table aria-label="ida table" id={this.tableId}>
+        <Table aria-label="ida table" className="ida-table" id={this.tableId}>
           <TableHead >
             <TableRow >
               {this.keysName.map((row, index) => (
