@@ -62,6 +62,7 @@ public class SuggestVisualization implements Action {
 					put(IDAConst.PARAM_FILTER_STRING, "all");
 					put(IDAConst.PARAM_TEXT_MSG, "Suggested visualization rendered");
 					put("isGrouped", "false");
+					put("Reference_Values_choice", "false");
 				}};
 				for (String param : paramList.keySet()) {
 					Map<String, Double> attributeList = statProps.get(paramList.get(param).get(0));
