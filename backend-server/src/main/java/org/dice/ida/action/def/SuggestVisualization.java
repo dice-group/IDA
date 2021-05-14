@@ -50,7 +50,7 @@ public class SuggestVisualization implements Action {
 			List<SuggestionData> suggestionResponse = new ArrayList<>();
 			for (String viz : suggestionParam.keySet()) {
 				String vizIntent = rdfUtil.getVizIntent(viz);
-				Map<Integer, String> attributeListViz = rdfUtil.getAttributeList(vizIntent);
+				Map<Integer, String> attributeListViz = rdfUtil.getSuggestionAttributeList(vizIntent);
 				List<String> columnNameList = new ArrayList<>();
 				Map<String, Set<String>> vizParamTypeList = new HashMap<>();
 				instanceMap = rdfUtil.getInstances(vizIntent);
@@ -62,6 +62,7 @@ public class SuggestVisualization implements Action {
 					put(IDAConst.PARAM_FILTER_STRING, "all");
 					put(IDAConst.PARAM_TEXT_MSG, "Suggested visualization rendered");
 					put("isGrouped", "false");
+					put("Reference_Values_choice", "false");
 				}};
 				for (String param : paramList.keySet()) {
 					Map<String, Double> attributeList = statProps.get(paramList.get(param).get(0));
@@ -85,13 +86,15 @@ public class SuggestVisualization implements Action {
 					suggestionParamList.add(new SuggestionParam(paramLabel, key, param));
 				}
 				paramMap.put(IDAConst.PARAM_FILTER_STRING, IDAConst.BG_FILTER_ALL);
-				if (columnNameList.size() > 0) {
+				if (columnNameList.size() == paramList.size()) {
 					for (Integer attrpos : attributeListViz.keySet()) {
 						List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, false);
 						columnMap = columnDetail.get(0);
 						columnUniquenessMap = columnDetail.get(1);
 						String paramType = columnMap.get(paramMap.get(attributeListViz.get(attrpos)).toString());
 						Set<String> options = getFilteredInstances(attributeListViz.get(attrpos), paramType.toLowerCase(), paramMap.get(attributeListViz.get(attrpos)).toString(), false, paramMap);
+						if(options.contains(IDAConst.COLUMN_TYPE_BINS))
+							options.remove(IDAConst.COLUMN_TYPE_BINS);
 						vizParamTypeList.put(attributeListViz.get(attrpos),options);
 					}
 				}

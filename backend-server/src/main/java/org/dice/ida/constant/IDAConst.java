@@ -185,6 +185,7 @@ public interface IDAConst {
 	public static final String COUNT_OF_PREFIX = "Count of ";
 	public static final String LINE_CHART_DESC_PREFIX = "Line chart for ";
 	public static final String LINE_CHART_PROPERTY_NAME = "lineChartData";
+	public static final String COLUMN_TYPE_BINS = "Bins";
 
 	/**
 	 * Visualization with List Paramter
@@ -274,6 +275,7 @@ public interface IDAConst {
 	String X_AXIS_PARAM = "X-Axis";
 	String Y_AXIS_PARAM = "Y-Axis";
 	String REFERENCE_VALUES_PARAM = "Reference_Values";
+	String SCATTER_PLOT_LABEL_PARAM = "Scatterplot_Label";
 
 	public static final String PARAMETER_TYPE_BIN_SIZE = "bin_size";
 	public static final String PARAMETER_TYPE_DURATION_UNIT = "unit";
@@ -287,6 +289,8 @@ public interface IDAConst {
 	public static final String LABEL_PATTERN_MONTH = "MMMM-yyyy";
 	public static final String LABEL_PATTERN_YEAR = "yyyy";
 	public static final String ATTRIBUTE_TYPE_SUFFIX = "_type";
+	public static final String ATTRIBUTE_CHOICE_SUFFIX = "_choice";
+
 
 	/**
 	 * Clustering Parameters
@@ -318,6 +322,7 @@ public interface IDAConst {
 		put("Line_Label", "Line Labels");
 		put("Line_Value", "Line Values");
 		put("Reference_Values", "Reference Values");
+		put("Scatterplot_Label", "label for scatter plot");
 	}};
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");
@@ -341,4 +346,6 @@ public interface IDAConst {
 	String COLUMN_SD_NUMERIC = "Standard Deviation";
 	String COVARIANCE_MATRIX = "Covariance";
 	String COLUMN_SD_TEMPORAL = "Standard Deviation Temporal";
+	String COLUMN_SD_ALL = "Standard Deviation All";
+	String KEY_ALL = "all";
 }

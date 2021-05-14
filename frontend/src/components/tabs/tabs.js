@@ -45,7 +45,7 @@ function TabHeader(props) {
   const { removeTab, ...newProps } = props;
   return (
     <div>
-      <Grid container alignItems="flex-start">
+      <Grid container alignItems="flex-start" wrap="nowrap">
         <Tab {...newProps} title={props.label} />
         <IconButton onClick={() => removeTab(props.value)}>
           <CloseIcon />

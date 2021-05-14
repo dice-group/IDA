@@ -69,8 +69,12 @@ public class VisualizeAction implements Action {
 	@Autowired
 	private DataUtil dataUtil;
 
+	@Autowired
+	private RDFUtil rdfUtil;
+
 	private List<Map<String, String>> tableData;
 	private Map<Integer, String> attributeList;
+	private Map<String, Boolean> attributeOptionalMap;
 	private Map<String, Map<String, Map<String, String>>> instanceMap;
 	private Map<String, String> columnMap;
 	private Map<String, String> columnUniquenessMap;
@@ -102,12 +106,11 @@ public class VisualizeAction implements Action {
 		if (ValidatorUtil.preActionValidation(chatMessageResponse)) {
 			String vizType = paramMap.get(IDAConst.INTENT_NAME).toString();
 			payload = chatMessageResponse.getPayload();
-			instanceMap = new RDFUtil().getInstances(vizType);
+			instanceMap = rdfUtil.getInstances(vizType);
 			String datasetName = payload.get("activeDS").toString();
 			String tableName = payload.get("activeTable").toString();
 			boolean onTemporaryData = message.isTemporaryData();
 			String filterString = paramMap.get(IDAConst.PARAM_FILTER_STRING).toString();
-
 			if (ValidatorUtil.isStringEmpty(filterString)) {
 				double confidence = Double.parseDouble(paramMap.get(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE).toString());
 				if (confidence == 0.0) {
@@ -119,7 +122,8 @@ public class VisualizeAction implements Action {
 				chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
 			} else {
 				String intent = paramMap.get(IDAConst.INTENT_NAME).toString();
-				attributeList = new RDFUtil().getAttributeList(intent);
+				attributeList = rdfUtil.getAttributeList(intent);
+				attributeOptionalMap = rdfUtil.getAttributeOptionalMap(intent);
 				if (attributeList.containsValue(IDAConst.HAS_LIST_COLUMN)) {
 					columnListVizProcessed = processListAttribute(paramMap, vizType, datasetName, tableName, onTemporaryData, filterString, message);
 				} else {
@@ -129,7 +133,6 @@ public class VisualizeAction implements Action {
 					columnUniquenessMap = columnDetail.get(1);
 					options = processParameters(paramMap);
 				}
-
 				if ((options.size() == 1 && columnNameList.size() == attributeList.size()) || columnListVizProcessed) {
 					if ((options.size() == 1 && columnNameList.size() == attributeList.size())) {
 						getParameters(paramMap);
@@ -220,7 +223,7 @@ public class VisualizeAction implements Action {
 		ArrayList<String> columnListParameter = new ArrayList<>();
 		String selectAll = (String) paramMap.get("All_select");
 		boolean columnListVizProcessed = false;
-		instanceMap = new RDFUtil().getInstances(vizType);
+		instanceMap = rdfUtil.getInstances(vizType);
 		List<String> attributeList = new ArrayList<>();
 		Map<String, String> attributeTypeMap = new HashMap<>();
 		instanceMap.keySet().forEach(instance -> attributeList.addAll(instanceMap.get(instance).keySet()));
@@ -370,13 +373,31 @@ public class VisualizeAction implements Action {
 		for (int i = 1; i <= attributeList.size(); i++) {
 			attributeName = attributeList.get(i);
 			attributeType = paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_TYPE_SUFFIX, "").toString();
-			if (paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
-				if (i > 1) {
-					dialogFlowUtil.deleteContext("get_" + attributeList.get(i - 1) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+			if (attributeOptionalMap.get(attributeName) && paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
+				if (paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, "").toString().isEmpty()) {
+					dialogFlowUtil.setContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX);
+					textMsg = new StringBuilder("Would you like to use " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
+					break;
 				}
-				dialogFlowUtil.setContext("get_" + attributeList.get(i));
-				textMsg = new StringBuilder("Which column values should be mapped to " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
-				break;
+				boolean attributeChoice = Boolean.parseBoolean(paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, "").toString());
+				if (attributeChoice) {
+					dialogFlowUtil.deleteContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX);
+					dialogFlowUtil.setContext("get_" + attributeList.get(i));
+					textMsg = new StringBuilder("Which column values should be mapped to " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
+					break;
+				} else {
+					attributeList.remove(i);
+					break;
+				}
+			} else {
+				if (paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
+					if (i > 1) {
+						dialogFlowUtil.deleteContext("get_" + attributeList.get(i - 1) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+					}
+					dialogFlowUtil.setContext("get_" + attributeList.get(i));
+					textMsg = new StringBuilder("Which column values should be mapped to " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
+					break;
+				}
 			}
 			paramType = attributeType.isEmpty() ?
 					columnMap.get(paramMap.get(attributeName).toString()) :
@@ -1324,12 +1345,15 @@ public class VisualizeAction implements Action {
 		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM);
 		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
 		String referenceColumn = parameterMap.get(IDAConst.REFERENCE_VALUES_PARAM);
+		String labelColumn = parameterMap.get(IDAConst.SCATTER_PLOT_LABEL_PARAM);
 		String graphLabel = "Scatter plot for " + xAxisColumn + " and " + yAxisColumn;
 		List<ScatterPlotItem> scatterPlotItemList = new ArrayList<>();
 		double xValue;
 		double yValue;
 		String refValue;
+		String labelValue;
 		for (Map<String, String> entry : tableData) {
+			labelValue = entry.get(labelColumn);
 			refValue = entry.get(referenceColumn);
 			try {
 				yValue = Double.parseDouble(entry.get(yAxisColumn));
@@ -1341,7 +1365,7 @@ public class VisualizeAction implements Action {
 			} catch (Exception ex) {
 				xValue = 0.0;
 			}
-			scatterPlotItemList.add(new ScatterPlotItem(xValue, yValue, refValue));
+			scatterPlotItemList.add(new ScatterPlotItem(xValue, yValue, refValue, labelValue));
 		}
 		payload.put("scatterPlotData", new ScatterPlotData(graphLabel, scatterPlotItemList, xAxisColumn, yAxisColumn));
 	}

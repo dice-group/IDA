@@ -219,6 +219,15 @@ ivodp:hasPriority rdf:type owl:DatatypeProperty ;
                   rdfs:label "priority"@en .
 
 
+###  https://www.upb.de/ida/viz/ontology/data-property/isOptional
+ivodp:isOptional rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf owl:topDataProperty ;
+                 rdfs:domain ivoc:Parameter ;
+                 rdfs:range xsd:boolean ;
+                 dc:description "True if the parameter is optional for the visualization" ;
+                 rdfs:label "isOptional" .
+
+
 ###  https://www.upb.de/ida/viz/ontology/data-property/link
 ivodp:link rdf:type owl:DatatypeProperty ;
            rdfs:subPropertyOf owl:topDataProperty ;
@@ -502,7 +511,8 @@ instance:line_chart_4 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/scatter_plot_1
 instance:scatter_plot_1 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:reference_values ,
+                        ivoop:hasInstanceParam instance_param:Scatter_Plot_Label ,
+                                               instance_param:reference_values ,
                                                instance_param:x_axis_numeric ,
                                                instance_param:y_axis_numeric ;
                         rdfs:label "Scatter Plot Instance 1" .
@@ -563,6 +573,14 @@ instance:scatter_plot_matrix_1 rdf:type owl:NamedIndividual ,
                                                       instance_param:reference_column ,
                                                       :ScatterPlotMatrixLabel ;
                                rdfs:label "Scatter Plot Matrix Instance 1"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/Scatter_Plot_Label
+instance_param:Scatter_Plot_Label rdf:type owl:NamedIndividual ,
+                                           ivoc:InstanceParam ;
+                                  ivoop:hasRepType representational_type:NotRequired ;
+                                  ivoop:representedParam parameter:Scatterplot_label ;
+                                  rdfs:label "Scatter Plot Label" .
 
 
 ###  https://www.upb.de/ida/viz/data/instance_param/bubble_label_bins
@@ -784,12 +802,22 @@ instance_param:y_axis_sumof rdf:type owl:NamedIndividual ,
                             rdfs:label "Y-Axis Sumof"@en .
 
 
+###  https://www.upb.de/ida/viz/data/parameter/Scatterplot_label
+parameter:Scatterplot_label rdf:type owl:NamedIndividual ,
+                                     ivoc:Parameter ;
+                            ivoop:hasRepType representational_type:NotRequired ;
+                            ivodp:hasPriority 3 ;
+                            ivodp:isOptional "false"^^xsd:boolean ;
+                            rdfs:label "Scatterplot_Label" .
+
+
 ###  https://www.upb.de/ida/viz/data/parameter/bubble_label
 parameter:bubble_label rdf:type owl:NamedIndividual ,
                                 ivoc:Parameter ;
                        ivoop:hasParamTree representation_tree:tree_1 ;
                        ivoop:hasRepType representational_type:Categorical ;
                        ivodp:hasPriority 1 ;
+                       ivodp:isOptional "false"^^xsd:boolean ;
                        rdfs:label "Bubble_Label"@en .
 
 
@@ -798,6 +826,7 @@ parameter:bubble_size rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasPriority 2 ;
+                      ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Bubble_Size"@en .
 
 
@@ -806,6 +835,7 @@ parameter:column_list rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasPriority 1 ;
+                      ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Column_List"@en .
 
 
@@ -814,6 +844,7 @@ parameter:line_label rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Nominal ;
                      ivodp:hasPriority 2 ;
+                     ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Label"@en .
 
 
@@ -822,6 +853,7 @@ parameter:line_value rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Numeric ;
                      ivodp:hasPriority 3 ;
+                     ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Value"@en .
 
 
@@ -829,7 +861,8 @@ parameter:line_value rdf:type owl:NamedIndividual ,
 parameter:ref_values rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Nominal ;
-                     ivodp:hasPriority 3 ;
+                     ivodp:hasPriority 4 ;
+                     ivodp:isOptional "true"^^xsd:boolean ;
                      rdfs:label "Reference_Values"@en .
 
 
@@ -846,6 +879,7 @@ parameter:temporal_column rdf:type owl:NamedIndividual ,
                                    ivoc:Parameter ;
                           ivoop:hasRepType representational_type:Date ;
                           ivodp:hasPriority 1 ;
+                          ivodp:isOptional "false"^^xsd:boolean ;
                           rdfs:label "Temporal_Column"@en .
 
 
@@ -855,6 +889,7 @@ parameter:x_axis rdf:type owl:NamedIndividual ,
                  ivoop:hasParamTree representation_tree:tree_1 ;
                  ivoop:hasRepType representational_type:Categorical ;
                  ivodp:hasPriority 1 ;
+                 ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "X-Axis"@en .
 
 
@@ -863,6 +898,7 @@ parameter:y_axis rdf:type owl:NamedIndividual ,
                           ivoc:Parameter ;
                  ivoop:hasRepType representational_type:Numeric ;
                  ivodp:hasPriority 2 ;
+                 ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "Y-Axis"@en .
 
 
@@ -1034,6 +1070,12 @@ statistical_prop:standard_deviation rdf:type owl:NamedIndividual ,
                                     rdfs:label "Standard Deviation" .
 
 
+###  https://www.upb.de/ida/viz/data/statistical_property/standard_deviation_all
+statistical_prop:standard_deviation_all rdf:type owl:NamedIndividual ,
+                                                 ivoc:StatisticalProperty ;
+                                        rdfs:label "Standard Deviation All" .
+
+
 ###  https://www.upb.de/ida/viz/data/statistical_property/standard_deviation_nominal
 statistical_prop:standard_deviation_nominal rdf:type owl:NamedIndividual ,
                                                      ivoc:StatisticalProperty ;
@@ -1125,15 +1167,15 @@ suggestion_param:line_chart_temporal_value rdf:type owl:NamedIndividual ,
 suggestion_param:scatterplot_reference_values rdf:type owl:NamedIndividual ,
                                                        ivoc:SuggestionParam ;
                                               ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
-                                              ivoop:hasStatisticalProperty statistical_prop:standard_deviation_nominal ;
-                                              ivoop:hasVizParam parameter:ref_values ;
-                                              rdfs:label "Scatter Plot Reference Values" .
+                                              ivoop:hasStatisticalProperty statistical_prop:standard_deviation_all ;
+                                              ivoop:hasVizParam parameter:Scatterplot_label ;
+                                              rdfs:label "Scatter Plot Label Values" .
 
 
 ###  https://www.upb.de/ida/viz/data/suggestion_param/scatterplot_x_value
 suggestion_param:scatterplot_x_value rdf:type owl:NamedIndividual ,
                                               ivoc:SuggestionParam ;
-                                     ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                     ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
                                      ivoop:hasStatisticalProperty statistical_prop:covariance ;
                                      ivoop:hasVizParam parameter:x_axis ;
                                      rdfs:label "Scatter Plot X Value" .
@@ -1142,7 +1184,7 @@ suggestion_param:scatterplot_x_value rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/suggestion_param/scatterplot_y_value
 suggestion_param:scatterplot_y_value rdf:type owl:NamedIndividual ,
                                               ivoc:SuggestionParam ;
-                                     ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                     ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
                                      ivoop:hasStatisticalProperty statistical_prop:covariance ;
                                      ivoop:hasVizParam parameter:y_axis ;
                                      rdfs:label "Scatter Plot Y Value" .
@@ -1305,7 +1347,8 @@ visualization:scatter_plot rdf:type owl:NamedIndividual ,
                                     ivoc:Visualization ;
                            ivoop:hasInformation information:ScatterPlot ;
                            ivoop:hasInstance instance:scatter_plot_1 ;
-                           ivoop:hasParam parameter:ref_values ,
+                           ivoop:hasParam parameter:Scatterplot_label ,
+                                          parameter:ref_values ,
                                           parameter:x_axis ,
                                           parameter:y_axis ;
                            ivoop:hasSuggestionParamValue suggestion_param:scatterplot_reference_values ,
@@ -1338,6 +1381,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                   ivoc:Parameter ;
                          ivoop:hasRepType representational_type:Nominal ;
                          ivodp:hasPriority 3 ;
+                         ivodp:isOptional "false"^^xsd:boolean ;
                          rdfs:label "ScatterPlotMatrix_Label" .
 
 
@@ -1345,6 +1389,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 :hasListColumn rdf:type owl:NamedIndividual ,
                         ivoc:Parameter ;
                ivodp:hasPriority 4 ;
+               ivodp:isOptional "false"^^xsd:boolean ;
                rdfs:label "hasListColumn" .
 
 
@@ -1352,8 +1397,8 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 #    Annotations
 #################################################################
 
-<https://www.upb.de/ida/ontology/DataType> rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string ;
-                                           rdfs:label "data type"^^xsd:string .
+<https://www.upb.de/ida/ontology/DataType> rdfs:label "data type"^^xsd:string ;
+                                           rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
