@@ -34,6 +34,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DehazeOutlinedIcon from "@material-ui/icons/DehazeOutlined";
 import ViewAgendaOutlinedIcon from "@material-ui/icons/ViewAgendaOutlined";
 import { IDA_CONSTANTS } from "../constants";
+import Dropzone from 'react-dropzone';
 
 import axios from "axios";
 
@@ -88,11 +89,11 @@ class DSUploadWizard extends React.Component {
 		this.state = Object.assign({}, this.initialState);
 	}
 
-	onFileChange = (ev) => {
+	onFileChange = (selectedFiles) => {
 		const files = Object.assign([], this.state.files);
 		const filesName = Object.assign([], this.state.filesName);
 		let notCSVFilesCount = 0;
-		Array.from(ev.target.files).forEach((f) => {
+		Array.from(selectedFiles).forEach((f) => {
 			if (f.name.split('.').pop() === 'csv' && !filesName.includes(f.name)) {
 				// Making sure user selected csv file
 				files.push(f);
@@ -112,7 +113,6 @@ class DSUploadWizard extends React.Component {
 				errorMsg: notCSVFilesCount + " file(s) were not added because they were not CSV file(s)."
 			});
 		}
-		ev.target.value = ""; // This will user to select same name file again even after removing them
 	}
 
 	removeFile = (index) => {
@@ -260,14 +260,6 @@ class DSUploadWizard extends React.Component {
 		}
 	}
 
-	addMoreFiles = () => {
-		this.state.fileUploadBtn.click();
-	}
-
-	fileUploadBtnRef = (e) => {
-		this.setState({ fileUploadBtn: e });
-	}
-
 	manageAccordion = (idx) => {
 		let panelsArr = Object.assign([], this.state.expandPanels);
 		panelsArr[idx] = !panelsArr[idx];
@@ -281,26 +273,22 @@ class DSUploadWizard extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-		const renderFileUpload = () => {
+		const renderFileUpload = (open) => {
 			if (!this.state.enableLoader) {
 				if (!this.state.isFileSelected) {
 					return (
-						<div className="upload-dataset-box">
-							<label htmlFor="icon-button-file" style={{
-								marginBottom: "-15px",
-								display: !this.state.enableLoader ? "block" : "none"
-							}}>
-								<IconButton color="primary" aria-label="upload picture" component="span">
-									<BackupOutlinedIcon style={{ fontSize: 80 }} />
-								</IconButton>
-							</label>
+						<div className="dataset-box-flex">
+							<IconButton color="primary" aria-label="upload picture" component="span" onClick={open}>
+								<BackupOutlinedIcon style={{ fontSize: 80 }} />
+							</IconButton>
 							<CircularProgress style={{ display: this.state.enableLoader ? "block" : "none" }} />
-							<div style={{ textAlign: "center" }}>Select dataset (single file or multiple).. <br />You can
+							<div style={{ textAlign: "center" }}>Select or drag dataset (single file or multiple)..
+							<br />You can
 								only select
 								<b> .csv</b> files
 							</div>
 						</div>
-					);
+					)
 				} else {
 					let filesRow = [];
 					for (var i = 0; i < this.state.files.length; i++) {
@@ -312,13 +300,15 @@ class DSUploadWizard extends React.Component {
 									this.removeFile(a);
 								}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>)
 					}
-					return <div><h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected
-						file(s)</h5><List><ListItem button onClick={this.addMoreFiles}> <ListItemIcon>
+					return <div style={{
+						width: "100%"
+					}} ><h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected
+						file(s)</h5><List><ListItem button onClick={open}> <ListItemIcon>
 							<AddCircleOutlineIcon /> </ListItemIcon> <ListItemText primary="Add more files.." />
 						</ListItem>{filesRow}</List></div>;
 				}
 			} else {
-				return <div className="upload-dataset-box"><CircularProgress /></div>;
+				return <div className="dataset-box-flex"><CircularProgress /></div>;
 			}
 		};
 
@@ -493,16 +483,14 @@ class DSUploadWizard extends React.Component {
 					<DialogContent>
 						<DialogContentText id="alert-dialog-description">
 							<div style={{ display: this.state.activeStep === 0 ? "block" : "none" }}>
-								<input
-									type="file"
-									accept="text/csv"
-									id="icon-button-file"
-									onChange={this.onFileChange}
-									multiple
-									hidden
-									ref={this.fileUploadBtnRef}
-								/>
-								{renderFileUpload()}
+								<Dropzone onDrop={this.onFileChange} noClick={true}>
+									{({getRootProps, open, getInputProps, isDragActive}) => (
+										<div {...getRootProps()} style={{height: "100%", backgroundColor: isDragActive ? "#f1f1f1" : ""}}>
+											<input {...getInputProps()} />
+											{renderFileUpload(open)}
+										</div>
+									)}
+								</Dropzone>
 							</div>
 							<div style={{ display: this.state.activeStep === 1 ? "block" : "none" }}>
 								{renderMetaDataForm()}
