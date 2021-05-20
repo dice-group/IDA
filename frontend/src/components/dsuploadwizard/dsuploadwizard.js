@@ -271,6 +271,13 @@ class DSUploadWizard extends React.Component {
 		this.setState({ expandPanels: panelsArr.fill(collapseAll) });
 	}
 
+	sendMessage = () => {
+		const elem = document.getElementById("chat-input");
+		elem.value = "Load " + this.state.metaData.dsName + " dataset";
+		document.getElementById("send-btn").click();
+		this.handleClose();
+	}
+
 	render() {
 		const { classes } = this.props;
 		const renderFileUpload = (open) => {
@@ -496,10 +503,10 @@ class DSUploadWizard extends React.Component {
 								{renderMetaDataForm()}
 							</div>
 							<div style={{ display: this.state.activeStep === 2 ? "block" : "none" }}>
-								<div className="upload-dataset-box">
+								<div className="dataset-box-flex">
 									<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
-									<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />You
-										can start using it now.
+									<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />
+									<button className={"default"} onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : "" } dataset</button>
 									</div>
 								</div>
 							</div>
