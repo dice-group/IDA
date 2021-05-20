@@ -461,7 +461,7 @@ class DSUploadWizard extends React.Component {
 					</div>);
 				}
 			} else {
-				return <div className="upload-dataset-box"><CircularProgress /></div>;
+				return <div className="dataset-box-flex"><CircularProgress /></div>;
 			}
 		};
 
@@ -521,7 +521,7 @@ class DSUploadWizard extends React.Component {
 							});
 						}} style={{
 							textTransform: "Capitalize",
-							display: this.state.showBackBtn ? "block" : "none"
+							display: this.state.showBackBtn && !this.state.enableLoader ? "block" : "none"
 						}}>
 							Back
 						</Button>
@@ -533,7 +533,7 @@ class DSUploadWizard extends React.Component {
 						</Button>
 						<Button onClick={this.handleClose} color="secondary" variant="outlined" style={{
 							textTransform: "Capitalize",
-							display: this.state.showCancelBtn ? "block" : "none"
+							display: this.state.showCancelBtn && !this.state.enableLoader ? "block" : "none"
 						}}>
 							Cancel dataset upload
 						</Button>
