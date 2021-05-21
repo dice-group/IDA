@@ -4,9 +4,11 @@
   - [Quickstart](quickstart.md)
   
 - **User Manual**
-
-  - [Components](components.md)
-  - [RESTAPI](api.md)
+  - **FRONTEND**
+    - [UI Components](components.md)
+  -**BACKEND**
+    - [RESTAPI](api.md)
+    - [FUSEKI](fuseki.md)
 
 
 
