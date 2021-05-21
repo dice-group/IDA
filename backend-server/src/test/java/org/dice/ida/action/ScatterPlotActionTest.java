@@ -36,17 +36,17 @@ public class ScatterPlotActionTest {
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("gdp");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("area");
+		chatUserMessage.setMessage("country");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("no");
 		ChatMessageResponse chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		ScatterPlotData scatterPlotData = (ScatterPlotData) chatMessageResponse.getPayload().get("scatterPlotData");
 		List<ScatterPlotItem> scatterPlotItemList = new ArrayList<>() {{
-			add(new ScatterPlotItem(48.0, 700.0, null, "647500"));
-			add(new ScatterPlotItem(124.6, 4500.0, null, "28748"));
-			add(new ScatterPlotItem(13.8, 6000.0, null, "2381740"));
-			add(new ScatterPlotItem(290.4, 8000.0, null, "199"));
-			add(new ScatterPlotItem(152.1, 19000.0, null, "468"));
+			add(new ScatterPlotItem(48.0, 700.0, null, "Afghanistan "));
+			add(new ScatterPlotItem(124.6, 4500.0, null, "Albania "));
+			add(new ScatterPlotItem(13.8, 6000.0, null, "Algeria "));
+			add(new ScatterPlotItem(290.4, 8000.0, null, "American Samoa "));
+			add(new ScatterPlotItem(152.1, 19000.0, null, "Andorra "));
 		}};
 		assertNotNull(scatterPlotData);
 		assertEquals(scatterPlotData.getItems(), scatterPlotItemList);
