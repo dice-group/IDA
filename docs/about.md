@@ -1,0 +1,7 @@
+# About IDA
+
+In the current day and age, data is centric to most processes and decisions being made. New and interesting concepts for analysing and understanding data have been developed. However, using these typically requires both―expensive tools and data science experts. This project aims to change this situation by developing an intelligent data science chatbot which enables data owners to access and analyze their data on a single platform, with a chatbot providing all the assistance they might need.
+
+The Intelligent Data Science Chatbot (IDA) aims to offer its users a natural language based platform for their data analysis needs. Users will be able to load and analyze their data without having to write a single line of code or learning the use of APIs. Apart from guiding the user throughout the analysis process, IDA will also be able to make suggestions based on user’s data.
+
+Being a web based tool, IDA has the potential to bring data analysis to a much larger user base than the existing solutions. Groups and individuals with limited financial resources can benefit a lot from a cost effective tool such as this. Also, it will help make data analysis easier for existing data analysts as well as save them from the hassle of constantly having to update their technical skills. As an open source tool, developers will be able to add their own features to it and share it with others.
