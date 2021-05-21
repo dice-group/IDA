@@ -1,5 +1,5 @@
 # Fuseki 
-Fuseki is used to  store RDF(data is stored in Subject object and predicate format) data and we can query using Sparqle.
+Fuseki in IDA is used to  store RDF(data is stored in Subject object and predicate format) data and we can query using Sparqle.
 
 *For example*: Details of visualization in RDF.
 
