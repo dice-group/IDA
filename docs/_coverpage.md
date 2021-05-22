@@ -1,4 +1,6 @@
 
+<small>&nbsp;&nbsp;&nbsp;&nbsp;</small>
+![logo](_media/favicon.png ':size=180')
 
 Intelligent Data Science Chatbot.
 
