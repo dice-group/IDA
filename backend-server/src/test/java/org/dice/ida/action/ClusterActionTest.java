@@ -30,7 +30,7 @@ public class ClusterActionTest {
 	void testClusterData() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("clustering");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
@@ -51,7 +51,7 @@ public class ClusterActionTest {
 	void testNumberofClusters() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("clustering");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
@@ -76,7 +76,7 @@ public class ClusterActionTest {
 	void testFarthestFirst() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("clustering");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
@@ -97,7 +97,7 @@ public class ClusterActionTest {
 	void testMultiParamChange() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("clustering");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
