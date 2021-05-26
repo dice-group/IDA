@@ -9,5 +9,6 @@
 <https://www.upb.de/ida/datasets/countries> ab:names "countries"^^xsd:string ;
 											ab:isTest "false"^^xsd:boolean .
 
+### below dataset is used only for test cases and it is not available for users
 <https://www.upb.de/ida/datasets/test_dataset> 	ab:names "test_dataset"^^xsd:string ;
 											ab:isTest "true"^^xsd:boolean .
