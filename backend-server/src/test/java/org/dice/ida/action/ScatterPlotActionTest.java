@@ -27,7 +27,7 @@ public class ScatterPlotActionTest {
 	void testScatterPlotFlow() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw scatter plot");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");

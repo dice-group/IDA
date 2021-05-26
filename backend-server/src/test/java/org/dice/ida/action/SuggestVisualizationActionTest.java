@@ -26,7 +26,7 @@ public class SuggestVisualizationActionTest {
 	void suggestionListTest() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("suggest me visualizations");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		ChatMessageResponse chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		List<SuggestionData> actualResponse = (List<SuggestionData>) chatMessageResponse.getPayload().get("suggestionData");

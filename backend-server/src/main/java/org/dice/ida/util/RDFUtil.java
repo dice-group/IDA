@@ -289,7 +289,11 @@ public class RDFUtil {
 	}
 
 	public String addDatasetName(String dsName) {
-		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/> INSERT DATA { <https://www.upb.de/ida/datasets/" + dsName + ">  ab:names '" + dsName + "' ; . }";
+		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/>" +
+				" INSERT DATA {" +
+				" ab:" + dsName + " ab:names '" + dsName + "' ;" +
+				" ab:isTest false" +
+				" }";
 		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
 			try {
 				UpdateRequest update = UpdateFactory.create(queryString);

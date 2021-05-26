@@ -19,7 +19,7 @@ public class LoadDataSetAction implements Action {
 		// Check if datasetName is provided
 		String datasetName = paramMap.get(IDAConst.PARAM_DATASET_NAME).toString().toLowerCase();
 		if (datasetName != null && !datasetName.isEmpty()) {
-			if (fileUtil.datasetExists(datasetName)) {
+			if (fileUtil.getListOfDatasets().contains(datasetName)) {
 				Map<String, Object> dataMap = resp.getPayload();
 				dataMap.put("label", datasetName);
 				dataMap.put("dsName", datasetName);
