@@ -196,6 +196,37 @@ public class RDFUtil {
 		model = null;
 		return attributeMap;
 	}
+	public Map<Integer, String> getSuggestionAttributeList(String vizName) {
+		Map<Integer, String> attributeMap = new TreeMap<>();
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?paramLabel  ?priority ?isoptional " +
+				"WHERE { " +
+				"  visualization:" + vizName + " ?p ?o ;" +
+				"                               ivoop:hasParam ?param . " +
+				"  ?param rdfs:label ?paramLabel ." +
+				"  ?param ivodp:hasPriority ?priority . " +
+				"  ?param ivodp:isOptional ?isoptional . " +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			boolean optional = (boolean) querySolution.get("isoptional").asNode().getLiteralValue();
+			if(!optional)
+			{
+				String param = querySolution.get("paramLabel").asLiteral().getString();
+				int priority = (int) querySolution.get("priority").asNode().getLiteralValue();
+				attributeMap.put(priority, param);
+			}
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
+		return attributeMap;
+	}
 
 	public String getVizIntent(String viz) {
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
@@ -277,5 +308,32 @@ public class RDFUtil {
 			vizInfoMap.put(querySolution.get("viz").asLiteral().getString(), visualizationInfo);
 		}
 		return vizInfoMap;
+	}
+
+	public Map<String, Boolean> getAttributeOptionalMap(String vizName) {
+		Map<String, Boolean> attributeOptionalMap = new TreeMap<>();
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT DISTINCT ?paramLabel ?isoptional " +
+				"WHERE { " +
+				"  visualization:" + vizName + " ?p ?o ;" +
+				"                               ivoop:hasParam ?param . " +
+				"  ?param rdfs:label ?paramLabel ." +
+				"  ?param ivodp:isOptional ?isoptional  " +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String param = querySolution.get("paramLabel").asLiteral().getString();
+			boolean optional = (boolean) querySolution.get("isoptional").asNode().getLiteralValue();
+			attributeOptionalMap.put(param,optional);
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
+		return attributeOptionalMap;
 	}
 }

@@ -52,8 +52,8 @@ public class SuggestVisualizationActionTest {
 				add(new SuggestionParam("Y-Axis", "Patient Number", "Y-Axis"));
 			}});
 			put("Scatter plot", new ArrayList<>(){{
-				add(new SuggestionParam("Reference Values", "Detected District", "Reference_Values"));
 				add(new SuggestionParam("X-Axis", "Age Bracket", "X-Axis"));
+				add(new SuggestionParam("label for scatter plot", "Patient Number", "Scatterplot_Label"));
 				add(new SuggestionParam("Y-Axis", "Patient Number", "Y-Axis"));
 			}});
 		}};
@@ -92,7 +92,7 @@ public class SuggestVisualizationActionTest {
 				}});
 			}});
 			put("Scatter plot", new HashMap<>(){{
-				put("Reference_Values", new HashSet<>(){{
+				put("Scatterplot_Label", new HashSet<>(){{
 					add("Not Required");
 				}});
 				put("X-Axis", new HashSet<>(){{
