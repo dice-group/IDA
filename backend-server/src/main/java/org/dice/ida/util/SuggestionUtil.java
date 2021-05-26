@@ -52,7 +52,9 @@ public class SuggestionUtil {
 					List<Map<String, String>> tableData = getColumnData(dsName, tableName, columnMap);
 					stats.put(IDAConst.COLUMN_SD_NOMINAL, calculateCountSD(tableData, columnMap, new ArrayList<>() {{
 						add(IDAConst.COLUMN_TYPE_NOMINAL);
-						add(IDAConst.COLUMN_TYPE_DATE);
+					}}));
+					stats.put(IDAConst.COLUMN_SD_ALL, calculateCountSD(tableData, columnMap, new ArrayList<>() {{
+						add(IDAConst.KEY_ALL);
 					}}));
 					stats.put(IDAConst.COLUMN_SD_TEMPORAL, calculateCountSD(tableData, columnMap, new ArrayList<>() {{
 						add(IDAConst.COLUMN_TYPE_DATE);
@@ -162,7 +164,7 @@ public class SuggestionUtil {
 		String val;
 		for (Map<String, String> row : columnData) {
 			for (String col : colTypeMap.keySet()) {
-				if (colTypeList.contains(colTypeMap.get(col))) {
+				if (colTypeList.contains(colTypeMap.get(col)) || colTypeList.contains(IDAConst.KEY_ALL)) {
 					colCountMap = countMap.getOrDefault(col, new HashMap<>());
 					val = row.get(col);
 					if (colCountMap.containsKey(val)) {
