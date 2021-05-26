@@ -53,7 +53,6 @@ export default class IDAScatterPLot extends Component {
 	}
 
 	drawScatterPlot() {
-		const labelColumn = this.graphData.labelColumn;
 		const xAxisLabel = this.graphData.xAxisLabel;
 		const yAxisLabel = this.graphData.yAxisLabel;
 		this.graphData.items.forEach((item) => {
@@ -125,7 +124,7 @@ export default class IDAScatterPLot extends Component {
 
 
 		var clip = svg.append("defs").append("svg:clipPath")
-			.attr("id", "clip")
+			.attr("id", this.containerId + "-clip")
 			.append("svg:rect")
 			.attr("width", this.width)
 			.attr("height", this.height - (this.margin.top + this.margin.bottom))
@@ -137,7 +136,7 @@ export default class IDAScatterPLot extends Component {
 	 */
 		const refColumn = "reference";
 		const plot = svg.append("g", ".listener-rect")
-			.attr("clip-path", "url(#clip)")
+			.attr("clip-path", "url(#" + this.containerId + "-clip)")
 			.selectAll("dot")
 			.data(this.graphData.items)
 			.enter()
@@ -149,11 +148,7 @@ export default class IDAScatterPLot extends Component {
 
 		plot
 			.attr("data-foo", (d) => {
-				let text = "";
-				if (labelColumn) {
-					text = d.label + "\n\n";
-				}
-				return text + xAxisLabel + ": " + d.xLabel + "\n" + yAxisLabel + ": " + d.y;
+				return d.label + "\n\n" + xAxisLabel + ": " + d.xLabel + "\n" + yAxisLabel + ": " + d.y;
 			})
 			.on("mouseover", (event) => {
 				this.tooltip.style.display = "block";
@@ -212,43 +207,47 @@ export default class IDAScatterPLot extends Component {
 	render() {
 		return <Grid container>
 			<Hidden mdUp>
-				<Grid item xs={12}>
-					<div className="m-2">
-						{
-							this.state.referenceValues.map((label) => (
-								<Chip
-									key={label}
-									size="small"
-									avatar={<span className="legend-item-sm-icon mr-1" style={{ backgroundColor: this.colorFunction(label) }} />}
-									label={label}
-									className="mr-2 mt-2"
-								/>
-							))
-						}
-					</div>
-				</Grid>
+				{
+					this.state.referenceValues.length > 1 && <Grid item xs={12}>
+						<div className="m-2">
+							{
+								this.state.referenceValues.map((label) => (
+									<Chip
+										key={label}
+										size="small"
+										avatar={<span className="legend-item-sm-icon mr-1" style={{ backgroundColor: this.colorFunction(label) }} />}
+										label={label}
+										className="mr-2 mt-2"
+									/>
+								))
+							}
+						</div>
+					</Grid>
+				}
 			</Hidden>
-			<Grid item xs={12} md={9}>
+			<Grid item xs={12} md={this.state.referenceValues.length > 1 ? 9 : 12}>
 				<div className="scatterplot-container" id={this.containerId}>
 				</div>
 			</Grid>
 			<Hidden mdDown>
-				<Grid item md={3}>
-					<div>
-						<List component="nav" dense={true} aria-label="graph legend" className="grouped-bar-chart-legend">
-							{
-								this.state.referenceValues.map((label) => (
-									<ListItem key={label}>
-										<ListItemAvatar>
-											<div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(label) }}></div>
-										</ListItemAvatar>
-										<ListItemText primary={label} />
-									</ListItem>
-								))
-							}
-						</List>
-					</div>
-				</Grid>
+				{
+					this.state.referenceValues.length > 1 && <Grid item md={3}>
+						<div>
+							<List component="nav" dense={true} aria-label="graph legend" className="grouped-bar-chart-legend">
+								{
+									this.state.referenceValues.map((label) => (
+										<ListItem key={label}>
+											<ListItemAvatar>
+												<div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(label) }}></div>
+											</ListItemAvatar>
+											<ListItemText primary={label} />
+										</ListItem>
+									))
+								}
+							</List>
+						</div>
+					</Grid>
+				}
 			</Hidden>
 
 		</Grid>;
