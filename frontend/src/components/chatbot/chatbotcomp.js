@@ -31,6 +31,8 @@ export default class ChatApp extends React.Component {
 			pyld: [],
 			action: "1004",
 			msg: [],
+			textAreaDisable: false,
+			timeOut: null,
 			beingDragged: false
 		};
 	}
@@ -96,6 +98,22 @@ export default class ChatApp extends React.Component {
 		}
 		this.state.iterator !== -1 && this.msgIterator(e, userMsgs);
 		this.suggestionParams = null;
+
+		if (! this.state.timeOut) {
+			const timeOut = setTimeout(() => {
+				this.setState({
+					timeOut: null,
+					textAreaDisable: true,
+					messages: [...this.state.messages, {
+						sender: "them",
+						timestamp: Date.now(),
+						message: "You have been inactive with IDA for 30 minutes! Your session has been expired. Kindly reload the page."
+					}]
+				})
+			}, 1000 * 60 * 30);
+
+			this.setState({timeOut: timeOut})
+		}
 	}
 
 	processMessage = (msg) => {
@@ -258,7 +276,7 @@ export default class ChatApp extends React.Component {
 						</div>
 						<div className="chat-area-input clearfix">
 							<IDALinearProgress hide={this.state.hideProgress} />
-							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} />
+							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} disabled={this.state.textAreaDisable}/>
 							<button hidden id="send-btn" onClick={this.onSendClick}></button>
 						</div>
 					</div>
