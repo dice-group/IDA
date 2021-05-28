@@ -35,7 +35,7 @@ public class BarGraphActionTest {
 	void testBarGraphFlow() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
@@ -60,12 +60,12 @@ public class BarGraphActionTest {
 	void testBarGraphSteps() throws Exception{
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("unique");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
@@ -83,7 +83,7 @@ public class BarGraphActionTest {
 	void testBarGraphNonSuitableColumn() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Case_Time_Series.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
@@ -102,18 +102,18 @@ public class BarGraphActionTest {
 	void testBarGraphNumBins() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 10");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("bins");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("10");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("count of");
 		messageController.handleMessage(chatUserMessage).call();
@@ -138,12 +138,12 @@ public class BarGraphActionTest {
 	void testBarGraphDateBins() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Date announced");
+		chatUserMessage.setMessage("Date Announced");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("bins");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
@@ -169,7 +169,7 @@ public class BarGraphActionTest {
 	void testBarGraphDateWeekBins() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("ICMR_Tests_Datewise.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 50");
@@ -202,7 +202,7 @@ public class BarGraphActionTest {
 	void testBarGraphDateDayBins() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("ICMR_Tests_Datewise.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 50");
@@ -235,7 +235,7 @@ public class BarGraphActionTest {
 	void testBarGraphDateYearBins() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("ICMR_Tests_Datewise.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
@@ -265,7 +265,7 @@ public class BarGraphActionTest {
 	void testBarGraphFlowUniqueLabels() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Case_Time_Series.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
@@ -292,7 +292,7 @@ public class BarGraphActionTest {
 	void testBarGraphWrongFilterString() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("Draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("null");
@@ -305,7 +305,7 @@ public class BarGraphActionTest {
 	void testBarGraphWrongColumnName() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
@@ -324,7 +324,7 @@ public class BarGraphActionTest {
 	void testGroupedBarGraph() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 10");
@@ -358,18 +358,18 @@ public class BarGraphActionTest {
 	void testGroupedBarGraphNumLabels() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("bin");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("20");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("count of");
 		messageController.handleMessage(chatUserMessage).call();
@@ -411,18 +411,18 @@ public class BarGraphActionTest {
 	void testGroupedBarGraphDateLabels() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bar graph");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 30");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("date announced");
+		chatUserMessage.setMessage("Date Announced");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("bin");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("2 weeks");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("date announced");
+		chatUserMessage.setMessage("Date Announced");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("yes");
 		messageController.handleMessage(chatUserMessage).call();
