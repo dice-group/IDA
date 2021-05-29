@@ -208,14 +208,14 @@ class DSUploadWizard extends React.Component {
 			let firstIndex = tokens[0].match(/(\d+)/)[0];
 
 			if (depth === 2) {
-				newMetaData[firstKey][firstIndex][attr] = target.value.toLowerCase().trim();
+				newMetaData[firstKey][firstIndex][attr] = target.value;
 			} else if (depth === 3) {
 				let secondKey = tokens[1].split("[")[0];
 				let secondIndex = tokens[1].match(/(\d+)/)[0];
-				newMetaData[firstKey][firstIndex][secondKey][secondIndex][attr] = target.value.toLowerCase().trim();
+				newMetaData[firstKey][firstIndex][secondKey][secondIndex][attr] = target.value;
 			}
 		} else {
-			newMetaData[name] = target.value.toLowerCase().trim();
+			newMetaData[name] = target.value;
 		}
 		this.setState({ metaData: newMetaData });
 	}
@@ -421,7 +421,7 @@ class DSUploadWizard extends React.Component {
 																	<td><input value={e.colDesc}
 																		name={`filesMd[${i}].fileColMd[${b}].colDesc`}
 																		onChange={this.handleChange} /></td>
-																	<td>{e.colAttr}</td>
+																	<td>{e.colName || e.colAttr}</td>
 																	<td>
 																		<select value={e.colType}
 																			name={`filesMd[${i}].fileColMd[${b}].colType`}
