@@ -4,9 +4,9 @@
   - [Quickstart](quickstart.md)
   
 - **User Manual**
-  - **FRONTEND**
-    - [UI Components](components.md)
-  -**BACKEND**
+  - [General](components.md)
+  -**Developer**
+    - [Add/Modify Visualisation](add_modify.md)
     - [RESTAPI](api.md)
     - [FUSEKI](fuseki.md)
 

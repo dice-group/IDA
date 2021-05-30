@@ -1,10 +1,12 @@
 # Quickstart
 
+## Demo
+To see how IDA works there is demo link [click here](https://ida.cs.upb.de/).
+Which shows overview of the application in case you want check it out.
 
 ## Installation
 
-
-### Docker
+### Prerequisites - [Docker](https://docs.docker.com/)  
 
 In order to develop, only tool you need is `Docker` installed.
 Docker is not directly supported by Windows 10 Home and Windows <= 8.1.
@@ -19,21 +21,21 @@ Setting up Docker (**Only once**)
 
 Managing development environment
 
-1.Starting the IDA stack (from project's root directory) 
+1. Starting the IDA stack (from project's root directory) 
     `./services/deploy-dev.sh`.
     
-2.The IDA web interface should now be available at 
-     `http://127.0.0.1:8090/`.
+2. The IDA web interface should now be available at 
+     `http://127.0.0.1:4200/`.
 
-3.To stop and remove the running development stack run 
+3. To stop and remove the running development stack run 
      `docker stack rm ida-stack-dev`.
      
-4.In order to check the logs run 
+4. In order to check the logs run 
      `docker container list`. 
-  It will list out all container ex:Fuzuki. 
+  It will list out all container ex:Fuzeki. 
   Choose the container whose logs you want view and 
      `docker logs container id`.
   While developing frontend changes automatically updated.
-  
- 
-  
+
+5. The IDA Fuzeki should now be available at 
+      `http://127.0.0.1.3030/`.

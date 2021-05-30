@@ -30,8 +30,9 @@
     `For Example: During upload dataset in case user wants to update the entity`
 
     ***Request Payload***: Payload for the message sent.
-      `For Example : metadata: {dsDesc: "flare", dsName: "flare", filesMd: [{colCount: 2, displayName: "flare_1.csv",…}]}`
+      ```For Example : metadata: {dsDesc: "flare", dsName: "flare", filesMd: [{colCount: 2, displayName: "flare_1.csv",…}]}```
       `fileColMd: [{colAttr: "id", colDesc: "id", colIndex: 1, colName: "id", colType: "string", isUnique: true},…]`
+      
       The entity name colName in fileColMd was changed from `"id"` to `"FLARECOL1"`.
       `fileColMd: [{colAttr: "id", colDesc: "id", colIndex: 1, colName: "FLARECOL1", colType: "string", isUnique: true},…]`
 
