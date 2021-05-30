@@ -69,7 +69,7 @@ function addAnalysisEntry(props, analysisData, label, name, activeDSName, tableN
     props.setDetails(treeData);
     props.setActiveTable(tableName);
     props.setActiveDS(activeDSName);
-    props.setActiveTableData(analysisData);
+    name === "clustering" && props.setActiveTableData(analysisData);
     updateActiveTab(props, props.expandedNodeId, "_analyses", analysisNode.id, activeDSName);
 }
 
@@ -165,6 +165,10 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_GROUPED_BUBBLECHART: {
             addVisualizationEntry(props, payload.bubbleChartData, "Grouped Bubble Chart", "groupedBubblechart", payload.activeDS);
+            break;
+        }
+        case IDA_CONSTANTS.UI_ACTION_CODES.UAC_VIZ_SUGGESTION: {
+            addAnalysisEntry(props, payload.suggestionData, "Visualization Suggestion", "suggestion", payload.activeDS, payload.activeTable, []);
             break;
         }
         default:

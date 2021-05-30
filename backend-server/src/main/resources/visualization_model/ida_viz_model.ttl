@@ -15,10 +15,13 @@
 @prefix visualization: <https://www.upb.de/ida/viz/data/visualization/> .
 @prefix instance_param: <https://www.upb.de/ida/viz/data/instance_param/> .
 @prefix transformation: <https://www.upb.de/ida/viz/data/transformation/> .
+@prefix statistical_prop: <https://www.upb.de/ida/viz/data/statistical_property/> .
+@prefix suggestion_param: <https://www.upb.de/ida/viz/data/suggestion_param/> .
 @prefix representation_tree: <https://www.upb.de/ida/viz/data/representation_tree/> .
 @prefix transformation_type: <https://www.upb.de/ida/viz/data/transformation_type/> .
 @prefix representational_type: <https://www.upb.de/ida/viz/data/representational_type/> .
 @prefix representation_tree_node: <https://www.upb.de/ida/viz/data/representation_tree_node/> .
+@prefix statistical_prop_condition: <https://www.upb.de/ida/viz/data/statistical_property_condition/> .
 @base <https://www.upb.de/ida/viz/ontology/> .
 
 <https://www.upb.de/ida/viz/ontology/> rdf:type owl:Ontology ;
@@ -123,6 +126,30 @@ ivoop:hasRootNode rdf:type owl:ObjectProperty ;
                   rdfs:label "hasRootNode"@en .
 
 
+###  https://www.upb.de/ida/viz/ontology/object-property/hasStatPropertyCondition
+ivoop:hasStatPropertyCondition rdf:type owl:ObjectProperty ;
+                               rdfs:subPropertyOf owl:topObjectProperty ;
+                               rdfs:domain ivoc:SuggestionParam ;
+                               rdfs:range ivoc:StatisticalPropCondition ;
+                               rdfs:label "hasStatPropertyCondition"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/object-property/hasStatisticalProperty
+ivoop:hasStatisticalProperty rdf:type owl:ObjectProperty ;
+                             rdfs:subPropertyOf owl:topObjectProperty ;
+                             rdfs:domain ivoc:SuggestionParam ;
+                             rdfs:range ivoc:StatisticalProperty ;
+                             rdfs:label "hasStatisticalProperty"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/object-property/hasSuggestionParamValue
+ivoop:hasSuggestionParamValue rdf:type owl:ObjectProperty ;
+                              rdfs:subPropertyOf owl:topObjectProperty ;
+                              rdfs:domain ivoc:Visualization ;
+                              rdfs:range ivoc:SuggestionParam ;
+                              rdfs:label "hasSuggestionParamValue"@en .
+
+
 ###  https://www.upb.de/ida/viz/ontology/object-property/hasTargetRepType
 ivoop:hasTargetRepType rdf:type owl:ObjectProperty ;
                        rdfs:subPropertyOf owl:topObjectProperty ;
@@ -155,6 +182,14 @@ ivoop:hasTransformationType rdf:type owl:ObjectProperty ;
                             rdfs:label "hasTransformationType"@en .
 
 
+###  https://www.upb.de/ida/viz/ontology/object-property/hasVizParam
+ivoop:hasVizParam rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty ;
+                  rdfs:domain ivoc:SuggestionParam ;
+                  rdfs:range ivoc:Parameter ;
+                  rdfs:label "hasVizParam"@en .
+
+
 ###  https://www.upb.de/ida/viz/ontology/object-property/isDependentOn
 ivoop:isDependentOn rdf:type owl:ObjectProperty ;
                     rdfs:subPropertyOf owl:topObjectProperty ;
@@ -182,6 +217,15 @@ ivodp:hasPriority rdf:type owl:DatatypeProperty ;
                   rdfs:range xsd:int ;
                   rdfs:comment "Priority of the visualization parameter"@en ;
                   rdfs:label "priority"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/data-property/isOptional
+ivodp:isOptional rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf owl:topDataProperty ;
+                 rdfs:domain ivoc:Parameter ;
+                 rdfs:range xsd:boolean ;
+                 dc:description "True if the parameter is optional for the visualization" ;
+                 rdfs:label "isOptional" .
 
 
 ###  https://www.upb.de/ida/viz/ontology/data-property/link
@@ -238,6 +282,21 @@ ivoc:RepresentationTreeNode rdf:type owl:Class ;
 ###  https://www.upb.de/ida/viz/ontology/class/RepresentationalType
 ivoc:RepresentationalType rdf:type owl:Class ;
                           rdfs:label "RepresentationalType"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/class/StatisticalPropCondition
+ivoc:StatisticalPropCondition rdf:type owl:Class ;
+                              rdfs:label "StatisticalPropCondition"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/class/StatisticalProperty
+ivoc:StatisticalProperty rdf:type owl:Class ;
+                         rdfs:label "StatisticalProperty"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/class/SuggestionParam
+ivoc:SuggestionParam rdf:type owl:Class ;
+                     rdfs:label "SuggestionParam"@en .
 
 
 ###  https://www.upb.de/ida/viz/ontology/class/Transformation
@@ -452,8 +511,10 @@ instance:line_chart_4 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/scatter_plot_1
 instance:scatter_plot_1 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
-                        ivoop:hasInstanceParam instance_param:x_axis_unique ,
-                                               instance_param:y_axis_not_required ;
+                        ivoop:hasInstanceParam instance_param:Scatter_Plot_Label ,
+                                               instance_param:reference_values ,
+                                               instance_param:x_axis_numeric ,
+                                               instance_param:y_axis_numeric ;
                         rdfs:label "Scatter Plot Instance 1" .
 
 
@@ -512,6 +573,14 @@ instance:scatter_plot_matrix_1 rdf:type owl:NamedIndividual ,
                                                       instance_param:reference_column ,
                                                       :ScatterPlotMatrixLabel ;
                                rdfs:label "Scatter Plot Matrix Instance 1"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/Scatter_Plot_Label
+instance_param:Scatter_Plot_Label rdf:type owl:NamedIndividual ,
+                                           ivoc:InstanceParam ;
+                                  ivoop:hasRepType representational_type:NotRequired ;
+                                  ivoop:representedParam parameter:Scatterplot_label ;
+                                  rdfs:label "Scatter Plot Label" .
 
 
 ###  https://www.upb.de/ida/viz/data/instance_param/bubble_label_bins
@@ -650,6 +719,14 @@ instance_param:reference_column rdf:type owl:NamedIndividual ,
                                 rdfs:label "Reference Column"@en .
 
 
+###  https://www.upb.de/ida/viz/data/instance_param/reference_values
+instance_param:reference_values rdf:type owl:NamedIndividual ,
+                                         ivoc:InstanceParam ;
+                                ivoop:hasRepType representational_type:NotRequired ;
+                                ivoop:representedParam parameter:ref_values ;
+                                rdfs:label "Reference Values"@en .
+
+
 ###  https://www.upb.de/ida/viz/data/instance_param/x_axis_bins
 instance_param:x_axis_bins rdf:type owl:NamedIndividual ,
                                     ivoc:InstanceParam ;
@@ -664,6 +741,14 @@ instance_param:x_axis_non_unique rdf:type owl:NamedIndividual ,
                                  ivoop:hasRepType representational_type:NonUnique ;
                                  ivoop:representedParam parameter:x_axis ;
                                  rdfs:label "X-Axis Non Unique"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/x_axis_numeric
+instance_param:x_axis_numeric rdf:type owl:NamedIndividual ,
+                                       ivoc:InstanceParam ;
+                              ivoop:hasRepType representational_type:Numeric ;
+                              ivoop:representedParam parameter:x_axis ;
+                              rdfs:label "X-Axis Numeric"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/instance_param/x_axis_unique
@@ -717,12 +802,22 @@ instance_param:y_axis_sumof rdf:type owl:NamedIndividual ,
                             rdfs:label "Y-Axis Sumof"@en .
 
 
+###  https://www.upb.de/ida/viz/data/parameter/Scatterplot_label
+parameter:Scatterplot_label rdf:type owl:NamedIndividual ,
+                                     ivoc:Parameter ;
+                            ivoop:hasRepType representational_type:NotRequired ;
+                            ivodp:hasPriority 3 ;
+                            ivodp:isOptional "false"^^xsd:boolean ;
+                            rdfs:label "Scatterplot_Label" .
+
+
 ###  https://www.upb.de/ida/viz/data/parameter/bubble_label
 parameter:bubble_label rdf:type owl:NamedIndividual ,
                                 ivoc:Parameter ;
                        ivoop:hasParamTree representation_tree:tree_1 ;
                        ivoop:hasRepType representational_type:Categorical ;
                        ivodp:hasPriority 1 ;
+                       ivodp:isOptional "false"^^xsd:boolean ;
                        rdfs:label "Bubble_Label"@en .
 
 
@@ -731,6 +826,7 @@ parameter:bubble_size rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasPriority 2 ;
+                      ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Bubble_Size"@en .
 
 
@@ -739,6 +835,7 @@ parameter:column_list rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasPriority 1 ;
+                      ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Column_List"@en .
 
 
@@ -747,6 +844,7 @@ parameter:line_label rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Nominal ;
                      ivodp:hasPriority 2 ;
+                     ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Label"@en .
 
 
@@ -755,7 +853,17 @@ parameter:line_value rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Numeric ;
                      ivodp:hasPriority 3 ;
+                     ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Value"@en .
+
+
+###  https://www.upb.de/ida/viz/data/parameter/ref_values
+parameter:ref_values rdf:type owl:NamedIndividual ,
+                              ivoc:Parameter ;
+                     ivoop:hasRepType representational_type:Nominal ;
+                     ivodp:hasPriority 4 ;
+                     ivodp:isOptional "true"^^xsd:boolean ;
+                     rdfs:label "Reference_Values"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/parameter/reference_column
@@ -771,6 +879,7 @@ parameter:temporal_column rdf:type owl:NamedIndividual ,
                                    ivoc:Parameter ;
                           ivoop:hasRepType representational_type:Date ;
                           ivodp:hasPriority 1 ;
+                          ivodp:isOptional "false"^^xsd:boolean ;
                           rdfs:label "Temporal_Column"@en .
 
 
@@ -780,6 +889,7 @@ parameter:x_axis rdf:type owl:NamedIndividual ,
                  ivoop:hasParamTree representation_tree:tree_1 ;
                  ivoop:hasRepType representational_type:Categorical ;
                  ivodp:hasPriority 1 ;
+                 ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "X-Axis"@en .
 
 
@@ -788,6 +898,7 @@ parameter:y_axis rdf:type owl:NamedIndividual ,
                           ivoc:Parameter ;
                  ivoop:hasRepType representational_type:Numeric ;
                  ivodp:hasPriority 2 ;
+                 ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "Y-Axis"@en .
 
 
@@ -947,6 +1058,138 @@ representational_type:Unique rdf:type owl:NamedIndividual ,
                              rdfs:label "Unique"@en .
 
 
+###  https://www.upb.de/ida/viz/data/statistical_property/covariance
+statistical_prop:covariance rdf:type owl:NamedIndividual ,
+                                     ivoc:StatisticalProperty ;
+                            rdfs:label "Covariance" .
+
+
+###  https://www.upb.de/ida/viz/data/statistical_property/standard_deviation
+statistical_prop:standard_deviation rdf:type owl:NamedIndividual ,
+                                             ivoc:StatisticalProperty ;
+                                    rdfs:label "Standard Deviation" .
+
+
+###  https://www.upb.de/ida/viz/data/statistical_property/standard_deviation_all
+statistical_prop:standard_deviation_all rdf:type owl:NamedIndividual ,
+                                                 ivoc:StatisticalProperty ;
+                                        rdfs:label "Standard Deviation All" .
+
+
+###  https://www.upb.de/ida/viz/data/statistical_property/standard_deviation_nominal
+statistical_prop:standard_deviation_nominal rdf:type owl:NamedIndividual ,
+                                                     ivoc:StatisticalProperty ;
+                                            rdfs:label "Standard Deviation Nominal" .
+
+
+###  https://www.upb.de/ida/viz/data/statistical_property/standard_deviation_temporal
+statistical_prop:standard_deviation_temporal rdf:type owl:NamedIndividual ,
+                                                      ivoc:StatisticalProperty ;
+                                             rdfs:label "Standard Deviation Temporal" .
+
+
+###  https://www.upb.de/ida/viz/data/statistical_property_condition/max_val
+statistical_prop_condition:max_val rdf:type owl:NamedIndividual ,
+                                            ivoc:StatisticalPropCondition ;
+                                   rdfs:label "max" .
+
+
+###  https://www.upb.de/ida/viz/data/statistical_property_condition/min_val
+statistical_prop_condition:min_val rdf:type owl:NamedIndividual ,
+                                            ivoc:StatisticalPropCondition ;
+                                   rdfs:label "min" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/bar_chart_label
+suggestion_param:bar_chart_label rdf:type owl:NamedIndividual ,
+                                          ivoc:SuggestionParam ;
+                                 ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                 ivoop:hasStatisticalProperty statistical_prop:standard_deviation_nominal ;
+                                 ivoop:hasVizParam parameter:x_axis ;
+                                 rdfs:label "Bar Chart Label" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/bar_chart_value
+suggestion_param:bar_chart_value rdf:type owl:NamedIndividual ,
+                                          ivoc:SuggestionParam ;
+                                 ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
+                                 ivoop:hasStatisticalProperty statistical_prop:standard_deviation ;
+                                 ivoop:hasVizParam parameter:y_axis ;
+                                 rdfs:label "Bar Chart Value" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/bubble_label
+suggestion_param:bubble_label rdf:type owl:NamedIndividual ,
+                                       ivoc:SuggestionParam ;
+                              ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                              ivoop:hasStatisticalProperty statistical_prop:standard_deviation_nominal ;
+                              ivoop:hasVizParam parameter:bubble_label ;
+                              rdfs:label "Bubble Label" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/bubble_value
+suggestion_param:bubble_value rdf:type owl:NamedIndividual ,
+                                       ivoc:SuggestionParam ;
+                              ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
+                              ivoop:hasStatisticalProperty statistical_prop:standard_deviation ;
+                              ivoop:hasVizParam parameter:bubble_size ;
+                              rdfs:label "Bubble Value" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/line_chart_line_label
+suggestion_param:line_chart_line_label rdf:type owl:NamedIndividual ,
+                                                ivoc:SuggestionParam ;
+                                       ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                       ivoop:hasStatisticalProperty statistical_prop:standard_deviation_nominal ;
+                                       ivoop:hasVizParam parameter:line_label ;
+                                       rdfs:label "Line Chart Line Label" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/line_chart_line_value
+suggestion_param:line_chart_line_value rdf:type owl:NamedIndividual ,
+                                                ivoc:SuggestionParam ;
+                                       ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
+                                       ivoop:hasStatisticalProperty statistical_prop:standard_deviation ;
+                                       ivoop:hasVizParam parameter:line_value ;
+                                       rdfs:label "Line Chart Line Value" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/line_chart_temporal_value
+suggestion_param:line_chart_temporal_value rdf:type owl:NamedIndividual ,
+                                                    ivoc:SuggestionParam ;
+                                           ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                           ivoop:hasStatisticalProperty statistical_prop:standard_deviation_temporal ;
+                                           ivoop:hasVizParam parameter:temporal_column ;
+                                           rdfs:label "Line Chart Temporal Value" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/scatterplot_reference_values
+suggestion_param:scatterplot_reference_values rdf:type owl:NamedIndividual ,
+                                                       ivoc:SuggestionParam ;
+                                              ivoop:hasStatPropertyCondition statistical_prop_condition:min_val ;
+                                              ivoop:hasStatisticalProperty statistical_prop:standard_deviation_all ;
+                                              ivoop:hasVizParam parameter:Scatterplot_label ;
+                                              rdfs:label "Scatter Plot Label Values" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/scatterplot_x_value
+suggestion_param:scatterplot_x_value rdf:type owl:NamedIndividual ,
+                                              ivoc:SuggestionParam ;
+                                     ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
+                                     ivoop:hasStatisticalProperty statistical_prop:covariance ;
+                                     ivoop:hasVizParam parameter:x_axis ;
+                                     rdfs:label "Scatter Plot X Value" .
+
+
+###  https://www.upb.de/ida/viz/data/suggestion_param/scatterplot_y_value
+suggestion_param:scatterplot_y_value rdf:type owl:NamedIndividual ,
+                                              ivoc:SuggestionParam ;
+                                     ivoop:hasStatPropertyCondition statistical_prop_condition:max_val ;
+                                     ivoop:hasStatisticalProperty statistical_prop:covariance ;
+                                     ivoop:hasVizParam parameter:y_axis ;
+                                     rdfs:label "Scatter Plot Y Value" .
+
+
 ###  https://www.upb.de/ida/viz/data/transformation/bargraph_averageof
 transformation:bargraph_averageof rdf:type owl:NamedIndividual ,
                                            ivoc:Transformation ;
@@ -1059,6 +1302,8 @@ visualization:bar_chart rdf:type owl:NamedIndividual ,
                                           instance:bar_chart_7 ;
                         ivoop:hasParam parameter:x_axis ,
                                        parameter:y_axis ;
+                        ivoop:hasSuggestionParamValue suggestion_param:bar_chart_label ,
+                                                      suggestion_param:bar_chart_value ;
                         rdfs:label "Bar Chart"@en .
 
 
@@ -1075,6 +1320,8 @@ visualization:bubble_chart rdf:type owl:NamedIndividual ,
                                              instance:bubble_chart_7 ;
                            ivoop:hasParam parameter:bubble_label ,
                                           parameter:bubble_size ;
+                           ivoop:hasSuggestionParamValue suggestion_param:bubble_label ,
+                                                         suggestion_param:bubble_value ;
                            rdfs:label "Bubble Chart"@en .
 
 
@@ -1089,6 +1336,9 @@ visualization:line_chart rdf:type owl:NamedIndividual ,
                          ivoop:hasParam parameter:line_label ,
                                         parameter:line_value ,
                                         parameter:temporal_column ;
+                         ivoop:hasSuggestionParamValue suggestion_param:line_chart_line_label ,
+                                                       suggestion_param:line_chart_line_value ,
+                                                       suggestion_param:line_chart_temporal_value ;
                          rdfs:label "Line Chart"@en .
 
 
@@ -1096,15 +1346,14 @@ visualization:line_chart rdf:type owl:NamedIndividual ,
 visualization:scatter_plot rdf:type owl:NamedIndividual ,
                                     ivoc:Visualization ;
                            ivoop:hasInformation information:ScatterPlot ;
-                           ivoop:hasInstance instance:scatter_plot_1 ,
-                                             instance:scatter_plot_2 ,
-                                             instance:scatter_plot_3 ,
-                                             instance:scatter_plot_4 ,
-                                             instance:scatter_plot_5 ,
-                                             instance:scatter_plot_6 ,
-                                             instance:scatter_plot_7 ;
-                           ivoop:hasParam parameter:x_axis ,
+                           ivoop:hasInstance instance:scatter_plot_1 ;
+                           ivoop:hasParam parameter:Scatterplot_label ,
+                                          parameter:ref_values ,
+                                          parameter:x_axis ,
                                           parameter:y_axis ;
+                           ivoop:hasSuggestionParamValue suggestion_param:scatterplot_reference_values ,
+                                                         suggestion_param:scatterplot_x_value ,
+                                                         suggestion_param:scatterplot_y_value ;
                            rdfs:label "Scatter plot"@en .
 
 
@@ -1132,6 +1381,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                   ivoc:Parameter ;
                          ivoop:hasRepType representational_type:Nominal ;
                          ivodp:hasPriority 3 ;
+                         ivodp:isOptional "false"^^xsd:boolean ;
                          rdfs:label "ScatterPlotMatrix_Label" .
 
 
@@ -1139,6 +1389,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 :hasListColumn rdf:type owl:NamedIndividual ,
                         ivoc:Parameter ;
                ivodp:hasPriority 4 ;
+               ivodp:isOptional "false"^^xsd:boolean ;
                rdfs:label "hasListColumn" .
 
 

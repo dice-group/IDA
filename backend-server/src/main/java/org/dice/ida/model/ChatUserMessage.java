@@ -14,6 +14,8 @@ public class ChatUserMessage {
 	private Date timestamp;
 	private List<Map<String, String>> activeTableData;
 	private boolean temporaryData;
+	private Map<String, Object> suggestionParams;
+	private boolean renderSuggestion;
 
 	public List<Map<String, String>> getActiveTableData() {
 		return activeTableData;
@@ -84,5 +86,21 @@ public class ChatUserMessage {
 
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public Map<String, Object> getSuggestionParams() {
+		return suggestionParams;
+	}
+
+	public void setSuggestionParams(Map<String, Object> suggestionParams) {
+		this.suggestionParams = suggestionParams;
+	}
+
+	public boolean isRenderSuggestion() {
+		return renderSuggestion;
+	}
+
+	public void setRenderSuggestion(boolean renderSuggestion) {
+		this.renderSuggestion = renderSuggestion;
 	}
 }

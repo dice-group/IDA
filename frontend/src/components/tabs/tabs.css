@@ -21,7 +21,3 @@
 .MuiButtonBase-root.MuiTab-root .MuiTab-wrapper {
   align-items: flex-start;
 }
-
-.MuiGrid-root.MuiGrid-container {
-  flex-wrap: nowrap;
-}

@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import * as d3 from "d3";
-import TrendingUpIcon from "@material-ui/icons/TrendingUp";
-import TrendingDownIcon from "@material-ui/icons/TrendingDown";
 import "./scatterplot.css";
-import { IDA_CONSTANTS } from "../../constants";
-import { Grid, Fab } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Chip from "@material-ui/core/Chip";
+import { Hidden } from "@material-ui/core";
 
 export default class IDAScatterPLot extends Component {
 	margin = {
@@ -13,9 +16,10 @@ export default class IDAScatterPLot extends Component {
 		bottom: 100,
 		left: 100
 	};
-	height = 700;
-	width = 1000;
+	height = 500;
+	width = 800;
 	graphData = {};
+	colorFunction = (label) => null;
 	containerId = "";
 	originalGraphData = {};
 	tooltip = null;
@@ -26,74 +30,60 @@ export default class IDAScatterPLot extends Component {
 		this.graphData = props.data;
 		this.originalGraphData = JSON.parse(JSON.stringify(this.graphData));
 		this.state = {
-			sortMode: ""
+
+			sortMode: "",
+			referenceValues: []
 		};
 		this.tooltip = document.createElement("div");
 		this.tooltip.setAttribute("class", "tooltip");
 		document.body.appendChild(this.tooltip);
-
 	}
 
 	componentDidMount() {
-		this.graphData && this.graphData.items && this.drawScatterPlot();
-	}
-
-
-	sortGraphItems(sortMode) {
-		document.getElementById(this.containerId).innerHTML = "";
-		if (sortMode === this.state.sortMode) {
+		const refColumn = "reference";
+		if (this.graphData && this.graphData.items) {
+			this.colorFunction = d3.scaleOrdinal()
+				.domain(this.graphData.items.map((d) => d[`${refColumn}`]))
+				.range(d3.schemeCategory10);
 			this.setState({
-				sortMode: ""
+				referenceValues: this.colorFunction.domain()
 			});
-			this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
-		} else if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_Y || sortMode === IDA_CONSTANTS.SORT_MODE_DESC_Y) {
-			this.sortYaxis(sortMode);
-		} else if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_X || sortMode === IDA_CONSTANTS.SORT_MODE_DESC_X) {
-			this.sortXaxis(sortMode);
-		}
-		this.setState({
-			sortMode
-		});
-
-		this.drawScatterPlot();
-	}
-
-	sortYaxis(sortMode) {
-		if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_Y) {
-			this.graphData.items.sort((a, b) => a.y > b.y ? 1 : a.y < b.y ? -1 : 0);
-		} else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC_Y) {
-			this.graphData.items.sort((a, b) => a.y > b.y ? -1 : a.y < b.y ? 1 : 0);
+			this.graphData && this.graphData.items && this.drawScatterPlot();
 		}
 	}
-
-	sortXaxis(sortMode) {
-		if (sortMode === IDA_CONSTANTS.SORT_MODE_ASC_X) {
-			this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
-		} else if (sortMode === IDA_CONSTANTS.SORT_MODE_DESC_X) {
-			this.graphData = JSON.parse(JSON.stringify(this.originalGraphData));
-			this.graphData.items.reverse();
-		}
-	}
-
 
 	drawScatterPlot() {
-
+		const xAxisLabel = this.graphData.xAxisLabel;
+		const yAxisLabel = this.graphData.yAxisLabel;
 		this.graphData.items.forEach((item) => {
 			item.xLabel = item.x;
 			item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
 		});
-
-		// Every plot will be of static width 25px
-		this.width = Math.max(this.graphData.items.length * 25, this.width);
 
 		/**
 		 * append placeholder for the scatter plot
 		 */
 		const svg = d3.select("#" + this.containerId)
 			.append("svg")
+			.attr("class", "chartcontainer")
+			.attr("width", this.width)
 			.attr("height", this.height)
-			.attr("width", this.width);
+			.append("g")
+			.attr("class", "chart")
+			.attr("transform", "translate(" + 0 + ", " + this.margin.top + ")");
 
+		/**
+		 * append listener for zoom event
+		 */
+		var listenerRect = svg.append("rect")
+			.attr("class", "listener-rect")
+			.attr("x", 0)
+			.attr("y", 0)
+			.attr("width", this.width)
+			.attr("height", this.height)
+			.style("opacity", 0);
+
+		const z = this.colorFunction;
 
 		/**
 		* append y-axis label
@@ -128,28 +118,38 @@ export default class IDAScatterPLot extends Component {
 		/**
 		 * function to scale x axis entries
 		 */
-		const scaleX = d3.scaleBand()
-			.domain(this.graphData.items.map((d) => d.x))
+		const scaleX = d3.scaleLinear()
+			.domain([0, d3.max(this.graphData.items, (d) => d.x)]).nice()
 			.range([this.margin.left, this.width])
-			.padding(0.1);
+
+
+		var clip = svg.append("defs").append("svg:clipPath")
+			.attr("id", this.containerId + "-clip")
+			.append("svg:rect")
+			.attr("width", this.width)
+			.attr("height", this.height - (this.margin.top + this.margin.bottom))
+			.attr("x", 100)
+			.attr("y", this.margin.top);
 
 		/**
-		 * append the scatter plot graph to SVG
-		 */
-		let plot = svg.append("g")
+	 * append the scatter plot graph to SVG
+	 */
+		const refColumn = "reference";
+		const plot = svg.append("g", ".listener-rect")
+			.attr("clip-path", "url(#" + this.containerId + "-clip)")
 			.selectAll("dot")
 			.data(this.graphData.items)
 			.enter()
 			.append("circle")
-			.attr("cx", function (d) { return scaleX(d.x) + 11; })
-			// .attr("cy", function (d) { return scaleY(d.y); } )
-			.attr("cy", (d) => scaleY(d.y) - 2)
+			.attr("cx", (d) => scaleX(d.x))
+			.attr("cy", (d) => scaleY(d.y))
 			.attr("r", 3.0)
-			.attr("fill", "#4f8bff");
+			.attr("fill", (d) => z(d[`${refColumn}`]));
 
 		plot
-			// .append("title")
-			.attr("data-foo", (d) => { return d.xLabel + ": " + d.y; })
+			.attr("data-foo", (d) => {
+				return d.label + "\n\n" + xAxisLabel + ": " + d.xLabel + "\n" + yAxisLabel + ": " + d.y;
+			})
 			.on("mouseover", (event) => {
 				this.tooltip.style.display = "block";
 				this.tooltip.style.position = "absolute";
@@ -162,83 +162,94 @@ export default class IDAScatterPLot extends Component {
 			});
 
 		/**
-		 * append x-axis to the graph
+		 * append y-axis to the graph
 		 */
-
-		let label = svg.append("g")
+		const Xaxisdraw = svg.append("g")
 			.attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-			.call(d3.axisBottom(scaleX).tickSizeOuter(0))
-			.selectAll("text")
-			.data(this.graphData.items)
+			.call(d3.axisBottom(scaleX).tickSizeOuter(0));
+
+		Xaxisdraw.selectAll("text")
 			.attr("x", -10)
 			.attr("y", -5)
 			.attr("transform", "rotate(-90)")
-			.style("text-anchor", "end")
-
-			.attr("value", (d) => {
-				return d.x + ": " + d.y;
-			})
-			.style("fill", (d) => {
-				return d === IDA_CONSTANTS.UNKNOWN_LABEL ? "#F00" : "#000";
-			})
-			.style("font-size", (d) => d === IDA_CONSTANTS.UNKNOWN_LABEL ? "14px" : "11px")
-			.attr("class", "x-axis-label");
-
-		label
-			.attr("data-foo", (d) => { return d.xLabel + ": " + d.y; })
-			.on("mouseover", (event) => {
-				this.tooltip.style.display = "block";
-				this.tooltip.style.position = "absolute";
-				this.tooltip.style.top = event.clientY + "px";
-				this.tooltip.style.left = event.clientX + "px";
-				this.tooltip.innerText = event.srcElement.getAttribute("data-foo");
-			})
-			.on("mouseout", () => {
-				this.tooltip.style.display = "none";
-			});
-
+			.style("text-anchor", "end");
 
 		/**
-	   * append y-axis to the graph
-	   */
-		svg.append("g")
+		 * append y-axis to the graph
+		 */
+		const Yaxisdraw = svg.append("g")
 			.attr("transform", `translate(${this.margin.left},0)`)
 			.call(d3.axisLeft(scaleY).tickSizeOuter(0));
+
+		/**
+		 * Zoom event listener 
+		 */
+		const zoomed = (event, object) => {
+			var transform = event.transform;
+			transform.x = Math.min(-90 * (transform.k - 1), transform.x);
+			transform.y = Math.min(0, transform.y);
+			var yScaleNew = transform.rescaleY(scaleY);
+			var xScaleNew = transform.rescaleX(scaleX);
+			plot.attr("cy", function (d) { return yScaleNew(d.y); });
+			plot.attr("cx", function (d) { return xScaleNew(d.x); });
+			Yaxisdraw.call(d3.axisLeft(yScaleNew).tickSizeOuter(0));
+			Xaxisdraw.call((d3.axisBottom(xScaleNew).tickSizeOuter(0))).selectAll("text")
+				.attr("x", -10)
+				.attr("y", -5)
+				.attr("transform", "rotate(-90)")
+				.style("text-anchor", "end");
+		};
+
+		const zoom = d3.zoom().on("zoom", (event) => zoomed(event, this));
+		listenerRect.call(zoom);
 	}
 
 	render() {
-		return <Grid>
-			<Grid item xs={12}>
-				<div className="text-center pt-2 pb-2 row align-items-center">
-					<span className="text-right col-6">
-						Sort the plot:
-          </span>
-					<div className="col-6 text-left row">
-						<div>
-							<Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC_Y ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC_Y)}>
-								<TrendingUpIcon />
-							</Fab>
-							<Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC_Y ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC_Y)}>
-								<TrendingDownIcon />
-							</Fab>
-							<div className="mt-2 text-center">Y-Axis</div>
+		return <Grid container>
+			<Hidden mdUp>
+				{
+					this.state.referenceValues.length > 1 && <Grid item xs={12}>
+						<div className="m-2">
+							{
+								this.state.referenceValues.map((label) => (
+									<Chip
+										key={label}
+										size="small"
+										avatar={<span className="legend-item-sm-icon mr-1" style={{ backgroundColor: this.colorFunction(label) }} />}
+										label={label}
+										className="mr-2 mt-2"
+									/>
+								))
+							}
 						</div>
-						<div className="ml-md-4">
-							<Fab size="small" className="mr-2" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_ASC_X ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_ASC_X)}>
-								<TrendingUpIcon />
-							</Fab>
-							<Fab size="small" color={this.state.sortMode === IDA_CONSTANTS.SORT_MODE_DESC_X ? "primary" : "default"} onClick={() => this.sortGraphItems(IDA_CONSTANTS.SORT_MODE_DESC_X)}>
-								<TrendingDownIcon />
-							</Fab>
-							<div className="mt-2 text-center">X-Axis</div>
-						</div>
-					</div>
-				</div>
-			</Grid>
-			<Grid item xs={12}>
+					</Grid>
+				}
+			</Hidden>
+			<Grid item xs={12} md={this.state.referenceValues.length > 1 ? 9 : 12}>
 				<div className="scatterplot-container" id={this.containerId}>
 				</div>
 			</Grid>
+			<Hidden mdDown>
+				{
+					this.state.referenceValues.length > 1 && <Grid item md={3}>
+						<div>
+							<List component="nav" dense={true} aria-label="graph legend" className="grouped-bar-chart-legend">
+								{
+									this.state.referenceValues.map((label) => (
+										<ListItem key={label}>
+											<ListItemAvatar>
+												<div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(label) }}></div>
+											</ListItemAvatar>
+											<ListItemText primary={label} />
+										</ListItem>
+									))
+								}
+							</List>
+						</div>
+					</Grid>
+				}
+			</Hidden>
+
 		</Grid>;
 	}
 }

@@ -10,6 +10,8 @@ import { Hidden } from "@material-ui/core";
 
 import "./scatterplotMatrix.css";
 import { IDA_CONSTANTS } from "./../../constants";
+import IDAScatterPLot from "../scatterplot/scatterplot";
+import IDAModal from "./../../modal/ida.modal";
 export default class IDAScatterPlotMatrix extends Component {
 	margin = {
 		top: 20,
@@ -23,13 +25,16 @@ export default class IDAScatterPlotMatrix extends Component {
 	containerId = "";
 	colorFunction = (label) => null;
 	tooltip = null;
+	plotData = null;
+	plotId = "scatterplot-modal";
 
 	constructor(props) {
 		super(props);
 		this.containerId = props.nodeId;
 		this.graphData = props.data;
 		this.state = {
-			referenceValues: []
+			referenceValues: [],
+			open: false
 		};
 		this.tooltip = document.createElement("div");
 		this.tooltip.setAttribute("class", "tooltip");
@@ -50,6 +55,19 @@ export default class IDAScatterPlotMatrix extends Component {
 			});
 			this.drawScatterPlot();
 		}
+	}
+
+	handleClickOpen() {
+		this.setState({
+			open: true
+		});
+	}
+
+	handleClose = () => {
+		this.setState({
+			open: false
+		});
+		this.plotData = null;
 	}
 
 	drawScatterPlot() {
@@ -87,7 +105,8 @@ export default class IDAScatterPlotMatrix extends Component {
 			.append("svg")
 			.attr("viewBox", `${-padding} 0 ${this.width + padding} ${this.width}`)
 			.attr("width", this.width)
-			.style("height", "auto");
+			.style("height", "auto")
+			.on("click", () => { });
 
 		const xAxis = d3
 			.axisBottom()
@@ -133,16 +152,38 @@ export default class IDAScatterPlotMatrix extends Component {
 			.join("g")
 			.attr("transform", ([i, j]) => `translate(${(i * size) + padding},${j * size})`);
 
-		cell
+		const rect = cell
 			.append("rect")
-			.attr("fill", "none")
+			.attr("fill", "transparent")
 			.attr("stroke", "#aaa")
 			.attr("x", padding / 2 + 0.5)
 			.attr("y", padding / 2 + 0.5)
 			.attr("width", size - padding)
-			.attr("height", size - padding);
+			.attr("height", size - padding)
+			.attr("style", "cursor: pointer")
+			.attr("plot-data", (d) => d);
 
 		cell.each(function ([i, j]) {
+			d3.select(this)
+				.selectAll("rect")
+				.on("click", () => {
+					let tempData = data.filter((d) => !isNaN(d[`${columns[`${i}`]}`]) && !isNaN(d[`${columns[`${j}`]}`]));
+					tempData = tempData.map((d) => ({
+						x: parseFloat(d[`${columns[`${i}`]}`]),
+						y: parseFloat(d[`${columns[`${j}`]}`]),
+						reference: d[`${refColumn}`],
+						label: labelColumn ? d[`${labelColumn}`] : ""
+					}));
+					tempData = tempData.sort((a, b) => a.x > b.x ? 1 : a.x < b.x ? -1 : 0);
+					self.plotData = {
+						"label": "Scatterplot for " + `${columns[`${i}`]}` + " and " + `${columns[`${j}`]}`,
+						"items": tempData,
+						"xAxisLabel": `${columns[`${i}`]}`,
+						"yAxisLabel": `${columns[`${j}`]}`,
+						"labelColumn": labelColumn ? true : false
+					};
+					self.handleClickOpen();
+				});
 			d3.select(this)
 				.selectAll("circle")
 				.data(data.filter((d) => !isNaN(d[`${columns[`${i}`]}`]) && !isNaN(d[`${columns[`${j}`]}`])))
@@ -151,7 +192,7 @@ export default class IDAScatterPlotMatrix extends Component {
 				.attr("cy", (d) => y[`${j}`](d[`${columns[`${j}`]}`]))
 				.attr("data-tooltip", (d) => {
 					let text = "";
-					if(labelColumn){
+					if (labelColumn) {
 						text = d[`${labelColumn}`] + "\n\n";
 					}
 					return text + columns[`${i}`] + ": " + d[`${columns[`${i}`]}`] + "\n" + columns[`${j}`] + ": " + d[`${columns[`${j}`]}`];
@@ -246,6 +287,9 @@ export default class IDAScatterPlotMatrix extends Component {
 						</div>
 					</Grid>
 				</Hidden>
+				<IDAModal open={this.state.open} handleClose={this.handleClose} title="Scatterplot">
+					<IDAScatterPLot data={this.plotData} nodeId={this.plotId} />
+				</IDAModal>
 			</Grid>
 		</>;
 	}
