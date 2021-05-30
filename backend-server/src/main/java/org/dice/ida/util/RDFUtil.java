@@ -319,25 +319,6 @@ public class RDFUtil {
 		return vizInfoMap;
 	}
 
-	public String addDatasetName(String dsName) {
-		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/>" +
-				" INSERT DATA {" +
-				" ab:" + dsName + " ab:names '" + dsName + "' ;" +
-				" ab:isTest false" +
-				" }";
-		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
-			try {
-				UpdateRequest update = UpdateFactory.create(queryString);
-				UpdateExecutionFactory.createRemote(update, dbHost + "ida_ds").execute();
-				return "true";
-			} catch (Exception ex) {
-				return "false";
-			}
-		} else {
-			return "false";
-		}
-	}
-
 	public Map<String, Boolean> getAttributeOptionalMap(String vizName) {
 		Map<String, Boolean> attributeOptionalMap = new TreeMap<>();
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
@@ -363,5 +344,24 @@ public class RDFUtil {
 		}
 		model = null;
 		return attributeOptionalMap;
+	}
+
+	public String addDatasetName(String dsName) {
+		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/>" +
+				" INSERT DATA {" +
+				" ab:" + dsName + " ab:names '" + dsName + "' ;" +
+				" ab:isTest false" +
+				" }";
+		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
+			try {
+				UpdateRequest update = UpdateFactory.create(queryString);
+				UpdateExecutionFactory.createRemote(update, dbHost + "ida_ds").execute();
+				return "true";
+			} catch (Exception ex) {
+				return "false";
+			}
+		} else {
+			return "false";
+		}
 	}
 }

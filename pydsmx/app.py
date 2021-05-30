@@ -73,6 +73,9 @@ def upload_file():
 						data_type = "numeric"
 
 					cl = col_name
+					if col_name.startswith("Unnamed:"):
+						col_name = "column" + str(index + 1)
+
 					col_name = col_name.lower().strip()
 					row = {"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
 						   "colAttr": col_name, "isUnique": pd.Series(ds[cl]).is_unique}
@@ -120,7 +123,8 @@ def save_metadata():
 		udsi = request.json["udsi"]
 
 		metadata = request.json["metadata"]
-		dsName = metadata["dsName"].lower().strip()
+		metadata["dsName"] = metadata["dsName"].lower().strip()
+		dsName = metadata["dsName"]
 
 		if re.search(r"(^[A-Za-z0-9\-_]+$)", dsName):
 
@@ -132,25 +136,53 @@ def save_metadata():
 				resp = requests.post(API_URL + "/adddataset", params={'dsName': dsName})
 				success = True if resp.text == 'true' else False
 				if success:
+					dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
+
 					# Extracting entities from Metadata
 					entity_columns = {}
 					date_columns = {}
 
 					for i in metadata.get('filesMd'):
+						cols = [] # to update new column names
 						for j in i.get('fileColMd'):
+							colAttr = j.get('colAttr').lower().strip()
 							colName = j.get('colName').lower().strip()
-							entity_columns[colName] = [colName]
+
+							if not colName:
+								colName = colAttr
+							else:
+								j['colAttr'] = colName
+								colAttr = colName
+
+							cols.append(colAttr)
+
+							entity_columns[colAttr] = [colName, colAttr]
+
+							j["colName"] = colName
+							j["colDesc"] = j["colDesc"].lower().strip()
 
 							if j.get('colType') == 'date':
-								date_columns[colName] = [colName]
+								date_columns[colAttr] = [colName, colAttr]
+
+						# Updating column names in actual dataset file
+						path = os.path.join(dsdirpath, i.get('fileName'))
+						ds = pd.read_csv(path)
+						ds.columns = cols
+
+						os.remove(path)
+
+						with open(path, "w") as text_file:
+							text_file.write(ds.to_csv(index=False))
 
 					# Updating entities
-					resp_entds = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},json={"entityId": "dataset_name","entityList": {dsName: [dsName]}})
-					resp_entcol = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},json={"entityId": "column_name","entityList": entity_columns})
-					resp_entdate = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},json={"entityId": "date_columns","entityList": date_columns})
+					resp_entds = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},
+											   json={"entityId": "dataset_name", "entityList": {dsName: [dsName]}})
+					resp_entcol = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},
+												json={"entityId": "column_name", "entityList": entity_columns})
+					resp_entdate = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},
+												 json={"entityId": "date_columns", "entityList": date_columns})
 
 					if resp_entds.status_code == 200 and resp_entcol.status_code == 200 and resp_entdate.status_code == 200:
-						dsdirpath = os.path.join(app.config.get('TEMP_FOLDER'), udsi)
 						with open(os.path.join(dsdirpath, 'dsmd.json'), 'w') as metadata_file:
 							metadata_file.write(json.dumps(metadata))
 
