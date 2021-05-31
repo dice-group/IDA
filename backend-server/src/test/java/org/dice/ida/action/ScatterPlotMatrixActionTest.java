@@ -29,7 +29,7 @@ public class ScatterPlotMatrixActionTest {
 	void testScatterPlotMatrixFlow() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw scatter plot matrix");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 10");
@@ -119,7 +119,7 @@ public class ScatterPlotMatrixActionTest {
 	void testLabelledScatterPlotMatrix() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw scatter plot matrix");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
@@ -188,7 +188,7 @@ public class ScatterPlotMatrixActionTest {
 	void testScatterPlotMatrixAllColumns() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw scatter plot matrix");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
@@ -242,7 +242,7 @@ public class ScatterPlotMatrixActionTest {
 	void testScatterPlotMatrixNonNumericColumn() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw scatter plot matrix");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("null");
@@ -260,7 +260,7 @@ public class ScatterPlotMatrixActionTest {
 	void testClusterScatterPlotMatrix() throws Exception {
 		ChatUserMessage chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("cluster");
-		chatUserMessage.setActiveDS("countries");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("countries-of-the-world.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("population, population density");

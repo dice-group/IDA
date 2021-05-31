@@ -93,7 +93,7 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
                     type: "table",
                     data: table.data,
                     fileName: table.name,
-                    columns: metaData.filesMd.filter((fl) => fl.fileName === table.name)[0].fileColMd,
+                    columns: metaData.filesMd.filter((fl) => fl.fileName.toLowerCase() === table.name.toLowerCase())[0].fileColMd,
                     dsName: metaData.dsName
                 })
             );
