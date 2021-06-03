@@ -7,9 +7,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Chip from "@material-ui/core/Chip";
 import { Hidden } from "@material-ui/core";
-
 import "./groupedBarChart.css";
-
 export default class IDAGroupedBarGraph extends Component {
     margin = {
         top: 20,
@@ -25,14 +23,14 @@ export default class IDAGroupedBarGraph extends Component {
     originalGraphData = {};
     tooltip = null;
     colorFunction = (label) => null;
-
+    datalabel = [];
     constructor(props) {
         super();
         this.data = props.data;
         this.containerId = props.nodeId;
         Object.keys(this.data.groupedBarChartData).forEach((k) => {
             let obj = {
-                groupLabel: k.length > 16 ? k.substring(0, 13) + "..." : k,
+                groupLabel: k.length > 12 ? k.substring(0, 7) + "..." : k,
                 originalGroupLabel: k
             };
             this.data.groupedBarChartData[`${k}`].forEach((e) => {
@@ -54,7 +52,6 @@ export default class IDAGroupedBarGraph extends Component {
 
     drawGraph() {
         this.width = Math.max(this.graphData.length * this.data.xAxisLabels.length * 25, this.width);
-
         const legendSvg = d3.select("#legend-container").append("svg");
 
         const svg = d3.select("#" + this.containerId)
@@ -80,11 +77,14 @@ export default class IDAGroupedBarGraph extends Component {
 
         const color = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemeCategory10);
 
-        svg.append("g")
+        const group = svg.append("g")
+            .attr("name", "group")
             .selectAll("g")
             .data(this.graphData)
             .join("g")
-            .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`)
+            .attr("transform", (d) => `translate(${x0(d.groupLabel)},0)`);
+
+        group
             .selectAll("rect")
             .data((d) => keys.map((key) => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[`${key}`] })))
             .join("rect")
@@ -94,6 +94,53 @@ export default class IDAGroupedBarGraph extends Component {
             .attr("height", (d) => y(0) - y(d.value))
             .attr("fill", (d) => this.colorFunction(d.key))
             .attr("tooltip-text", (d) => (d.originalGroupLabel + "\n" + d.key + ": " + d.value))
+            .attr("name", (d) => "rect" + (d.key))
+            .on("mouseover", (event) => {
+                this.tooltip.style.display = "block";
+                this.tooltip.style.position = "absolute";
+                this.tooltip.style.top = event.clientY + "px";
+                this.tooltip.style.left = event.clientX + "px";
+                this.tooltip.style.width = "auto";
+                this.tooltip.innerText = event.srcElement.getAttribute("tooltip-text");
+            })
+            .on("mouseout", () => {
+                this.tooltip.style.display = "none";
+            });
+
+        const xAxis2 = (g) => (g)
+            .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+            .call(d3.axisBottom(x1).tickSizeOuter(0))
+            .selectAll("text")
+            .attr("x", -15)
+            .attr("y", -5)
+            .attr("transform", "rotate(-90)")
+            .style("text-anchor", "end")
+            .data(this.graphData)
+            .data((d) => keys.map((key) => ({ key, groupLabel: d.groupLabel, originalGroupLabel: d.originalGroupLabel, value: d[`${key}`] })))
+            .attr("tooltip-text", (d) => (d.originalGroupLabel + "\n" + d.key + ": " + d.value));
+
+        var xval = 0;
+        var yval = 0;
+        group._groups[0].map((g) => {
+            var barcount = Math.max(g.childNodes.length) - 1;
+            xval = g.childNodes[0].attributes[0].value;
+            yval = +g.childNodes[`${barcount}`].attributes[0].value + +15;
+        });
+
+        group
+            .append("g")
+            .call(xAxis2)
+            .append("line")
+            .style("stroke", "steelblue")
+            .style("stroke-width", 1.5)
+            .attr("x1", xval)
+            .attr("y1", 76)
+            .attr("x2", yval)
+            .attr("y2", 76);
+
+        group
+            .append("g")
+            .call(xAxis2)
             .on("mouseover", (event) => {
                 this.tooltip.style.display = "block";
                 this.tooltip.style.position = "absolute";
@@ -125,12 +172,13 @@ export default class IDAGroupedBarGraph extends Component {
 
         const xAxis = (g) => (g)
             .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-            .call(d3.axisBottom(x0).tickSizeOuter(0))
+            .call(d3.axisBottom(x0).tickSize(0))
             .selectAll("text")
-            .attr("x", -10)
-            .attr("y", -5)
-            .attr("transform", "rotate(-90)")
+            .attr("x", 25)
+            .attr("y", 80)
+            .style("dominant-baseline", "text-before-edge")
             .style("text-anchor", "end");
+
 
         const yAxis = (g) => (g)
             .attr("transform", `translate(${this.margin.left},0)`)
@@ -174,10 +222,12 @@ export default class IDAGroupedBarGraph extends Component {
                                 {
                                     this.data.xAxisLabels.map((label) => (
                                         <ListItem key={label}>
+
                                             <ListItemAvatar>
                                                 <div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(label) }}></div>
                                             </ListItemAvatar>
-                                            <ListItemText primary={label} />
+
+                                            < ListItemText primary={label} />
                                         </ListItem>
                                     ))
                                 }
