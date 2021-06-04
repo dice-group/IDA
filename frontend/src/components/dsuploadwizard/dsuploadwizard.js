@@ -61,6 +61,55 @@ const useStylesBootstrap = (theme) => ({
 	expanded: {}
 });
 
+
+function IDAStepper(props) {
+	const activeStep = props.activeStep;
+	const steps = props.steps;
+	return (
+		<Stepper activeStep={activeStep}>
+			{steps.map((label, index) => {
+				const stepProps = {};
+				const labelProps = {};
+				return (
+					<Step key={label} {...stepProps}>
+						<StepLabel {...labelProps}>{label}</StepLabel>
+					</Step>
+				);
+			})}
+		</Stepper>
+	);
+}
+
+function DiscardDialog(props) {
+	const showConfirm = props.showConfirm;
+	const handleYes = props.handleYes;
+	const confirmationMsg = props.confirmationMsg;
+	return (
+		<Dialog
+			open={showConfirm}
+			aria-labelledby="alert-dialog-title"
+			aria-describedby="alert-dialog-description"
+		>
+			<DialogContent>
+				<DialogContentText id="alert-dialog-description">
+					{confirmationMsg}
+				</DialogContentText>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={handleYes} color="primary" color="secondary"
+					style={{ textTransform: "Capitalize" }}>
+					Yes!
+					</Button>
+				<Button onClick={() => {
+					this.setState({ showConfirm: false });
+				}} color="primary" variant="outlined" style={{ textTransform: "Capitalize" }}>
+					No
+					</Button>
+			</DialogActions>
+		</Dialog>
+	);
+}
+
 class DSUploadWizard extends React.Component {
 	initialState = {
 		activeStep: 0,
@@ -483,33 +532,6 @@ class DSUploadWizard extends React.Component {
 		}
 	};
 
-	renderDiscardConfirmDialog = () => {
-		return (
-			<Dialog
-				open={this.state.showConfirm}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						{this.state.confirmationMsg}
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={this.handleYes} color="primary" color="secondary"
-						style={{ textTransform: "Capitalize" }}>
-						Yes!
-						</Button>
-					<Button onClick={() => {
-						this.setState({ showConfirm: false });
-					}} color="primary" variant="outlined" style={{ textTransform: "Capitalize" }}>
-						No
-						</Button>
-				</DialogActions>
-			</Dialog>
-		);
-	};
-
 	getDialogContent = () => {
 		let content = "";
 		switch (this.state.activeStep) {
@@ -526,33 +548,15 @@ class DSUploadWizard extends React.Component {
 			case 1:
 				content = this.renderMetaDataForm();
 				break;
-			case 2:
+			default:
 				content = <div className="dataset-box-flex">
 					<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
 					<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />
 						<Button varient="outlined" onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : ""} dataset</Button>
 					</div>
-				</div>
-				break;
-			default:
+				</div>;
 		}
 		return content;
-	};
-
-	getStepper = () => {
-		return (
-			<Stepper activeStep={this.state.activeStep}>
-				{this.state.steps.map((label, index) => {
-					const stepProps = {};
-					const labelProps = {};
-					return (
-						<Step key={label} {...stepProps}>
-							<StepLabel {...labelProps}>{label}</StepLabel>
-						</Step>
-					);
-				})}
-			</Stepper>
-		);
 	};
 
 	render() {
@@ -562,7 +566,7 @@ class DSUploadWizard extends React.Component {
 					<DialogTitle id="draggable-dialog-title">
 						Upload dataset wizard
 					</DialogTitle>
-					{this.getStepper()}
+					<IDAStepper activeStep={this.state.activeStep} steps={this.state.steps}></IDAStepper>
 					<DialogContent>
 						<DialogContentText id="alert-dialog-description">
 							<div>
@@ -610,7 +614,7 @@ class DSUploadWizard extends React.Component {
 				>
 					<Alert severity="error">{this.state.errorMsg}</Alert>
 				</Snackbar>
-				{this.renderDiscardConfirmDialog()}
+				<DiscardDialog showConfirm={this.state.showConfirm} handleYes={this.handleYes} confirmationMsg={this.state.confirmationMsg}></DiscardDialog>
 			</div>
 		);
 	}
