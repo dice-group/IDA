@@ -235,12 +235,10 @@ class DSUploadWizard extends React.Component {
 			headers: {
 				"Content-Type": "application/json",
 			}
-		})
-
+		});
 		if (this.state.cancellingUpload) {
 			this.props.close();
 		}
-
 		this.setState({
 			udsi: null,
 			metaData: null,
@@ -249,7 +247,7 @@ class DSUploadWizard extends React.Component {
 			showBackBtn: false,
 			nextButtonText: "Upload",
 			cancellingUpload: false
-		})
+		});
 	}
 
 	handleClose = () => {
@@ -323,7 +321,7 @@ class DSUploadWizard extends React.Component {
 					}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>);
 		}
 		return (
-			<div style={{width: "100%"}}>
+			<div style={{ width: "100%" }}>
 				<h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected file(s)</h5>
 				<List>
 					<ListItem button onClick={open}>
@@ -512,6 +510,30 @@ class DSUploadWizard extends React.Component {
 		);
 	};
 
+	getDialogContent = () => {
+		let content = "";
+		switch (this.state.activeStep) {
+			case 0:
+				content = <Dropzone onDrop={this.onFileChange} noClick={true}>
+					{({ getRootProps, open, getInputProps, isDragActive }) => (
+						<div {...getRootProps()} style={{ height: "100%", backgroundColor: isDragActive ? "#f1f1f1" : "" }}>
+							<input {...getInputProps()} />
+							{this.renderFileUpload(open)}
+						</div>
+					)}
+				</Dropzone>;
+				break;
+			case 1:
+				content = this.renderMetaDataForm();
+				break;
+			case 2:
+				content = this.renderMetaDataForm();
+				break;
+			default:
+		}
+		return content;
+	};
+
 	render() {
 		return (
 			<div>
@@ -532,30 +554,11 @@ class DSUploadWizard extends React.Component {
 					</Stepper>
 					<DialogContent>
 						<DialogContentText id="alert-dialog-description">
-							<div style={{ display: this.state.activeStep === 0 ? "block" : "none" }}>
-								<Dropzone onDrop={this.onFileChange} noClick={true}>
-									{({ getRootProps, open, getInputProps, isDragActive }) => (
-										<div {...getRootProps()} style={{ height: "100%", backgroundColor: isDragActive ? "#f1f1f1" : "" }}>
-											<input {...getInputProps()} />
-											{this.renderFileUpload(open)}
-										</div>
-									)}
-								</Dropzone>
-							</div>
-							<div style={{ display: this.state.activeStep === 1 ? "block" : "none" }}>
-								{this.renderMetaDataForm()}
-							</div>
-							<div style={{ display: this.state.activeStep === 2 ? "block" : "none" }}>
-								<div className="dataset-box-flex">
-									<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
-									<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />
-										<Button varient="outlined" onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : ""} dataset</Button>
-									</div>
-								</div>
+							<div>
+								{this.getDialogContent()}
 							</div>
 						</DialogContentText>
 					</DialogContent>
-
 					<DialogActions>
 						<Button onClick={() => {
 							this.setState({
@@ -599,7 +602,7 @@ class DSUploadWizard extends React.Component {
 				{/*cancel confirmatiom dialog*/}
 				{this.renderDiscardConfirmDialog()}
 			</div>
-		)
+		);
 	}
 }
 
