@@ -188,7 +188,7 @@ class DSUploadWizard extends React.Component {
 					showError: true,
 					errorMsg: err.response.data.message
 				});
-			})
+			});
 		} else {
 			this.setState({ showError: true, errorMsg: "Please provide dataset name" });
 		}
@@ -288,43 +288,30 @@ class DSUploadWizard extends React.Component {
 
 	renderFileUpload = (open) => {
 		if (!this.state.enableLoader && !this.state.isFileSelected) {
-			return (
-				<div className="dataset-box-flex">
-					<IconButton color="primary" aria-label="upload picture" component="span" onClick={open}>
-						<BackupOutlinedIcon style={{ fontSize: 80 }} />
-					</IconButton>
-					<CircularProgress style={{ display: this.state.enableLoader ? "block" : "none" }} />
-					<div style={{ textAlign: "center" }}>Select or drag dataset (single file or multiple)..
-						<br />You can
-							only select
-							<b> .csv</b> files
-						</div>
-				</div>
-			);
+			return this.getUploadWindow(open);
 		} else if (!this.state.enableLoader) {
-			let filesRow = this.getFileList();
-			return (
-				<div style={{
-					width: "100%"
-				}}>
-					<h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected file(s)</h5>
-					<List>
-						<ListItem button onClick={open}>
-							<ListItemIcon>
-								<AddCircleOutlineIcon />
-							</ListItemIcon>
-							<ListItemText primary="Add more files.." />
-						</ListItem>
-						{filesRow}
-					</List>
-				</div>
-			);
+			return this.getFileListWindow(open);
 		} else {
 			return <div className="dataset-box-flex"><CircularProgress /></div>;
 		}
 	};
 
-	getFileList = () => {
+	getUploadWindow = (open) => {
+		return (
+			<div className="dataset-box-flex">
+				<IconButton color="primary" aria-label="upload picture" component="span" onClick={open}>
+					<BackupOutlinedIcon style={{ fontSize: 80 }} />
+				</IconButton>
+				<CircularProgress style={{ display: this.state.enableLoader ? "block" : "none" }} />
+				<div style={{ textAlign: "center" }}>
+					Select or drag dataset (single file or multiple)..<br />
+					You can only select <b>.csv</b> files
+				</div>
+			</div>
+		);
+	}
+
+	getFileListWindow = (open) => {
 		let filesRow = [];
 		for (var i = 0; i < this.state.files.length; i++) {
 			let a = i;
@@ -335,7 +322,20 @@ class DSUploadWizard extends React.Component {
 						this.removeFile(a);
 					}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>);
 		}
-		return filesRow;
+		return (
+			<div style={{width: "100%"}}>
+				<h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected file(s)</h5>
+				<List>
+					<ListItem button onClick={open}>
+						<ListItemIcon>
+							<AddCircleOutlineIcon />
+						</ListItemIcon>
+						<ListItemText primary="Add more files.." />
+					</ListItem>
+					{filesRow}
+				</List>
+			</div>
+		);
 	}
 
 	renderMetaDataForm = () => {
@@ -474,7 +474,7 @@ class DSUploadWizard extends React.Component {
 										</AccordionDetails>
 									</Accordion>
 								</div>
-							)
+							);
 						})}
 
 					</form>
@@ -485,18 +485,40 @@ class DSUploadWizard extends React.Component {
 		}
 	};
 
+	renderDiscardConfirmDialog = () => {
+		return (
+			<Dialog
+				open={this.state.showConfirm}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogContent>
+					<DialogContentText id="alert-dialog-description">
+						{this.state.confirmationMsg}
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={this.handleYes} color="primary" color="secondary"
+						style={{ textTransform: "Capitalize" }}>
+						Yes!
+						</Button>
+					<Button onClick={() => {
+						this.setState({ showConfirm: false });
+					}} color="primary" variant="outlined" style={{ textTransform: "Capitalize" }}>
+						No
+						</Button>
+				</DialogActions>
+			</Dialog>
+		);
+	};
+
 	render() {
 		return (
 			<div>
-				<Dialog
-					open={this.props.isOpen}
-					fullWidth
-					maxWidth="lg"
-				>
+				<Dialog open={this.props.isOpen} fullWidth maxWidth="lg">
 					<DialogTitle id="draggable-dialog-title">
 						Upload dataset wizard
 					</DialogTitle>
-
 					<Stepper activeStep={this.state.activeStep}>
 						{this.state.steps.map((label, index) => {
 							const stepProps = {};
@@ -540,12 +562,12 @@ class DSUploadWizard extends React.Component {
 								showConfirm: true,
 								confirmationMsg: "All your uploaded files and changes will be lost! Do you really want to go back?"
 							});
-						}} style={{
-							textTransform: "Capitalize",
-							display: this.state.showBackBtn && !this.state.enableLoader ? "block" : "none"
-						}}>
-							Back
-						</Button>
+						}}
+							style={{
+								textTransform: "Capitalize",
+								display: this.state.showBackBtn && !this.state.enableLoader ? "block" : "none"
+							}}
+						>Back</Button>
 						<Button onClick={this.handleNext} color="primary" variant="outlined" style={{
 							textTransform: "Capitalize",
 							display: this.state.enableNextButton ? "block" : "none"
@@ -575,28 +597,7 @@ class DSUploadWizard extends React.Component {
 					<Alert severity="error">{this.state.errorMsg}</Alert>
 				</Snackbar>
 				{/*cancel confirmatiom dialog*/}
-				<Dialog
-					open={this.state.showConfirm}
-					aria-labelledby="alert-dialog-title"
-					aria-describedby="alert-dialog-description"
-				>
-					<DialogContent>
-						<DialogContentText id="alert-dialog-description">
-							{this.state.confirmationMsg}
-						</DialogContentText>
-					</DialogContent>
-					<DialogActions>
-						<Button onClick={this.handleYes} color="primary" color="secondary"
-							style={{ textTransform: "Capitalize" }}>
-							Yes!
-						</Button>
-						<Button onClick={() => {
-							this.setState({ showConfirm: false });
-						}} color="primary" variant="outlined" style={{ textTransform: "Capitalize" }}>
-							No
-						</Button>
-					</DialogActions>
-				</Dialog>
+				{this.renderDiscardConfirmDialog()}
 			</div>
 		)
 	}
