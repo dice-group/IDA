@@ -180,14 +180,14 @@ class DSUploadWizard extends React.Component {
 					showOkBtn: true,
 					showCancelBtn: false,
 					showBackBtn: false
-				})
+				});
 			}).catch((err) => {
 				this.setState({
 					enableLoader: false,
 					enableNextButton: true,
 					showError: true,
 					errorMsg: err.response.data.message
-				})
+				});
 			})
 		} else {
 			this.setState({ showError: true, errorMsg: "Please provide dataset name" });
@@ -270,7 +270,7 @@ class DSUploadWizard extends React.Component {
 
 	manageAccordion = (idx) => {
 		let panelsArr = Object.assign([], this.state.expandPanels);
-		panelsArr[`${idx}`] = !panelsArr[idx];
+		panelsArr[`${idx}`] = !panelsArr[`${idx}`];
 		this.setState({ expandPanels: panelsArr });
 	}
 
@@ -302,16 +302,7 @@ class DSUploadWizard extends React.Component {
 				</div>
 			);
 		} else if (!this.state.enableLoader) {
-			let filesRow = [];
-			for (var i = 0; i < this.state.files.length; i++) {
-				let a = i;
-				filesRow.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText
-					primary={this.state.files[`${i}`].name} /><ListItemSecondaryAction><IconButton edge="end"
-						aria-label="delete"
-						onClick={() => {
-							this.removeFile(a);
-						}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>);
-			}
+			let filesRow = this.getFileList();
 			return (
 				<div style={{
 					width: "100%"
@@ -332,6 +323,20 @@ class DSUploadWizard extends React.Component {
 			return <div className="dataset-box-flex"><CircularProgress /></div>;
 		}
 	};
+
+	getFileList = () => {
+		let filesRow = [];
+		for (var i = 0; i < this.state.files.length; i++) {
+			let a = i;
+			filesRow.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText
+				primary={this.state.files[`${i}`].name} /><ListItemSecondaryAction><IconButton edge="end"
+					aria-label="delete"
+					onClick={() => {
+						this.removeFile(a);
+					}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>);
+		}
+		return filesRow;
+	}
 
 	renderMetaDataForm = () => {
 		const { classes } = this.props;
@@ -461,7 +466,7 @@ class DSUploadWizard extends React.Component {
 																</td>
 																<td>{e.isUnique ? "Yes" : "No"}</td>
 															</tr>
-														)
+														);
 													})}
 												</tbody>
 
@@ -522,7 +527,7 @@ class DSUploadWizard extends React.Component {
 								<div className="dataset-box-flex">
 									<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
 									<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />
-										<button className={"default"} onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : ""} dataset</button>
+										<Button varient="outlined" onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : ""} dataset</Button>
 									</div>
 								</div>
 							</div>
