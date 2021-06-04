@@ -34,7 +34,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DehazeOutlinedIcon from "@material-ui/icons/DehazeOutlined";
 import ViewAgendaOutlinedIcon from "@material-ui/icons/ViewAgendaOutlined";
 import { IDA_CONSTANTS } from "../constants";
-import Dropzone from 'react-dropzone';
+import Dropzone from "react-dropzone";
 
 import axios from "axios";
 
@@ -94,11 +94,11 @@ class DSUploadWizard extends React.Component {
 		const filesName = Object.assign([], this.state.filesName);
 		let notCSVFilesCount = 0;
 		Array.from(selectedFiles).forEach((f) => {
-			if (f.name.split('.').pop() === 'csv' && !filesName.includes(f.name)) {
+			if (f.name.split(".").pop() === "csv" && !filesName.includes(f.name)) {
 				// Making sure user selected csv file
 				files.push(f);
 				filesName.push(f.name);
-			} else if (f.name.split('.').pop() !== 'csv') {
+			} else if (f.name.split(".").pop() !== "csv") {
 				notCSVFilesCount++;
 			}
 		});
@@ -130,69 +130,77 @@ class DSUploadWizard extends React.Component {
 
 	handleNext = () => {
 		if (this.state.activeStep === 0) {
-			this.setState({ enableLoader: true, enableNextButton: false });
-			let formData = new FormData();
-			const files = this.state.files;
-			for (let i = 0; i < files.length; i++) {
-				formData.append(`files[${i}]`, files[i]);
-			}
-			axios.post(IDA_CONSTANTS.PYDSMX_BASE + "/", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				}
-			}).then((resp) => {
-				let panelsArr = Array(resp.data.metadata.filesMd.length);
-				panelsArr[0] = true;
-				panelsArr = panelsArr.fill(false, 1);
-				this.setState({
-					activeStep: this.state.activeStep + 1,
-					nextButtonText: "save metadata",
-					enableLoader: false,
-					enableNextButton: true,
-					metaData: resp.data.metadata,
-					udsi: resp.data.udsi,
-					showBackBtn: true,
-					expandPanels: panelsArr
-				});
-			}).catch((err) => {
-				this.setState({
-					enableNextButton: true,
-					enableLoader: false,
-					showError: true,
-					errorMsg: err.response.data.message
-				});
-			});
+			this.uploadFiles();
 		} else if (this.state.activeStep === 1) {
-			if (this.state.metaData.dsName.trim()) {
-				this.setState({ enableLoader: true, enableNextButton: false });
-				axios.post(IDA_CONSTANTS.PYDSMX_BASE + "/savemetadata", {
-					udsi: this.state.udsi,
-					metadata: this.state.metaData
-				}, {
-					headers: {
-						"Content-Type": "application/json",
-					}
-				}).then((resp) => {
-					this.setState({
-						activeStep: this.state.activeStep + 1,
-						enableLoader: false,
-						showOkBtn: true,
-						showCancelBtn: false,
-						showBackBtn: false
-					})
-				}).catch((err) => {
-					this.setState({
-						enableLoader: false,
-						enableNextButton: true,
-						showError: true,
-						errorMsg: err.response.data.message
-					})
-				})
-			} else {
-				this.setState({ showError: true, errorMsg: "Please provide dataset name" });
-			}
+			this.saveDataset();
 		}
 	};
+
+	uploadFiles = () => {
+		this.setState({ enableLoader: true, enableNextButton: false });
+		let formData = new FormData();
+		const files = this.state.files;
+		for (let i = 0; i < files.length; i++) {
+			formData.append(`files[${i}]`, files[`${i}`]);
+		}
+		this.makePostRequest("/", formData).then((resp) => {
+			let panelsArr = Array(resp.data.metadata.filesMd.length);
+			panelsArr[0] = true;
+			panelsArr = panelsArr.fill(false, 1);
+			this.setState({
+				activeStep: this.state.activeStep + 1,
+				nextButtonText: "save metadata",
+				enableLoader: false,
+				enableNextButton: true,
+				metaData: resp.data.metadata,
+				udsi: resp.data.udsi,
+				showBackBtn: true,
+				expandPanels: panelsArr
+			});
+		}).catch((err) => {
+			this.setState({
+				enableNextButton: true,
+				enableLoader: false,
+				showError: true,
+				errorMsg: err.response.data.message
+			});
+		});
+	}
+
+	saveDataset = () => {
+		if (this.state.metaData.dsName.trim()) {
+			this.setState({ enableLoader: true, enableNextButton: false });
+			this.makePostRequest("/savemetadata", {
+				udsi: this.state.udsi,
+				metadata: this.state.metaData
+			}).then((resp) => {
+				this.setState({
+					activeStep: this.state.activeStep + 1,
+					enableLoader: false,
+					showOkBtn: true,
+					showCancelBtn: false,
+					showBackBtn: false
+				})
+			}).catch((err) => {
+				this.setState({
+					enableLoader: false,
+					enableNextButton: true,
+					showError: true,
+					errorMsg: err.response.data.message
+				})
+			})
+		} else {
+			this.setState({ showError: true, errorMsg: "Please provide dataset name" });
+		}
+	}
+
+	makePostRequest = (apiUrl, reqData) => {
+		return axios.post(IDA_CONSTANTS.PYDSMX_BASE + apiUrl, reqData, {
+			headers: {
+				"Content-Type": "application/json"
+			}
+		});
+	}
 
 	handleChange = (ev) => {
 		const target = ev.target;
@@ -208,14 +216,14 @@ class DSUploadWizard extends React.Component {
 			let firstIndex = tokens[0].match(/(\d+)/)[0];
 
 			if (depth === 2) {
-				newMetaData[firstKey][firstIndex][attr] = target.value;
+				newMetaData[`${firstKey}`][`${firstIndex}`][`${attr}`] = target.value;
 			} else if (depth === 3) {
 				let secondKey = tokens[1].split("[")[0];
 				let secondIndex = tokens[1].match(/(\d+)/)[0];
-				newMetaData[firstKey][firstIndex][secondKey][secondIndex][attr] = target.value;
+				newMetaData[`${firstKey}`][`${firstIndex}`][`${secondKey}`][`${secondIndex}`][`${attr}`] = target.value;
 			}
 		} else {
-			newMetaData[name] = target.value;
+			newMetaData[`${name}`] = target.value;
 		}
 		this.setState({ metaData: newMetaData });
 	}
@@ -262,7 +270,7 @@ class DSUploadWizard extends React.Component {
 
 	manageAccordion = (idx) => {
 		let panelsArr = Object.assign([], this.state.expandPanels);
-		panelsArr[idx] = !panelsArr[idx];
+		panelsArr[`${idx}`] = !panelsArr[idx];
 		this.setState({ expandPanels: panelsArr });
 	}
 
@@ -278,193 +286,201 @@ class DSUploadWizard extends React.Component {
 		this.handleClose();
 	}
 
-	render() {
+	renderFileUpload = (open) => {
+		if (!this.state.enableLoader && !this.state.isFileSelected) {
+			return (
+				<div className="dataset-box-flex">
+					<IconButton color="primary" aria-label="upload picture" component="span" onClick={open}>
+						<BackupOutlinedIcon style={{ fontSize: 80 }} />
+					</IconButton>
+					<CircularProgress style={{ display: this.state.enableLoader ? "block" : "none" }} />
+					<div style={{ textAlign: "center" }}>Select or drag dataset (single file or multiple)..
+						<br />You can
+							only select
+							<b> .csv</b> files
+						</div>
+				</div>
+			);
+		} else if (!this.state.enableLoader) {
+			let filesRow = [];
+			for (var i = 0; i < this.state.files.length; i++) {
+				let a = i;
+				filesRow.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText
+					primary={this.state.files[`${i}`].name} /><ListItemSecondaryAction><IconButton edge="end"
+						aria-label="delete"
+						onClick={() => {
+							this.removeFile(a);
+						}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>);
+			}
+			return (
+				<div style={{
+					width: "100%"
+				}}>
+					<h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected file(s)</h5>
+					<List>
+						<ListItem button onClick={open}>
+							<ListItemIcon>
+								<AddCircleOutlineIcon />
+							</ListItemIcon>
+							<ListItemText primary="Add more files.." />
+						</ListItem>
+						{filesRow}
+					</List>
+				</div>
+			);
+		} else {
+			return <div className="dataset-box-flex"><CircularProgress /></div>;
+		}
+	};
+
+	renderMetaDataForm = () => {
 		const { classes } = this.props;
-		const renderFileUpload = (open) => {
-			if (!this.state.enableLoader) {
-				if (!this.state.isFileSelected) {
-					return (
-						<div className="dataset-box-flex">
-							<IconButton color="primary" aria-label="upload picture" component="span" onClick={open}>
-								<BackupOutlinedIcon style={{ fontSize: 80 }} />
-							</IconButton>
-							<CircularProgress style={{ display: this.state.enableLoader ? "block" : "none" }} />
-							<div style={{ textAlign: "center" }}>Select or drag dataset (single file or multiple)..
-							<br />You can
-								only select
-								<b> .csv</b> files
-							</div>
+		if (!this.state.enableLoader) {
+			if (this.state.metaData) {
+				return (<div className="meta-data-box">
+					<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file.
+					IDA uses these files to perform various operations. Here you can change some relavant fields
+					kindly go through them all and change them as you like.
+					</div>
+					<form>
+						<table style={{ marginLeft: "16px" }}>
+							<tr>
+								<td width="15%" className="heading required">Dataset name</td>
+								<td><input type="text" name="dsName" value={this.state.metaData.dsName}
+									onChange={this.handleChange} /></td>
+							</tr>
+							<tr>
+								<td width="15%" className="heading">Dataset description</td>
+								<td><input type="text" name="dsDesc" value={this.state.metaData.dsDesc}
+									onChange={this.handleChange} /></td>
+							</tr>
+						</table>
+						<br />
+						<div style={{ marginLeft: "16px" }}> This dataset
+							contains {this.state.metaData.filesMd.length} files.
 						</div>
-					)
-				} else {
-					let filesRow = [];
-					for (var i = 0; i < this.state.files.length; i++) {
-						let a = i;
-						filesRow.push(<ListItem><ListItemIcon> <DescriptionOutlinedIcon /> </ListItemIcon><ListItemText
-							primary={this.state.files[i].name} /><ListItemSecondaryAction><IconButton edge="end"
-								aria-label="delete"
-								onClick={() => {
-									this.removeFile(a);
-								}}><DeleteOutlinedIcon /></IconButton></ListItemSecondaryAction></ListItem>)
-					}
-					return <div style={{
-						width: "100%"
-					}} ><h5 style={{ padding: "10px 0", textAlign: "center", color: "#444" }}>Selected
-						file(s)</h5><List><ListItem button onClick={open}> <ListItemIcon>
-							<AddCircleOutlineIcon /> </ListItemIcon> <ListItemText primary="Add more files.." />
-						</ListItem>{filesRow}</List></div>;
-				}
-			} else {
-				return <div className="dataset-box-flex"><CircularProgress /></div>;
-			}
-		};
-
-		const renderMetaDataForm = () => {
-			if (!this.state.enableLoader) {
-				if (this.state.metaData) {
-					return (<div className="meta-data-box">
-						<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file.
-						IDA uses these files to perform various operations. Here you can change some relavant fields
-						kindly go through them all and change them as you like.
+						<div style={{ display: this.state.metaData.filesMd.length > 1 ? "block" : "none" }}
+							class="collapse-btns">
+							<Tooltip classes={classes} title="Collapse all">
+								<IconButton component="span" style={{ float: "right" }} onClick={() => {
+									this.toggleCollapseAll(false);
+								}}>
+									<DehazeOutlinedIcon />
+								</IconButton>
+							</Tooltip>
+							<Tooltip classes={classes} title="Expand all">
+								<IconButton component="span" style={{ float: "right" }} onClick={() => {
+									this.toggleCollapseAll(true);
+								}}>
+									<ViewAgendaOutlinedIcon />
+								</IconButton>
+							</Tooltip>
 						</div>
-						<form>
-							<table style={{ marginLeft: "16px" }}>
-								<tr>
-									<td width="15%" className="heading required">Dataset name</td>
-									<td><input type="text" name="dsName" value={this.state.metaData.dsName}
-										onChange={this.handleChange} /></td>
-								</tr>
-								<tr>
-									<td width="15%" className="heading">Dataset description</td>
-									<td><input type="text" name="dsDesc" value={this.state.metaData.dsDesc}
-										onChange={this.handleChange} /></td>
-								</tr>
-							</table>
-							<br />
-							<div style={{ marginLeft: "16px" }}> This dataset
-								contains {this.state.metaData.filesMd.length} files.
-							</div>
-							<div style={{ display: this.state.metaData.filesMd.length > 1 ? "block" : "none" }}
-								class="collapse-btns">
-								<Tooltip classes={classes} title="Collapse all">
-									<IconButton component="span" style={{ float: "right" }} onClick={() => {
-										this.toggleCollapseAll(false);
-									}}>
-										<DehazeOutlinedIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip classes={classes} title="Expand all">
-									<IconButton component="span" style={{ float: "right" }} onClick={() => {
-										this.toggleCollapseAll(true);
-									}}>
-										<ViewAgendaOutlinedIcon />
-									</IconButton>
-								</Tooltip>
-							</div>
-							<br />
-							{this.state.metaData.filesMd.map((f, i) => {
-								return (
-									<div>
-										<Accordion classes={classes} expanded={this.state.expandPanels[i]}
-											onChange={() => {
-												this.manageAccordion(i);
-											}}>
-											<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ?
-												<ExpandMoreIcon /> : ""}
-												style={{ width: "100%" }}>{i + 1}. {f.fileName}</AccordionSummary>
-											<AccordionDetails style={{ flexDirection: "column" }}>
-												<table>
-													<tr>
-														<td className="heading">Display name</td>
-														<td><input type="text" value={f.displayName}
-															name={`filesMd[${i}].displayName`}
-															onChange={this.handleChange} /></td>
-													</tr>
-													<tr>
-														<td className="heading">File description</td>
-														<td><input type="text" value={f.fileDesc}
-															name={`filesMd[${i}].fileDesc`}
-															onChange={this.handleChange} /></td>
-													</tr>
-													<tr>
-														<td className="heading">Columns count</td>
-														<td>{f.colCount}</td>
-													</tr>
-													<tr>
-														<td className="heading">Row count</td>
-														<td>{f.rowCount}</td>
-													</tr>
-												</table>
-												<table>
-													<thead>
-														<td className="heading">Column index</td>
-														<td className="heading">Column name</td>
-														<td className="heading">Column description</td>
-														<td className="heading">Column attribute</td>
-														<td className="heading">Column type<Tooltip classes={classes} arrow
-															title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon
-																style={{
-																	fontSize: 18,
-																	color: "#F57C00",
-																	marginLeft: "3px"
-																}} /></Tooltip></td>
-														<td className="heading">Contains unique values</td>
-													</thead>
-													<tbody>
-														{f.fileColMd.map((e, b) => {
-															return (
-																<tr key={b}>
-																	<td>{e.colIndex}</td>
-																	<td><input value={e.colName}
-																		name={`filesMd[${i}].fileColMd[${b}].colName`}
-																		onChange={this.handleChange} /></td>
-																	<td><input value={e.colDesc}
-																		name={`filesMd[${i}].fileColMd[${b}].colDesc`}
-																		onChange={this.handleChange} /></td>
-																	<td>{e.colName || e.colAttr}</td>
-																	<td>
-																		<select value={e.colType}
-																			name={`filesMd[${i}].fileColMd[${b}].colType`}
-																			onChange={this.handleChange}>
-																			<option value="date">Date</option>
-																			<option value="string">String</option>
-																			<option value="numeric">Numeric</option>
-																		</select>
+						<br />
+						{this.state.metaData.filesMd.map((f, i) => {
+							return (
+								<div>
+									<Accordion classes={classes} expanded={this.state.expandPanels[`${i}`]}
+										onChange={() => {
+											this.manageAccordion(i);
+										}}>
+										<AccordionSummary expandIcon={this.state.metaData.filesMd.length > 1 ?
+											<ExpandMoreIcon /> : ""}
+											style={{ width: "100%" }}>{i + 1}. {f.fileName}</AccordionSummary>
+										<AccordionDetails style={{ flexDirection: "column" }}>
+											<table>
+												<tr>
+													<td className="heading">Display name</td>
+													<td><input type="text" value={f.displayName}
+														name={`filesMd[${i}].displayName`}
+														onChange={this.handleChange} /></td>
+												</tr>
+												<tr>
+													<td className="heading">File description</td>
+													<td><input type="text" value={f.fileDesc}
+														name={`filesMd[${i}].fileDesc`}
+														onChange={this.handleChange} /></td>
+												</tr>
+												<tr>
+													<td className="heading">Columns count</td>
+													<td>{f.colCount}</td>
+												</tr>
+												<tr>
+													<td className="heading">Row count</td>
+													<td>{f.rowCount}</td>
+												</tr>
+											</table>
+											<table>
+												<thead>
+													<td className="heading">Column index</td>
+													<td className="heading">Column name</td>
+													<td className="heading">Column description</td>
+													<td className="heading">Column attribute</td>
+													<td className="heading">Column type<Tooltip classes={classes} arrow
+														title="IDA guesses columns type automatically. Guessed types can be in-accurate so here you can change them"><HelpOutlineIcon
+															style={{
+																fontSize: 18,
+																color: "#F57C00",
+																marginLeft: "3px"
+															}} /></Tooltip></td>
+													<td className="heading">Contains unique values</td>
+												</thead>
+												<tbody>
+													{f.fileColMd.map((e, b) => {
+														return (
+															<tr key={b}>
+																<td>{e.colIndex}</td>
+																<td><input value={e.colName}
+																	name={`filesMd[${i}].fileColMd[${b}].colName`}
+																	onChange={this.handleChange} /></td>
+																<td><input value={e.colDesc}
+																	name={`filesMd[${i}].fileColMd[${b}].colDesc`}
+																	onChange={this.handleChange} /></td>
+																<td>{e.colName || e.colAttr}</td>
+																<td>
+																	<select value={e.colType}
+																		name={`filesMd[${i}].fileColMd[${b}].colType`}
+																		onChange={this.handleChange}>
+																		<option value="date">Date</option>
+																		<option value="string">String</option>
+																		<option value="numeric">Numeric</option>
+																	</select>
 
-																		<select style={{ display: e.colType === "date" ? "block" : "none", width: '60%' }}
-																			value={e.dataFormat}
-																			name={`filesMd[${i}].fileColMd[${b}].dataFormat`}
-																			onChange={this.handleChange}>
-																			<option value="dd/MM/yyyy">dd/MM/yyyy</option>
-																			<option value="dd-MMM-yyyy">dd-MMM-yyyy</option>
-																			<option value="MMMM-yyyy">MMMM-yyyy</option>
-																			<option value="MMM YYYY">MMM YYYY</option>
-																			<option value="dd MMM">dd MMM</option>
-																			<option value="dd/MM/yyyy HH:mm:ss">dd/MM/yyyy HH:mm:ss</option>
-																			<option value="YYYY">YYYY</option>
-																		</select>
-																	</td>
-																	<td>{e.isUnique ? "Yes" : "No"}</td>
-																</tr>
-															)
-														})}
-													</tbody>
+																	<select style={{ display: e.colType === "date" ? "block" : "none", width: "60%" }}
+																		value={e.dataFormat}
+																		name={`filesMd[${i}].fileColMd[${b}].dataFormat`}
+																		onChange={this.handleChange}>
+																		<option value="dd/MM/yyyy">dd/MM/yyyy</option>
+																		<option value="dd-MMM-yyyy">dd-MMM-yyyy</option>
+																		<option value="MMMM-yyyy">MMMM-yyyy</option>
+																		<option value="MMM YYYY">MMM YYYY</option>
+																		<option value="dd MMM">dd MMM</option>
+																		<option value="dd/MM/yyyy HH:mm:ss">dd/MM/yyyy HH:mm:ss</option>
+																		<option value="YYYY">YYYY</option>
+																	</select>
+																</td>
+																<td>{e.isUnique ? "Yes" : "No"}</td>
+															</tr>
+														)
+													})}
+												</tbody>
 
-												</table>
-											</AccordionDetails>
-										</Accordion>
-									</div>
-								)
-							})}
+											</table>
+										</AccordionDetails>
+									</Accordion>
+								</div>
+							)
+						})}
 
-						</form>
-					</div>);
-				}
-			} else {
-				return <div className="dataset-box-flex"><CircularProgress /></div>;
+					</form>
+				</div>);
 			}
-		};
+		} else {
+			return <div className="dataset-box-flex"><CircularProgress /></div>;
+		}
+	};
 
+	render() {
 		return (
 			<div>
 				<Dialog
@@ -491,22 +507,22 @@ class DSUploadWizard extends React.Component {
 						<DialogContentText id="alert-dialog-description">
 							<div style={{ display: this.state.activeStep === 0 ? "block" : "none" }}>
 								<Dropzone onDrop={this.onFileChange} noClick={true}>
-									{({getRootProps, open, getInputProps, isDragActive}) => (
-										<div {...getRootProps()} style={{height: "100%", backgroundColor: isDragActive ? "#f1f1f1" : ""}}>
+									{({ getRootProps, open, getInputProps, isDragActive }) => (
+										<div {...getRootProps()} style={{ height: "100%", backgroundColor: isDragActive ? "#f1f1f1" : "" }}>
 											<input {...getInputProps()} />
-											{renderFileUpload(open)}
+											{this.renderFileUpload(open)}
 										</div>
 									)}
 								</Dropzone>
 							</div>
 							<div style={{ display: this.state.activeStep === 1 ? "block" : "none" }}>
-								{renderMetaDataForm()}
+								{this.renderMetaDataForm()}
 							</div>
 							<div style={{ display: this.state.activeStep === 2 ? "block" : "none" }}>
 								<div className="dataset-box-flex">
 									<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
 									<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />
-									<button className={"default"} onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : "" } dataset</button>
+										<button className={"default"} onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : ""} dataset</button>
 									</div>
 								</div>
 							</div>
