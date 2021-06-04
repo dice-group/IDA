@@ -109,10 +109,9 @@ export default class ChatApp extends React.Component {
 						timestamp: Date.now(),
 						message: "You have been inactive with IDA for 30 minutes! Your session has been expired. Kindly reload the page."
 					}]
-				})
+				});
 			}, 1000 * 60 * 30);
-
-			this.setState({timeOut: timeOut})
+			this.setState({timeOut: timeOut});
 		}
 	}
 
