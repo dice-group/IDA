@@ -527,11 +527,32 @@ class DSUploadWizard extends React.Component {
 				content = this.renderMetaDataForm();
 				break;
 			case 2:
-				content = this.renderMetaDataForm();
+				content = <div className="dataset-box-flex">
+					<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
+					<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />
+						<Button varient="outlined" onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : ""} dataset</Button>
+					</div>
+				</div>
 				break;
 			default:
 		}
 		return content;
+	};
+
+	getStepper = () => {
+		return (
+			<Stepper activeStep={this.state.activeStep}>
+				{this.state.steps.map((label, index) => {
+					const stepProps = {};
+					const labelProps = {};
+					return (
+						<Step key={label} {...stepProps}>
+							<StepLabel {...labelProps}>{label}</StepLabel>
+						</Step>
+					);
+				})}
+			</Stepper>
+		);
 	};
 
 	render() {
@@ -541,17 +562,7 @@ class DSUploadWizard extends React.Component {
 					<DialogTitle id="draggable-dialog-title">
 						Upload dataset wizard
 					</DialogTitle>
-					<Stepper activeStep={this.state.activeStep}>
-						{this.state.steps.map((label, index) => {
-							const stepProps = {};
-							const labelProps = {};
-							return (
-								<Step key={label} {...stepProps}>
-									<StepLabel {...labelProps}>{label}</StepLabel>
-								</Step>
-							);
-						})}
-					</Stepper>
+					{this.getStepper()}
 					<DialogContent>
 						<DialogContentText id="alert-dialog-description">
 							<div>
@@ -599,7 +610,6 @@ class DSUploadWizard extends React.Component {
 				>
 					<Alert severity="error">{this.state.errorMsg}</Alert>
 				</Snackbar>
-				{/*cancel confirmatiom dialog*/}
 				{this.renderDiscardConfirmDialog()}
 			</div>
 		);
