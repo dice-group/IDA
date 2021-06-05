@@ -99,7 +99,7 @@ export default class ChatApp extends React.Component {
 		this.state.iterator !== -1 && this.msgIterator(e, userMsgs);
 		this.suggestionParams = null;
 
-		if (! this.state.timeOut) {
+		if (!this.state.timeOut) {
 			const timeOut = setTimeout(() => {
 				this.setState({
 					timeOut: null,
@@ -111,7 +111,7 @@ export default class ChatApp extends React.Component {
 					}]
 				});
 			}, 1000 * 60 * 30);
-			this.setState({timeOut: timeOut});
+			this.setState({ timeOut });
 		}
 	}
 
@@ -275,7 +275,7 @@ export default class ChatApp extends React.Component {
 						</div>
 						<div className="chat-area-input clearfix">
 							<IDALinearProgress hide={this.state.hideProgress} />
-							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} disabled={this.state.textAreaDisable}/>
+							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} disabled={this.state.textAreaDisable} />
 							<button hidden id="send-btn" onClick={this.onSendClick}></button>
 						</div>
 					</div>
