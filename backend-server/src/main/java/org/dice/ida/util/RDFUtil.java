@@ -7,13 +7,12 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateRequest;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.suggestion.VisualizationInfo;
 import org.springframework.stereotype.Component;
@@ -347,15 +346,18 @@ public class RDFUtil {
 	}
 
 	public String addDatasetName(String dsName) {
-		String queryString = "PREFIX ab: <https://www.upb.de/ida/datasets/>" +
+		String queryString1 = "PREFIX ab: <https://www.upb.de/ida/datasets/>" +
 				" INSERT DATA {" +
-				" ab:" + dsName + " ab:names '" + dsName + "' ;" +
+				" ?dsNameUri ab:names ?dsName ;" +
 				" ab:isTest false" +
 				" }";
+		ParameterizedSparqlString parameterizedSparqlString = new ParameterizedSparqlString(queryString1);
+		parameterizedSparqlString.setLiteral("dsName", dsName);
+		parameterizedSparqlString.setIri("dsNameUri", "https://www.upb.de/ida/datasets/" + dsName);
+
 		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
 			try {
-				UpdateRequest update = UpdateFactory.create(queryString);
-				UpdateExecutionFactory.createRemote(update, dbHost + "ida_ds").execute();
+				UpdateExecutionFactory.createRemote(parameterizedSparqlString.asUpdate(), dbHost + "ida_ds").execute();
 				return "true";
 			} catch (Exception ex) {
 				return "false";
