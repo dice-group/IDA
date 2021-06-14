@@ -323,6 +323,7 @@ public interface IDAConst {
 		put("Line_Value", "Line Values");
 		put("Reference_Values", "Reference Values");
 		put("Scatterplot_Label", "label for scatter plot");
+		put("Group_Column", "Grouping");
 	}};
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");

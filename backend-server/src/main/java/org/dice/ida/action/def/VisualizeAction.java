@@ -9,7 +9,6 @@ import org.dice.ida.constant.IDAConst;
 import org.dice.ida.exception.IDAException;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
-import org.dice.ida.model.Intent;
 import org.dice.ida.model.LableComparator;
 import org.dice.ida.model.bargraph.BarGraphData;
 import org.dice.ida.model.bargraph.BarGraphItem;
@@ -87,10 +86,10 @@ public class VisualizeAction implements Action {
 	private StringBuilder textMsg;
 	private boolean labelNeeded;
 	private String labelColumn;
-	private boolean groupingNeeded;
 	private List<String> lineChartXAxisLabels = new ArrayList<>();
 	private ArrayList<String> columnList = new ArrayList<>();
 	private String refColumn = null;
+	private boolean allParamsProcessed;
 
 
 	/**
@@ -131,24 +130,16 @@ public class VisualizeAction implements Action {
 					List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
 					columnMap = columnDetail.get(0);
 					columnUniquenessMap = columnDetail.get(1);
+					allParamsProcessed = false;
 					options = processParameters(paramMap);
 				}
-				if ((options.size() == 1 && columnNameList.size() == attributeList.size()) || columnListVizProcessed) {
-					if ((options.size() == 1 && columnNameList.size() == attributeList.size())) {
+				if ((options.size() == 1 && allParamsProcessed) || columnListVizProcessed) {
+					if (options.size() == 1) {
 						getParameters(paramMap);
-						groupingNeeded = false;
-						if (!IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX)) && !intent.equals(Intent.SCATTERPLOT.getKey()) && !intent.equals(Intent.LINE_CHART.getKey()) &&
-								!handleGroupingLogic(chatMessageResponse, paramMap)) {
-							chatMessageResponse.setUiAction(IDAConst.UAC_NRMLMSG);
-							return;
-						}
 						if (onTemporaryData) {
 							tableData = message.getActiveTableData();
 							tableData = dataUtil.filterData(tableData, filterString, columnNameList, columnMap);
 						} else {
-							if (groupingNeeded) {
-								columnNameList.add(paramMap.get("group_column").toString());
-							}
 							tableData = dataUtil.getData(datasetName, tableName, columnNameList, filterString, columnMap);
 						}
 						comparator = LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_UNKNOWN);
@@ -157,7 +148,7 @@ public class VisualizeAction implements Action {
 					switch (vizType) {
 						case IDAConst.VIZ_TYPE_BAR_CHART:
 							createGraphData(IDAConst.X_AXIS_PARAM, IDAConst.Y_AXIS_PARAM, paramMap);
-							if (groupingNeeded) {
+							if (Boolean.parseBoolean(paramMap.getOrDefault("Group_Column_choice", "").toString())) {
 								createGroupedBarGraphResponse();
 								chatMessageResponse.setUiAction(IDAConst.UIA_GROUPED_BARGRAPH);
 							} else {
@@ -169,7 +160,7 @@ public class VisualizeAction implements Action {
 							break;
 						case IDAConst.VIZ_TYPE_BUBBLE_CHART:
 							createGraphData(IDAConst.BUBBLE_LABEL_PARAM, IDAConst.BUBBLE_SIZE_PARAM, paramMap);
-							if (groupingNeeded) {
+							if (Boolean.parseBoolean(paramMap.getOrDefault("Group_Column_choice", "").toString())) {
 								createGroupedBubbleChartResponse();
 								chatMessageResponse.setUiAction(IDAConst.UIA_GROUPED_BUBBLECHART);
 							} else {
@@ -372,9 +363,16 @@ public class VisualizeAction implements Action {
 		String attributeName;
 		String paramType;
 		Set<String> options = new HashSet<>();
+		int processedParameterCount = 0;
 		for (int i = 1; i <= attributeList.size(); i++) {
+			Set<String> remainingAttributes = new HashSet<>();
+			instanceMap.keySet().forEach(k -> remainingAttributes.addAll(instanceMap.get(k).keySet()));
 			attributeName = attributeList.get(i);
 			attributeType = paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_TYPE_SUFFIX, "").toString();
+			if (!remainingAttributes.contains(attributeName)) {
+				processedParameterCount ++;
+				continue;
+			}
 			if (attributeOptionalMap.get(attributeName) && paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
 				if (paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, "").toString().isEmpty()) {
 					dialogFlowUtil.setContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX);
@@ -408,6 +406,10 @@ public class VisualizeAction implements Action {
 			if (createResponseForUser(options, i, attributeName, attributeType, paramMap, paramType)) {
 				break;
 			}
+			processedParameterCount++;
+		}
+		if(processedParameterCount == attributeList.size()){
+			allParamsProcessed = true;
 		}
 		return options;
 	}
@@ -559,15 +561,12 @@ public class VisualizeAction implements Action {
 		}
 		for (int i = 1; i <= attributeList.size(); i++) {
 			attributeName = attributeList.get(i);
-			parameterMap.put(attributeName, paramMap.get(attributeName).toString());
+			parameterMap.put(attributeName, paramMap.getOrDefault(attributeName, "").toString());
 			for (String attr : instance.keySet()) {
 				if (attributeName.equals(attr)) {
 					parameterTypeMap.put(attributeName + IDAConst.ATTRIBUTE_TYPE_SUFFIX, instance.get(attr).get(IDAConst.INSTANCE_PARAM_TRANS_TYPE_KEY).toLowerCase());
 				}
 			}
-		}
-		if (groupingNeeded) {
-			parameterMap.put("group_column", paramMap.getOrDefault("group_column", "").toString());
 		}
 	}
 
@@ -585,6 +584,7 @@ public class VisualizeAction implements Action {
 		String yAxisColumnType = parameterTypeMap.get(param2 + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		graphItems = new HashMap<>();
 		groupedGraphItems = new HashMap<>();
+		boolean groupingNeeded = Boolean.parseBoolean(paramMap.getOrDefault("Group_Column_choice", "").toString());
 		String xValue;
 		double yValue;
 		Map<String, Integer> labelCounts = new HashMap<>();
@@ -600,7 +600,7 @@ public class VisualizeAction implements Action {
 			}
 		} else if (IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(xAxisColumnType)) {
 			if (groupingNeeded) {
-				String groupColumn = paramMap.get("group_column").toString();
+				String groupColumn = paramMap.get("Group_Column").toString();
 				List<String> groups = tableData.stream().map(e -> e.get(groupColumn)).distinct().collect(Collectors.toList());
 				List<String> labels = tableData.stream().map(e -> e.get(xAxisColumn)).distinct().collect(Collectors.toList());
 				Map<String, Double> groupEntries = new HashMap<>();
@@ -644,14 +644,14 @@ public class VisualizeAction implements Action {
 			String binType;
 			if (IDAConst.COLUMN_TYPE_NUMERIC.equals(columnMap.get(xAxisColumn))) {
 				if (groupingNeeded) {
-					processGroupedBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("group_column").toString());
+					processGroupedBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("Group_Column").toString());
 				}
 				processBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, labelCounts);
 			} else if (IDAConst.COLUMN_TYPE_DATE.equals(columnMap.get(xAxisColumn))) {
 				binSize = (int) Math.abs(paramVal.getStructValue().getFieldsMap().get(IDAConst.PARAMETER_TYPE_DURATION_SIZE).getNumberValue());
 				binType = paramVal.getStructValue().getFieldsMap().get(IDAConst.PARAMETER_TYPE_DURATION_UNIT).getStringValue();
 				if (groupingNeeded) {
-					processGroupedBinsForDateLabels(binSize, binType, xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("group_column").toString());
+					processGroupedBinsForDateLabels(binSize, binType, xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("Group_Column").toString());
 				}
 				processBinsForDateLabels(binSize, binType, xAxisColumn, yAxisColumn, yAxisColumnType, labelCounts);
 			}
@@ -1035,7 +1035,7 @@ public class VisualizeAction implements Action {
 	 * Method to create a response object based on graph items for grouped bar graph
 	 */
 	private void createGroupedBarGraphResponse() {
-		String xAxisColumn = parameterMap.get("group_column");
+		String xAxisColumn = parameterMap.get("Group_Column");
 		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
 		String xAxisColumnType = parameterTypeMap.get(IDAConst.X_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		String yAxisColumnType = parameterTypeMap.get(IDAConst.Y_AXIS_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
@@ -1078,7 +1078,7 @@ public class VisualizeAction implements Action {
 	 * Method to create a response object based on graph items for grouped bubble chart
 	 */
 	private void createGroupedBubbleChartResponse() {
-		String labelColumn = parameterMap.get("group_name");
+		String labelColumn = parameterMap.get("Group_Column");
 		String sizeColumn = parameterMap.get(IDAConst.BUBBLE_SIZE_PARAM);
 		String labelColumnType = parameterTypeMap.get(IDAConst.BUBBLE_LABEL_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		String sizeColumnType = parameterTypeMap.get(IDAConst.BUBBLE_SIZE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
@@ -1095,41 +1095,6 @@ public class VisualizeAction implements Action {
 		}
 		List<String> bubbleLabels = groupedGraphItems.get(groupedGraphItems.keySet().iterator().next()).keySet().stream().sorted(comparator).collect(Collectors.toList());
 		payload.put("bubbleChartData", new GroupedBubbleChartData(graphLabel, bubbleLabels, groupedBubbleChartData));
-	}
-
-	/**
-	 * Method to handle the chatbot flow for grouping the visualizations
-	 *
-	 * @param chatMessageResponse - instance of the chatbot response
-	 * @param paramMap            - parameter map from dialogflow
-	 * @return - true if grouping flow is complete and false otherwise
-	 * @throws NoSuchAlgorithmException - dialogflow auth encryption algorithm is invalid
-	 * @throws IOException              - dialogflow credentials file does not exist
-	 * @throws InvalidKeySpecException  - dialogflow auth key invalid
-	 */
-	private boolean handleGroupingLogic(ChatMessageResponse chatMessageResponse, Map<String, Object> paramMap) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		String isGroupNeeded = paramMap.getOrDefault("isGrouped", "").toString();
-		if (isGroupNeeded.isEmpty()) {
-			dialogFlowUtil.setContext("get_group_needed");
-			chatMessageResponse.setMessage("Do you want to further sub-divide your data into groups?");
-			return false;
-		} else if ("false".equals(isGroupNeeded)) {
-			groupingNeeded = false;
-			return true;
-		} else {
-			groupingNeeded = true;
-			String groupColumn = paramMap.getOrDefault("group_column", "").toString();
-			if (groupColumn.isEmpty()) {
-				dialogFlowUtil.setContext("get_group_column");
-				chatMessageResponse.setMessage("Which column should be used to group the data?");
-				return false;
-			} else if ("true".equals(columnUniquenessMap.get(groupColumn))) {
-				dialogFlowUtil.setContext("get_group_column");
-				chatMessageResponse.setMessage(groupColumn + " cannot be used to group the data. The column values must be non unique. Please provide a different column");
-				return false;
-			}
-			return true;
-		}
 	}
 
 	/**
