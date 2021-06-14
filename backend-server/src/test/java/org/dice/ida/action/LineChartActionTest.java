@@ -29,12 +29,12 @@ public class LineChartActionTest {
 	void testLineChartFlow() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("can you draw a line chart?");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 10");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Date announced");
+		chatUserMessage.setMessage("Date Announced");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Detected State");
 		messageController.handleMessage(chatUserMessage).call();
@@ -56,7 +56,7 @@ public class LineChartActionTest {
 	void testLineChartWrongFilterString() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("can you draw a line chart?");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("null");
@@ -69,7 +69,7 @@ public class LineChartActionTest {
 	void testLineChartWrongColumnName() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("can you draw a line chart?");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
@@ -84,16 +84,16 @@ public class LineChartActionTest {
 	void testLineChartFlowUniqueLabels() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("can you draw a line chart?");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 7");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Date announced");
+		chatUserMessage.setMessage("Date Announced");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Detected State");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Age");
+		chatUserMessage.setMessage("Age Bracket");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		LineChartData lineChartData = (LineChartData) chatMessageResponse.getPayload().get("lineChartData");
 		List<LineChartItem> lineChartItemList = new ArrayList<>();
@@ -111,16 +111,16 @@ public class LineChartActionTest {
 	void testLineChartFlowAverageValues() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("can you draw a line chart?");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 10");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Date announced");
+		chatUserMessage.setMessage("Date Announced");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Detected State");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Average");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
@@ -140,16 +140,16 @@ public class LineChartActionTest {
 	void testLineChartFlowSumOfValues() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("can you draw a line chart?");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 10");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Date announced");
+		chatUserMessage.setMessage("Date Announced");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Detected State");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("sum of");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();

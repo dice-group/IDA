@@ -7,10 +7,12 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
+import org.apache.jena.update.UpdateExecutionFactory;
 import org.dice.ida.constant.IDAConst;
 import org.dice.ida.model.suggestion.VisualizationInfo;
 import org.springframework.stereotype.Component;
@@ -38,9 +40,9 @@ public class RDFUtil {
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
 	 * @return It takes query string as its parameter and returns the result set after executing the query.
 	 */
-	private ResultSet getResultFromQuery(String queryString) {
-		QueryExecution queryExecution;
-		ResultSet resultSet;
+	public ResultSet getResultFromQuery(String queryString, String dsName) {
+		QueryExecution queryExecution = null;
+		ResultSet resultSet = null;
 		Query query = QueryFactory.create(queryString);
 
 		/*
@@ -52,20 +54,22 @@ public class RDFUtil {
 			 */
 			if (dbHost == null || dbHost.isEmpty() || dbHost.isBlank()) {
 				try {
+					String resourceName = dsName.equals("ida_viz") ? "visualization_model/ida_viz_model.ttl" : "visualization_model/ida_ds_model.ttl";
+
 					model = ModelFactory.createDefaultModel();
-					String path = Objects.requireNonNull(getClass().getClassLoader().getResource("visualization_model/ida_viz_model.ttl")).getFile();
+					String path = Objects.requireNonNull(getClass().getClassLoader().getResource(resourceName)).getFile();
 					model.read(path);
 					queryExecution = QueryExecutionFactory.create(query, model);
 				} catch (NullPointerException ex) {
-					return null;
+					resultSet = null;
 				}
 			} else {
 				try {
-					RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + "ida_viz");
+					RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dbHost + dsName);
 					conn = (RDFConnectionFuseki) builder.build();
 					queryExecution = conn.query(query);
 				} catch (Exception ex) {
-					return null;
+					resultSet = null;
 				} finally {
 					conn.close();
 				}
@@ -73,16 +77,20 @@ public class RDFUtil {
 		} else {
 			queryExecution = QueryExecutionFactory.create(query, model);
 		}
+
 		if (queryExecution != null) {
 			try {
 				resultSet = ResultSetFactory.copyResults(queryExecution.execSelect());
-				queryExecution.close();
-				return resultSet;
 			} catch (Exception e) {
-				return null;
+				resultSet = null;
+			} finally {
+				if (conn != null) {
+					conn.close();
+				}
+				queryExecution.close();
 			}
 		}
-		return null;
+		return resultSet;
 	}
 
 	/**
@@ -130,7 +138,7 @@ public class RDFUtil {
 				"    ?dependentParam rdfs:label ?dependentCol" +
 				"  }" +
 				"} ORDER BY ASC(?priority)";
-		ResultSet instancesResultSet = getResultFromQuery(queryString);
+		ResultSet instancesResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (instancesResultSet == null) {
 			return instanceMap;
 		}
@@ -180,7 +188,7 @@ public class RDFUtil {
 				"  ?param rdfs:label ?paramLabel ." +
 				"  ?param ivodp:hasPriority ?priority . " +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -196,6 +204,7 @@ public class RDFUtil {
 		model = null;
 		return attributeMap;
 	}
+
 	public Map<Integer, String> getSuggestionAttributeList(String vizName) {
 		Map<Integer, String> attributeMap = new TreeMap<>();
 		String queryString = IDAConst.IDA_SPARQL_PREFIX +
@@ -207,15 +216,14 @@ public class RDFUtil {
 				"  ?param ivodp:hasPriority ?priority . " +
 				"  ?param ivodp:isOptional ?isoptional . " +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
 		while (attributeResultSet.hasNext()) {
 			QuerySolution querySolution = attributeResultSet.next();
 			boolean optional = (boolean) querySolution.get("isoptional").asNode().getLiteralValue();
-			if(!optional)
-			{
+			if (!optional) {
 				String param = querySolution.get("paramLabel").asLiteral().getString();
 				int priority = (int) querySolution.get("priority").asNode().getLiteralValue();
 				attributeMap.put(priority, param);
@@ -235,7 +243,7 @@ public class RDFUtil {
 				"?s rdf:type ivoc:Visualization ;" +
 				"rdfs:label '" + viz + "'@en ;" +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		QuerySolution querySolution = attributeResultSet.next();
 		String vizIntent = querySolution.get("s").asNode().toString();
 
@@ -257,7 +265,7 @@ public class RDFUtil {
 				"  ?statProp rdfs:label ?propLabel ." +
 				"  ?cond rdfs:label ?condLabel" +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -294,7 +302,7 @@ public class RDFUtil {
 				"  ?ref   ivodp:link ?link ;" +
 				"         rdfs:label ?label ." +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -320,7 +328,7 @@ public class RDFUtil {
 				"  ?param rdfs:label ?paramLabel ." +
 				"  ?param ivodp:isOptional ?isoptional  " +
 				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString);
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -328,12 +336,34 @@ public class RDFUtil {
 			QuerySolution querySolution = attributeResultSet.next();
 			String param = querySolution.get("paramLabel").asLiteral().getString();
 			boolean optional = (boolean) querySolution.get("isoptional").asNode().getLiteralValue();
-			attributeOptionalMap.put(param,optional);
+			attributeOptionalMap.put(param, optional);
 		}
 		if (conn != null) {
 			conn.close();
 		}
 		model = null;
 		return attributeOptionalMap;
+	}
+
+	public String addDatasetName(String dsName) {
+		String queryString1 = "PREFIX ab: <https://www.upb.de/ida/datasets/>" +
+				" INSERT DATA {" +
+				" ?dsNameUri ab:names ?dsName ;" +
+				" ab:isTest false" +
+				" }";
+		ParameterizedSparqlString parameterizedSparqlString = new ParameterizedSparqlString(queryString1);
+		parameterizedSparqlString.setLiteral("dsName", dsName);
+		parameterizedSparqlString.setIri("dsNameUri", "https://www.upb.de/ida/datasets/" + dsName);
+
+		if (! (dbHost == null || dbHost.isEmpty() || dbHost.isBlank())) {
+			try {
+				UpdateExecutionFactory.createRemote(parameterizedSparqlString.asUpdate(), dbHost + "ida_ds").execute();
+				return "true";
+			} catch (Exception ex) {
+				return "false";
+			}
+		} else {
+			return "false";
+		}
 	}
 }

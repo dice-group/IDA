@@ -33,7 +33,7 @@ public class BubbleChartActionTest {
 	void testBubbleChartFlow() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bubble chart");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
@@ -58,18 +58,18 @@ public class BubbleChartActionTest {
 	void testBubbleChartNumBins() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bubble chart");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 10");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("Age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("bins");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("10");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("count of");
 		messageController.handleMessage(chatUserMessage).call();
@@ -94,7 +94,7 @@ public class BubbleChartActionTest {
 	void testBubbleChartDateBins() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bubble chart");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("all");
@@ -125,7 +125,7 @@ public class BubbleChartActionTest {
 	void testBubbleChartFlowUniqueLabels() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bubble chart");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Case_Time_Series.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
@@ -154,20 +154,20 @@ public class BubbleChartActionTest {
 	void testGroupedBubbleNumLabels() throws Exception {
 		chatUserMessage = new ChatUserMessage();
 		chatUserMessage.setMessage("draw bubble chart");
-		chatUserMessage.setActiveDS("covid19");
+		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("first 5");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("detected state");
+		chatUserMessage.setMessage("Detected State");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("age");
+		chatUserMessage.setMessage("Age Bracket");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("average");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("yes");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("current status");
+		chatUserMessage.setMessage("Current Status");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		GroupedBubbleChartData groupedBubbleChartData = (GroupedBubbleChartData) chatMessageResponse.getPayload().get("bubbleChartData");
 		Map<String, List<BubbleChartItem>> groupedBubbleChartItems = new HashMap<>();

@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import com.fasterxml.jackson.dataformat.csv.CsvParser;
+import org.apache.jena.query.ResultSet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -32,33 +32,7 @@ import org.dice.ida.constant.IDAConst;
 @Component
 @Scope("singleton")
 public class FileUtil {
-
-	private Map<String, String> dsPathMap;
 	private final ArrayList<String> datasetsList = new ArrayList<>();
-
-	public FileUtil() throws IOException {
-		dsPathMap = new HashMap<>();
-		// Read dsmap file
-		Properties prop = new Properties();
-		InputStream input = new FileInputStream(fetchSysFilePath(IDAConst.DSMAP_PROP_FILEPATH));
-		prop.load(input);
-		String dataset;
-		for (Object key : prop.keySet()) {
-			dataset = key.toString();
-			datasetsList.add(dataset);
-			dsPathMap.put(dataset, prop.getProperty(dataset));
-		}
-
-	}
-
-	/**
-	 * A simple method which reads available datasets and return them
-	 *
-	 * @return - An ArrayList object containing names of available datasets
-	 */
-	public ArrayList<String> getListOfDatasets() {
-		return datasetsList;
-	}
 
 	/**
 	 * Method to generate a collection of rows from a csv file in List<Map<String,
@@ -75,7 +49,7 @@ public class FileUtil {
 		CsvMapper csvMapper = new CsvMapper();
 
 		// Read data from CSV file
-		List<Object> readAll = csvMapper.readerFor(Map.class).with(csvSchema).readValues(input).readAll();
+		List<Object> readAll = csvMapper.enable(CsvParser.Feature.SKIP_EMPTY_LINES).readerFor(Map.class).with(csvSchema).readValues(input).readAll();
 		List<Map<String, String>> resMapList = new ArrayList<>();
 		for (Object entry : readAll) {
 			resMapList.add((Map<String, String>) entry);
@@ -94,9 +68,8 @@ public class FileUtil {
 	public ArrayList<Map> getDatasetContent(String keyword) throws IOException {
 		ArrayList<Map> resMap = new ArrayList<>();
 		Map<String, Object> datasetMap;
-		String path = dsPathMap.get(keyword.toLowerCase());
 
-		File dir = new File(fetchSysFilePath(path));
+		File dir = new File(fetchSysFilePath(keyword));
 		File[] directoryListing = dir.listFiles();
 		if (directoryListing != null) {
 			for (File child : directoryListing) {
@@ -115,18 +88,18 @@ public class FileUtil {
 	/**
 	 * Method to fetch the metadata json for the given dataset
 	 *
-	 * @param keyword - name of dataset
+	 * @param dsName - name of dataset
 	 * @return - metadata json object
 	 * @throws JsonProcessingException
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public ObjectNode getDatasetMetaData(String keyword) throws JsonProcessingException, FileNotFoundException, IOException {
+	public ObjectNode getDatasetMetaData(String dsName) throws JsonProcessingException, FileNotFoundException, IOException {
 		ObjectNode resObj = null;
-		String path = dsPathMap.get(keyword.toLowerCase());
+		String path = fetchSysFilePath(dsName.toLowerCase());
 		//TODO: Change the logic to use .exists() method instead of this
 		if (path != null) {
-			File dir = new File(fetchSysFilePath(path));
+			File dir = new File(path);
 			File[] directoryListing = dir.listFiles();
 			if (directoryListing != null) {
 				for (File child : directoryListing) {
@@ -146,21 +119,43 @@ public class FileUtil {
 	/**
 	 * Method to check if given dataset exists
 	 *
-	 * @param keyword - name of dataset
+	 * @param dsName - name of dataset
 	 * @return - if dataset exists
 	 */
-	public boolean datasetExists(String keyword) {
-		return dsPathMap.get(keyword.toLowerCase()) != null;
+	public boolean datasetExists(String dsName) {
+		ResultSet results = new RDFUtil().getResultFromQuery("SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate '" + dsName + "' }", "ida_ds");
+		return (results != null) && results.hasNext();
+	}
+
+	/**
+	 * A simple method which reads available datasets and return them
+	 *
+	 * @return - An ArrayList object containing names of available datasets
+	 */
+	public ArrayList<String> getListOfDatasets() {
+		String queryString = "SELECT ?object" +
+				" WHERE {" +
+				" ?subject <https://www.upb.de/ida/datasets/names> ?object;" +
+				" 		   <https://www.upb.de/ida/datasets/isTest> false" +
+				" }";
+		ResultSet results = new RDFUtil().getResultFromQuery(queryString, "ida_ds");
+		while (results.hasNext()) {
+			datasetsList.add(results.next().get("?object").toString());
+		}
+		return datasetsList;
 	}
 
 	/**
 	 * Method to fetch the filepath for files stored in src/main/resources
 	 *
-	 * @param path - relative path to the file
+	 * @param dsName - relative path to the file
 	 * @return File System path of the file
 	 */
-	public String fetchSysFilePath(String path) {
-		return getClass().getClassLoader().getResource(path).getFile();
+	public String fetchSysFilePath(String dsName) {
+		String path = System.getenv("DB_PATH");
+		if (path == null) {
+			path = getClass().getClassLoader().getResource("datasets/").getFile();
+		}
+		return path + dsName;
 	}
-
 }

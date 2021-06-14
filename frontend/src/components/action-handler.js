@@ -86,14 +86,14 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
                 fileName: "dsmd.json",
 				dsName: metaData.dsName
             }];
-            data.forEach((table) =>
+            data.forEach((table, idx) =>
                 children.push({
                     id: metaData.dsName + "_" + table.name,
-                    name: table.name,
+                    name: metaData.filesMd[parseInt(idx, 10)].displayName,
                     type: "table",
                     data: table.data,
                     fileName: table.name,
-                    columns: metaData.filesMd.filter((fl) => fl.fileName === table.name)[0].fileColMd,
+                    columns: metaData.filesMd.filter((fl) => fl.fileName.toLowerCase() === table.name.toLowerCase())[0].fileColMd,
                     dsName: metaData.dsName
                 })
             );
@@ -171,6 +171,9 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             addAnalysisEntry(props, payload.suggestionData, "Visualization Suggestion", "suggestion", payload.activeDS, payload.activeTable, []);
             break;
         }
+		case IDA_CONSTANTS.UI_ACTION_CODES.UAC_UPLDDTMSG: {
+			props.setdsUploadWizardOpen(true);
+		}
         default:
     }
 }
