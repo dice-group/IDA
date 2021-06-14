@@ -371,7 +371,8 @@ instance:bar_chart_1 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/bar_chart_2
 instance:bar_chart_2 rdf:type owl:NamedIndividual ,
                               ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_bins ,
+                     ivoop:hasInstanceParam instance_param:grouping_column ,
+                                            instance_param:x_axis_bins ,
                                             instance_param:y_axis_sumof ;
                      rdfs:label "Bar Chart Instance 2"@en .
 
@@ -379,7 +380,8 @@ instance:bar_chart_2 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/bar_chart_3
 instance:bar_chart_3 rdf:type owl:NamedIndividual ,
                               ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_bins ,
+                     ivoop:hasInstanceParam instance_param:grouping_column ,
+                                            instance_param:x_axis_bins ,
                                             instance_param:y_axis_averageof ;
                      rdfs:label "Bar Chart Instance 3"@en .
 
@@ -387,7 +389,8 @@ instance:bar_chart_3 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/bar_chart_4
 instance:bar_chart_4 rdf:type owl:NamedIndividual ,
                               ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_bins ,
+                     ivoop:hasInstanceParam instance_param:grouping_column ,
+                                            instance_param:x_axis_bins ,
                                             instance_param:y_axis_countof ;
                      rdfs:label "Bar Chart Instance 4"@en .
 
@@ -395,7 +398,8 @@ instance:bar_chart_4 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/bar_chart_5
 instance:bar_chart_5 rdf:type owl:NamedIndividual ,
                               ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_non_unique ,
+                     ivoop:hasInstanceParam instance_param:grouping_column ,
+                                            instance_param:x_axis_non_unique ,
                                             instance_param:y_axis_averageof ;
                      rdfs:label "Bar Chart Instance 5"@en .
 
@@ -403,7 +407,8 @@ instance:bar_chart_5 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/bar_chart_6
 instance:bar_chart_6 rdf:type owl:NamedIndividual ,
                               ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_non_unique ,
+                     ivoop:hasInstanceParam instance_param:grouping_column ,
+                                            instance_param:x_axis_non_unique ,
                                             instance_param:y_axis_countof ;
                      rdfs:label "Bar Chart Instance 6"@en .
 
@@ -411,7 +416,8 @@ instance:bar_chart_6 rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/instance/bar_chart_7
 instance:bar_chart_7 rdf:type owl:NamedIndividual ,
                               ivoc:Instance ;
-                     ivoop:hasInstanceParam instance_param:x_axis_non_unique ,
+                     ivoop:hasInstanceParam instance_param:grouping_column ,
+                                            instance_param:x_axis_non_unique ,
                                             instance_param:y_axis_sumof ;
                      rdfs:label "Bar Chart Instance 7"@en .
 
@@ -428,7 +434,8 @@ instance:bubble_chart_1 rdf:type owl:NamedIndividual ,
 instance:bubble_chart_2 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
                         ivoop:hasInstanceParam instance_param:bubble_label_bins ,
-                                               instance_param:bubble_size_sumof ;
+                                               instance_param:bubble_size_sumof ,
+                                               instance_param:grouping_column ;
                         rdfs:label "Bubble Chart Instance 2"@en .
 
 
@@ -436,7 +443,8 @@ instance:bubble_chart_2 rdf:type owl:NamedIndividual ,
 instance:bubble_chart_3 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
                         ivoop:hasInstanceParam instance_param:bubble_label_bins ,
-                                               instance_param:bubble_size_averageof ;
+                                               instance_param:bubble_size_averageof ,
+                                               instance_param:grouping_column ;
                         rdfs:label "Bubble Chart Instance 3"@en .
 
 
@@ -444,7 +452,8 @@ instance:bubble_chart_3 rdf:type owl:NamedIndividual ,
 instance:bubble_chart_4 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
                         ivoop:hasInstanceParam instance_param:bubble_label_bins ,
-                                               instance_param:bubble_size_countof ;
+                                               instance_param:bubble_size_countof ,
+                                               instance_param:grouping_column ;
                         rdfs:label "Bubble Chart Instance 4"@en .
 
 
@@ -452,7 +461,8 @@ instance:bubble_chart_4 rdf:type owl:NamedIndividual ,
 instance:bubble_chart_5 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
                         ivoop:hasInstanceParam instance_param:bubble_label_non_unique ,
-                                               instance_param:bubble_size_averageof ;
+                                               instance_param:bubble_size_averageof ,
+                                               instance_param:grouping_column ;
                         rdfs:label "Bubble Chart Instance 5"@en .
 
 
@@ -460,7 +470,8 @@ instance:bubble_chart_5 rdf:type owl:NamedIndividual ,
 instance:bubble_chart_6 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
                         ivoop:hasInstanceParam instance_param:bubble_label_non_unique ,
-                                               instance_param:bubble_size_countof ;
+                                               instance_param:bubble_size_countof ,
+                                               instance_param:grouping_column ;
                         rdfs:label "Bubble Chart Instance 6"@en .
 
 
@@ -468,7 +479,8 @@ instance:bubble_chart_6 rdf:type owl:NamedIndividual ,
 instance:bubble_chart_7 rdf:type owl:NamedIndividual ,
                                  ivoc:Instance ;
                         ivoop:hasInstanceParam instance_param:bubble_label_non_unique ,
-                                               instance_param:bubble_size_sumof ;
+                                               instance_param:bubble_size_sumof ,
+                                               instance_param:grouping_column ;
                         rdfs:label "Bubble Chart Instance 7"@en .
 
 
@@ -648,6 +660,14 @@ instance_param:column_list rdf:type owl:NamedIndividual ,
                            ivoop:hasRepType representational_type:Numeric ;
                            ivoop:representedParam parameter:column_list ;
                            rdfs:label "Scatter plot matrix colums"@en .
+
+
+###  https://www.upb.de/ida/viz/data/instance_param/grouping_column
+instance_param:grouping_column rdf:type owl:NamedIndividual ,
+                                        ivoc:InstanceParam ;
+                               ivoop:hasRepType representational_type:NotRequired ;
+                               ivoop:representedParam parameter:group_column ;
+                               rdfs:label "Grouping Column"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/instance_param/line_chart_temporal
@@ -839,6 +859,15 @@ parameter:column_list rdf:type owl:NamedIndividual ,
                       rdfs:label "Column_List"@en .
 
 
+###  https://www.upb.de/ida/viz/data/parameter/group_column
+parameter:group_column rdf:type owl:NamedIndividual ,
+                                ivoc:Parameter ;
+                       ivoop:hasRepType representational_type:Nominal ;
+                       ivodp:hasPriority 3 ;
+                       ivodp:isOptional "true"^^xsd:boolean ;
+                       rdfs:label "Group_Column"@en .
+
+
 ###  https://www.upb.de/ida/viz/data/parameter/line_label
 parameter:line_label rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
@@ -870,7 +899,8 @@ parameter:ref_values rdf:type owl:NamedIndividual ,
 parameter:reference_column rdf:type owl:NamedIndividual ,
                                     ivoc:Parameter ;
                            ivoop:hasRepType representational_type:Nominal ;
-                           ivodp:hasPriority 2 ;
+                           ivodp:hasPriority 3 ;
+                           ivodp:isOptional "true"^^xsd:boolean ;
                            rdfs:label "Reference_Column"@en .
 
 
@@ -1300,7 +1330,8 @@ visualization:bar_chart rdf:type owl:NamedIndividual ,
                                           instance:bar_chart_5 ,
                                           instance:bar_chart_6 ,
                                           instance:bar_chart_7 ;
-                        ivoop:hasParam parameter:x_axis ,
+                        ivoop:hasParam parameter:group_column ,
+                                       parameter:x_axis ,
                                        parameter:y_axis ;
                         ivoop:hasSuggestionParamValue suggestion_param:bar_chart_label ,
                                                       suggestion_param:bar_chart_value ;
@@ -1319,7 +1350,8 @@ visualization:bubble_chart rdf:type owl:NamedIndividual ,
                                              instance:bubble_chart_6 ,
                                              instance:bubble_chart_7 ;
                            ivoop:hasParam parameter:bubble_label ,
-                                          parameter:bubble_size ;
+                                          parameter:bubble_size ,
+                                          parameter:group_column ;
                            ivoop:hasSuggestionParamValue suggestion_param:bubble_label ,
                                                          suggestion_param:bubble_value ;
                            rdfs:label "Bubble Chart"@en .
@@ -1364,6 +1396,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                   ivoop:hasInstance instance:scatter_plot_matrix_1 ;
                                   ivoop:hasParam parameter:column_list ,
                                                  parameter:reference_column ,
+                                                 :ScatterPlotMatrix_Label ,
                                                  :hasListColumn ;
                                   rdfs:label "Scatter Plot Matrix"@en .
 
@@ -1380,7 +1413,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 :ScatterPlotMatrix_Label rdf:type owl:NamedIndividual ,
                                   ivoc:Parameter ;
                          ivoop:hasRepType representational_type:Nominal ;
-                         ivodp:hasPriority 3 ;
+                         ivodp:hasPriority 2 ;
                          ivodp:isOptional "false"^^xsd:boolean ;
                          rdfs:label "ScatterPlotMatrix_Label" .
 

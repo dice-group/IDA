@@ -187,7 +187,8 @@ public class RDFUtil {
 				"                               ivoop:hasParam ?param . " +
 				"  ?param rdfs:label ?paramLabel ." +
 				"  ?param ivodp:hasPriority ?priority . " +
-				"}";
+				"} " +
+				"ORDER BY ASC(?priority)";
 		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
