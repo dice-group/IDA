@@ -153,6 +153,10 @@
   resize: none;
 }
 
+.chat-area-input textarea:disabled {
+  display: none;
+}
+
 @media (max-width: 576px) {
   .chatbox {
     left: 0;

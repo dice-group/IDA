@@ -5,7 +5,6 @@ import shutil
 import re
 
 from flask import Flask, request
-from requests.auth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import requests
@@ -60,15 +59,15 @@ def upload_file():
 							# Checking if its numeric
 							pd.to_numeric(ds[col_name].str.replace(',', '.'))
 							data_type = 'numeric'
-						except:
+						except Exception:
 							# It was not numeric column
 							try:
 								# Checking if its Date
 								pd.to_datetime(ds[col_name])
 								data_type = 'date'
-							except:
+							except Exception:
 								# it is not even date
-								pass
+								print("Neither a number nor a date")
 					elif d_dt in ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']:
 						data_type = "numeric"
 
@@ -214,4 +213,4 @@ def test():
 
 
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0')
+	app.run(debug=False)
