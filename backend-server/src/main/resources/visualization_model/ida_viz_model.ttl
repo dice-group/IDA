@@ -870,7 +870,8 @@ parameter:ref_values rdf:type owl:NamedIndividual ,
 parameter:reference_column rdf:type owl:NamedIndividual ,
                                     ivoc:Parameter ;
                            ivoop:hasRepType representational_type:Nominal ;
-                           ivodp:hasPriority 2 ;
+                           ivodp:hasPriority 3 ;
+                           ivodp:isOptional "true"^^xsd:boolean ;
                            rdfs:label "Reference_Column"@en .
 
 
@@ -1364,6 +1365,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                   ivoop:hasInstance instance:scatter_plot_matrix_1 ;
                                   ivoop:hasParam parameter:column_list ,
                                                  parameter:reference_column ,
+                                                 :ScatterPlotMatrix_Label ,
                                                  :hasListColumn ;
                                   rdfs:label "Scatter Plot Matrix"@en .
 
@@ -1380,7 +1382,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 :ScatterPlotMatrix_Label rdf:type owl:NamedIndividual ,
                                   ivoc:Parameter ;
                          ivoop:hasRepType representational_type:Nominal ;
-                         ivodp:hasPriority 3 ;
+                         ivodp:hasPriority 2 ;
                          ivodp:isOptional "false"^^xsd:boolean ;
                          rdfs:label "ScatterPlotMatrix_Label" .
 

@@ -189,7 +189,7 @@ public class VisualizeAction implements Action {
 							chatMessageResponse.setMessage(IDAConst.LINE_CHART_LOADED);
 							break;
 						case IDAConst.VIZ_TYPE_SCATTER_PLOT_MATRIX:
-							createScatterPlotMatrixData(tableData, columnList, refColumn, labelColumn);
+							createScatterPlotMatrixData(tableData, columnList, labelColumn, refColumn);
 							chatMessageResponse.setUiAction(IDAConst.UIA_SCATTERPLOT_MATRIX);
 							chatMessageResponse.setMessage(IDAConst.SCATTER_PLOT_MATRIX_LOADED);
 							break;
@@ -243,13 +243,15 @@ public class VisualizeAction implements Action {
 			columnList = filterColumns(columnList, attributeTypeMap.get("Column_List"));
 			if (columnList.size() < 2) {
 				textMsg = new StringBuilder("Please provide more than one Numeric columns");
-				dialogFlowUtil.deleteContext("get_ref");
+				dialogFlowUtil.deleteContext("get_labelColumn");
 			} else {
-				refColumn = (String) paramMap.get(attributeList.get(1));
+				dialogFlowUtil.deleteContext("get_column");
+				refColumn = (String) paramMap.get(attributeList.get(2));
 				if (refColumn != null) {
 					if (columnMap.containsKey(refColumn)) {
 						columnList.add(refColumn);
 						labelNeeded = false;
+						dialogFlowUtil.deleteContext("get_labelColumn");
 						if (handleLabelLogic(paramMap, attributeList)) {
 							if (labelNeeded) {
 								columnList.add(labelColumn);
@@ -337,18 +339,18 @@ public class VisualizeAction implements Action {
 	 * @throws InvalidKeySpecException  - dialogflow auth key invalid
 	 */
 	private boolean handleLabelLogic(Map<String, Object> paramMap, List<String> attributeList) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		String islabelNeeded = paramMap.getOrDefault("labelNeeded", "").toString();
+		String isLabelNeeded = paramMap.getOrDefault("Reference_Column_Choice", "").toString();
 		labelColumn = "";
-		if (islabelNeeded.isEmpty()) {
-			textMsg = new StringBuilder("Do you want to use label on the data points?");
-		} else if ("false".equals(islabelNeeded)) {
+		if (isLabelNeeded.isEmpty()) {
+			textMsg = new StringBuilder("Do you want the color indicator for data points?");
+		} else if (!Boolean.parseBoolean(isLabelNeeded)) {
 			labelNeeded = false;
 			return true;
 		} else {
 			labelNeeded = true;
-			labelColumn = (String) paramMap.get(attributeList.get(2));
+			labelColumn = (String) paramMap.getOrDefault(attributeList.get(1), "");
 			if (labelColumn.isEmpty()) {
-				textMsg = new StringBuilder("Please provide the Label column");
+				textMsg = new StringBuilder("Please provide the column for mapping colors to data points");
 			} else {
 				if (!columnMap.containsKey(labelColumn)) {
 					textMsg = new StringBuilder("Column " + labelColumn + " doesn't exist in the loaded table.");
