@@ -53,7 +53,7 @@ public class SuggestVisualizationActionTest {
 			}});
 			put("Scatter plot", new ArrayList<>(){{
 				add(new SuggestionParam("X-Axis", "Age Bracket", "X-Axis"));
-				add(new SuggestionParam("label for scatter plot", "Patient Number", "Scatterplot_Label"));
+				add(new SuggestionParam("Data point label", "Patient Number", "Scatterplot_Label"));
 				add(new SuggestionParam("Y-Axis", "Patient Number", "Y-Axis"));
 			}});
 		}};

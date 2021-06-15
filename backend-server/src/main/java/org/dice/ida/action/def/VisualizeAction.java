@@ -90,6 +90,9 @@ public class VisualizeAction implements Action {
 	private ArrayList<String> columnList = new ArrayList<>();
 	private String refColumn = null;
 	private boolean allParamsProcessed;
+	private Map<String, String> paramDisplayNameMap = null;
+	private Map<String, String> paramDisplayMessageMap = null;
+	private Map<String, String> paramOptionalMessageMap = null;
 
 
 	/**
@@ -123,6 +126,9 @@ public class VisualizeAction implements Action {
 				String intent = paramMap.get(IDAConst.INTENT_NAME).toString();
 				attributeList = rdfUtil.getAttributeList(intent);
 				attributeOptionalMap = rdfUtil.getAttributeOptionalMap(intent);
+				paramDisplayNameMap = rdfUtil.getParamDisplayNames();
+				paramDisplayMessageMap = rdfUtil.getParamDisplayMessages();
+				paramOptionalMessageMap = rdfUtil.getParamOptionalMessages();
 				if (attributeList.containsValue(IDAConst.HAS_LIST_COLUMN)) {
 					columnListVizProcessed = processListAttribute(paramMap, vizType, datasetName, tableName, onTemporaryData, filterString, message);
 				} else {
@@ -257,6 +263,8 @@ public class VisualizeAction implements Action {
 					} else {
 						textMsg = new StringBuilder("Column <b>" + refColumn + "</b> doesn't exist in the table " + tableName);
 					}
+				} else {
+					textMsg = new StringBuilder(paramDisplayMessageMap.get(IDAConst.SCATTERPLOT_MATRIX_LABEL_PARAM));
 				}
 			}
 		}
@@ -333,7 +341,7 @@ public class VisualizeAction implements Action {
 		String isLabelNeeded = paramMap.getOrDefault("Reference_Column_Choice", "").toString();
 		labelColumn = "";
 		if (isLabelNeeded.isEmpty()) {
-			textMsg = new StringBuilder("Do you want the color indicator for data points?");
+			textMsg = new StringBuilder(paramOptionalMessageMap.get(IDAConst.SCATTERPLOT_MATRIX_REFERENCE_PARAM));
 		} else if (!Boolean.parseBoolean(isLabelNeeded)) {
 			labelNeeded = false;
 			return true;
@@ -341,7 +349,7 @@ public class VisualizeAction implements Action {
 			labelNeeded = true;
 			labelColumn = (String) paramMap.getOrDefault(attributeList.get(1), "");
 			if (labelColumn.isEmpty()) {
-				textMsg = new StringBuilder("Please provide the column for mapping colors to data points");
+				textMsg = new StringBuilder(paramDisplayMessageMap.get(IDAConst.SCATTERPLOT_MATRIX_REFERENCE_PARAM));
 			} else {
 				if (!columnMap.containsKey(labelColumn)) {
 					textMsg = new StringBuilder("Column " + labelColumn + " doesn't exist in the loaded table.");
@@ -370,20 +378,28 @@ public class VisualizeAction implements Action {
 			attributeName = attributeList.get(i);
 			attributeType = paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_TYPE_SUFFIX, "").toString();
 			if (!remainingAttributes.contains(attributeName)) {
-				processedParameterCount ++;
+				processedParameterCount++;
 				continue;
 			}
 			if (attributeOptionalMap.get(attributeName) && paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
 				if (paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, "").toString().isEmpty()) {
 					dialogFlowUtil.setContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX);
-					textMsg = new StringBuilder("Would you like to use " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
+					String question = "Do you want to use " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + "?";
+					if (paramOptionalMessageMap.containsKey(attributeList.get(i))) {
+						question = paramOptionalMessageMap.get(attributeList.get(i));
+					}
+					textMsg = new StringBuilder(question);
 					break;
 				}
 				boolean attributeChoice = Boolean.parseBoolean(paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, "").toString());
 				if (attributeChoice) {
 					dialogFlowUtil.deleteContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX);
 					dialogFlowUtil.setContext("get_" + attributeList.get(i));
-					textMsg = new StringBuilder("Which column values should be mapped to " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
+					String question = "Which column values should be mapped to " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + "?";
+					if (paramDisplayMessageMap.containsKey(attributeList.get(i))) {
+						question = paramDisplayMessageMap.get(attributeList.get(i));
+					}
+					textMsg = new StringBuilder(question);
 					break;
 				} else {
 					attributeList.remove(i);
@@ -395,7 +411,11 @@ public class VisualizeAction implements Action {
 						dialogFlowUtil.deleteContext("get_" + attributeList.get(i - 1) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 					}
 					dialogFlowUtil.setContext("get_" + attributeList.get(i));
-					textMsg = new StringBuilder("Which column values should be mapped to " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + "?");
+					String question = "Which column values should be mapped to " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + "?";
+					if (paramDisplayMessageMap.containsKey(attributeList.get(i))) {
+						question = paramDisplayMessageMap.get(attributeList.get(i));
+					}
+					textMsg = new StringBuilder(question);
 					break;
 				}
 			}
@@ -408,7 +428,7 @@ public class VisualizeAction implements Action {
 			}
 			processedParameterCount++;
 		}
-		if(processedParameterCount == attributeList.size()){
+		if (processedParameterCount == attributeList.size()) {
 			allParamsProcessed = true;
 		}
 		return options;
@@ -429,7 +449,7 @@ public class VisualizeAction implements Action {
 		if (options.size() == 0 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 			dialogFlowUtil.setContext("get_" + attributeList.get(i));
-			textMsg = new StringBuilder(columnName + " cannot be used as " + IDAConst.PARAM_NAME_MAP.get(attributeList.get(i)) + ". Please give a different column?");
+			textMsg = new StringBuilder(columnName + " cannot be used as " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + ". Please provide a different column?");
 			return true;
 		} else if (options.size() == 0) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));

@@ -35,6 +35,9 @@ public class RDFUtil {
 	private static final String dbHost = System.getenv("FUSEKI_URL");
 	private Model model;
 	private RDFConnectionFuseki conn = null;
+	private Map<String, String> paramDisplayNameMap = null;
+	private Map<String, String> paramDisplayMessageMap = null;
+	private Map<String, String> paramOptionalMessageMap = null;
 
 	/**
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
@@ -367,4 +370,92 @@ public class RDFUtil {
 			return "false";
 		}
 	}
+
+	public Map<String, String> getParamDisplayNames() {
+		if(paramDisplayNameMap != null) {
+			return paramDisplayNameMap;
+		}
+		paramDisplayNameMap = new HashMap<>();
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT ?paramLabel ?displayName " +
+				"WHERE { " +
+				"    ?s rdf:type ivoc:Parameter ; " +
+				"       rdfs:label ?paramLabel ; " +
+				"       ivodp:hasDisplayName ?displayName " +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String param = querySolution.get("paramLabel").asLiteral().getString();
+			String displayName = querySolution.get("displayName").asLiteral().getString();
+			paramDisplayNameMap.put(param, displayName);
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
+		return paramDisplayNameMap;
+	}
+
+	public Map<String, String> getParamDisplayMessages() {
+		if(paramDisplayMessageMap != null) {
+			return paramDisplayMessageMap;
+		}
+		paramDisplayMessageMap = new HashMap<>();
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT ?paramLabel ?displayMessage " +
+				"WHERE { " +
+				"    ?s rdf:type ivoc:Parameter ; " +
+				"       rdfs:label ?paramLabel ; " +
+				"       ivodp:hasDisplayMessage ?displayMessage " +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String param = querySolution.get("paramLabel").asLiteral().getString();
+			String displayName = querySolution.get("displayMessage").asLiteral().getString();
+			paramDisplayMessageMap.put(param, displayName);
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
+		return paramDisplayMessageMap;
+	}
+
+	public Map<String, String> getParamOptionalMessages() {
+		if(paramOptionalMessageMap != null) {
+			return paramOptionalMessageMap;
+		}
+		paramOptionalMessageMap = new HashMap<>();
+		String queryString = IDAConst.IDA_SPARQL_PREFIX +
+				"SELECT ?paramLabel ?optionalMessage " +
+				"WHERE { " +
+				"    ?s rdf:type ivoc:Parameter ; " +
+				"       rdfs:label ?paramLabel ; " +
+				"       ivodp:hasOptionalMessage ?optionalMessage " +
+				"}";
+		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String param = querySolution.get("paramLabel").asLiteral().getString();
+			String displayName = querySolution.get("optionalMessage").asLiteral().getString();
+			paramOptionalMessageMap.put(param, displayName);
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
+		return paramOptionalMessageMap;
+	}
+
 }

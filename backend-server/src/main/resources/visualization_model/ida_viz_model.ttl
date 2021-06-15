@@ -210,6 +210,33 @@ ivoop:representedParam rdf:type owl:ObjectProperty ;
 #    Data properties
 #################################################################
 
+###  https://www.upb.de/ida/viz/ontology/data-property/hasDisplayMessage
+ivodp:hasDisplayMessage rdf:type owl:DatatypeProperty ;
+                        rdfs:subPropertyOf owl:topDataProperty ;
+                        rdfs:domain ivoc:Parameter ;
+                        rdfs:range xsd:string ;
+                        dc:description "Display message for the user to get the value of a visualization parameter"@en ;
+                        rdfs:label "hasDisplayMessage"@en .
+
+
+###  https://www.upb.de/ida/viz/ontology/data-property/hasDisplayName
+ivodp:hasDisplayName rdf:type owl:DatatypeProperty ;
+                     rdfs:subPropertyOf owl:topDataProperty ;
+                     rdfs:domain ivoc:Parameter ;
+                     rdfs:range xsd:string ;
+                     dc:description "Display name of a visualization parameter"@en ;
+                     rdfs:label "hasDisplayName" .
+
+
+###  https://www.upb.de/ida/viz/ontology/data-property/hasOptionalMessage
+ivodp:hasOptionalMessage rdf:type owl:DatatypeProperty ;
+                         rdfs:subPropertyOf owl:topDataProperty ;
+                         rdfs:domain ivoc:Parameter ;
+                         rdfs:range xsd:string ;
+                         dc:description "Display message for the user to ask if the visualization parameter has to be used or not"@en ;
+                         rdfs:label "hasOptionalMessage"@en .
+
+
 ###  https://www.upb.de/ida/viz/ontology/data-property/hasPriority
 ivodp:hasPriority rdf:type owl:DatatypeProperty ;
                   rdfs:subPropertyOf owl:topDataProperty ;
@@ -826,6 +853,8 @@ instance_param:y_axis_sumof rdf:type owl:NamedIndividual ,
 parameter:Scatterplot_label rdf:type owl:NamedIndividual ,
                                      ivoc:Parameter ;
                             ivoop:hasRepType representational_type:NotRequired ;
+                            ivodp:hasDisplayMessage "Which column values should be used as the label for data points?" ;
+                            ivodp:hasDisplayName "Data point label" ;
                             ivodp:hasPriority 3 ;
                             ivodp:isOptional "false"^^xsd:boolean ;
                             rdfs:label "Scatterplot_Label" .
@@ -836,6 +865,8 @@ parameter:bubble_label rdf:type owl:NamedIndividual ,
                                 ivoc:Parameter ;
                        ivoop:hasParamTree representation_tree:tree_1 ;
                        ivoop:hasRepType representational_type:Categorical ;
+                       ivodp:hasDisplayMessage "Which column values should be used for the label of the bubbles?" ;
+                       ivodp:hasDisplayName "Label of the bubbles" ;
                        ivodp:hasPriority 1 ;
                        ivodp:isOptional "false"^^xsd:boolean ;
                        rdfs:label "Bubble_Label"@en .
@@ -845,6 +876,8 @@ parameter:bubble_label rdf:type owl:NamedIndividual ,
 parameter:bubble_size rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
+                      ivodp:hasDisplayMessage "Which column values should be used for the size of the bubbles?" ;
+                      ivodp:hasDisplayName "Size of the bubbles" ;
                       ivodp:hasPriority 2 ;
                       ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Bubble_Size"@en .
@@ -854,6 +887,8 @@ parameter:bubble_size rdf:type owl:NamedIndividual ,
 parameter:column_list rdf:type owl:NamedIndividual ,
                                ivoc:Parameter ;
                       ivoop:hasRepType representational_type:Numeric ;
+                      ivodp:hasDisplayMessage "Provide the list of column names" ;
+                      ivodp:hasDisplayName "List of columns" ;
                       ivodp:hasPriority 1 ;
                       ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Column_List"@en .
@@ -863,6 +898,9 @@ parameter:column_list rdf:type owl:NamedIndividual ,
 parameter:group_column rdf:type owl:NamedIndividual ,
                                 ivoc:Parameter ;
                        ivoop:hasRepType representational_type:Nominal ;
+                       ivodp:hasDisplayMessage "Which column values should be used for grouping?" ;
+                       ivodp:hasDisplayName "Grouping" ;
+                       ivodp:hasOptionalMessage "Do you want to further sub-divide your data into groups?" ;
                        ivodp:hasPriority 3 ;
                        ivodp:isOptional "true"^^xsd:boolean ;
                        rdfs:label "Group_Column"@en .
@@ -872,6 +910,8 @@ parameter:group_column rdf:type owl:NamedIndividual ,
 parameter:line_label rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Nominal ;
+                     ivodp:hasDisplayMessage "Which column values should be used for labeling the lines?" ;
+                     ivodp:hasDisplayName "Line Labels" ;
                      ivodp:hasPriority 2 ;
                      ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Label"@en .
@@ -881,6 +921,8 @@ parameter:line_label rdf:type owl:NamedIndividual ,
 parameter:line_value rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Numeric ;
+                     ivodp:hasDisplayMessage "Which column values should be used as the line values?" ;
+                     ivodp:hasDisplayName "Line Values" ;
                      ivodp:hasPriority 3 ;
                      ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Value"@en .
@@ -890,6 +932,9 @@ parameter:line_value rdf:type owl:NamedIndividual ,
 parameter:ref_values rdf:type owl:NamedIndividual ,
                               ivoc:Parameter ;
                      ivoop:hasRepType representational_type:Nominal ;
+                     ivodp:hasDisplayMessage "Which column values should be used to map color indicators?" ;
+                     ivodp:hasDisplayName "Reference Values" ;
+                     ivodp:hasOptionalMessage "Do you want to use a color indicator for the data points?" ;
                      ivodp:hasPriority 4 ;
                      ivodp:isOptional "true"^^xsd:boolean ;
                      rdfs:label "Reference_Values"@en .
@@ -899,6 +944,9 @@ parameter:ref_values rdf:type owl:NamedIndividual ,
 parameter:reference_column rdf:type owl:NamedIndividual ,
                                     ivoc:Parameter ;
                            ivoop:hasRepType representational_type:Nominal ;
+                           ivodp:hasDisplayMessage "Which column values should be used to map color indicators?" ;
+                           ivodp:hasDisplayName "Reference Values" ;
+                           ivodp:hasOptionalMessage "Do you want to use a color indicator for the data points?" ;
                            ivodp:hasPriority 3 ;
                            ivodp:isOptional "true"^^xsd:boolean ;
                            rdfs:label "Reference_Column"@en .
@@ -908,6 +956,8 @@ parameter:reference_column rdf:type owl:NamedIndividual ,
 parameter:temporal_column rdf:type owl:NamedIndividual ,
                                    ivoc:Parameter ;
                           ivoop:hasRepType representational_type:Date ;
+                          ivodp:hasDisplayMessage "Which column values should be used as the temporal data (X-Axis)?" ;
+                          ivodp:hasDisplayName "X-Axis (Temporal data)" ;
                           ivodp:hasPriority 1 ;
                           ivodp:isOptional "false"^^xsd:boolean ;
                           rdfs:label "Temporal_Column"@en .
@@ -918,6 +968,8 @@ parameter:x_axis rdf:type owl:NamedIndividual ,
                           ivoc:Parameter ;
                  ivoop:hasParamTree representation_tree:tree_1 ;
                  ivoop:hasRepType representational_type:Categorical ;
+                 ivodp:hasDisplayMessage "Which column values should be used for X-Axis?" ;
+                 ivodp:hasDisplayName "X-Axis" ;
                  ivodp:hasPriority 1 ;
                  ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "X-Axis"@en .
@@ -927,6 +979,8 @@ parameter:x_axis rdf:type owl:NamedIndividual ,
 parameter:y_axis rdf:type owl:NamedIndividual ,
                           ivoc:Parameter ;
                  ivoop:hasRepType representational_type:Numeric ;
+                 ivodp:hasDisplayMessage "Which column values should be used for Y-Axis?" ;
+                 ivodp:hasDisplayName "Y-Axis" ;
                  ivodp:hasPriority 2 ;
                  ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "Y-Axis"@en .
@@ -1413,6 +1467,8 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 :ScatterPlotMatrix_Label rdf:type owl:NamedIndividual ,
                                   ivoc:Parameter ;
                          ivoop:hasRepType representational_type:Nominal ;
+                         ivodp:hasDisplayMessage "Which column values should be used as the label for data points?" ;
+                         ivodp:hasDisplayName "Data point label" ;
                          ivodp:hasPriority 2 ;
                          ivodp:isOptional "false"^^xsd:boolean ;
                          rdfs:label "ScatterPlotMatrix_Label" .
@@ -1430,8 +1486,8 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 #    Annotations
 #################################################################
 
-<https://www.upb.de/ida/ontology/DataType> rdfs:label "data type"^^xsd:string ;
-                                           rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string .
+<https://www.upb.de/ida/ontology/DataType> rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string ;
+                                           rdfs:label "data type"^^xsd:string .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
