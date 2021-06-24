@@ -111,37 +111,37 @@ public class RDFUtil {
 		String dependentParam;
 		String paramLabel;
 		QuerySolution resource;
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?label ?paramLabel ?paramType ?transformationLabel ?transformationTargetType ?dependentCol " +
-				"WHERE {" +
-				"  ?s a ivoc:Instance;" +
-				"     ?p ?o ;" +
-				"     rdfs:label ?label ;" +
-				"     ivoop:hasInstanceParam ?IParam ." +
-				"  {" +
-				"    SELECT ?s" +
-				"    WHERE {" +
-				"      visualization:" + vizName + " ivoop:hasInstance ?s" +
-				"    }" +
-				"  }" +
-				"  ?IParam ivoop:representedParam ?Param ;" +
-				"          ivoop:hasRepType ?repType ." +
-				"  ?Param rdfs:label ?paramLabel ;" +
-				"		  ivodp:hasPriority ?priority ." +
-				"  ?repType rdfs:label ?paramType ." +
-				"  OPTIONAL {" +
-				"    ?IParam ivoop:hasTransformation ?transformation ." +
-				"    ?transformation ivoop:hasTargetRepType ?targetType ;" +
-				"                    ivoop:hasTransformationType ?transformationType ." +
-				"    ?targetType rdfs:label ?transformationTargetType ." +
-				"    ?transformationType rdfs:label ?transformationLabel" +
-				"  }" +
-				"  OPTIONAL {" +
-				"    ?IParam ivoop:isDependentOn ?dependentParam ." +
-				"    ?dependentParam rdfs:label ?dependentCol" +
-				"  }" +
-				"} ORDER BY ASC(?priority)";
-		ResultSet instancesResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT DISTINCT ?label ?paramLabel ?paramType ?transformationLabel ?transformationTargetType ?dependentCol ")
+				.append("WHERE {" )
+				.append("  ?s a ivoc:Instance;")
+				.append("     ?p ?o ;")
+				.append("     rdfs:label ?label ;")
+				.append("     ivoop:hasInstanceParam ?IParam .")
+				.append("  {")
+				.append("    SELECT ?s")
+				.append("    WHERE {")
+				.append("      visualization:").append(vizName).append(" ivoop:hasInstance ?s")
+				.append("    }")
+				.append("  }")
+				.append("  ?IParam ivoop:representedParam ?Param ;")
+				.append("          ivoop:hasRepType ?repType .")
+				.append("  ?Param rdfs:label ?paramLabel ;")
+				.append("		  ivodp:hasPriority ?priority .")
+				.append("  ?repType rdfs:label ?paramType .")
+				.append("  OPTIONAL {")
+				.append("    ?IParam ivoop:hasTransformation ?transformation .")
+				.append("    ?transformation ivoop:hasTargetRepType ?targetType ;")
+				.append("                    ivoop:hasTransformationType ?transformationType .")
+				.append("    ?targetType rdfs:label ?transformationTargetType .")
+				.append("    ?transformationType rdfs:label ?transformationLabel")
+				.append("  }")
+				.append("  OPTIONAL {")
+				.append("    ?IParam ivoop:isDependentOn ?dependentParam .")
+				.append("    ?dependentParam rdfs:label ?dependentCol")
+				.append("  }")
+				.append("} ORDER BY ASC(?priority)");
+		ResultSet instancesResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (instancesResultSet == null) {
 			return instanceMap;
 		}
@@ -183,16 +183,16 @@ public class RDFUtil {
 	 */
 	public Map<Integer, String> getAttributeList(String vizName) {
 		Map<Integer, String> attributeMap = new TreeMap<>();
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?paramLabel  ?priority " +
-				"WHERE { " +
-				"  visualization:" + vizName + " ?p ?o ;" +
-				"                               ivoop:hasParam ?param . " +
-				"  ?param rdfs:label ?paramLabel ." +
-				"  ?param ivodp:hasPriority ?priority . " +
-				"} " +
-				"ORDER BY ASC(?priority)";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT DISTINCT ?paramLabel  ?priority ")
+				.append("WHERE { ")
+				.append("  visualization:").append(vizName).append(" ?p ?o ;")
+				.append("                               ivoop:hasParam ?param . ")
+				.append("  ?param rdfs:label ?paramLabel .")
+				.append("  ?param ivodp:hasPriority ?priority . ")
+				.append("} ")
+				.append("ORDER BY ASC(?priority)");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -211,16 +211,16 @@ public class RDFUtil {
 
 	public Map<Integer, String> getSuggestionAttributeList(String vizName) {
 		Map<Integer, String> attributeMap = new TreeMap<>();
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?paramLabel  ?priority ?isoptional " +
-				"WHERE { " +
-				"  visualization:" + vizName + " ?p ?o ;" +
-				"                               ivoop:hasParam ?param . " +
-				"  ?param rdfs:label ?paramLabel ." +
-				"  ?param ivodp:hasPriority ?priority . " +
-				"  ?param ivodp:isOptional ?isoptional . " +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT DISTINCT ?paramLabel  ?priority ?isoptional ")
+				.append("WHERE { ")
+				.append("  visualization:").append(vizName).append(" ?p ?o ;")
+				.append("                               ivoop:hasParam ?param . ")
+				.append("  ?param rdfs:label ?paramLabel .")
+				.append("  ?param ivodp:hasPriority ?priority . ")
+				.append("  ?param ivodp:isOptional ?isoptional . ")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -241,13 +241,13 @@ public class RDFUtil {
 	}
 
 	public String getVizIntent(String viz) {
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?s  " +
-				"WHERE { " +
-				"?s rdf:type ivoc:Visualization ;" +
-				"rdfs:label '" + viz + "'@en ;" +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT DISTINCT ?s  ")
+				.append("WHERE { ")
+				.append("?s rdf:type ivoc:Visualization ;")
+				.append("rdfs:label '").append(viz).append("'@en ;")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		QuerySolution querySolution = attributeResultSet.next();
 		String vizIntent = querySolution.get("s").asNode().toString();
 
@@ -255,21 +255,21 @@ public class RDFUtil {
 	}
 
 	public Map<String, Map<String, List<String>>> getSuggestionParamters() {
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?viz ?paramLabel ?propLabel ?condLabel " +
-				"WHERE { " +
-				"  ?s rdf:type ivoc:Visualization ;" +
-				"     ?p ?o ;" +
-				"     rdfs:label ?viz ;" +
-				"     ivoop:hasSuggestionParamValue ?suggest ." +
-				"  ?suggest ivoop:hasVizParam  ?Param ;" +
-				"           ivoop:hasStatisticalProperty ?statProp ;" +
-				"           ivoop:hasStatPropertyCondition ?cond ." +
-				"  ?Param rdfs:label ?paramLabel ." +
-				"  ?statProp rdfs:label ?propLabel ." +
-				"  ?cond rdfs:label ?condLabel" +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT DISTINCT ?viz ?paramLabel ?propLabel ?condLabel ")
+				.append("WHERE { ")
+				.append("  ?s rdf:type ivoc:Visualization ;")
+				.append("     ?p ?o ;")
+				.append("     rdfs:label ?viz ;")
+				.append("     ivoop:hasSuggestionParamValue ?suggest .")
+				.append("  ?suggest ivoop:hasVizParam  ?Param ;")
+				.append("           ivoop:hasStatisticalProperty ?statProp ;")
+				.append("           ivoop:hasStatPropertyCondition ?cond .")
+				.append("  ?Param rdfs:label ?paramLabel .")
+				.append("  ?statProp rdfs:label ?propLabel .")
+				.append("  ?cond rdfs:label ?condLabel")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -294,19 +294,19 @@ public class RDFUtil {
 	}
 
 	public Map<String, VisualizationInfo> getVisualizationInfo() {
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?viz ?desc ?link ?label " +
-				"WHERE {" +
-				"  ?s rdf:type ivoc:Visualization ;" +
-				"     ?p ?o ;" +
-				"     rdfs:label ?viz ;" +
-				"     ivoop:hasInformation ?info ." +
-				"  ?info  dc:description  ?desc ;" +
-				"         ivoop:hasReference ?ref ." +
-				"  ?ref   ivodp:link ?link ;" +
-				"         rdfs:label ?label ." +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT DISTINCT ?viz ?desc ?link ?label ")
+				.append("WHERE {")
+				.append("  ?s rdf:type ivoc:Visualization ;")
+				.append("     ?p ?o ;")
+				.append("     rdfs:label ?viz ;")
+				.append("     ivoop:hasInformation ?info .")
+				.append("  ?info  dc:description  ?desc ;")
+				.append("         ivoop:hasReference ?ref .")
+				.append("  ?ref   ivodp:link ?link ;")
+				.append("         rdfs:label ?label .")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -324,15 +324,15 @@ public class RDFUtil {
 
 	public Map<String, Boolean> getAttributeOptionalMap(String vizName) {
 		Map<String, Boolean> attributeOptionalMap = new TreeMap<>();
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT DISTINCT ?paramLabel ?isoptional " +
-				"WHERE { " +
-				"  visualization:" + vizName + " ?p ?o ;" +
-				"                               ivoop:hasParam ?param . " +
-				"  ?param rdfs:label ?paramLabel ." +
-				"  ?param ivodp:isOptional ?isoptional  " +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT DISTINCT ?paramLabel ?isoptional ")
+				.append("WHERE { ")
+				.append("  visualization:").append(vizName).append(" ?p ?o ;")
+				.append("                               ivoop:hasParam ?param . ")
+				.append("  ?param rdfs:label ?paramLabel .")
+				.append("  ?param ivodp:isOptional ?isoptional  ")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -350,12 +350,12 @@ public class RDFUtil {
 	}
 
 	public String addDatasetName(String dsName) {
-		String queryString1 = "PREFIX ab: <https://www.upb.de/ida/datasets/>" +
-				" INSERT DATA {" +
-				" ?dsNameUri ab:names ?dsName ;" +
-				" ab:isTest false" +
-				" }";
-		ParameterizedSparqlString parameterizedSparqlString = new ParameterizedSparqlString(queryString1);
+		StringBuilder queryString = new StringBuilder("PREFIX ab: <https://www.upb.de/ida/datasets/>")
+				.append(" INSERT DATA {")
+				.append(" ?dsNameUri ab:names ?dsName ;")
+				.append(" ab:isTest false")
+				.append(" }");
+		ParameterizedSparqlString parameterizedSparqlString = new ParameterizedSparqlString(queryString.toString());
 		parameterizedSparqlString.setLiteral("dsName", dsName);
 		parameterizedSparqlString.setIri("dsNameUri", "https://www.upb.de/ida/datasets/" + dsName);
 
@@ -376,14 +376,14 @@ public class RDFUtil {
 			return paramDisplayNameMap;
 		}
 		paramDisplayNameMap = new HashMap<>();
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT ?paramLabel ?displayName " +
-				"WHERE { " +
-				"    ?s rdf:type ivoc:Parameter ; " +
-				"       rdfs:label ?paramLabel ; " +
-				"       ivodp:hasDisplayName ?displayName " +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT ?paramLabel ?displayName ")
+				.append("WHERE { ")
+				.append("    ?s rdf:type ivoc:Parameter ; ")
+				.append("       rdfs:label ?paramLabel ; ")
+				.append("       ivodp:hasDisplayName ?displayName ")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -405,14 +405,14 @@ public class RDFUtil {
 			return paramDisplayMessageMap;
 		}
 		paramDisplayMessageMap = new HashMap<>();
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT ?paramLabel ?displayMessage " +
-				"WHERE { " +
-				"    ?s rdf:type ivoc:Parameter ; " +
-				"       rdfs:label ?paramLabel ; " +
-				"       ivodp:hasDisplayMessage ?displayMessage " +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT ?paramLabel ?displayMessage ")
+				.append("WHERE { ")
+				.append("    ?s rdf:type ivoc:Parameter ; ")
+				.append("       rdfs:label ?paramLabel ; ")
+				.append("       ivodp:hasDisplayMessage ?displayMessage ")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
@@ -434,14 +434,14 @@ public class RDFUtil {
 			return paramOptionalMessageMap;
 		}
 		paramOptionalMessageMap = new HashMap<>();
-		String queryString = IDAConst.IDA_SPARQL_PREFIX +
-				"SELECT ?paramLabel ?optionalMessage " +
-				"WHERE { " +
-				"    ?s rdf:type ivoc:Parameter ; " +
-				"       rdfs:label ?paramLabel ; " +
-				"       ivodp:hasOptionalMessage ?optionalMessage " +
-				"}";
-		ResultSet attributeResultSet = getResultFromQuery(queryString, "ida_viz");
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT ?paramLabel ?optionalMessage ")
+				.append("WHERE { ")
+				.append("    ?s rdf:type ivoc:Parameter ; ")
+				.append("       rdfs:label ?paramLabel ; ")
+				.append("       ivodp:hasOptionalMessage ?optionalMessage ")
+				.append("}");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
 		if (attributeResultSet == null) {
 			return null;
 		}
