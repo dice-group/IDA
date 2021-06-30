@@ -228,6 +228,18 @@ ivodp:hasDisplayName rdf:type owl:DatatypeProperty ;
                      rdfs:label "hasDisplayName" .
 
 
+###  https://www.upb.de/ida/viz/ontology/data-property/hasHelpMessage
+ivodp:hasHelpMessage rdf:type owl:DatatypeProperty ;
+                     rdfs:subPropertyOf owl:topDataProperty ;
+                     rdfs:domain ivoc:Parameter ,
+                                 ivoc:RepresentationalType ,
+                                 ivoc:TransformationType ,
+                                 ivoc:Visualization ;
+                     rdfs:range xsd:string ;
+                     dc:description "Help message for the user"@en ;
+                     rdfs:label "hasHelpMessage"@en .
+
+
 ###  https://www.upb.de/ida/viz/ontology/data-property/hasOptionalMessage
 ivodp:hasOptionalMessage rdf:type owl:DatatypeProperty ;
                          rdfs:subPropertyOf owl:topDataProperty ;
@@ -383,7 +395,7 @@ information:ScatterPlot rdf:type owl:NamedIndividual ,
 information:ScatterPlotMatrix rdf:type owl:NamedIndividual ,
                                        ivoc:Information ;
                               ivoop:hasReference reference:ScatterPlotMatrix ;
-                              rdfs:comment "A scatter plot matrix is a grid (or matrix) of scatter plots used to visualize bivariate relationships between combinations of variables."@en ;
+                              dc:description "A scatter plot matrix is a grid (or matrix) of scatter plots used to visualize bivariate relationships between combinations of variables."@en ;
                               rdfs:label "Scatter Plot Matrix Information"@en .
 
 
@@ -855,9 +867,10 @@ parameter:Scatterplot_label rdf:type owl:NamedIndividual ,
                             ivoop:hasRepType representational_type:NotRequired ;
                             ivodp:hasDisplayMessage "Which column values should be used as the label for data points?" ;
                             ivodp:hasDisplayName "Data point label" ;
+                            ivodp:hasHelpMessage "Label values to the data points on the scatterplot, which will be displayed in the tooltips. These values are unique identifier for the data points on a plot."@en ;
                             ivodp:hasPriority 3 ;
                             ivodp:isOptional "false"^^xsd:boolean ;
-                            rdfs:label "Scatterplot_Label" .
+                            rdfs:label "Scatterplot_Label"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/parameter/bubble_label
@@ -867,6 +880,7 @@ parameter:bubble_label rdf:type owl:NamedIndividual ,
                        ivoop:hasRepType representational_type:Categorical ;
                        ivodp:hasDisplayMessage "Which column values should be used for the label of the bubbles?" ;
                        ivodp:hasDisplayName "Label of the bubbles" ;
+                       ivodp:hasHelpMessage "The nominal values that can be used as labels for the bubbles. Provide a column name consisting of label values."@en ;
                        ivodp:hasPriority 1 ;
                        ivodp:isOptional "false"^^xsd:boolean ;
                        rdfs:label "Bubble_Label"@en .
@@ -878,6 +892,7 @@ parameter:bubble_size rdf:type owl:NamedIndividual ,
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasDisplayMessage "Which column values should be used for the size of the bubbles?" ;
                       ivodp:hasDisplayName "Size of the bubbles" ;
+                      ivodp:hasHelpMessage "The numerical values based on which the relative diameter or size of the bubble can be calculated. Provide the column name which has the numerical values."@en ;
                       ivodp:hasPriority 2 ;
                       ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Bubble_Size"@en .
@@ -889,6 +904,7 @@ parameter:column_list rdf:type owl:NamedIndividual ,
                       ivoop:hasRepType representational_type:Numeric ;
                       ivodp:hasDisplayMessage "Provide the list of column names" ;
                       ivodp:hasDisplayName "List of columns" ;
+                      ivodp:hasHelpMessage "Provide more than one column names, each separated by a comma. In case you want to use all the columns of the table, type “All”."@en ;
                       ivodp:hasPriority 1 ;
                       ivodp:isOptional "false"^^xsd:boolean ;
                       rdfs:label "Column_List"@en .
@@ -900,6 +916,7 @@ parameter:group_column rdf:type owl:NamedIndividual ,
                        ivoop:hasRepType representational_type:Nominal ;
                        ivodp:hasDisplayMessage "Which column values should be used for grouping?" ;
                        ivodp:hasDisplayName "Grouping" ;
+                       ivodp:hasHelpMessage "The third dimension of the visualization where the nominal dimension can be split into multiple sub categories. Provide a column name which contains the categorical values."@en ;
                        ivodp:hasOptionalMessage "Do you want to further sub-divide your data into groups?" ;
                        ivodp:hasPriority 3 ;
                        ivodp:isOptional "true"^^xsd:boolean ;
@@ -912,6 +929,7 @@ parameter:line_label rdf:type owl:NamedIndividual ,
                      ivoop:hasRepType representational_type:Nominal ;
                      ivodp:hasDisplayMessage "Which column values should be used for labeling the lines?" ;
                      ivodp:hasDisplayName "Line Labels" ;
+                     ivodp:hasHelpMessage "The values to label each line in a line chart to compare the trend between different categories or groups."@en ;
                      ivodp:hasPriority 2 ;
                      ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Label"@en .
@@ -923,6 +941,7 @@ parameter:line_value rdf:type owl:NamedIndividual ,
                      ivoop:hasRepType representational_type:Numeric ;
                      ivodp:hasDisplayMessage "Which column values should be used as the line values?" ;
                      ivodp:hasDisplayName "Line Values" ;
+                     ivodp:hasHelpMessage "The variable whose changes are being emphasized over the period of time. It should be a column with numerical values corresponding the the temporal column"@en ;
                      ivodp:hasPriority 3 ;
                      ivodp:isOptional "false"^^xsd:boolean ;
                      rdfs:label "Line_Value"@en .
@@ -934,6 +953,7 @@ parameter:ref_values rdf:type owl:NamedIndividual ,
                      ivoop:hasRepType representational_type:Nominal ;
                      ivodp:hasDisplayMessage "Which column values should be used to map color indicators?" ;
                      ivodp:hasDisplayName "Reference Values" ;
+                     ivodp:hasHelpMessage "The categorical values that should be used to color the data points on the scatterplot. The map of distinct values to colors will be generated and used for giving a color to each datapoint."@en ;
                      ivodp:hasOptionalMessage "Do you want to use a color indicator for the data points?" ;
                      ivodp:hasPriority 4 ;
                      ivodp:isOptional "true"^^xsd:boolean ;
@@ -946,6 +966,7 @@ parameter:reference_column rdf:type owl:NamedIndividual ,
                            ivoop:hasRepType representational_type:Nominal ;
                            ivodp:hasDisplayMessage "Which column values should be used to map color indicators?" ;
                            ivodp:hasDisplayName "Reference Values" ;
+                           ivodp:hasHelpMessage "The categorical values that should be used to color the data points on the scatterplot. The map of distinct values to colors will be generated and used for giving a color to each datapoint."@en ;
                            ivodp:hasOptionalMessage "Do you want to use a color indicator for the data points?" ;
                            ivodp:hasPriority 3 ;
                            ivodp:isOptional "true"^^xsd:boolean ;
@@ -958,6 +979,7 @@ parameter:temporal_column rdf:type owl:NamedIndividual ,
                           ivoop:hasRepType representational_type:Date ;
                           ivodp:hasDisplayMessage "Which column values should be used as the temporal data (X-Axis)?" ;
                           ivodp:hasDisplayName "X-Axis (Temporal data)" ;
+                          ivodp:hasHelpMessage "Temporal values are used on the horizontal axis of the line chart to visualize a change of value over a period of time. The values must be dates."@en ;
                           ivodp:hasPriority 1 ;
                           ivodp:isOptional "false"^^xsd:boolean ;
                           rdfs:label "Temporal_Column"@en .
@@ -970,6 +992,7 @@ parameter:x_axis rdf:type owl:NamedIndividual ,
                  ivoop:hasRepType representational_type:Categorical ;
                  ivodp:hasDisplayMessage "Which column values should be used for X-Axis?" ;
                  ivodp:hasDisplayName "X-Axis" ;
+                 ivodp:hasHelpMessage "X-Axis is the horizontal axis of the visualization. Provide the column name from which the tick values on the horizontal axis will be plotted."@en ;
                  ivodp:hasPriority 1 ;
                  ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "X-Axis"@en .
@@ -981,6 +1004,7 @@ parameter:y_axis rdf:type owl:NamedIndividual ,
                  ivoop:hasRepType representational_type:Numeric ;
                  ivodp:hasDisplayMessage "Which column values should be used for Y-Axis?" ;
                  ivodp:hasDisplayName "Y-Axis" ;
+                 ivodp:hasHelpMessage "Y-Axis is the vertical axis of the visualization containing ordinal values. Provide the column name from which the tick values of the vertical axis will be generated."@en ;
                  ivodp:hasPriority 2 ;
                  ivodp:isOptional "false"^^xsd:boolean ;
                  rdfs:label "Y-Axis"@en .
@@ -1089,6 +1113,7 @@ representation_tree_node:unique rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/representational_type/Bins
 representational_type:Bins rdf:type owl:NamedIndividual ,
                                     ivoc:RepresentationalType ;
+                           ivodp:hasHelpMessage "Choose bins if you want to use a range of values as labels. A row will be put into a bin based on whether the column value lies in the range of that bin. Choose the other option if you want to use the values as it is."@en ;
                            rdfs:label "Bins"@en .
 
 
@@ -1115,6 +1140,7 @@ representational_type:Nominal rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/representational_type/NonUnique
 representational_type:NonUnique rdf:type owl:NamedIndividual ,
                                          ivoc:RepresentationalType ;
+                                ivodp:hasHelpMessage "Choose bins if you want to use a range of values as labels. A row will be put into a bin based on whether the column value lies in the range of that bin. Choose the other option if you want to use the values as it is."@en ;
                                 rdfs:label "Non Unique"@en .
 
 
@@ -1139,6 +1165,7 @@ representational_type:Transformation rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/representational_type/Unique
 representational_type:Unique rdf:type owl:NamedIndividual ,
                                       ivoc:RepresentationalType ;
+                             ivodp:hasHelpMessage "Choose bins if you want to use a range of values as labels. A row will be put into a bin based on whether the column value lies in the range of that bin. Choose the other option if you want to use the values as it is."@en ;
                              rdfs:label "Unique"@en .
 
 
@@ -1358,18 +1385,21 @@ transformation:linechart_sumof rdf:type owl:NamedIndividual ,
 ###  https://www.upb.de/ida/viz/data/transformation_type/average
 transformation_type:average rdf:type owl:NamedIndividual ,
                                      ivoc:TransformationType ;
+                            ivodp:hasHelpMessage "If there are more than one row for a single label, the average of column values of those rows will be considered as the value."@en ;
                             rdfs:label "Average"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/transformation_type/countof
 transformation_type:countof rdf:type owl:NamedIndividual ,
                                      ivoc:TransformationType ;
+                            ivodp:hasHelpMessage "If there are more than one row for a single label, the number of rows will be considered as the value."@en ;
                             rdfs:label "Count Of"@en .
 
 
 ###  https://www.upb.de/ida/viz/data/transformation_type/sumof
 transformation_type:sumof rdf:type owl:NamedIndividual ,
                                    ivoc:TransformationType ;
+                          ivodp:hasHelpMessage "If there are more than one row for a single label, the sum of column values of those rows will be considered as the value."@en ;
                           rdfs:label "Sum Of"@en .
 
 
@@ -1389,6 +1419,7 @@ visualization:bar_chart rdf:type owl:NamedIndividual ,
                                        parameter:y_axis ;
                         ivoop:hasSuggestionParamValue suggestion_param:bar_chart_label ,
                                                       suggestion_param:bar_chart_value ;
+                        ivodp:hasHelpMessage "A bar chart or bar graph is a chart that presents grouped data with rectangular bars with lengths proportional to the values that they represent."@en ;
                         rdfs:label "Bar Chart"@en .
 
 
@@ -1408,6 +1439,7 @@ visualization:bubble_chart rdf:type owl:NamedIndividual ,
                                           parameter:group_column ;
                            ivoop:hasSuggestionParamValue suggestion_param:bubble_label ,
                                                          suggestion_param:bubble_value ;
+                           ivodp:hasHelpMessage "A bubble chart is a variation of a scatter chart in which the data points are replaced with bubbles, and an additional dimension of the data is represented in the size of the bubbles."@en ;
                            rdfs:label "Bubble Chart"@en .
 
 
@@ -1425,6 +1457,7 @@ visualization:line_chart rdf:type owl:NamedIndividual ,
                          ivoop:hasSuggestionParamValue suggestion_param:line_chart_line_label ,
                                                        suggestion_param:line_chart_line_value ,
                                                        suggestion_param:line_chart_temporal_value ;
+                         ivodp:hasHelpMessage "Line Charts are a typical pictorial representation that depicts trends and behaviors over time. It is represented by a series of data points connected with a line."@en ;
                          rdfs:label "Line Chart"@en .
 
 
@@ -1440,6 +1473,7 @@ visualization:scatter_plot rdf:type owl:NamedIndividual ,
                            ivoop:hasSuggestionParamValue suggestion_param:scatterplot_reference_values ,
                                                          suggestion_param:scatterplot_x_value ,
                                                          suggestion_param:scatterplot_y_value ;
+                           ivodp:hasHelpMessage "A scatter plot is a type of plot or mathematical diagram using Cartesian coordinates to display values for typically two variables for a set of data."@en ;
                            rdfs:label "Scatter plot"@en .
 
 
@@ -1452,6 +1486,7 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                                                  parameter:reference_column ,
                                                  :ScatterPlotMatrix_Label ,
                                                  :hasListColumn ;
+                                  ivodp:hasHelpMessage "A scatter plot matrix is a grid (or matrix) of scatter plots used to visualize bivariate relationships between combinations of variables."@en ;
                                   rdfs:label "Scatter Plot Matrix"@en .
 
 
@@ -1469,9 +1504,10 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
                          ivoop:hasRepType representational_type:Nominal ;
                          ivodp:hasDisplayMessage "Which column values should be used as the label for data points?" ;
                          ivodp:hasDisplayName "Data point label" ;
+                         ivodp:hasHelpMessage "Label values to the data points on the scatterplot, which will be displayed in the tooltips. These values are unique identifier for the data points on a plot."@en ;
                          ivodp:hasPriority 2 ;
                          ivodp:isOptional "false"^^xsd:boolean ;
-                         rdfs:label "ScatterPlotMatrix_Label" .
+                         rdfs:label "ScatterPlotMatrix_Label"@en .
 
 
 ###  https://www.upb.de/ida/viz/ontology/hasListColumn
@@ -1486,8 +1522,8 @@ visualization:scatter_plot_matrix rdf:type owl:NamedIndividual ,
 #    Annotations
 #################################################################
 
-<https://www.upb.de/ida/ontology/DataType> rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string ;
-                                           rdfs:label "data type"^^xsd:string .
+<https://www.upb.de/ida/ontology/DataType> rdfs:label "data type"^^xsd:string ;
+                                           rdfs:comment "Data type of the values required for a visualization parameter"^^xsd:string .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi

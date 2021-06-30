@@ -87,6 +87,18 @@ public class IDAChatBot {
 		return messageResponse;
 	}
 
+	public QueryResult getIntent(String message) {
+		String	sessionId = RandomStringUtils.randomAlphanumeric(IDAConst.DF_SID_LEN);
+		SessionName session = SessionName.of(projectId, sessionId);
+		TextInput.Builder textInput =
+				TextInput.newBuilder().setText(message).setLanguageCode(IDAConst.BOT_LANGUAGE);
+
+		QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
+		DetectIntentResponse response = SESSIONS_CLIENT.detectIntent(session, queryInput);
+		return response.getQueryResult();
+
+	}
+
 
 	public String fetchDfSessionId() {
 		String sessionId;

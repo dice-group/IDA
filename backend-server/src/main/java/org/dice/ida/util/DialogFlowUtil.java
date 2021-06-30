@@ -48,26 +48,7 @@ public class DialogFlowUtil {
 	 * @param contextString - context name
 	 */
 	public void setContext(String contextString) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		ContextsClient contextsClient = ContextsClient.create(IDAChatbotUtil.getContextsSettings());
-		// Set the session name using the sessionId (UUID) and projectID (my-project-id)
-		SessionName session = SessionName.of(projectId, idaChatBot.fetchDfSessionId());
-
-		// Create the context name with the projectId, sessionId, and contextId
-		ContextName contextName = ContextName.newBuilder()
-				.setProject(projectId)
-				.setSession(idaChatBot.fetchDfSessionId())
-				.setContext(contextString)
-				.build();
-
-		// Create the context with the context name and lifespan count
-		Context context = Context.newBuilder()
-				.setName(contextName.toString()) // The unique identifier of the context
-				.setLifespanCount(1) // Number of query requests before the context expires.
-				.build();
-
-		// Performs the create context request
-		contextsClient.createContext(session, context);
-		contextsClient.close();
+		setContext(contextString, 1);
 	}
 
 	/**
