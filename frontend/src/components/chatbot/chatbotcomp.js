@@ -10,6 +10,7 @@ import Draggable from "react-draggable";
 export default class ChatApp extends React.Component {
 
 	suggestionParams = null;
+	chatbotMessage = "";
 
 	constructor(props) {
 		super(props);
@@ -48,6 +49,7 @@ export default class ChatApp extends React.Component {
 				timestamp: time
 			}]
 		});
+		this.chatbotMessage = text;
 	}
 
 	componentDidUpdate(_prevProps, _prevState) {
@@ -85,7 +87,8 @@ export default class ChatApp extends React.Component {
 				activeTableData: this.props.activeTableData,
 				temporaryData: !!this.props.activeTableData,
 				suggestionParams: this.suggestionParams,
-				renderSuggestion: !!this.suggestionParams
+				renderSuggestion: !!this.suggestionParams,
+				chatbotMessage: this.chatbotMessage
 			};
 			msgs = [...msgs, msg];
 			this.setState({
