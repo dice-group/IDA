@@ -1,6 +1,5 @@
 package org.dice.ida.action;
 
-import org.dice.ida.constant.IDAConst;
 import org.dice.ida.controller.MessageController;
 import org.dice.ida.model.ChatMessageResponse;
 import org.dice.ida.model.ChatUserMessage;
@@ -24,7 +23,7 @@ public class UserHelpActionTest {
 	private SessionUtil sessionUtil;
 	@Autowired
 	private RDFUtil rdfUtil;
-	Map<String, String> userHelpMessageMap;
+	private Map<String, String> userHelpMessageMap;
 
 	@Test
 	void testUserHelpMessage() throws Exception {
