@@ -26,10 +26,6 @@ function descendingComparator(a, b, orderBy) {
     value1 = isNaN(value1) ? "" : value1;
     value2 = isNaN(value2) ? "" : value2;
   }
-  return compareValues(value1, calue2);
-}
-
-function compareValues(value1, value2) {
   return value2 < value1 ? -1 : value2 > value1 ? 1 : 0;
 }
 
@@ -58,7 +54,6 @@ function EnhancedTableHead(props) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-  const isOrdered = orderBy.id === headCell.id && order;
 
   return (
     <TableHead>
@@ -68,11 +63,11 @@ function EnhancedTableHead(props) {
             key={headCell.id}
             align="left"
             sortDirection={orderBy.id === headCell.id ? order : false}
-            className={isOrdered ? "sort-active" : ""}
+            className={orderBy.id === headCell.id && order ? "sort-active" : ""}
           >
             <TableSortLabel
-              active={isOrdered ? true : false}
-              direction={isOrdered ? order : "asc"}
+              active={orderBy.id === headCell.id && order ? true : false}
+              direction={orderBy.id === headCell.id && order ? order : "asc"}
               onClick={createSortHandler(headCell)}
             >
               {headCell.label}
@@ -128,10 +123,14 @@ class IDAEnhancedTable extends Component {
   }
 
   handleRequestSort = (event, property) => {
-    const isAsc = this.state.orderBy === property && this.state.order === "asc";
-    const isDesc = this.state.orderBy === property && this.state.order === "desc";
+    let order = false;
+    if(this.state.orderBy === property && this.state.order === "asc") {
+      order = "asc"
+    } else if(this.state.orderBy === property && this.state.order === "desc") {
+
+    }
     this.setState({
-      order: isAsc ? "desc" : isDesc ? false : "asc",
+      order,
       orderBy: property
     });
   };
