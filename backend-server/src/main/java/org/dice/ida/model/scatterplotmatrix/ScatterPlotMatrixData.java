@@ -55,6 +55,6 @@ public class ScatterPlotMatrixData {
 			return false;
 		}
 		ScatterPlotMatrixData object2 = (ScatterPlotMatrixData) obj2;
-		return !(!this.referenceColumn.equals(object2.getReferenceColumn()) || !this.columns.containsAll(object2.getColumns()) || !this.getItems().containsAll(object2.getItems()));
+		return !(!this.labelColumn.equals(object2.getLabelColumn()) || !this.columns.containsAll(object2.getColumns()) || !this.getItems().containsAll(object2.getItems()));
 	}
 }

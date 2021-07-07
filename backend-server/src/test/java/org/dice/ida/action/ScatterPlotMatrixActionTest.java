@@ -47,7 +47,7 @@ public class ScatterPlotMatrixActionTest {
 			add("GDP ($ per capita)");
 			add("Literacy (%)");
 		}});
-		expectedData.setReferenceColumn("Region");
+		expectedData.setLabelColumn("Region");
 		expectedData.setItems(new ArrayList<>() {{
 			add(new HashMap<>() {{
 				put("Literacy (%)", "36.0");
@@ -126,11 +126,11 @@ public class ScatterPlotMatrixActionTest {
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("country, density, gdp, literacy");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("region");
+		chatUserMessage.setMessage("country");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("yes");
 		messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setMessage("country");
+		chatUserMessage.setMessage("region");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData = new ScatterPlotMatrixData();
@@ -205,7 +205,7 @@ public class ScatterPlotMatrixActionTest {
 			add("Patient Number");
 			add("Age Bracket");
 		}});
-		expectedData.setReferenceColumn("Detected State");
+		expectedData.setLabelColumn("Detected State");
 		expectedData.setItems(new ArrayList<>() {{
 			add(new HashMap<>() {{
 				put("Age Bracket", "20");
@@ -288,7 +288,7 @@ public class ScatterPlotMatrixActionTest {
 			add("GDP ($ per capita)");
 			add("Literacy (%)");
 		}});
-		expectedData.setReferenceColumn("Cluster");
+		expectedData.setLabelColumn("Cluster");
 		expectedData.setItems(new ArrayList<>() {{
 			add(new HashMap<>() {{
 				put("Literacy (%)", "36.0");
