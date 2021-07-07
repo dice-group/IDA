@@ -24,3 +24,24 @@ table.ida-table tbody tr:nth-of-type(odd) {
 .ida-card {
   margin: 15px 0;
 }
+
+.ida-table-pagination .MuiTablePagination-root {
+  border: none;
+}
+
+.ida-table
+  .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
+  .MuiTableSortLabel-icon,
+.ida-table .MuiTableSortLabel-root.MuiTableSortLabel-active,
+.ida-table .MuiTableSortLabel-root:hover,
+.ida-table .MuiTableSortLabel-root:focus {
+  color: #fff;
+}
+
+.ida-table .MuiTableRow-root.MuiTableRow-hover:hover:nth-of-type(even) {
+  background-color: #fff;
+}
+
+.ida-table .MuiTableRow-root.MuiTableRow-hover:hover:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.04);
+}

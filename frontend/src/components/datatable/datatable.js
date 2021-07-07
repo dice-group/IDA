@@ -1,123 +1,142 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { useTheme } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
-import IconButton from "@material-ui/core/IconButton";
-import FirstPageIcon from "@material-ui/icons/FirstPage";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import LastPageIcon from "@material-ui/icons/LastPage";
-import "./datatable.css";
+import TableRow from "@material-ui/core/TableRow";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
+import Paper from "@material-ui/core/Paper";
+import moment from "moment";
+import { IDA_CONSTANTS } from "../constants";
 
-function TablePaginationActions(props) {
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onChangePage } = props;
+function descendingComparator(a, b, orderBy) {
+  let value1 = a[`${orderBy.id}`];
+  let value2 = b[`${orderBy.id}`];
+  if (orderBy.type === "numeric") {
+    value1 = isNaN(parseFloat(value1)) ? 0.0 : parseFloat(value1);
+    value2 = isNaN(parseFloat(value2)) ? 0.0 : parseFloat(value2);
+  } else if (orderBy.type === "date") {
+    value1 = isNaN(moment(value1, IDA_CONSTANTS.DATE_FORMATS).valueOf()) ? "" : moment(value1, IDA_CONSTANTS.DATE_FORMATS);
+    value2 = isNaN(moment(value2, IDA_CONSTANTS.DATE_FORMATS).valueOf()) ? "" : moment(value2, IDA_CONSTANTS.DATE_FORMATS);
+  }
+  if (value2 < value1) {
+    return -1;
+  }
+  if (value2 > value1) {
+    return 1;
+  }
+  return 0;
+}
 
-  const handleFirstPageButtonClick = (event) => {
-    onChangePage(event, 0);
-  };
+function getComparator(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : order === "asc"
+      ? (a, b) => -descendingComparator(a, b, orderBy)
+      : (a, b) => ""
+}
 
-  const handleBackButtonClick = (event) => {
-    onChangePage(event, page - 1);
-  };
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
 
-  const handleNextButtonClick = (event) => {
-    onChangePage(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (event) => {
-    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+function EnhancedTableHead(props) {
+  const { classes, order, orderBy, onRequestSort, headCells } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
   };
 
   return (
-    <div className={"pagination-root"}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-        {theme.direction === "rtl" ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </div>
+    <TableHead>
+      <TableRow>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align="left"
+            sortDirection={orderBy.id === headCell.id ? order : false}
+            className={orderBy.id === headCell.id && order ? "sort-active" : ""}
+          >
+            <TableSortLabel
+              active={(orderBy.id === headCell.id && order) ? true : false}
+              direction={orderBy.id === headCell.id && order ? order : "asc"}
+              onClick={createSortHandler(headCell)}
+            >
+              {headCell.label}
+              {orderBy.id === headCell.id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === "desc" ? "sorted descending" : order === "asc" ? "sorted ascending" : ""}
+                </span>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
   );
 }
 
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
+const useStyles = (theme) => ({
+  root: {
+    width: "100%",
+  },
+  paper: {
+    width: "100%",
+    marginBottom: theme.spacing(2),
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: "rect(0 0 0 0)",
+    height: 1,
+    margin: -1,
+    overflow: "hidden",
+    padding: 0,
+    position: "absolute",
+    top: 20,
+    width: 1,
+  },
+});
 
-export default class CustomizedTables extends Component {
-  tableData = null;
-  tableId = "";
-  keysName = [];
-  seletedItem = null;
+class IDAEnhancedTable extends Component {
+  rows = [];
   emptyRows = 0;
-  noPagination;
+  columns = []
 
   constructor(props) {
     super(props);
     this.state = {
+      order: "asc",
+      orderBy: "",
       page: 0,
-      rowsPerPage: props.noPagination ? 0 : 5,
-      rowsPerPageList: [],
+      rowsPerPage: 10
     };
-    this.noPagination = props.noPagination;
-    this.tableData = props.data;
-    this.tableId = props.nodeId;
-    this.keysName = props.columns.map((col) => {
-      return {
-        "key": col.colAttr,
-        "label": col.colName
-      };
+    this.rows = props.data;
+    this.columns = props.columns.map((col) => ({
+      "id": col.colAttr,
+      "label": col.colName,
+      "type": col.colType
+    }));
+    this.emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.rows.length - this.state.page * this.state.rowsPerPage);
+  }
+
+  handleRequestSort = (event, property) => {
+    const isAsc = this.state.orderBy === property && this.state.order === "asc";
+    const isDesc = this.state.orderBy === property && this.state.order === "desc";
+    this.setState({
+      order: isAsc ? "desc" : isDesc ? false : "asc",
+      orderBy: property
     });
-    this.seletedItem = this.tableData;
-    this.emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.seletedItem.length - this.state.page * this.state.rowsPerPage);
-  }
+  };
 
-  componentDidMount() {
-    setTimeout(() => {
-      if (this.tableId && document.getElementById(this.tableId)) {
-        const rowHeight = document.getElementById(this.tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
-        if (rowHeight) {
-          const defaultRowsPerPage = Math.floor((window.innerHeight * 0.65) / rowHeight);
-          this.setState({
-            rowsPerPage: defaultRowsPerPage,
-            rowsPerPageList: [defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 3, defaultRowsPerPage * 4, defaultRowsPerPage * 5]
-          });
-        }
-      }
-    }, 100);
-  }
-
-  handleChangePage(event, newPage) {
+  handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
     });
@@ -125,61 +144,67 @@ export default class CustomizedTables extends Component {
 
   handleChangeRowsPerPage = (event) => {
     this.setState({
-      rowsPerPage: parseInt(event.target.value, 10)
+      rowsPerPage: parseInt(event.target.value, 10),
+      page: 0
     });
   };
 
   render() {
+    const { classes } = this.props;
     return (
-      <TableContainer component={Paper}>
-        <Table aria-label="ida table" className="ida-table" id={this.tableId}>
-          <TableHead >
-            <TableRow >
-              {this.keysName.map((row, index) => (
-                <TableCell align="left" key={index}>{row["label"]}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(this.state.rowsPerPage > 0
-              ? this.seletedItem.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-              : this.seletedItem
-            ).map((row, index) => (
-              <TableRow key={index} component="tr" className="ida-table-row">
-                {this.keysName.map((colName, index) => (
-                  <TableCell align="left" component="th" scope="row" key={index} >{row[colName["key"].trim()]}</TableCell>
-                ))}
-              </TableRow>
-            ))}
-
-            {this.emptyRows > 0 && (
-              <TableRow style={{ height: 50 * this.emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-          {
-            this.noPagination ? null : <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={this.state.rowsPerPageList}
-                  colSpan={this.keysName.length}
-                  count={this.seletedItem.length}
-                  rowsPerPage={this.state.rowsPerPage}
-                  page={this.state.page}
-                  SelectProps={{
-                    inputProps: { "aria-label": "rows per page" },
-                    native: true,
-                  }}
-                  onChangePage={this.handleChangePage.bind(this)}
-                  onChangeRowsPerPage={this.handleChangeRowsPerPage.bind(this)}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          }
-        </Table>
-      </TableContainer>
+      <div className={classes.root} >
+        <Paper className={classes.paper}>
+          <TableContainer>
+            <Table
+              className="ida-table"
+              aria-labelledby="tableTitle"
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                order={this.state.order}
+                orderBy={this.state.orderBy}
+                onRequestSort={this.handleRequestSort}
+                rowCount={this.rows.length}
+                headCells={this.columns}
+              />
+              <TableBody>
+                {stableSort(this.rows, getComparator(this.state.order, this.state.orderBy))
+                  .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                  .map((row, index) => {
+                    return (
+                      <TableRow
+                        hover
+                        tabIndex={-1}
+                        key={index}
+                      >
+                        {this.columns.map((colName, index) => (
+                          <TableCell align="left" component="th" scope="row" key={index} >{row[colName["id"].trim()]}</TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })}
+                {this.emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * this.emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={this.rows.length}
+            rowsPerPage={this.state.rowsPerPage}
+            page={this.state.page}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
     );
   }
 }
+
+export default withStyles(useStyles)(IDAEnhancedTable);
