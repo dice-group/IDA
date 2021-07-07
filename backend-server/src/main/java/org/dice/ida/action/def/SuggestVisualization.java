@@ -48,6 +48,7 @@ public class SuggestVisualization implements Action {
 			Map<String, Map<String, List<String>>> suggestionParam = rdfUtil.getSuggestionParamters();
 			Map<String, VisualizationInfo> vizInfoMap = rdfUtil.getVisualizationInfo();
 			List<SuggestionData> suggestionResponse = new ArrayList<>();
+			Map<String, String> paramDisplayNameMap = rdfUtil.getParamDisplayNames();
 			for (String viz : suggestionParam.keySet()) {
 				String vizIntent = rdfUtil.getVizIntent(viz);
 				Map<Integer, String> attributeListViz = rdfUtil.getSuggestionAttributeList(vizIntent);
@@ -82,7 +83,7 @@ public class SuggestVisualization implements Action {
 					vizParams.put(param, key);
 					paramMap.put(param, key);
 					columnNameList.add(key);
-					String paramLabel = IDAConst.PARAM_NAME_MAP.getOrDefault(param, param);
+					String paramLabel = paramDisplayNameMap.getOrDefault(param, param);
 					suggestionParamList.add(new SuggestionParam(paramLabel, key, param));
 				}
 				paramMap.put(IDAConst.PARAM_FILTER_STRING, IDAConst.BG_FILTER_ALL);

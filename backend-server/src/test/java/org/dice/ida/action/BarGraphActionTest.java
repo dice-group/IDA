@@ -75,7 +75,7 @@ public class BarGraphActionTest {
 		assertEquals("What should be the size of each bin?<br/>Eg: 10, 25, 15, twenty, twelve", chatMessageResponse.getMessage());
 		chatUserMessage.setMessage("10");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
-		assertEquals("Which column values should be mapped to Y-Axis?", chatMessageResponse.getMessage());
+		assertEquals("Which column values should be used for Y-Axis?", chatMessageResponse.getMessage());
 		sessionUtil.resetSessionId();
 	}
 
@@ -94,7 +94,7 @@ public class BarGraphActionTest {
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("Date");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
-		assertEquals("Date cannot be used as Y-Axis. Please give a different column?", chatMessageResponse.getMessage());
+		assertEquals("Date cannot be used as Y-Axis. Please provide a different column?", chatMessageResponse.getMessage());
 		sessionUtil.resetSessionId();
 	}
 

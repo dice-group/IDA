@@ -313,17 +313,9 @@ public interface IDAConst {
 
 	public static final long TIMEOUT_LIMIT = 300000;
 	public static final String TIMEOUT_MSG = "Sorry, it looks like that request has crossed the allowed time limit of " + (TIMEOUT_LIMIT / 60000) + " minutes. Please optimize your task.";
-	public static final Map<String, String> PARAM_NAME_MAP = new HashMap<>() {{
-		put("X-Axis", "X-Axis");
-		put("Y-Axis", "Y-Axis");
-		put("Bubble_Label", "Label of the bubbles");
-		put("Bubble_Size", "Size of the bubbles");
-		put("Temporal_Column", "X-Axis (Temporal data)");
-		put("Line_Label", "Line Labels");
-		put("Line_Value", "Line Values");
-		put("Reference_Values", "Reference Values");
-		put("Scatterplot_Label", "label for scatter plot");
-	}};
+	String COLUMN_LIST_PARAM = "Column_List";
+	String SCATTERPLOT_MATRIX_LABEL_PARAM = "ScatterPlotMatrix_Label";
+	String SCATTERPLOT_MATRIX_REFERENCE_PARAM = "Reference_Column";
 	public static final Map<String, String> PARAM_TYPE_EG_MAP = new HashMap<>() {{
 		put("numeric", "Group of N values");
 		put("date", "Group of N days, weeks, months or years");
