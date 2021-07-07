@@ -22,10 +22,14 @@ function descendingComparator(a, b, orderBy) {
     value2 = isNaN(value2) ? 0.0 : value2;
   } else if (orderBy.type === "date") {
     value1 = moment(value1, IDA_CONSTANTS.DATE_FORMATS).valueOf();
-    value2 = moment(value2, IDA_CONSTANTS.DATE_FORMATS).valueOf()
+    value2 = moment(value2, IDA_CONSTANTS.DATE_FORMATS).valueOf();
     value1 = isNaN(value1) ? "" : value1;
     value2 = isNaN(value2) ? "" : value2;
   }
+  return compareValues(value1, calue2);
+}
+
+function compareValues(value1, value2) {
   return value2 < value1 ? -1 : value2 > value1 ? 1 : 0;
 }
 
@@ -54,6 +58,7 @@ function EnhancedTableHead(props) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
+  const isOrdered = orderBy.id === headCell.id && order;
 
   return (
     <TableHead>
@@ -63,11 +68,11 @@ function EnhancedTableHead(props) {
             key={headCell.id}
             align="left"
             sortDirection={orderBy.id === headCell.id ? order : false}
-            className={orderBy.id === headCell.id && order ? "sort-active" : ""}
+            className={isOrdered ? "sort-active" : ""}
           >
             <TableSortLabel
-              active={(orderBy.id === headCell.id && order) ? true : false}
-              direction={orderBy.id === headCell.id && order ? order : "asc"}
+              active={isOrdered ? true : false}
+              direction={isOrdered ? order : "asc"}
               onClick={createSortHandler(headCell)}
             >
               {headCell.label}
