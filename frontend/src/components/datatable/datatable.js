@@ -16,19 +16,17 @@ function descendingComparator(a, b, orderBy) {
   let value1 = a[`${orderBy.id}`];
   let value2 = b[`${orderBy.id}`];
   if (orderBy.type === "numeric") {
-    value1 = isNaN(parseFloat(value1)) ? 0.0 : parseFloat(value1);
-    value2 = isNaN(parseFloat(value2)) ? 0.0 : parseFloat(value2);
+    value1 = parseFloat(value1);
+    value2 = parseFloat(value2);
+    value1 = isNaN(value1) ? 0.0 : value1;
+    value2 = isNaN(value2) ? 0.0 : value2;
   } else if (orderBy.type === "date") {
-    value1 = isNaN(moment(value1, IDA_CONSTANTS.DATE_FORMATS).valueOf()) ? "" : moment(value1, IDA_CONSTANTS.DATE_FORMATS);
-    value2 = isNaN(moment(value2, IDA_CONSTANTS.DATE_FORMATS).valueOf()) ? "" : moment(value2, IDA_CONSTANTS.DATE_FORMATS);
+    value1 = moment(value1, IDA_CONSTANTS.DATE_FORMATS).valueOf();
+    value2 = moment(value2, IDA_CONSTANTS.DATE_FORMATS).valueOf()
+    value1 = isNaN(value1) ? "" : value1;
+    value2 = isNaN(value2) ? "" : value2;
   }
-  if (value2 < value1) {
-    return -1;
-  }
-  if (value2 > value1) {
-    return 1;
-  }
-  return 0;
+  return value2 < value1 ? -1 : value2 > value1 ? 1 : 0;
 }
 
 function getComparator(order, orderBy) {
@@ -36,14 +34,16 @@ function getComparator(order, orderBy) {
     ? (a, b) => descendingComparator(a, b, orderBy)
     : order === "asc"
       ? (a, b) => -descendingComparator(a, b, orderBy)
-      : (a, b) => ""
+      : (a, b) => "";
 }
 
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
+    if (order !== 0) {
+      return order;
+    }
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
@@ -71,11 +71,6 @@ function EnhancedTableHead(props) {
               onClick={createSortHandler(headCell)}
             >
               {headCell.label}
-              {orderBy.id === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : order === "asc" ? "sorted ascending" : ""}
-                </span>
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -150,7 +145,7 @@ class IDAEnhancedTable extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const classes = this.props.classes;
     return (
       <div className={classes.root} >
         <Paper className={classes.paper}>

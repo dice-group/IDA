@@ -89,7 +89,7 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
             data.forEach((table, idx) =>
                 children.push({
                     id: metaData.dsName + "_" + table.name,
-                    name: metaData.filesMd.filter(f => f.fileName === table.name)[0] ? metaData.filesMd.filter(f => f.fileName === table.name)[0].displayName : table.name,
+                    name: metaData.filesMd.filter((f) => f.fileName === table.name)[0] ? metaData.filesMd.filter((f) => f.fileName === table.name)[0].displayName : table.name,
                     type: "table",
                     data: table.data,
                     fileName: table.name,
