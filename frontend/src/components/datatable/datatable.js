@@ -123,14 +123,10 @@ class IDAEnhancedTable extends Component {
   }
 
   handleRequestSort = (event, property) => {
-    let order = false;
-    if(this.state.orderBy === property && this.state.order === "asc") {
-      order = "asc";
-    } else if(this.state.orderBy === property && this.state.order === "desc") {
-      order = "desc";
-    }
+    const isAsc = this.state.orderBy === property && this.state.order === "asc";
+    const isDesc = this.state.orderBy === property && this.state.order === "desc";
     this.setState({
-      order,
+      order: isAsc ? "desc" : isDesc ? false : "asc",
       orderBy: property
     });
   };
