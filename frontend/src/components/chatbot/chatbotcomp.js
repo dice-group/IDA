@@ -99,20 +99,18 @@ export default class ChatApp extends React.Component {
 		this.state.iterator !== -1 && this.msgIterator(e, userMsgs);
 		this.suggestionParams = null;
 
-		if (!this.state.timeOut) {
-			const timeOut = setTimeout(() => {
-				this.setState({
-					timeOut: null,
-					textAreaDisable: true,
-					messages: [...this.state.messages, {
-						sender: "them",
-						timestamp: Date.now(),
-						message: "You have been inactive with IDA for 30 minutes! Your session has been expired. Kindly reload the page."
-					}]
-				});
-			}, 1000 * 60 * 30);
-			this.setState({ timeOut });
-		}
+		const timeOut = setTimeout(() => {
+			this.setState({
+				timeOut: null,
+				textAreaDisable: true,
+				messages: [...this.state.messages, {
+					sender: "them",
+					timestamp: Date.now(),
+					message: "You have been inactive with IDA for 30 minutes! Your session has been expired. Kindly reload the page."
+				}]
+			});
+		}, 1000 * 60 * 30);
+		this.setState({ timeOut });
 	}
 
 	processMessage = (msg) => {
