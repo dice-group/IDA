@@ -192,6 +192,8 @@ public class ScatterPlotMatrixActionTest {
 		chatUserMessage.setActiveDS("test_dataset");
 		chatUserMessage.setActiveTable("Patient_Data_Before_20-04-2020.csv");
 		messageController.handleMessage(chatUserMessage).call();
+		chatUserMessage.setMessage("all");
+		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("detected state");
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("no");
