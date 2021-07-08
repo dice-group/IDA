@@ -634,7 +634,7 @@ public class VisualizeAction implements Action {
 					for (String group : groupedGraphItems.keySet()) {
 						Map<String, Double> entries = groupedGraphItems.get(group);
 						Map<String, Integer> lbls = groupedLabelCounts.get(group);
-						entries.replaceAll((l, v) -> entries.get(l) / lbls.get(l));
+						entries.replaceAll((l, v) -> Double.isNaN(entries.get(l) / lbls.get(l)) ? 0.0 : entries.get(l) / lbls.get(l));
 						groupedGraphItems.put(group, entries);
 					}
 					graphItems.replaceAll((l, v) -> graphItems.get(l) / labelCounts.get(l));
