@@ -119,7 +119,7 @@ export default class ChatApp extends React.Component {
 					message: "You have been inactive with IDA for 30 minutes! Your session has been expired. Kindly reload the page."
 				}]
 			});
-		}, 1000 * 60 * 10);
+		}, 1000 * 60 * 30);
 		axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
 			.then((response) => {
 				this.showMessage(response.data.message, response.data.timestamp);
