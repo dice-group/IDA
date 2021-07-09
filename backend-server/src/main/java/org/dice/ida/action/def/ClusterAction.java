@@ -321,7 +321,7 @@ public class ClusterAction implements Action {
 			sessionMap.put(IDAConst.FARTHEST_FIRST, farthestFirstAttribute);
 			sessionUtil.setSessionMap(sessionMap);
 			textMsg = new StringBuilder("Value Changed!! Would you like to change another parameter");
-			dialogFlowUtil.setContext("clustering-FarthestFirst-followup");
+			dialogFlowUtil.setContext("clustering-FarthestFirst-followup", 5);
 		}
 	}
 
@@ -408,7 +408,7 @@ public class ClusterAction implements Action {
 			sessionMap.put(IDAConst.K_MEAN_CLUSTERING, kmeansAttribute);
 			sessionUtil.setSessionMap(sessionMap);
 			textMsg = new StringBuilder("Value Changed!! Would you like to change another parameter");
-			dialogFlowUtil.setContext("clustering-Kmeans-followup");
+			dialogFlowUtil.setContext("clustering-Kmeans-followup", 5);
 		}
 	}
 

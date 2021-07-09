@@ -16,6 +16,7 @@ public class ChatUserMessage {
 	private boolean temporaryData;
 	private Map<String, Object> suggestionParams;
 	private boolean renderSuggestion;
+	private String chatbotMessage;
 
 	public List<Map<String, String>> getActiveTableData() {
 		return activeTableData;
@@ -102,5 +103,13 @@ public class ChatUserMessage {
 
 	public void setRenderSuggestion(boolean renderSuggestion) {
 		this.renderSuggestion = renderSuggestion;
+	}
+
+	public String getChatbotMessage() {
+		return chatbotMessage;
+	}
+
+	public void setChatbotMessage(String chatbotMessage) {
+		this.chatbotMessage = chatbotMessage;
 	}
 }

@@ -38,6 +38,7 @@ public class RDFUtil {
 	private Map<String, String> paramDisplayNameMap = null;
 	private Map<String, String> paramDisplayMessageMap = null;
 	private Map<String, String> paramOptionalMessageMap = null;
+	private Map<String, String> userHelpMessageMap = null;
 
 	/**
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
@@ -458,4 +459,31 @@ public class RDFUtil {
 		return paramOptionalMessageMap;
 	}
 
+	public Map<String, String> getUserHelpMessages() {
+		if(userHelpMessageMap != null) {
+			return userHelpMessageMap;
+		}
+		userHelpMessageMap = new HashMap<>();
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT ?label ?message ")
+				.append("WHERE { ")
+				.append("  ?s ivodp:hasHelpMessage ?message ; ")
+				.append("       rdfs:label ?label ")
+				.append("} ");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			String label = querySolution.get("label").asLiteral().getString();
+			String message = querySolution.get("message").asLiteral().getString();
+			userHelpMessageMap.put(label, message);
+		}
+		if (conn != null) {
+			conn.close();
+		}
+		model = null;
+		return userHelpMessageMap;
+	}
 }

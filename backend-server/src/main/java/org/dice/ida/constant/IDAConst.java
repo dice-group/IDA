@@ -340,4 +340,6 @@ public interface IDAConst {
 	String COLUMN_SD_TEMPORAL = "Standard Deviation Temporal";
 	String COLUMN_SD_ALL = "Standard Deviation All";
 	String KEY_ALL = "all";
+	String HELP_TOPIC_PARAM = "help_topic";
+	String UNKNOWN_HELP_TOPIC_MSG = "Sorry, I do not understand. Please ask for help again and do not forget to mention the topic on which you need help";
 }
