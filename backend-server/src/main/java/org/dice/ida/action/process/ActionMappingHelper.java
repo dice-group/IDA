@@ -12,6 +12,7 @@ import org.dice.ida.action.def.ClusterAction;
 import org.dice.ida.action.def.ClearConversationAction;
 import org.dice.ida.action.def.CauseExceptionAction;
 import org.dice.ida.action.def.DefaultAction;
+import org.dice.ida.action.def.UserHelpAction;
 import org.dice.ida.model.Intent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -64,6 +65,9 @@ public class ActionMappingHelper {
 				break;
 			case CAUSE_EXCEPTION:
 				action = appContext.getBean(CauseExceptionAction.class);
+				break;
+			case USER_HELP:
+				action = appContext.getBean(UserHelpAction.class);
 				break;
 			default:
 				action = appContext.getBean(DefaultAction.class);

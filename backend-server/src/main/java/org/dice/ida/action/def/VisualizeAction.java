@@ -383,7 +383,7 @@ public class VisualizeAction implements Action {
 			}
 			if (attributeOptionalMap.get(attributeName) && paramMap.getOrDefault(attributeName, "").toString().isEmpty()) {
 				if (paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, "").toString().isEmpty()) {
-					dialogFlowUtil.setContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX);
+					dialogFlowUtil.setContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, 5);
 					String question = "Do you want to use " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + "?";
 					if (paramOptionalMessageMap.containsKey(attributeList.get(i))) {
 						question = paramOptionalMessageMap.get(attributeList.get(i));
@@ -394,7 +394,7 @@ public class VisualizeAction implements Action {
 				boolean attributeChoice = Boolean.parseBoolean(paramMap.getOrDefault(attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX, "").toString());
 				if (attributeChoice) {
 					dialogFlowUtil.deleteContext("get_" + attributeName + IDAConst.ATTRIBUTE_CHOICE_SUFFIX);
-					dialogFlowUtil.setContext("get_" + attributeList.get(i));
+					dialogFlowUtil.setContext("get_" + attributeList.get(i), 5);
 					String question = "Which column values should be mapped to " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + "?";
 					if (paramDisplayMessageMap.containsKey(attributeList.get(i))) {
 						question = paramDisplayMessageMap.get(attributeList.get(i));
@@ -410,7 +410,7 @@ public class VisualizeAction implements Action {
 					if (i > 1) {
 						dialogFlowUtil.deleteContext("get_" + attributeList.get(i - 1) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 					}
-					dialogFlowUtil.setContext("get_" + attributeList.get(i));
+					dialogFlowUtil.setContext("get_" + attributeList.get(i), 5);
 					String question = "Which column values should be mapped to " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + "?";
 					if (paramDisplayMessageMap.containsKey(attributeList.get(i))) {
 						question = paramDisplayMessageMap.get(attributeList.get(i));
@@ -448,17 +448,17 @@ public class VisualizeAction implements Action {
 		String columnName = paramMap.get(attributeName).toString();
 		if (options.size() == 0 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
-			dialogFlowUtil.setContext("get_" + attributeList.get(i));
+			dialogFlowUtil.setContext("get_" + attributeList.get(i), 5);
 			textMsg = new StringBuilder(columnName + " cannot be used as " + paramDisplayNameMap.getOrDefault(attributeList.get(i), attributeList.get(i)) + ". Please provide a different column?");
 			return true;
 		} else if (options.size() == 0) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX, 5);
 			textMsg = new StringBuilder(columnName + " cannot be used as " + attributeType + ". Please provide correct type.");
 			return true;
 		} else if (options.size() > 1 && attributeType.isEmpty()) {
 			dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
+			dialogFlowUtil.setContext("get_" + attributeList.get(i) + IDAConst.ATTRIBUTE_TYPE_SUFFIX, 5);
 			textMsg = new StringBuilder(columnName + " can be used as:<br>");
 			textMsg.append("<ul>");
 			for (String t : options) {
@@ -483,14 +483,14 @@ public class VisualizeAction implements Action {
 			if ("date".equals(columnMap.get(paramMap.get(attributeName).toString()))) {
 				if (paramVal == null || !paramVal.hasStructValue()) {
 					dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_DURATION);
+					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_DURATION, 5);
 					textMsg = new StringBuilder("What should be the duration of each bin?<br/>Eg: 1 week, 2 weeks, 3 months");
 					return true;
 				}
 			} else {
 				if (paramVal == null) {
 					dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
-					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_SIZE);
+					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_SIZE, 5);
 					textMsg = new StringBuilder("What should be the size of each bin?<br/>Eg: 10, 25, 15, twenty, twelve");
 					return true;
 				}
