@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
+import { withStyles, useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -9,7 +10,13 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
+import FirstPageIcon from "@material-ui/icons/FirstPage";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import LastPageIcon from "@material-ui/icons/LastPage";
 import moment from "moment";
+
 import { IDA_CONSTANTS } from "../constants";
 
 function descendingComparator(a, b, orderBy) {
@@ -79,13 +86,70 @@ function EnhancedTableHead(props) {
   );
 }
 
+function TablePaginationActions(props) {
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onChangePage } = props;
+
+  const handleFirstPageButtonClick = (event) => {
+    onChangePage(event, 0);
+  };
+
+  const handleBackButtonClick = (event) => {
+    onChangePage(event, page - 1);
+  };
+
+  const handleNextButtonClick = (event) => {
+    onChangePage(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (event) => {
+    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <div className={"pagination-root"}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+        {theme.direction === "rtl" ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </div>
+  );
+}
+
+TablePaginationActions.propTypes = {
+  count: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+};
+
 const useStyles = (theme) => ({
   root: {
     width: "100%",
   },
   paper: {
     width: "100%",
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   },
   visuallyHidden: {
     border: 0,
@@ -103,7 +167,9 @@ const useStyles = (theme) => ({
 class IDAEnhancedTable extends Component {
   rows = [];
   emptyRows = 0;
-  columns = []
+  columns = [];
+  tableId = "";
+  noPagination;
 
   constructor(props) {
     super(props);
@@ -111,15 +177,34 @@ class IDAEnhancedTable extends Component {
       order: "asc",
       orderBy: "",
       page: 0,
-      rowsPerPage: 10
+      rowsPerPage: props.noPagination ? 0 : 5,
+      rowsPerPageList: []
     };
+    this.noPagination = props.noPagination;
     this.rows = props.data;
+    this.tableId = props.nodeId;
     this.columns = props.columns.map((col) => ({
       "id": col.colAttr,
       "label": col.colName,
       "type": col.colType
     }));
     this.emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.rows.length - this.state.page * this.state.rowsPerPage);
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      if (this.tableId && document.getElementById(this.tableId)) {
+        const rowHeight = document.getElementById(this.tableId).getElementsByClassName("ida-table-row")[0].offsetHeight;
+        if (rowHeight) {
+          const defaultRowsPerPage = Math.floor((window.innerHeight * 0.65) / rowHeight);
+          this.setState({
+            page: 0,
+            rowsPerPage: defaultRowsPerPage,
+            rowsPerPageList: [defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 3, defaultRowsPerPage * 4, defaultRowsPerPage * 5]
+          });
+        }
+      }
+    }, 100);
   }
 
   handleRequestSort = (event, property) => {
@@ -149,11 +234,12 @@ class IDAEnhancedTable extends Component {
     return (
       <div className={classes.root} >
         <Paper className={classes.paper}>
-          <TableContainer>
+          <TableContainer className="ida-table-container">
             <Table
               className="ida-table"
               aria-labelledby="tableTitle"
               aria-label="enhanced table"
+              id={this.tableId}
             >
               <EnhancedTableHead
                 classes={classes}
@@ -165,13 +251,14 @@ class IDAEnhancedTable extends Component {
               />
               <TableBody>
                 {stableSort(this.rows, getComparator(this.state.order, this.state.orderBy))
-                  .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                  .slice(this.state.page * this.state.rowsPerPage, this.noPagination ? this.rows.length : this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                   .map((row, index) => {
                     return (
                       <TableRow
                         hover
                         tabIndex={-1}
                         key={index}
+                        className="ida-table-row"
                       >
                         {this.columns.map((colName, index) => (
                           <TableCell align="left" component="th" scope="row" key={index} >{row[colName["id"].trim()]}</TableCell>
@@ -187,15 +274,23 @@ class IDAEnhancedTable extends Component {
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={this.rows.length}
-            rowsPerPage={this.state.rowsPerPage}
-            page={this.state.page}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          />
+          {
+            this.noPagination ? null : <TablePagination
+              rowsPerPageOptions={this.state.rowsPerPageList}
+              component="div"
+              colSpan={this.columns.length}
+              count={this.rows.length}
+              rowsPerPage={this.state.rowsPerPage}
+              page={this.state.page}
+              SelectProps={{
+                inputProps: { "aria-label": "rows per page" },
+                native: true,
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          }
         </Paper>
       </div>
     );

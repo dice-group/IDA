@@ -6,10 +6,12 @@ table.ida-table thead .MuiTableCell-head {
   background-color: #4f8bff;
   color: #fff;
   font-size: 13px;
+  white-space: nowrap;
 }
 
 table.ida-table tbody .MuiTableCell-body {
   font-size: 12px;
+  white-space: nowrap;
 }
 
 table.ida-table tbody tr:nth-of-type(odd) {
@@ -29,7 +31,9 @@ table.ida-table tbody tr:nth-of-type(odd) {
   border: none;
 }
 
-.ida-table .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active .MuiTableSortLabel-icon,
+.ida-table
+  .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
+  .MuiTableSortLabel-icon,
 .ida-table .MuiTableSortLabel-root.MuiTableSortLabel-active,
 .ida-table .MuiTableSortLabel-root:hover,
 .ida-table .MuiTableSortLabel-root:focus {
