@@ -9,7 +9,7 @@
   height: 90%;
   position: absolute;
   top: 80px;
-  left: 35%;
+  left: calc((100% - 370px) * 0.5);
   transition: box-shadow 0.2s, left 0.5s;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -35,7 +35,7 @@
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   color: #fff;
-  height: 10%;
+  height: 55px;
   display: flex;
   padding: 15px;
 }
@@ -50,7 +50,7 @@
 }
 
 .chatbox .chatbox-chat-area {
-  height: 80%;
+  height: calc((100% - 55px) * 0.9);
 }
 
 .chatbox-chat-area .chat-area-msgs {
@@ -140,7 +140,7 @@
 
 .chat-area-input {
   flex-grow: 1;
-  height: 10%;
+  height: calc((100% - 55px) * 0.1);
 }
 
 .chat-area-input textarea {
