@@ -12,6 +12,7 @@ export default class ChatApp extends React.Component {
 	suggestionParams = null;
 	sessionTimeOut = null;
 	chatbotMessage = "";
+	payload;
 
 	constructor(props) {
 		super(props);
@@ -122,11 +123,11 @@ export default class ChatApp extends React.Component {
 		}, 1000 * 60 * 30);
 		axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
 			.then((response) => {
+				this.payload = response.data.payload;
 				this.showMessage(response.data.message, response.data.timestamp);
 				const actionCode = response.data.uiAction;
-				const payload = response.data.payload;
 				this.props.setContexts(response.data.activeContexts || []);
-				idaChatbotActionHandler(this.props, actionCode, payload);
+				idaChatbotActionHandler(this.props, actionCode, this.payload);
 			})
 			.catch((err) => {
 				if (err.response && err.response.status && err.response.status === IDA_CONSTANTS.GATEWAY_TIMEOUT_STATUS) {
@@ -178,6 +179,10 @@ export default class ChatApp extends React.Component {
 		const idaEles = {
 			"ida-btn": "button"
 		};
+
+		if(el.vizParams) {
+			this.suggestionParams = this.payload[el.vizParams];
+		}
 
 		return React.createElement(idaEles[el.name], {
 			onClick: () => {
