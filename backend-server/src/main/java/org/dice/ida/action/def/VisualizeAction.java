@@ -2,7 +2,9 @@ package org.dice.ida.action.def;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
+import com.google.protobuf.ListValue.Builder;
 import org.apache.http.ParseException;
 import org.apache.http.client.utils.DateUtils;
 import org.dice.ida.constant.IDAConst;
@@ -216,7 +218,14 @@ public class VisualizeAction implements Action {
 		for (String attribute : attributeList) {
 			instanceMap.keySet().forEach(instance -> attributeTypeMap.put(attribute, instanceMap.get(instance).get(attribute).get("type")));
 		}
-		Value paramVal = (Value) paramMap.get(attributeList.get(0));
+		Value paramVal;
+		if ("true".equals(paramMap.get("from_suggestion"))) {
+			Builder listBuilder = ListValue.newBuilder();
+			((List<String>) paramMap.get(attributeList.get(0))).forEach(c -> listBuilder.addValues(Value.newBuilder().setStringValue(c).build()));
+			paramVal = Value.newBuilder().setListValue(listBuilder.build()).build();
+		} else {
+			paramVal = (Value) paramMap.get(attributeList.get(0));
+		}
 		if (!(selectAll == null && paramVal == null)) {
 			paramVal.getListValue().getValuesList().forEach(str -> columnListParameter.add(str.getStringValue()));
 			if (!selectAll.isEmpty()) {
