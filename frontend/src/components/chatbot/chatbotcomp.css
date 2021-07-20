@@ -141,6 +141,7 @@
 .chat-area-input {
   flex-grow: 1;
   height: calc((100% - 55px) * 0.1);
+  position: relative;
 }
 
 .chat-area-input textarea {
@@ -155,6 +156,22 @@
 
 .chat-area-input textarea:disabled {
   display: none;
+}
+
+.ida-spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  text-align: center;
+  opacity: 0.5;
+}
+
+.ida-spinner {
+  margin-top: 5%;
+  color: white;
 }
 
 @media (max-width: 576px) {
