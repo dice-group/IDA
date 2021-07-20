@@ -4,9 +4,9 @@
   overflow-x: auto;
 }
 
-.tab-container {
+.scatterplot-matrix-tab-container {
   width: 100%;
-  max-height: 700px;
+  max-height: calc(100vh * 0.8);
   overflow-y: auto;
   overflow-x: auto;
 }

@@ -62,7 +62,6 @@
 */
 @media (min-width: 992px) {
   .content {
-    padding-left: 20px;
     width: 80%;
     transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   }
@@ -85,7 +84,6 @@
   }
 
   .navbar-hidden .content {
-    padding-left: 20px;
     width: 98.75%;
     transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   }

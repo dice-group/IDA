@@ -47,6 +47,7 @@ export default class IDAGroupedBarGraph extends Component {
 
     componentDidMount() {
         this.colorFunction = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemePaired);
+        this.height = window.innerHeight * 0.69;
         this.drawGraph();
     }
 

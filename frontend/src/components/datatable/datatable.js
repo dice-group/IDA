@@ -240,6 +240,7 @@ class IDAEnhancedTable extends Component {
               aria-labelledby="tableTitle"
               aria-label="enhanced table"
               id={this.tableId}
+              stickyHeader
             >
               <EnhancedTableHead
                 classes={classes}

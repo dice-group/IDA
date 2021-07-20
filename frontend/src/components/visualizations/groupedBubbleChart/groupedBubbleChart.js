@@ -36,6 +36,7 @@ export default class IDAGroupedBubbleChart extends Component {
     }
 
     componentDidMount() {
+        this.height = window.innerHeight * 0.77;
         this.drawGraph();
     }
 
@@ -104,7 +105,7 @@ export default class IDAGroupedBubbleChart extends Component {
 
     render() {
         return <>
-            <div className="tab-container">
+            <div className="grouped-bubblechart-tab-container">
                 <div className="grouped-bubblechart-container" id={this.containerId}></div>
             </div>
         </>;

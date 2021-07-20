@@ -266,7 +266,7 @@ export default class IDAScatterPlotMatrix extends Component {
 						</div>
 					</Grid>
 				</Hidden>
-				<Grid item md={9} className="tab-container">
+				<Grid item md={9} className="scatterplot-matrix-tab-container">
 					<div className="scatterplot-matrix-container" id={this.containerId}></div>
 				</Grid>
 				<Hidden mdDown>

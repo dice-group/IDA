@@ -35,6 +35,8 @@ export default class IDABarGraph extends Component {
   }
 
   componentDidMount() {
+    this.height = window.innerHeight * 0.62;
+    this.width = window.innerWidth * 0.65;
     this.graphData && this.graphData.items && this.drawBarGraph();
   }
 
