@@ -42,6 +42,7 @@ export default class IDALineChart extends Component {
     }
 
     componentDidMount() {
+        this.height = window.innerHeight * 0.7;
         this.data && this.drawLineChart();
     }
 
