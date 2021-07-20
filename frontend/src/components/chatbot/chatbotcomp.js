@@ -189,7 +189,7 @@ export default class ChatApp extends React.Component {
 				this.messageSend({ keyCode: 13, target: { value: el.msg } });
 			}, // mimicking message sent from input field
 			className: el.style,
-			key: key
+			key
 		}, el.value);
 	}
 
