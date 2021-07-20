@@ -18,33 +18,26 @@ button:focus {
   opacity: 1;
 }
 
-/*Scroll Style Start*/
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  /* 1px wider than Lion. /
-height: 8px; / 1px wider than Lion. /
-/ This is more usable for users trying to click it. */
   background-color: rgba(0, 0, 0, 0);
   border-radius: 100px;
   -webkit-border-radius: 100px;
 }
-/* hover effect for both scrollbar area, and scrollbar 'thumb' */
-::-webkit-scrollbar:hover {
-  background-color: rgba(0, 0, 0, 0.09);
-}
 
-/* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
 ::-webkit-scrollbar-thumb {
-  /* This is the EXACT color of Mac OS scrollbars.
-Yes, I pulled out digital color meter */
   background: rgba(0, 0, 0, 0.18);
   border-radius: 100px;
   -webkit-border-radius: 100px;
 }
+
+::-webkit-scrollbar:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
 ::-webkit-scrollbar-thumb:active {
-  background: rgba(0, 0, 0, 0.3); /* Some darker color when you click it */
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 100px;
   -webkit-border-radius: 100px;
 }
-/*Scroll Style End*/
