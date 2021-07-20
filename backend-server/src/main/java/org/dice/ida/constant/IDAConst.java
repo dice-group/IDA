@@ -60,9 +60,9 @@ public interface IDAConst {
 	 */
 	public static final String BOT_UNAVAILABLE = "IDA is currently unavailable";
 	public static final String BOT_SOMETHING_WRONG = "Something went wrong with that request. Please try again later.";
-	public static final String BOT_LOAD_DS_BEFORE = "Please load a dataset";
-	public static final String BOT_SELECT_TABLE = "The currently active table is meta data table, please open a data table from side bar";
-	public static final String BOT_HELP = "Hmm, I could not understand it again. May be you can try asking me \"what can you do\" to get help?";
+	public static final String BOT_LOAD_DS_BEFORE = "No active dataset, please load/upload your dataset.";
+	public static final String BOT_SELECT_TABLE = "The currently active table in the view is only metadata, please open a data-table from side bar or switch to the relevant tab.";
+	public static final String BOT_HELP = "Sorry, I could not understand that. Maybe you can try asking me \"what can you do\" to get help?";
 
 	/**
 	 * Param Map Keys
@@ -89,16 +89,16 @@ public interface IDAConst {
 	// Scatter plot Matrix
 	public static final String SCATTER_PLOT_MATRIX_LOADED = "The requested scatter plot matrix has been loaded.";
 	//Suggestion Loaded
-	public static final String SUGGESTION_LOADED = "Graphs suggestions has been loaded.";
+	public static final String SUGGESTION_LOADED = "List of suggested visualizations has been loaded.";
 	// Bar graph
 	public static final String PARAM_FILTER_STRING = "records-selection";
 	public static final String PARAM_XAXIS_NAME = "x-axis";
 	public static final String PARAM_YAXIS_NAME = "y-axis";
 	public static final String BAR_GRAPH_LOADED = "The requested bar graph has been loaded.";
-	public static final String INVALID_X_AXIS_NAME = "Provided x-axis column name was incorrect! Please try again.";
-	public static final String INVALID_Y_AXIS_NAME = "Provided Y-axis column name was incorrect! Please try again.";
-	public static final String INVALID_RANGE = "Provided range for filter was incorrect! Please try again.";
-	public static final String INVALID_FILTER = "Please select a valid filter (for example: all | first 20 | last 30  | from 55 to 100 records).";
+	// public static final String INVALID_X_AXIS_NAME = "Provided x-axis column name was incorrect! Please try again.";
+	// public static final String INVALID_Y_AXIS_NAME = "Provided Y-axis column name was incorrect! Please try again.";
+	// public static final String INVALID_RANGE = "Provided range for filter was incorrect! Please try again.";
+	// public static final String INVALID_FILTER = "Please select a valid filter (for example: all | first 20 | last 30  | from 55 to 100 records).";
 	public static final String BG_FILTER_ALL = "all";
 	public static final String BG_FILTER_FIRST = "first";
 	public static final String BG_FILTER_LAST = "last";
@@ -110,7 +110,7 @@ public interface IDAConst {
 	public static final String BC_TWO = "two";
 	public static final String BC_FIRST_COL = "first_col";
 	public static final String BC_SECOND_COL = "second_col";
-	public static final String BC_LOADED = "Bubble chart has been loaded";
+	public static final String BC_LOADED = "Bubble chart has been loaded.";
 	public static final String BC_INVALID_COL = "Provided column name was incorrect, it does not exist on the loaded table!";
 	public static final String BC_INVALID_FIRST_COL = "Provided first column name was incorrect, it does not exist on the loaded table!";
 	public static final String BC_INVALID_SECOND_COL = "Provided second column name was incorrect, it does not exist on the loaded table!";
@@ -341,5 +341,5 @@ public interface IDAConst {
 	String COLUMN_SD_ALL = "Standard Deviation All";
 	String KEY_ALL = "all";
 	String HELP_TOPIC_PARAM = "help_topic";
-	String UNKNOWN_HELP_TOPIC_MSG = "Sorry, I do not understand. Please ask for help again and do not forget to mention the topic on which you need help";
+	String UNKNOWN_HELP_TOPIC_MSG = "Sorry, I do not understand. Please ask for help again and do not forget to mention the topic on which you need help.";
 }
