@@ -4,6 +4,7 @@ import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
 import idaChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import CloseIcon from "@material-ui/icons/Close";
 import Draggable from "react-draggable";
 
@@ -164,7 +165,7 @@ export default class ChatApp extends React.Component {
 
 				attrsExtract.forEach((e) => {
 					var attrs = e.split("=");
-					idaBtn[attrs[0]] = attrs[1].replaceAll(/\'|\"/g, "");
+					idaBtn[attrs[0]] = attrs[1].replaceAll(/'|"/g, "");
 				});
 
 				return idaBtn;
@@ -175,12 +176,12 @@ export default class ChatApp extends React.Component {
 		return processed instanceof Array ? processed : [processed];
 	}
 
-	idaElementRenderer(el) {
+	idaElementRenderer(el, key) {
 		const idaEles = {
 			"ida-btn": "button"
 		};
 
-		if(el.vizParams) {
+		if (el.vizParams) {
 			this.suggestionParams = this.payload[el.vizParams];
 		}
 
@@ -188,7 +189,8 @@ export default class ChatApp extends React.Component {
 			onClick: () => {
 				this.messageSend({ keyCode: 13, target: { value: el.msg } });
 			}, // mimicking message sent from input field
-			className: el.style
+			className: el.style,
+			key
 		}, el.value);
 	}
 
@@ -247,7 +249,7 @@ export default class ChatApp extends React.Component {
 									this.state.messages.map((val, i) => {
 										if (val.sender === "user") {
 											return (
-												<div className="clearfix">
+												<div className="clearfix" key={i}>
 													<div className="user" key={i}>
 														<div className="msg" key={Math.random()}> {val.message}</div>
 														<div
@@ -257,15 +259,15 @@ export default class ChatApp extends React.Component {
 											);
 										} else {
 											return (
-												<div className="clearfix">
+												<div className="clearfix" key={i}>
 													<div className="agent" key={Math.random()}>
 														<div>
 															<div className="msg" key={Math.random()}>{
-																this.idaElementParser(val.message).map((token) => {
+																this.idaElementParser(val.message).map((token, j) => {
 																	if (token instanceof Object) {
-																		return this.idaElementRenderer(token);
+																		return this.idaElementRenderer(token, j);
 																	} else {
-																		return <span
+																		return <span key={j}
 																			dangerouslySetInnerHTML={{ __html: token }} />;
 																	}
 																})
@@ -284,8 +286,11 @@ export default class ChatApp extends React.Component {
 						</div>
 						<div className="chat-area-input clearfix">
 							<IDALinearProgress hide={this.state.hideProgress} />
-							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} disabled={this.state.textAreaDisable} />
+							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} disabled={(this.state.textAreaDisable || !this.state.hideProgress)} />
 							<button hidden id="send-btn" onClick={this.onSendClick}></button>
+							<div className="ida-spinner-container" hidden={this.state.hideProgress}>
+								<CircularProgress className="ida-spinner" color="inherit" />
+							</div>
 						</div>
 					</div>
 				</Draggable>

@@ -174,6 +174,7 @@ export default function idaChatbotActionHandler(props, actionCode, payload) {
         }
         case IDA_CONSTANTS.UI_ACTION_CODES.UAC_UPLDDTMSG: {
             props.setdsUploadWizardOpen(true);
+            break;
         }
         default:
     }

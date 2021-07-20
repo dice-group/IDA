@@ -131,7 +131,7 @@ export default class IDAVisualizationSuggestion extends Component {
                     <Grid item xs={12}>
                       <Typography varient="h6">
                         {viz.visualizationInfo.description}
-                      For more information you can go to <a target="_blank" href={viz.visualizationInfo.link}>{viz.visualizationInfo.linkLabel}<LaunchIcon fontSize="small" /></a>
+                        For more information you can go to <a target="_blank" rel="noopener noreferrer" href={viz.visualizationInfo.link}>{viz.visualizationInfo.linkLabel}<LaunchIcon fontSize="small" /></a>
                       </Typography>
                     </Grid>
                     {
