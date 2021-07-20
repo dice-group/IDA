@@ -205,14 +205,14 @@ export default class ChatApp extends React.Component {
 			this.setState({
 				iterator: this.state.iterator > 0 ? this.state.iterator - 1 : this.state.iterator,
 			});
-			target.value = userMsgs[this.state.iterator].message;
+			target.value = userMsgs[this.state.iterator].message.trim();
 		} else if (e.keyCode === 40) {
 			// down arrow key
 			const iter = userMsgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator;
 			this.setState({
 				iterator: iter
 			}, () => {
-				target.value = userMsgs[this.state.iterator].message;
+				target.value = userMsgs[this.state.iterator].message.trim();
 			});
 		}
 	}

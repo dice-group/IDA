@@ -1,5 +1,5 @@
 .ida-table-container {
-  height: 72.5vh;
+  max-height: 72.5vh;
   overflow: auto;
 }
 
@@ -36,7 +36,9 @@ table.ida-table tbody tr:nth-of-type(odd) {
   border: none;
 }
 
-.ida-table .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active .MuiTableSortLabel-icon,
+.ida-table
+  .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
+  .MuiTableSortLabel-icon,
 .ida-table .MuiTableSortLabel-root.MuiTableSortLabel-active,
 .ida-table .MuiTableSortLabel-root:hover,
 .ida-table .MuiTableSortLabel-root:focus {
