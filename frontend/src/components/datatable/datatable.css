@@ -1,3 +1,8 @@
+.ida-table-container {
+  height: 72.5vh;
+  overflow: auto;
+}
+
 table.ida-table {
   min-width: 100%;
 }
