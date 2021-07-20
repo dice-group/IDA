@@ -25,9 +25,9 @@ export default class IDABubbleGraph extends Component {
   }
 
   componentDidMount() {
+    this.height = window.innerHeight * 0.77;
     this.graphData && this.graphData.items && this.drawGraph();
     var rects = document.querySelectorAll('[data-foo]');
-    console.log(rects)
     rects.forEach(ele => {
       ele.addEventListener("mouseover", (event) => {
         this.tooltip.style.display = "block";
@@ -91,7 +91,7 @@ export default class IDABubbleGraph extends Component {
     }
   }
   render() {
-    return <div className="tab-container">
+    return <div className="bubblechart-tab-container">
       <div className="bubblechart-container" id={this.containerId}></div>
     </div>;
   }
