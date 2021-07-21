@@ -62,7 +62,7 @@ public class SuggestVisualization implements Action {
 					put(IDAConst.INTENT_NAME, vizIntent);
 					put(IDAConst.PARAM_FILTER_STRING, "all");
 					put(IDAConst.PARAM_TEXT_MSG, "Suggested visualization rendered");
-					put("isGrouped", "false");
+					put("Group_Column_choice", "false");
 					put("Reference_Values_choice", "false");
 				}};
 				for (String param : paramList.keySet()) {
@@ -92,7 +92,7 @@ public class SuggestVisualization implements Action {
 						List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, false);
 						columnMap = columnDetail.get(0);
 						columnUniquenessMap = columnDetail.get(1);
-						String paramType = columnMap.get(paramMap.get(attributeListViz.get(attrpos)).toString());
+						String paramType = columnMap.get(paramMap.get(attributeListViz.get(attrpos)).toString().toLowerCase());
 						Set<String> options = getFilteredInstances(attributeListViz.get(attrpos), paramType.toLowerCase(), paramMap.get(attributeListViz.get(attrpos)).toString(), false, paramMap);
 						if(options.contains(IDAConst.COLUMN_TYPE_BINS))
 							options.remove(IDAConst.COLUMN_TYPE_BINS);
@@ -135,7 +135,7 @@ public class SuggestVisualization implements Action {
 					if (!instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY).isEmpty()) {
 						areValuesUnique = areCompositeColumnsUnique(columnName, instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY), paramMap);
 					} else {
-						areValuesUnique = Boolean.parseBoolean(columnUniquenessMap.get(columnName));
+						areValuesUnique = Boolean.parseBoolean(columnUniquenessMap.get(columnName.toLowerCase()));
 					}
 					if ((IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(instanceParamType) && !areValuesUnique) ||
 							(IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(instanceParamType) && areValuesUnique)) {
@@ -167,7 +167,7 @@ public class SuggestVisualization implements Action {
 			}
 		}
 		for (String col : columnsLst) {
-			if (!Boolean.parseBoolean(columnUniquenessMap.get(col))) {
+			if (!Boolean.parseBoolean(columnUniquenessMap.get(col.toLowerCase()))) {
 				areAllUnique = false;
 			}
 		}

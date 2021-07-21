@@ -552,8 +552,8 @@ public class ClusterAction implements Action {
 		List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, new ArrayList<>(keys), false);
 		Map<String, String> columnMap = columnDetail.get(0);
 		Map<String, Map<String, String>> indicesMap = new HashMap<>();
-		keys = keys.stream().filter(i -> !columnMap.get(i).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
-		numericKeys = numericKeys.stream().filter(i -> columnMap.get(i).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
+		keys = keys.stream().filter(i -> !columnMap.get(i.toLowerCase()).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
+		numericKeys = numericKeys.stream().filter(i -> columnMap.get(i.toLowerCase()).equals(IDAConst.COLUMN_TYPE_NUMERIC)).collect(Collectors.toSet());
 		Map<String, String> wordToIndexMap;
 		List<String> entriesLst;
 		for (String key : keys) {
