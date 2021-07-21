@@ -96,7 +96,7 @@ function DiscardDialog(props) {
 				</DialogContentText>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleYes} color="primary" color="secondary"
+				<Button onClick={handleYes} color="secondary"
 					style={{ textTransform: "Capitalize" }}>
 					Yes!
 					</Button>
@@ -610,7 +610,7 @@ class DSUploadWizard extends React.Component {
 					onClose={() => {
 						this.setState({ showError: false });
 					}}
-					autoHideDuration="5000"
+					autoHideDuration={5000}
 				>
 					<Alert severity="error">{this.state.errorMsg}</Alert>
 				</Snackbar>

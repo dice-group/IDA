@@ -106,7 +106,7 @@ export default function Home(props) {
 					<Typography variant="h6" className={classes.title} align="center">
 						Intelligent Data Science Chatbot
 					</Typography>
-					<CopyrightIcon className="context-icon" ref={buttonRef} onClick={handleContextPopover} />
+					<CopyrightIcon className="context-icon" hidden ref={buttonRef} onClick={handleContextPopover} />
 					<Popover
 						open={Boolean(anchorEl)}
 						anchorEl={getAnchorEl()}
@@ -132,8 +132,7 @@ export default function Home(props) {
 							</ul>
 						</div>
 					</Popover>
-					<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/"
-						target="_blank">
+					<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/" target="_blank" rel="noopener noreferrer">
 						<IconButton style={{ color: "#fff", marginRight: "10px" }} aria-label="info about the project">
 							<InfoIcon />
 						</IconButton>
@@ -216,7 +215,7 @@ export default function Home(props) {
 				/>
 
 			</div>
-			<DSUploadWizard isOpen={isdsUploadWizardOpen} close={closeUploadWizard}/>
+			<DSUploadWizard isOpen={isdsUploadWizardOpen} close={closeUploadWizard} />
 		</>
 	);
 }

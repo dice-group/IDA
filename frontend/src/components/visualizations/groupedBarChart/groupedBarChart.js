@@ -47,18 +47,17 @@ export default class IDAGroupedBarGraph extends Component {
 
     componentDidMount() {
         this.colorFunction = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemePaired);
+        this.height = window.innerHeight * 0.69;
         this.drawGraph();
     }
 
     drawGraph() {
         this.width = Math.max(this.graphData.length * this.data.xAxisLabels.length * 25, this.width);
-        const legendSvg = d3.select("#legend-container").append("svg");
 
         const svg = d3.select("#" + this.containerId)
             .append("svg")
             .attr("height", this.height)
             .attr("width", this.width);
-        const groupKey = "groupLabel";
         const keys = this.data.xAxisLabels;
 
         const x0 = d3.scaleBand()
@@ -74,8 +73,6 @@ export default class IDAGroupedBarGraph extends Component {
         const y = d3.scaleLinear()
             .domain([0, d3.max(this.graphData, (d) => d3.max(keys, (key) => d[`${key}`]))]).nice()
             .rangeRound([this.height - this.margin.bottom, this.margin.top]);
-
-        const color = d3.scaleOrdinal(this.data.xAxisLabels, d3.schemeCategory10);
 
         const group = svg.append("g")
             .attr("name", "group")
@@ -121,7 +118,7 @@ export default class IDAGroupedBarGraph extends Component {
 
         var xval = 0;
         var yval = 0;
-        group._groups[0].map((g) => {
+        group._groups[0].forEach((g) => {
             var barcount = Math.max(g.childNodes.length) - 1;
             xval = g.childNodes[0].attributes[0].value;
             yval = +g.childNodes[`${barcount}`].attributes[0].value + +15;

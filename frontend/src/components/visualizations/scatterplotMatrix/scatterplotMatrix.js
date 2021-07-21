@@ -152,7 +152,7 @@ export default class IDAScatterPlotMatrix extends Component {
 			.join("g")
 			.attr("transform", ([i, j]) => `translate(${(i * size) + padding},${j * size})`);
 
-		const rect = cell
+		cell
 			.append("rect")
 			.attr("fill", "transparent")
 			.attr("stroke", "#aaa")
@@ -176,7 +176,7 @@ export default class IDAScatterPlotMatrix extends Component {
 					}));
 					tempData = tempData.sort((a, b) => a.x > b.x ? 1 : a.x < b.x ? -1 : 0);
 					self.plotData = {
-						"label": "Scatterplot for " + `${columns[`${i}`]}` + " and " + `${columns[`${j}`]}`,
+						"label": `Scatterplot for ${columns[`${i}`]} and ${columns[`${j}`]}`,
 						"items": tempData,
 						"xAxisLabel": `${columns[`${i}`]}`,
 						"yAxisLabel": `${columns[`${j}`]}`,
@@ -209,7 +209,7 @@ export default class IDAScatterPlotMatrix extends Component {
 				});
 		});
 
-		const circle = cell
+		cell
 			.selectAll("circle")
 			.attr("r", 3.5)
 			.attr("fill-opacity", 0.7)
@@ -266,7 +266,7 @@ export default class IDAScatterPlotMatrix extends Component {
 						</div>
 					</Grid>
 				</Hidden>
-				<Grid item md={9} className="tab-container">
+				<Grid item md={9} className="scatterplot-matrix-tab-container">
 					<div className="scatterplot-matrix-container" id={this.containerId}></div>
 				</Grid>
 				<Hidden mdDown>

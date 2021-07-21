@@ -123,7 +123,7 @@ export default class IDAScatterPLot extends Component {
 			.range([this.margin.left, this.width])
 
 
-		var clip = svg.append("defs").append("svg:clipPath")
+		svg.append("defs").append("svg:clipPath")
 			.attr("id", this.containerId + "-clip")
 			.append("svg:rect")
 			.attr("width", this.width)

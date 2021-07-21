@@ -4,12 +4,14 @@ import "./chatbotcomp.css";
 import { IDA_CONSTANTS } from "../constants";
 import idaChatbotActionHandler from "../action-handler";
 import IDALinearProgress from "../progress/progress";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import CloseIcon from "@material-ui/icons/Close";
 import Draggable from "react-draggable";
 
 export default class ChatApp extends React.Component {
 
 	suggestionParams = null;
+	sessionTimeOut = null;
 	chatbotMessage = "";
 	payload;
 
@@ -103,23 +105,23 @@ export default class ChatApp extends React.Component {
 		this.state.iterator !== -1 && this.msgIterator(e, userMsgs);
 		this.suggestionParams = null;
 
-		if (!this.state.timeOut) {
-			const timeOut = setTimeout(() => {
-				this.setState({
-					timeOut: null,
-					textAreaDisable: true,
-					messages: [...this.state.messages, {
-						sender: "them",
-						timestamp: Date.now(),
-						message: "You have been inactive with IDA for 30 minutes! Your session has been expired. Kindly reload the page."
-					}]
-				});
-			}, 1000 * 60 * 30);
-			this.setState({ timeOut });
-		}
 	}
 
 	processMessage = (msg) => {
+		if (this.sessionTimeOut) {
+			clearTimeout(this.sessionTimeOut);
+		}
+		this.sessionTimeOut = setTimeout(() => {
+			this.setState({
+				timeOut: null,
+				textAreaDisable: true,
+				messages: [...this.state.messages, {
+					sender: "them",
+					timestamp: Date.now(),
+					message: "You have been inactive with IDA for 30 minutes! Your session has been expired. Kindly reload the page."
+				}]
+			});
+		}, 1000 * 60 * 30);
 		axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", msg, { withCredentials: true, },)
 			.then((response) => {
 				this.payload = response.data.payload;
@@ -163,7 +165,7 @@ export default class ChatApp extends React.Component {
 
 				attrsExtract.forEach((e) => {
 					var attrs = e.split("=");
-					idaBtn[attrs[0]] = attrs[1].replaceAll(/\'|\"/g, "");
+					idaBtn[attrs[0]] = attrs[1].replaceAll(/'|"/g, "");
 				});
 
 				return idaBtn;
@@ -174,12 +176,12 @@ export default class ChatApp extends React.Component {
 		return processed instanceof Array ? processed : [processed];
 	}
 
-	idaElementRenderer(el) {
+	idaElementRenderer(el, key) {
 		const idaEles = {
 			"ida-btn": "button"
 		};
 
-		if(el.vizParams) {
+		if (el.vizParams) {
 			this.suggestionParams = this.payload[el.vizParams];
 		}
 
@@ -187,7 +189,8 @@ export default class ChatApp extends React.Component {
 			onClick: () => {
 				this.messageSend({ keyCode: 13, target: { value: el.msg } });
 			}, // mimicking message sent from input field
-			className: el.style
+			className: el.style,
+			key
 		}, el.value);
 	}
 
@@ -202,14 +205,14 @@ export default class ChatApp extends React.Component {
 			this.setState({
 				iterator: this.state.iterator > 0 ? this.state.iterator - 1 : this.state.iterator,
 			});
-			target.value = userMsgs[this.state.iterator].message;
+			target.value = userMsgs[this.state.iterator].message.trim();
 		} else if (e.keyCode === 40) {
 			// down arrow key
 			const iter = userMsgs.length - 1 > this.state.iterator ? this.state.iterator + 1 : this.state.iterator;
 			this.setState({
 				iterator: iter
 			}, () => {
-				target.value = userMsgs[this.state.iterator].message;
+				target.value = userMsgs[this.state.iterator].message.trim();
 			});
 		}
 	}
@@ -246,7 +249,7 @@ export default class ChatApp extends React.Component {
 									this.state.messages.map((val, i) => {
 										if (val.sender === "user") {
 											return (
-												<div className="clearfix">
+												<div className="clearfix" key={i}>
 													<div className="user" key={i}>
 														<div className="msg" key={Math.random()}> {val.message}</div>
 														<div
@@ -256,15 +259,15 @@ export default class ChatApp extends React.Component {
 											);
 										} else {
 											return (
-												<div className="clearfix">
+												<div className="clearfix" key={i}>
 													<div className="agent" key={Math.random()}>
 														<div>
 															<div className="msg" key={Math.random()}>{
-																this.idaElementParser(val.message).map((token) => {
+																this.idaElementParser(val.message).map((token, j) => {
 																	if (token instanceof Object) {
-																		return this.idaElementRenderer(token);
+																		return this.idaElementRenderer(token, j);
 																	} else {
-																		return <span
+																		return <span key={j}
 																			dangerouslySetInnerHTML={{ __html: token }} />;
 																	}
 																})
@@ -283,8 +286,11 @@ export default class ChatApp extends React.Component {
 						</div>
 						<div className="chat-area-input clearfix">
 							<IDALinearProgress hide={this.state.hideProgress} />
-							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} disabled={this.state.textAreaDisable} />
+							<textarea id="chat-input" placeholder="Enter your message .." onKeyUp={this.messageSend} disabled={(this.state.textAreaDisable || !this.state.hideProgress)} />
 							<button hidden id="send-btn" onClick={this.onSendClick}></button>
+							<div className="ida-spinner-container" hidden={this.state.hideProgress}>
+								<CircularProgress className="ida-spinner" color="inherit" />
+							</div>
 						</div>
 					</div>
 				</Draggable>
