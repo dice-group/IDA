@@ -39,6 +39,7 @@ public class RDFUtil {
 	private Map<String, String> paramDisplayMessageMap = null;
 	private Map<String, String> paramOptionalMessageMap = null;
 	private Map<String, String> userHelpMessageMap = null;
+	private List<String> visualizationList = null;
 
 	/**
 	 * @param queryString the SPARQL query to be executed on the RDF dataset
@@ -485,5 +486,27 @@ public class RDFUtil {
 		}
 		model = null;
 		return userHelpMessageMap;
+	}
+
+	public List<String> getVisualizationList() {
+		if(visualizationList != null) {
+			return visualizationList;
+		}
+		visualizationList = new ArrayList<>();
+		StringBuilder queryString = new StringBuilder(IDAConst.IDA_SPARQL_PREFIX)
+				.append("SELECT ?vizName ")
+				.append("WHERE { ")
+				.append("	?s a ivoc:Visualization ; ")
+				.append("	   rdfs:label ?vizName ")
+				.append(" }");
+		ResultSet attributeResultSet = getResultFromQuery(queryString.toString(), "ida_viz");
+		if (attributeResultSet == null) {
+			return null;
+		}
+		while (attributeResultSet.hasNext()) {
+			QuerySolution querySolution = attributeResultSet.next();
+			visualizationList.add(querySolution.get("vizName").asLiteral().getString());
+		}
+		return visualizationList;
 	}
 }
