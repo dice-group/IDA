@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Class to expose util methods for Data based operation in IDA
@@ -46,15 +47,21 @@ public class DataUtil {
 	 */
 	public List<Map<String, String>> filterData(List<Map<String, String>> fileData, List<String> columns, Map<String, String> columnMap) {
 		List<Map<String, String>> extractedData = new ArrayList<>();
+		List<Map<String, String>> tableData = fileData.stream().map(entry -> {
+			Map<String, String> tempEntry = new HashMap<>();
+			entry.keySet().forEach(key -> tempEntry.put(key.toLowerCase(), entry.get(key)));
+			return tempEntry;
+		}).collect(Collectors.toList());
 		int rangeStart = 0;
-		int rangeEnd = fileData.size();
+		int rangeEnd = tableData.size();
 
 		for (int i = rangeStart; i < rangeEnd; i++) {
 			Map<String, String> dataRow = new HashMap<>();
 			for (String column : columns) {
+				column = column.toLowerCase();
 				// Getting data only from required columns
-				String columnValue = fileData.get(i).get(column);
-				if (columnMap.get(column).equalsIgnoreCase("Numeric"))
+				String columnValue = tableData.get(i).get(column);
+				if (columnMap.get(column.toLowerCase()).equalsIgnoreCase("Numeric"))
 					dataRow.put(column, DbUtils.manageNullValues(columnValue.replaceAll(",", ".")));
 				else
 					dataRow.put(column, DbUtils.manageNullValues(columnValue));

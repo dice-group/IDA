@@ -123,6 +123,7 @@ public class VisualizeAction implements Action {
 			paramOptionalMessageMap = rdfUtil.getParamOptionalMessages();
 			if (attributeList.containsValue(IDAConst.HAS_LIST_COLUMN)) {
 				columnListVizProcessed = processListAttribute(paramMap, vizType, datasetName, tableName, onTemporaryData, filterString, message);
+				columnList = (ArrayList<String>) columnList.stream().map(String::toLowerCase).collect(Collectors.toList());
 			} else {
 				columnNameList = getColumnNames(attributeList, paramMap);
 				List<Map<String, String>> columnDetail = ValidatorUtil.areParametersValid(datasetName, tableName, columnNameList, onTemporaryData);
@@ -178,7 +179,7 @@ public class VisualizeAction implements Action {
 						chatMessageResponse.setMessage(IDAConst.LINE_CHART_LOADED);
 						break;
 					case IDAConst.VIZ_TYPE_SCATTER_PLOT_MATRIX:
-						createScatterPlotMatrixData(tableData, columnList, labelColumn, refColumn);
+						createScatterPlotMatrixData(tableData, columnList, labelColumn.toLowerCase(), refColumn.toLowerCase());
 						chatMessageResponse.setUiAction(IDAConst.UIA_SCATTERPLOT_MATRIX);
 						chatMessageResponse.setMessage(IDAConst.SCATTER_PLOT_MATRIX_LOADED);
 						break;
@@ -243,7 +244,7 @@ public class VisualizeAction implements Action {
 				dialogFlowUtil.deleteContext("get_column");
 				refColumn = (String) paramMap.get(attributeList.get(2));
 				if (refColumn != null) {
-					if (columnMap.containsKey(refColumn)) {
+					if (columnMap.containsKey(refColumn.toLowerCase())) {
 						columnList.add(refColumn);
 						labelNeeded = false;
 						dialogFlowUtil.deleteContext("get_labelColumn");
@@ -293,7 +294,7 @@ public class VisualizeAction implements Action {
 		ArrayList<String> columnListTemp;
 		columnListTemp = (ArrayList<String>) columnList.clone();
 		for (String column : columnList) {
-			if (!columnMap.get(column).equalsIgnoreCase(type))
+			if (!columnMap.get(column.toLowerCase()).equalsIgnoreCase(type))
 				columnListTemp.remove(column);
 		}
 		return columnListTemp;
@@ -349,7 +350,7 @@ public class VisualizeAction implements Action {
 			if (labelColumn.isEmpty()) {
 				textMsg = new StringBuilder(paramDisplayMessageMap.get(IDAConst.SCATTERPLOT_MATRIX_REFERENCE_PARAM));
 			} else {
-				if (!columnMap.containsKey(labelColumn)) {
+				if (!columnMap.containsKey(labelColumn.toLowerCase())) {
 					textMsg = new StringBuilder("Column " + labelColumn + " doesn't exist in the loaded table.");
 				} else
 					return true;
@@ -418,7 +419,7 @@ public class VisualizeAction implements Action {
 				}
 			}
 			paramType = attributeType.isEmpty() ?
-					columnMap.get(paramMap.get(attributeName).toString()) :
+					columnMap.get(paramMap.get(attributeName).toString().toLowerCase()) :
 					attributeType;
 			options = getFilteredInstances(attributeName, paramType.toLowerCase(), paramMap.get(attributeName).toString(), !attributeType.isEmpty(), paramMap);
 			if (createResponseForUser(options, i, attributeName, attributeType, paramMap, paramType)) {
@@ -478,7 +479,7 @@ public class VisualizeAction implements Action {
 		}
 		if (i == 1 && !attributeType.isEmpty() && IDAConst.INSTANCE_PARAM_TYPE_BINS.equals(attributeType.toLowerCase())) {
 			Value paramVal = (Value) paramMap.get(IDAConst.PARAMETER_TYPE_BIN_SIZE);
-			if ("date".equals(columnMap.get(paramMap.get(attributeName).toString()))) {
+			if ("date".equals(columnMap.get(paramMap.get(attributeName).toString().toLowerCase()))) {
 				if (paramVal == null || !paramVal.hasStructValue()) {
 					dialogFlowUtil.deleteContext("get_" + attributeList.get(i + 1));
 					dialogFlowUtil.setContext(IDAConst.CONTEXT_GET_BIN_DURATION, 5);
@@ -526,7 +527,7 @@ public class VisualizeAction implements Action {
 					if (!instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY).isEmpty()) {
 						areValuesUnique = areCompositeColumnsUnique(columnName, instanceMap.get(instance).get(param).get(IDAConst.INSTANCE_PARAM_DEPENDENT_KEY), paramMap);
 					} else {
-						areValuesUnique = Boolean.parseBoolean(columnUniquenessMap.get(columnName));
+						areValuesUnique = Boolean.parseBoolean(columnUniquenessMap.get(columnName.toLowerCase()));
 					}
 					if ((IDAConst.INSTANCE_PARAM_TYPE_UNIQUE.equals(instanceParamType) && !areValuesUnique) ||
 							(IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(instanceParamType) && areValuesUnique)) {
@@ -596,8 +597,8 @@ public class VisualizeAction implements Action {
 	 * @param paramMap - map of parameter and its value from dialogflow
 	 */
 	private void createGraphData(String param1, String param2, Map<String, Object> paramMap) {
-		String xAxisColumn = parameterMap.get(param1);
-		String yAxisColumn = parameterMap.get(param2);
+		String xAxisColumn = parameterMap.get(param1).toLowerCase();
+		String yAxisColumn = parameterMap.get(param2).toLowerCase();
 		String xAxisColumnType = parameterTypeMap.get(param1 + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		String yAxisColumnType = parameterTypeMap.get(param2 + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		graphItems = new HashMap<>();
@@ -660,12 +661,12 @@ public class VisualizeAction implements Action {
 			Value paramVal = (Value) paramMap.get(IDAConst.PARAMETER_TYPE_BIN_SIZE);
 			int binSize;
 			String binType;
-			if (IDAConst.COLUMN_TYPE_NUMERIC.equals(columnMap.get(xAxisColumn))) {
+			if (IDAConst.COLUMN_TYPE_NUMERIC.equals(columnMap.get(xAxisColumn.toLowerCase()))) {
 				if (groupingNeeded) {
 					processGroupedBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("Group_Column").toString());
 				}
 				processBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, labelCounts);
-			} else if (IDAConst.COLUMN_TYPE_DATE.equals(columnMap.get(xAxisColumn))) {
+			} else if (IDAConst.COLUMN_TYPE_DATE.equals(columnMap.get(xAxisColumn.toLowerCase()))) {
 				binSize = (int) Math.abs(paramVal.getStructValue().getFieldsMap().get(IDAConst.PARAMETER_TYPE_DURATION_SIZE).getNumberValue());
 				binType = paramVal.getStructValue().getFieldsMap().get(IDAConst.PARAMETER_TYPE_DURATION_UNIT).getStringValue();
 				if (groupingNeeded) {
@@ -674,9 +675,9 @@ public class VisualizeAction implements Action {
 				processBinsForDateLabels(binSize, binType, xAxisColumn, yAxisColumn, yAxisColumnType, labelCounts);
 			}
 		}
-		if (IDAConst.COLUMN_TYPE_NUMERIC.equals(columnMap.get(xAxisColumn))) {
+		if (IDAConst.COLUMN_TYPE_NUMERIC.equals(columnMap.get(xAxisColumn.toLowerCase()))) {
 			comparator = IDAConst.INSTANCE_PARAM_TYPE_BINS.equals(xAxisColumnType) ? LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DOUBLE_BIN) : LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DOUBLE);
-		} else if (IDAConst.COLUMN_TYPE_DATE.equals(columnMap.get(xAxisColumn))) {
+		} else if (IDAConst.COLUMN_TYPE_DATE.equals(columnMap.get(xAxisColumn.toLowerCase()))) {
 			comparator = IDAConst.INSTANCE_PARAM_TYPE_BINS.equals(xAxisColumnType) ? LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DATE_BIN) : LableComparator.getForKey(IDAConst.COMPARATOR_TYPE_DATE);
 		}
 	}
@@ -1135,7 +1136,7 @@ public class VisualizeAction implements Action {
 			}
 		}
 		for (String col : columnsLst) {
-			if (!Boolean.parseBoolean(columnUniquenessMap.get(col))) {
+			if (!Boolean.parseBoolean(columnUniquenessMap.get(col.toLowerCase()))) {
 				areAllUnique = false;
 			}
 		}
@@ -1286,9 +1287,9 @@ public class VisualizeAction implements Action {
 	private void createLineChartResponse(Map<String, Object> paramMap) {
 		LineChartData lineChartData = new LineChartData();
 		getParameters(paramMap);
-		String dateColumn = parameterMap.get(IDAConst.LINE_CHART_TEMPORAL_PARAM);
-		String labelColumn = parameterMap.get(IDAConst.LINE_CHART_LABLE_PARAM);
-		String valueColumn = parameterMap.get(IDAConst.LINE_CHART_VALUE_PARAM);
+		String dateColumn = parameterMap.get(IDAConst.LINE_CHART_TEMPORAL_PARAM).toLowerCase();
+		String labelColumn = parameterMap.get(IDAConst.LINE_CHART_LABLE_PARAM).toLowerCase();
+		String valueColumn = parameterMap.get(IDAConst.LINE_CHART_VALUE_PARAM).toLowerCase();
 		String valueType = parameterTypeMap.get(IDAConst.LINE_CHART_VALUE_PARAM + IDAConst.ATTRIBUTE_TYPE_SUFFIX);
 		Map<String, Map<String, Double>> chartData = createLineChartData(dateColumn, labelColumn, valueColumn, valueType.toLowerCase());
 		lineChartData.setxAxisLabel(dateColumn);
@@ -1327,10 +1328,10 @@ public class VisualizeAction implements Action {
 	 * Method to create scatterplot data from given parameter values.
 	 */
 	private void createScatterPlotData() {
-		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM);
-		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM);
-		String referenceColumn = parameterMap.get(IDAConst.REFERENCE_VALUES_PARAM);
-		String labelColumn = parameterMap.get(IDAConst.SCATTER_PLOT_LABEL_PARAM);
+		String xAxisColumn = parameterMap.get(IDAConst.X_AXIS_PARAM).toLowerCase();
+		String yAxisColumn = parameterMap.get(IDAConst.Y_AXIS_PARAM).toLowerCase();
+		String referenceColumn = parameterMap.getOrDefault(IDAConst.REFERENCE_VALUES_PARAM, "").toLowerCase();
+		String labelColumn = parameterMap.get(IDAConst.SCATTER_PLOT_LABEL_PARAM).toLowerCase();
 		String graphLabel = "Scatter plot for " + xAxisColumn + " and " + yAxisColumn;
 		List<ScatterPlotItem> scatterPlotItemList = new ArrayList<>();
 		double xValue;

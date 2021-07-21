@@ -129,8 +129,8 @@ public class ValidatorUtil {
 						updateColumnDetailMaps(columnDetails, columnTypeMap, columnUniquenessMap, columns);
 						if(fromTemporaryData) {
 							columns.add("cluster");
-							columnTypeMap.put("Cluster", "numeric");
-							columnUniquenessMap.put("Cluster", "false");
+							columnTypeMap.put("cluster", "numeric");
+							columnUniquenessMap.put("cluster", "false");
 						}
 						for (String column : columnList) {
 							if (!columns.contains(column.toLowerCase())) {
@@ -152,7 +152,7 @@ public class ValidatorUtil {
 	private static void updateColumnDetailMaps(JsonNode columnDetails, Map<String, String> columnTypeMap, Map<String, String> columnUniquenessMap, List<String> columns) {
 		String columnName;
 		for (int j = 0; j < columnDetails.size(); j++) {
-			columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText();
+			columnName = columnDetails.get(j).get(IDAConst.COLUMN_NAME_ATTR).asText().toLowerCase();
 			columns.add(columnName.toLowerCase());
 			columnTypeMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_TYPE_ATTR).asText());
 			columnUniquenessMap.put(columnName, columnDetails.get(j).get(IDAConst.COLUMN_UNIQUE_ATTR).asText());
