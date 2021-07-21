@@ -57,6 +57,11 @@
   cursor: pointer;
 }
 
+.toolbar-icons {
+  position: absolute;
+  right: 24px;
+}
+
 /**
 * Style for larger devices only
 */

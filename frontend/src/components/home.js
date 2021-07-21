@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 		marginRight: theme.spacing(2),
 	},
 	title: {
-		flexGrow: 1,
+		flexGrow: 1
 	}
 }));
 
@@ -106,54 +106,56 @@ export default function Home(props) {
 					<Typography variant="h6" className={classes.title} align="center">
 						Intelligent Data Science Chatbot
 					</Typography>
-					<CopyrightIcon className="context-icon" hidden ref={buttonRef} onClick={handleContextPopover} />
-					<Popover
-						open={Boolean(anchorEl)}
-						anchorEl={getAnchorEl()}
-						onClose={handleContextPopoverClose}
-						anchorOrigin={{
-							vertical: "bottom",
-							horizontal: "center",
-						}}
-						transformOrigin={{
-							vertical: "top",
-							horizontal: "center",
-						}}
-					>
-						<div>
-							<ul>
-								{
-									contexts.map(
-										(context, index) => (
-											<li key={index}>{context}</li>
+					<div class="toolbar-icons">
+						<CopyrightIcon className="context-icon" hidden ref={buttonRef} onClick={handleContextPopover} />
+						<Popover
+							open={Boolean(anchorEl)}
+							anchorEl={getAnchorEl()}
+							onClose={handleContextPopoverClose}
+							anchorOrigin={{
+								vertical: "bottom",
+								horizontal: "center",
+							}}
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "center",
+							}}
+						>
+							<div>
+								<ul>
+									{
+										contexts.map(
+											(context, index) => (
+												<li key={index}>{context}</li>
+											)
 										)
-									)
-								}
-							</ul>
-						</div>
-					</Popover>
-					<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/" target="_blank" rel="noopener noreferrer">
-						<IconButton style={{ color: "#fff", marginRight: "10px" }} aria-label="info about the project">
-							<InfoIcon />
-						</IconButton>
-					</a>
-					<IconButton size="small" style={{ color: "#fff" }} aria-label="toggle" onClick={toggleChatWindow}>
-						{
-							isChatbotOpen ? (
-								<Zoom in={isChatbotOpen} mountOnEnter unmountOnExit>
-									<SpeakerNotesOffIcon />
-								</Zoom>
-							) : null
-						}
-						{
-							!isChatbotOpen ? (
-								<Zoom direction="left" in={!isChatbotOpen} mountOnEnter unmountOnExit>
-									<ChatIcon />
-								</Zoom>
-							) : null
-						}
+									}
+								</ul>
+							</div>
+						</Popover>
+						<a href="https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/" target="_blank" rel="noopener noreferrer">
+							<IconButton style={{ color: "#fff", marginRight: "10px" }} aria-label="info about the project">
+								<InfoIcon />
+							</IconButton>
+						</a>
+						<IconButton size="small" style={{ color: "#fff" }} aria-label="toggle" onClick={toggleChatWindow}>
+							{
+								isChatbotOpen ? (
+									<Zoom in={isChatbotOpen} mountOnEnter unmountOnExit>
+										<SpeakerNotesOffIcon />
+									</Zoom>
+								) : null
+							}
+							{
+								!isChatbotOpen ? (
+									<Zoom direction="left" in={!isChatbotOpen} mountOnEnter unmountOnExit>
+										<ChatIcon />
+									</Zoom>
+								) : null
+							}
 
-					</IconButton>
+						</IconButton>
+					</div>
 				</Toolbar>
 			</AppBar>
 			<Toolbar />
