@@ -619,7 +619,7 @@ public class VisualizeAction implements Action {
 			}
 		} else if (IDAConst.INSTANCE_PARAM_TYPE_NON_UNIQUE.equals(xAxisColumnType)) {
 			if (groupingNeeded) {
-				String groupColumn = paramMap.get("Group_Column").toString();
+				String groupColumn = paramMap.get("Group_Column").toString().toLowerCase();
 				List<String> groups = tableData.stream().map(e -> e.get(groupColumn)).distinct().collect(Collectors.toList());
 				List<String> labels = tableData.stream().map(e -> e.get(xAxisColumn)).distinct().collect(Collectors.toList());
 				Map<String, Double> groupEntries = new HashMap<>();
@@ -663,14 +663,14 @@ public class VisualizeAction implements Action {
 			String binType;
 			if (IDAConst.COLUMN_TYPE_NUMERIC.equals(columnMap.get(xAxisColumn.toLowerCase()))) {
 				if (groupingNeeded) {
-					processGroupedBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("Group_Column").toString());
+					processGroupedBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("Group_Column").toString().toLowerCase());
 				}
 				processBinsForNumericLabels((int) Math.abs(paramVal.getNumberValue()), xAxisColumn, yAxisColumn, yAxisColumnType, labelCounts);
 			} else if (IDAConst.COLUMN_TYPE_DATE.equals(columnMap.get(xAxisColumn.toLowerCase()))) {
 				binSize = (int) Math.abs(paramVal.getStructValue().getFieldsMap().get(IDAConst.PARAMETER_TYPE_DURATION_SIZE).getNumberValue());
 				binType = paramVal.getStructValue().getFieldsMap().get(IDAConst.PARAMETER_TYPE_DURATION_UNIT).getStringValue();
 				if (groupingNeeded) {
-					processGroupedBinsForDateLabels(binSize, binType, xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("Group_Column").toString());
+					processGroupedBinsForDateLabels(binSize, binType, xAxisColumn, yAxisColumn, yAxisColumnType, paramMap.get("Group_Column").toString().toLowerCase());
 				}
 				processBinsForDateLabels(binSize, binType, xAxisColumn, yAxisColumn, yAxisColumnType, labelCounts);
 			}
