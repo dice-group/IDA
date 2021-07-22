@@ -488,7 +488,7 @@ class DSUploadWizard extends React.Component {
 																<td><input value={e.colDesc}
 																	name={`filesMd[${i}].fileColMd[${b}].colDesc`}
 																	onChange={this.handleChange} /></td>
-																<td>{e.colName || e.colAttr}</td>
+																<td>{e.colAttr}</td>
 																<td>
 																	<select value={e.colType}
 																		name={`filesMd[${i}].fileColMd[${b}].colType`}
