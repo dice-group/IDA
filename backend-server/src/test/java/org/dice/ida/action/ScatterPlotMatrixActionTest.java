@@ -42,71 +42,71 @@ public class ScatterPlotMatrixActionTest {
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData = new ScatterPlotMatrixData();
 		expectedData.setColumns(new ArrayList<>() {{
-			add("Pop. Density (per sq. mi.)");
-			add("GDP ($ per capita)");
-			add("Literacy (%)");
+			add("pop. density (per sq. mi.)");
+			add("gdp ($ per capita)");
+			add("literacy (%)");
 		}});
-		expectedData.setLabelColumn("Region");
+		expectedData.setLabelColumn("region");
 		expectedData.setItems(new ArrayList<>() {{
 			add(new HashMap<>() {{
-				put("Literacy (%)", "36.0");
-				put("GDP ($ per capita)", "700");
-				put("Region", "ASIA (EX. NEAR EAST)         ");
-				put("Pop. Density (per sq. mi.)", "48.0");
+				put("literacy (%)", "36.0");
+				put("gdp ($ per capita)", "700");
+				put("region", "ASIA (EX. NEAR EAST)         ");
+				put("pop. density (per sq. mi.)", "48.0");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "4500");
-				put("Literacy (%)", "86.5");
-				put("Pop. Density (per sq. mi.)", "124.6");
-				put("Region", "EASTERN EUROPE                     ");
+				put("gdp ($ per capita)", "4500");
+				put("literacy (%)", "86.5");
+				put("pop. density (per sq. mi.)", "124.6");
+				put("region", "EASTERN EUROPE                     ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "6000");
-				put("Literacy (%)", "70.0");
-				put("Pop. Density (per sq. mi.)", "13.8");
-				put("Region", "NORTHERN AFRICA                    ");
+				put("gdp ($ per capita)", "6000");
+				put("literacy (%)", "70.0");
+				put("pop. density (per sq. mi.)", "13.8");
+				put("region", "NORTHERN AFRICA                    ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "8000");
-				put("Literacy (%)", "97.0");
-				put("Pop. Density (per sq. mi.)", "290.4");
-				put("Region", "OCEANIA                            ");
+				put("gdp ($ per capita)", "8000");
+				put("literacy (%)", "97.0");
+				put("pop. density (per sq. mi.)", "290.4");
+				put("region", "OCEANIA                            ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "19000");
-				put("Literacy (%)", "100.0");
-				put("Pop. Density (per sq. mi.)", "152.1");
-				put("Region", "WESTERN EUROPE                     ");
+				put("gdp ($ per capita)", "19000");
+				put("literacy (%)", "100.0");
+				put("pop. density (per sq. mi.)", "152.1");
+				put("region", "WESTERN EUROPE                     ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "1900");
-				put("Literacy (%)", "42.0");
-				put("Pop. Density (per sq. mi.)", "9.7");
-				put("Region", "SUB-SAHARAN AFRICA                 ");
+				put("gdp ($ per capita)", "1900");
+				put("literacy (%)", "42.0");
+				put("pop. density (per sq. mi.)", "9.7");
+				put("region", "SUB-SAHARAN AFRICA                 ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "8600");
-				put("Literacy (%)", "95.0");
-				put("Pop. Density (per sq. mi.)", "132.1");
-				put("Region", "LATIN AMER. & CARIB    ");
+				put("gdp ($ per capita)", "8600");
+				put("literacy (%)", "95.0");
+				put("pop. density (per sq. mi.)", "132.1");
+				put("region", "LATIN AMER. & CARIB    ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "11000");
-				put("Literacy (%)", "89.0");
-				put("Pop. Density (per sq. mi.)", "156.0");
-				put("Region", "LATIN AMER. & CARIB    ");
+				put("gdp ($ per capita)", "11000");
+				put("literacy (%)", "89.0");
+				put("pop. density (per sq. mi.)", "156.0");
+				put("region", "LATIN AMER. & CARIB    ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "11200");
-				put("Literacy (%)", "97.1");
-				put("Pop. Density (per sq. mi.)", "14.4");
-				put("Region", "LATIN AMER. & CARIB    ");
+				put("gdp ($ per capita)", "11200");
+				put("literacy (%)", "97.1");
+				put("pop. density (per sq. mi.)", "14.4");
+				put("region", "LATIN AMER. & CARIB    ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "3500");
-				put("Literacy (%)", "98.6");
-				put("Pop. Density (per sq. mi.)", "99.9");
-				put("Region", "C.W. OF IND. STATES ");
+				put("gdp ($ per capita)", "3500");
+				put("literacy (%)", "98.6");
+				put("pop. density (per sq. mi.)", "99.9");
+				put("region", "C.W. OF IND. STATES ");
 			}});
 		}});
 		assertNotNull(actualData);
@@ -134,47 +134,47 @@ public class ScatterPlotMatrixActionTest {
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData = new ScatterPlotMatrixData();
 		expectedData.setColumns(new ArrayList<>() {{
-			add("Pop. Density (per sq. mi.)");
-			add("GDP ($ per capita)");
-			add("Literacy (%)");
+			add("pop. density (per sq. mi.)");
+			add("gdp ($ per capita)");
+			add("literacy (%)");
 		}});
-		expectedData.setReferenceColumn("Region");
-		expectedData.setLabelColumn("Country");
+		expectedData.setReferenceColumn("region");
+		expectedData.setLabelColumn("country");
 		expectedData.setItems(new ArrayList<>() {{
 			add(new HashMap<>() {{
-				put("Literacy (%)", "36.0");
-				put("GDP ($ per capita)", "700");
-				put("Region", "ASIA (EX. NEAR EAST)         ");
-				put("Pop. Density (per sq. mi.)", "48.0");
-				put("Country", "Afghanistan ");
+				put("literacy (%)", "36.0");
+				put("gdp ($ per capita)", "700");
+				put("region", "ASIA (EX. NEAR EAST)         ");
+				put("pop. density (per sq. mi.)", "48.0");
+				put("country", "Afghanistan ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "4500");
-				put("Literacy (%)", "86.5");
-				put("Pop. Density (per sq. mi.)", "124.6");
-				put("Region", "EASTERN EUROPE                     ");
-				put("Country", "Albania ");
+				put("gdp ($ per capita)", "4500");
+				put("literacy (%)", "86.5");
+				put("pop. density (per sq. mi.)", "124.6");
+				put("region", "EASTERN EUROPE                     ");
+				put("country", "Albania ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "6000");
-				put("Literacy (%)", "70.0");
-				put("Pop. Density (per sq. mi.)", "13.8");
-				put("Region", "NORTHERN AFRICA                    ");
-				put("Country", "Algeria ");
+				put("gdp ($ per capita)", "6000");
+				put("literacy (%)", "70.0");
+				put("pop. density (per sq. mi.)", "13.8");
+				put("region", "NORTHERN AFRICA                    ");
+				put("country", "Algeria ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "8000");
-				put("Literacy (%)", "97.0");
-				put("Pop. Density (per sq. mi.)", "290.4");
-				put("Region", "OCEANIA                            ");
-				put("Country", "American Samoa ");
+				put("gdp ($ per capita)", "8000");
+				put("literacy (%)", "97.0");
+				put("pop. density (per sq. mi.)", "290.4");
+				put("region", "OCEANIA                            ");
+				put("country", "American Samoa ");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "19000");
-				put("Literacy (%)", "100.0");
-				put("Pop. Density (per sq. mi.)", "152.1");
-				put("Region", "WESTERN EUROPE                     ");
-				put("Country", "Andorra ");
+				put("gdp ($ per capita)", "19000");
+				put("literacy (%)", "100.0");
+				put("pop. density (per sq. mi.)", "152.1");
+				put("region", "WESTERN EUROPE                     ");
+				put("country", "Andorra ");
 			}});
 		}});
 		assertNotNull(actualData);
@@ -201,35 +201,35 @@ public class ScatterPlotMatrixActionTest {
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData = new ScatterPlotMatrixData();
 		expectedData.setColumns(new ArrayList<>() {{
-			add("Patient Number");
-			add("Age Bracket");
+			add("patient number");
+			add("age bracket");
 		}});
-		expectedData.setLabelColumn("Detected State");
+		expectedData.setLabelColumn("detected state");
 		expectedData.setItems(new ArrayList<>() {{
 			add(new HashMap<>() {{
-				put("Age Bracket", "20");
-				put("Detected State", "Kerala");
-				put("Patient Number", "1");
+				put("age bracket", "20");
+				put("detected state", "Kerala");
+				put("patient number", "1");
 			}});
 			add(new HashMap<>() {{
-				put("Age Bracket", "UNKNOWN");
-				put("Detected State", "Kerala");
-				put("Patient Number", "2");
+				put("age bracket", "UNKNOWN");
+				put("detected state", "Kerala");
+				put("patient number", "2");
 			}});
 			add(new HashMap<>() {{
-				put("Age Bracket", "UNKNOWN");
-				put("Detected State", "Kerala");
-				put("Patient Number", "3");
+				put("age bracket", "UNKNOWN");
+				put("detected state", "Kerala");
+				put("patient number", "3");
 			}});
 			add(new HashMap<>() {{
-				put("Age Bracket", "45");
-				put("Detected State", "Delhi");
-				put("Patient Number", "4");
+				put("age bracket", "45");
+				put("detected state", "Delhi");
+				put("patient number", "4");
 			}});
 			add(new HashMap<>() {{
-				put("Age Bracket", "24");
-				put("Detected State", "Telangana");
-				put("Patient Number", "5");
+				put("age bracket", "24");
+				put("detected state", "Telangana");
+				put("patient number", "5");
 			}});
 		}});
 		assertNotNull(actualData);
@@ -278,41 +278,41 @@ public class ScatterPlotMatrixActionTest {
 		ScatterPlotMatrixData actualData = (ScatterPlotMatrixData) chatMessageResponse.getPayload().get("scatterPlotMatrixData");
 		ScatterPlotMatrixData expectedData = new ScatterPlotMatrixData();
 		expectedData.setColumns(new ArrayList<>() {{
-			add("Pop. Density (per sq. mi.)");
-			add("GDP ($ per capita)");
-			add("Literacy (%)");
+			add("pop. density (per sq. mi.)");
+			add("gdp ($ per capita)");
+			add("literacy (%)");
 		}});
-		expectedData.setLabelColumn("Cluster");
+		expectedData.setLabelColumn("cluster");
 		expectedData.setItems(new ArrayList<>() {{
 			add(new HashMap<>() {{
-				put("Literacy (%)", "36.0");
-				put("GDP ($ per capita)", "700");
-				put("Cluster", "3");
-				put("Pop. Density (per sq. mi.)", "48.0");
+				put("literacy (%)", "36.0");
+				put("gdp ($ per capita)", "700");
+				put("cluster", "3");
+				put("pop. density (per sq. mi.)", "48.0");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "4500");
-				put("Literacy (%)", "86.5");
-				put("Pop. Density (per sq. mi.)", "124.6");
-				put("Cluster", "0");
+				put("gdp ($ per capita)", "4500");
+				put("literacy (%)", "86.5");
+				put("pop. density (per sq. mi.)", "124.6");
+				put("cluster", "0");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "6000");
-				put("Literacy (%)", "70.0");
-				put("Pop. Density (per sq. mi.)", "13.8");
-				put("Cluster", "3");
+				put("gdp ($ per capita)", "6000");
+				put("literacy (%)", "70.0");
+				put("pop. density (per sq. mi.)", "13.8");
+				put("cluster", "3");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "8000");
-				put("Literacy (%)", "97.0");
-				put("Pop. Density (per sq. mi.)", "290.4");
-				put("Cluster", "5");
+				put("gdp ($ per capita)", "8000");
+				put("literacy (%)", "97.0");
+				put("pop. density (per sq. mi.)", "290.4");
+				put("cluster", "5");
 			}});
 			add(new HashMap<>() {{
-				put("GDP ($ per capita)", "19000");
-				put("Literacy (%)", "100.0");
-				put("Pop. Density (per sq. mi.)", "152.1");
-				put("Cluster", "0");
+				put("gdp ($ per capita)", "19000");
+				put("literacy (%)", "100.0");
+				put("pop. density (per sq. mi.)", "152.1");
+				put("cluster", "0");
 			}});
 
 		}});
