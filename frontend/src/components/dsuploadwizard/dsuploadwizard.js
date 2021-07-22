@@ -37,6 +37,7 @@ import { IDA_CONSTANTS } from "../constants";
 import Dropzone from "react-dropzone";
 
 import axios from "axios";
+import { Typography } from "@material-ui/core";
 
 const useStylesBootstrap = (theme) => ({
 	arrow: {
@@ -223,13 +224,15 @@ class DSUploadWizard extends React.Component {
 				udsi: this.state.udsi,
 				metadata: this.state.metaData
 			}).then((resp) => {
-				this.setState({
-					activeStep: this.state.activeStep + 1,
-					enableLoader: false,
-					showOkBtn: true,
-					showCancelBtn: false,
-					showBackBtn: false
-				});
+				setTimeout(() => {
+					this.setState({
+						activeStep: this.state.activeStep + 1,
+						enableLoader: false,
+						showOkBtn: true,
+						showCancelBtn: false,
+						showBackBtn: false
+					});
+				}, 10000);
 			}).catch((err) => {
 				this.setState({
 					enableLoader: false,
@@ -533,7 +536,10 @@ class DSUploadWizard extends React.Component {
 				</div>);
 			}
 		} else {
-			return <div className="dataset-box-flex"><CircularProgress /></div>;
+			return <div className="dataset-box-flex">
+				<CircularProgress />
+				<Typography variant="h5" className="mt-3 text-primary">Please wait while we upload your dataset</Typography>
+			</div>;
 		}
 	};
 
