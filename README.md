@@ -13,8 +13,13 @@ To get everything up and running follow these steps:
 1.  Setting up Docker (**Only once**)
  	1.  Start a local registry: `docker run -d -p 5000:5000 --name registry registry:2`
 	2.  Create a local single-node Docker swarm: `docker swarm init --advertise-addr 127.0.0.1`
-
+<br/><br/>
 2.  Managing development environment
- 	1.  Starting the IDA stack (from project's root directory): `./services/deploy-dev.sh`.
-	2.  The IDA web interface should now be available at `http://127.0.0.1:8090/`.
-	3.  To stop and remove the running development stack run `docker stack rm ida-stack-dev`.
+ 	1.  Starting the IDA stack (from project's root directory): `./services/deploy-dev.sh`
+	2.  The IDA web interface should now be available at `http://127.0.0.1:4200/`
+	3.  To stop and remove the running development stack run `docker stack rm ida-stack-dev`
+	4.  The fuseki server can be accessed at `http://127.0.0.1:3030`
+
+<br/>
+
+### [Documentation](https://dice-group.github.io/IDA)
