@@ -391,7 +391,7 @@ class DSUploadWizard extends React.Component {
 			if (this.state.metaData) {
 				return (<div className="meta-data-box">
 					<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file.
-						IDA uses these files to perform various operations. Here you can change some relavant fields
+						IDA uses these files to perform various operations. Here you can change some relevant fields
 						kindly go through them all and change them as you like.
 					</div>
 					<form>
@@ -401,7 +401,7 @@ class DSUploadWizard extends React.Component {
 								<td>
 									<input type="text" name="dsName" value={this.state.metaData.dsName}
 										onChange={this.handleChange} />
-									<small className="text-info ml-3">Only alphanumeric characters and '-' are allowed!</small>
+									<small className="text-primary ml-3">Only alphanumeric characters and '-' are allowed!</small>
 								</td>
 							</tr>
 							<tr>
