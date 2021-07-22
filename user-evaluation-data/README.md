@@ -1,5 +1,5 @@
 ## NBA Player Data
-This data is a filtered subset of the NBA Player Dataset on Kaggle (https://www.kaggle.com/justinas/nba-players-data). The data set contains over one decade of data on each player who has been part of an NBA teams' roster from 1996 to 2005. It captures demographic variables such as age, height, weight and place of birth, biographical details like the team played for, draft year and round. In addition, it has basic box score statistics such as games played, average number of points, rebounds, assists, etc.
+This data is a filtered subset of the NBA Player Dataset on Kaggle (https://www.kaggle.com/justinas/nba-players-data). The data set contains over 3 seasons of data on each player who has been part of an NBA teams' roster from 1996-97 to 1998-99 . It captures demographic variables such as age, height, weight and place of birth, biographical details like the team played for, draft year and round. In addition, it has basic box score statistics such as games played, average number of points, rebounds, assists, etc.
 
 Please find the description of the columns below:
 | # | Column Name | Description | Datatype |
