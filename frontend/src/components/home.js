@@ -106,7 +106,7 @@ export default function Home(props) {
 					<Typography variant="h6" className={classes.title} align="center">
 						Intelligent Data Science Chatbot
 					</Typography>
-					<div class="toolbar-icons">
+					<div className="toolbar-icons">
 						<CopyrightIcon className="context-icon" hidden ref={buttonRef} onClick={handleContextPopover} />
 						<Popover
 							open={Boolean(anchorEl)}

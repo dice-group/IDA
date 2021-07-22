@@ -99,12 +99,12 @@ function DiscardDialog(props) {
 				<Button onClick={handleYes} color="secondary"
 					style={{ textTransform: "Capitalize" }}>
 					Yes!
-					</Button>
+				</Button>
 				<Button onClick={() => {
 					this.setState({ showConfirm: false });
 				}} color="primary" variant="outlined" style={{ textTransform: "Capitalize" }}>
 					No
-					</Button>
+				</Button>
 			</DialogActions>
 		</Dialog>
 	);
@@ -391,15 +391,18 @@ class DSUploadWizard extends React.Component {
 			if (this.state.metaData) {
 				return (<div className="meta-data-box">
 					<div className="metadata-info">IDA creates and stores a metadata file for each uploaded file.
-					IDA uses these files to perform various operations. Here you can change some relavant fields
-					kindly go through them all and change them as you like.
+						IDA uses these files to perform various operations. Here you can change some relavant fields
+						kindly go through them all and change them as you like.
 					</div>
 					<form>
 						<table style={{ marginLeft: "16px" }}>
 							<tr>
 								<td width="15%" className="heading required">Dataset name</td>
-								<td><input type="text" name="dsName" value={this.state.metaData.dsName}
-									onChange={this.handleChange} /></td>
+								<td>
+									<input type="text" name="dsName" value={this.state.metaData.dsName}
+										onChange={this.handleChange} />
+									<small className="text-info ml-3">Only alphanumeric characters and '-' are allowed!</small>
+								</td>
 							</tr>
 							<tr>
 								<td width="15%" className="heading">Dataset description</td>
@@ -443,9 +446,11 @@ class DSUploadWizard extends React.Component {
 											<table>
 												<tr>
 													<td className="heading">Display name</td>
-													<td><input type="text" value={f.displayName}
-														name={`filesMd[${i}].displayName`}
-														onChange={this.handleChange} /></td>
+													<td>
+														<input type="text" value={f.displayName}
+															name={`filesMd[${i}].displayName`}
+															onChange={this.handleChange} />
+													</td>
 												</tr>
 												<tr>
 													<td className="heading">File description</td>
