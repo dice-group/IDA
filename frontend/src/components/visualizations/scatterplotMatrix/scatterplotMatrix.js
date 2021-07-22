@@ -12,6 +12,7 @@ import "./scatterplotMatrix.css";
 import { IDA_CONSTANTS } from "./../../constants";
 import IDAScatterPLot from "../scatterplot/scatterplot";
 import IDAModal from "./../../modal/ida.modal";
+
 export default class IDAScatterPlotMatrix extends Component {
 	margin = {
 		top: 20,
@@ -249,44 +250,51 @@ export default class IDAScatterPlotMatrix extends Component {
 	render() {
 		return <>
 			<Grid container>
-				<Hidden mdUp>
-					<Grid item xs={12}>
-						<div className="m-2">
-							{
-								this.state.referenceValues.map((label) => (
-									<Chip
-										key={label}
-										size="small"
-										avatar={<span className="legend-item-sm-icon mr-1" style={{ backgroundColor: this.colorFunction(label) }} />}
-										label={label}
-										className="mr-2 mt-2"
-									/>
-								))
-							}
-						</div>
-					</Grid>
-				</Hidden>
-				<Grid item md={9} className="scatterplot-matrix-tab-container">
-					<div className="scatterplot-matrix-container" id={this.containerId}></div>
-				</Grid>
-				<Hidden mdDown>
-					<Grid item md={3}>
-						<div>
-							<List component="nav" dense={true} aria-label="graph legend" className="grouped-bar-chart-legend">
+				{
+					this.state.referenceValues.length > 1 &&
+					<Hidden mdUp>
+						<Grid item xs={12}>
+							<div className="m-2">
 								{
 									this.state.referenceValues.map((label) => (
-										<ListItem key={label}>
-											<ListItemAvatar>
-												<div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(label) }}></div>
-											</ListItemAvatar>
-											<ListItemText primary={label} />
-										</ListItem>
+										<Chip
+											key={label}
+											size="small"
+											avatar={<span className="legend-item-sm-icon mr-1" style={{ backgroundColor: this.colorFunction(label) }} />}
+											label={label}
+											className="mr-2 mt-2"
+										/>
 									))
 								}
-							</List>
-						</div>
-					</Grid>
-				</Hidden>
+							</div>
+						</Grid>
+					</Hidden>
+
+				}
+				<Grid item md={this.state.referenceValues.length > 1 ? 9 : 12} className="scatterplot-matrix-tab-container">
+					<div className="scatterplot-matrix-container" id={this.containerId}></div>
+				</Grid>
+				{
+					this.state.referenceValues.length > 1 &&
+					<Hidden mdDown>
+						<Grid item md={3}>
+							<div>
+								<List component="nav" dense={true} aria-label="graph legend" className="grouped-bar-chart-legend">
+									{
+										this.state.referenceValues.map((label) => (
+											<ListItem key={label}>
+												<ListItemAvatar>
+													<div className="legend-item-icon" style={{ backgroundColor: this.colorFunction(label) }}></div>
+												</ListItemAvatar>
+												<ListItemText primary={label} />
+											</ListItem>
+										))
+									}
+								</List>
+							</div>
+						</Grid>
+					</Hidden>
+				}
 				<IDAModal open={this.state.open} handleClose={this.handleClose} title="Scatterplot">
 					<IDAScatterPLot data={this.plotData} nodeId={this.plotId} />
 				</IDAModal>
