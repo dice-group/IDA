@@ -101,7 +101,7 @@ export default class IDAScatterPLot extends Component {
 		 */
 		d3.select("#" + this.containerId).append("svg")
 			.attr("height", 30)
-			.attr("width", this.width)
+			.attr("width", (window.innerWidth * 0.6))
 			.append("text")
 			.text(this.graphData.xAxisLabel)
 			.attr("text-anchor", "middle")
@@ -182,7 +182,7 @@ export default class IDAScatterPLot extends Component {
 			.call(d3.axisLeft(scaleY).tickSizeOuter(0));
 
 		/**
-		 * Zoom event listener 
+		 * Zoom event listener
 		 */
 		const zoomed = (event, object) => {
 			var transform = event.transform;
@@ -226,7 +226,7 @@ export default class IDAScatterPLot extends Component {
 				}
 			</Hidden>
 			<Grid item xs={12} md={this.state.referenceValues.length > 1 ? 9 : 12}>
-				<div className="scatterplot-container" id={this.containerId}>
+				<div className="scatterplot-container text-center" id={this.containerId}>
 				</div>
 			</Grid>
 			<Hidden mdDown>

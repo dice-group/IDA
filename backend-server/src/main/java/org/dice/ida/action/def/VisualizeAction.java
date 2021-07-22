@@ -1182,6 +1182,12 @@ public class VisualizeAction implements Action {
 		createlineChartXAxisLabels(calendar, dateColumn);
 		for (Map<String, String> row : tableData) {
 			date = row.get(dateColumn).trim();
+			try {
+				calendar.setTime(org.apache.commons.lang3.time.DateUtils.parseDateStrictly(date, IDAConst.DATE_PATTERNS));
+			} catch (java.text.ParseException ex) {
+				ex.printStackTrace();
+				continue; // Ignore the row and continue with the next
+			}
 			label = row.get(labelColumn);
 			value = 0.0;
 			try {
@@ -1226,7 +1232,6 @@ public class VisualizeAction implements Action {
 				ex.printStackTrace();
 				continue; // Ignore the row and continue with the next
 			}
-
 			if (!lineChartXAxisLabels.contains(currentDate)) {
 				lineChartXAxisLabels.add(currentDate);
 			}
