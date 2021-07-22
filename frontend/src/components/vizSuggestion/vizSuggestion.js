@@ -30,6 +30,7 @@ export default class IDAVisualizationSuggestion extends Component {
 		super(props);
 		this.props = props;
 		this.suggestionData = props.data;
+		this.suggestionData.sort((a, b) => a.vizName.localeCompare(b.vizName));
 		this.nodeId = props.nodeId;
 		this.tableName = props.tableName;
 		this.vizInfo = [];
