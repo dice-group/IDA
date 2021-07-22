@@ -142,36 +142,17 @@ def save_metadata():
 					date_columns = {}
 
 					for i in metadata.get('filesMd'):
-						cols = [] # to update new column names
 						for j in i.get('fileColMd'):
 							colAttr = j.get('colAttr').lower().strip()
 							colName = j.get('colName').lower().strip()
 
 							if not colName:
 								colName = colAttr
-							else:
-								j['colAttr'] = colName
-								colAttr = colName
-
-							cols.append(colAttr)
+								j["colName"] = colName
 
 							entity_columns[colAttr] = [colName, colAttr]
-
-							j["colName"] = colName
-							j["colDesc"] = j["colDesc"].lower().strip()
-
 							if j.get('colType') == 'date':
 								date_columns[colAttr] = [colName, colAttr]
-
-						# Updating column names in actual dataset file
-						path = os.path.join(dsdirpath, i.get('fileName'))
-						ds = pd.read_csv(path)
-						ds.columns = cols
-
-						os.remove(path)
-
-						with open(path, "w") as text_file:
-							text_file.write(ds.to_csv(index=False))
 
 					# Updating entities
 					resp_entds = requests.post(API_URL + "/addentities", headers={'Content-type': 'application/json'},
