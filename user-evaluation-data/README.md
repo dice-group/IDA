@@ -4,7 +4,6 @@ This data is a filtered subset of the NBA Player Dataset on Kaggle (https://www.
 Please find the description of the columns below:
 | # | Column Name | Description | Datatype |
 | --- | --- | --- | --- |
-| 1. | **id** | Index| string |
 |2.| **player_name**| Name of the player| string|
 |3.| **team_abbreviation**| Abbreviated name of the team the player played for (at the end of the season)|string|
 |4.| **age**| Age of the player| numeric|
