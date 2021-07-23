@@ -1,5 +1,6 @@
 import json
 import os
+import time
 import uuid
 import shutil
 import re
@@ -115,6 +116,29 @@ def upload_file():
 		return response, status_code
 
 
+def get_dataset(path):
+	data = []
+	for file_name in os.listdir(path):
+		if file_name.endswith(".csv"):
+			file_path = os.path.join(path, file_name)
+			file_data = []
+			with open(file_path, "r") as file:
+				columns = file.readline().strip().split(",")
+				line = file.readline().strip()
+				while line != "":
+					line = line.split(",")
+					row_data = {}
+					for i in range(len(columns)):
+						row_data[columns[i]] = line[i] or ""
+					file_data.append(row_data)
+					line = file.readline().strip()
+				data.append({
+					"name": file_name,
+					"data": file_data
+				})
+	return data
+
+
 @app.route('/savemetadata', methods=['POST'])
 @cross_origin()
 def save_metadata():
@@ -167,13 +191,26 @@ def save_metadata():
 
 						# Moving dataset folder from temp directory to dataset directory
 						shutil.move(dsdirpath, os.path.join(app.config.get('DS_FOLDER'), dsName))
-						return {"message": "Successfully uploaded dataset"}, 200
+						response_data = {
+							"errorCode": 0,
+							"message": "'" + dsName + "' dataset has been successfully uploaded and is now available for analysis. Please close this modal to proceed",
+							"uiAction": 1004,
+							"timestamp": time.time(),
+							"payload": {
+								"activeDS": "",
+								"activeTable": "",
+								"dsData": get_dataset(os.path.join(app.config.get('DS_FOLDER'), dsName)),
+								"dsMd": metadata
+							},
+							"success": True
+						}
+						return json.dumps(response_data), 200
 					else:
-						return {"message": "[Dialogflow] Error occurred while updating entities"}, 500
+						return {"message": "[Dialogflow] Error occurred while updating entities", "success": False}, 500
 			else:
-				return {'message': 'dataset with name ' + dsName + ' already exists!'}, 409
+				return {'message': 'dataset with name ' + dsName + ' already exists!', "success": False}, 409
 		else:
-			return {'message': 'dataset name should be alpha numeric with only dashes and underscore'}, 401
+			return {'message': 'dataset name should be alpha numeric with only dashes and underscore', "success": False}, 401
 
 
 @app.route('/delete', methods=['POST'])
