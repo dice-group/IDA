@@ -35,6 +35,7 @@ import DehazeOutlinedIcon from "@material-ui/icons/DehazeOutlined";
 import ViewAgendaOutlinedIcon from "@material-ui/icons/ViewAgendaOutlined";
 import { IDA_CONSTANTS } from "../constants";
 import Dropzone from "react-dropzone";
+import idaChatbotActionHandler from "../action-handler";
 
 import axios from "axios";
 import { Typography } from "@material-ui/core";
@@ -131,7 +132,8 @@ class DSUploadWizard extends React.Component {
 		cancellingUpload: false,
 		confirmationMsg: "",
 		udsi: null, // It will come from Pydsmx and we will use it for metadata storage
-		expandPanels: [true]
+		expandPanels: [true],
+		successMsg: ""
 	};
 
 	constructor(props) {
@@ -224,15 +226,16 @@ class DSUploadWizard extends React.Component {
 				udsi: this.state.udsi,
 				metadata: this.state.metaData
 			}).then((resp) => {
-				setTimeout(() => {
-					this.setState({
-						activeStep: this.state.activeStep + 1,
-						enableLoader: false,
-						showOkBtn: true,
-						showCancelBtn: false,
-						showBackBtn: false
-					});
-				}, 10000);
+				const responseData = resp.data;
+				this.setState({
+					activeStep: this.state.activeStep + 1,
+					enableLoader: false,
+					showOkBtn: true,
+					showCancelBtn: false,
+					showBackBtn: false,
+					successMsg: responseData.message
+				});
+				idaChatbotActionHandler(this.props, responseData.uiAction, responseData.payload);
 			}).catch((err) => {
 				this.setState({
 					enableLoader: false,
@@ -562,8 +565,8 @@ class DSUploadWizard extends React.Component {
 			default:
 				content = <div className="dataset-box-flex">
 					<CloudDoneOutlinedIcon style={{ fontSize: 80, color: "#4CAF50" }} />
-					<div style={{ textAlign: "center" }}>Your dataset was uploaded successfully.<br />
-						<Button varient="outlined" onClick={this.sendMessage}>Load {this.state.metaData ? this.state.metaData.dsName : ""} dataset</Button>
+					<div style={{ textAlign: "center" }}>
+						{this.state.successMsg}
 					</div>
 				</div>;
 		}

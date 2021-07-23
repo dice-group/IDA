@@ -217,7 +217,29 @@ export default function Home(props) {
 				/>
 
 			</div>
-			<DSUploadWizard isOpen={isdsUploadWizardOpen} close={closeUploadWizard} />
+			<DSUploadWizard
+				isOpen={isdsUploadWizardOpen}
+				close={closeUploadWizard}
+				setDetails={setDetails}
+				setSelectedNodeId={setSelectedNodeId}
+				detail={detail}
+				expandedNodeId={expandedNodeId}
+				setExpandedNodeId={setExpandedNodeId}
+				setLoaded={setLoaded}
+				activeDS={activeDS}
+				activeTable={activeTable}
+				setActiveDS={setActiveDS}
+				setActiveTable={setActiveTable}
+				tabs={tabs}
+				setTabs={setTabs}
+				setNavBarClass={setNavBarClass}
+				isChatbotOpen={isChatbotOpen}
+				setIsChatbotOpen={setIsChatbotOpen}
+				activeTableData={activeTableData}
+				setActiveTableData={setActiveTableData}
+				setContexts={setContexts}
+				setdsUploadWizardOpen={setdsUploadWizardOpen}
+			/>
 		</>
 	);
 }
