@@ -28,7 +28,8 @@ function addVisualizationEntry(props, vizData, label, name, activeDSName) {
         name: label + " " + (vizCount + 1),
         type: name,
         data: vizData,
-        fileName: label + " " + (vizCount + 1)
+        fileName: label + " " + (vizCount + 1),
+		dsName: activeDSName
     };
     viz.children.push(vizNode);
     const tabs = props.tabs;
