@@ -4,6 +4,7 @@ import time
 import uuid
 import shutil
 import re
+import csv
 
 from flask import Flask, request
 from werkzeug.utils import secure_filename
@@ -76,7 +77,7 @@ def upload_file():
 					if col_name.startswith("Unnamed:"):
 						col_name = "column" + str(index + 1)
 
-					col_name = col_name.lower().strip()
+					col_name = col_name
 					row = {"colIndex": index + 1, "colName": col_name, "colDesc": col_name, "colType": data_type,
 						   "colAttr": col_name, "isUnique": pd.Series(ds[cl]).is_unique}
 
@@ -85,7 +86,6 @@ def upload_file():
 
 					file_cols_md.append(row)
 
-				file_name = file_name.lower().strip()
 				files_meta_data.append(
 					{
 						"fileName": file_name,
@@ -121,17 +121,23 @@ def get_dataset(path):
 	for file_name in os.listdir(path):
 		if file_name.endswith(".csv"):
 			file_path = os.path.join(path, file_name)
-			file_data = []
 			with open(file_path, "r") as file:
-				columns = file.readline().strip().split(",")
-				line = file.readline().strip()
-				while line != "":
-					line = line.split(",")
-					row_data = {}
-					for i in range(len(columns)):
-						row_data[columns[i]] = line[i] or ""
-					file_data.append(row_data)
-					line = file.readline().strip()
+				csvFile = csv.reader(file)
+				columns = []
+				file_data = []
+				counter = 0
+				for line in csvFile:
+					if counter == 0:
+						columns = line
+						counter += 1
+					else:
+						row_data = {}
+						for i in range(len(columns)):
+							try:
+								row_data[columns[i]] = line[i]
+							except:
+								row_data[columns[i]] = ""
+						file_data.append(row_data)
 				data.append({
 					"name": file_name,
 					"data": file_data
@@ -146,7 +152,6 @@ def save_metadata():
 		udsi = request.json["udsi"]
 
 		metadata = request.json["metadata"]
-		metadata["dsName"] = metadata["dsName"].lower().strip()
 		dsName = metadata["dsName"]
 
 		if re.search(r"(^[A-Za-z0-9\-_]+$)", dsName):
@@ -166,8 +171,8 @@ def save_metadata():
 
 					for i in metadata.get('filesMd'):
 						for j in i.get('fileColMd'):
-							colAttr = j.get('colAttr').lower().strip()
-							colName = j.get('colName').lower().strip()
+							colAttr = j.get('colAttr')
+							colName = j.get('colName')
 
 							if not colName:
 								colName = colAttr
