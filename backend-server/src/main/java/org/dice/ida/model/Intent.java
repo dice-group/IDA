@@ -20,6 +20,7 @@ public enum Intent {
 	CLEAR("clear_context", IDAConst.UAC_NRMLMSG),
 	CAUSE_EXCEPTION("cause_exception", IDAConst.UAC_NRMLMSG),
 	USER_HELP("user_help", IDAConst.UAC_NRMLMSG),
+	INTRODUCTION("Introduction", IDAConst.UAC_NRMLMSG),
     UNKNOWN("unknown", IDAConst.UAC_NRMLMSG);
 
     private final String key;

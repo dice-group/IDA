@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -265,7 +266,8 @@ public class ScatterPlotMatrixActionTest {
 		messageController.handleMessage(chatUserMessage).call();
 		chatUserMessage.setMessage("no");
 		chatMessageResponse = messageController.handleMessage(chatUserMessage).call();
-		chatUserMessage.setActiveTableData((List<Map<String, String>>) chatMessageResponse.getPayload().get("clusteredData"));
+		List<Map<String, String>> clusteredData = (List<Map<String, String>>) chatMessageResponse.getPayload().get("clusteredData");
+		chatUserMessage.setActiveTableData(clusteredData);
 		chatUserMessage.setTemporaryData(true);
 		chatUserMessage.setMessage("draw scatter plot matrix");
 		messageController.handleMessage(chatUserMessage).call();
@@ -283,43 +285,16 @@ public class ScatterPlotMatrixActionTest {
 			add("literacy (%)");
 		}});
 		expectedData.setLabelColumn("cluster");
-		expectedData.setItems(new ArrayList<>() {{
-			add(new HashMap<>() {{
-				put("literacy (%)", "36.0");
-				put("gdp ($ per capita)", "700");
-				put("cluster", "3");
-				put("pop. density (per sq. mi.)", "48.0");
-			}});
-			add(new HashMap<>() {{
-				put("gdp ($ per capita)", "4500");
-				put("literacy (%)", "86.5");
-				put("pop. density (per sq. mi.)", "124.6");
-				put("cluster", "0");
-			}});
-			add(new HashMap<>() {{
-				put("gdp ($ per capita)", "6000");
-				put("literacy (%)", "70.0");
-				put("pop. density (per sq. mi.)", "13.8");
-				put("cluster", "3");
-			}});
-			add(new HashMap<>() {{
-				put("gdp ($ per capita)", "8000");
-				put("literacy (%)", "97.0");
-				put("pop. density (per sq. mi.)", "290.4");
-				put("cluster", "5");
-			}});
-			add(new HashMap<>() {{
-				put("gdp ($ per capita)", "19000");
-				put("literacy (%)", "100.0");
-				put("pop. density (per sq. mi.)", "152.1");
-				put("cluster", "0");
-			}});
-
-		}});
+		expectedData.setItems(clusteredData.stream().map(i -> new HashMap<String, String>() {{
+			put("literacy (%)", i.get("Literacy (%)").isEmpty() ? "UNKNOWN" : i.get("Literacy (%)"));
+			put("gdp ($ per capita)", i.get("GDP ($ per capita)").isEmpty() ? "UNKNOWN" : i.get("GDP ($ per capita)"));
+			put("cluster", i.get("Cluster").isEmpty() ? "UNKNOWN" : i.get("Cluster"));
+			put("pop. density (per sq. mi.)", i.get("Pop. Density (per sq. mi.)").isEmpty() ? "UNKNOWN" : i.get("Pop. Density (per sq. mi.)"));
+		}}).collect(Collectors.toList()));
 		assertNotNull(actualData);
 		assertEquals(expectedData.getLabelColumn(), actualData.getLabelColumn());
 		assertEquals(expectedData.getColumns(), actualData.getColumns());
-		assertTrue(actualData.getItems().containsAll(expectedData.getItems()));
+		assertEquals(expectedData.getItems(), actualData.getItems());
 		sessionUtil.resetSessionId();
 	}
 }

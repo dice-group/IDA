@@ -70,7 +70,6 @@ export default class IDABarGraph extends Component {
 
     this.graphData.items.forEach(item => {
       item.xLabel = item.x;
-      item.x = item.x.length > 16 ? item.x.substring(0, 13) + "..." : item.x;
     });
 
     // Every bar will be of static width 25px
@@ -157,14 +156,13 @@ export default class IDABarGraph extends Component {
 
     let label = svg.append("g")
       .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-      .call(d3.axisBottom(scaleX).tickSizeOuter(0))
+      .call(d3.axisBottom(scaleX).tickSizeOuter(0).tickFormat((v) => v.length > 16 ? v.substring(0, 13) + "..." : v))
       .selectAll("text")
       .data(this.graphData.items)
       .attr("x", -10)
       .attr("y", -5)
       .attr("transform", "rotate(-90)")
       .style("text-anchor", "end")
-
       .attr("value", (d) => {
         return d.x + ": " + d.y
       })
