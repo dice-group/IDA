@@ -712,7 +712,7 @@ public class VisualizeAction implements Action {
 			String valueString = entry.get(xAxisColumn);
 			if (TextUtil.isDoubleString(valueString)) {
 				binVal = Double.parseDouble(valueString);
-				intervalBegin = binVal - (binVal % binSize);
+				intervalBegin = binVal - (binVal % binSize) + (min % binSize);
 				xValue = intervalBegin + " - " + (intervalBegin + binSize - 1);
 				updateGraphItemList(xValue, entry.get(yAxisColumn), yAxisColumnType, labelCounts, graphItems);
 			} else if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER)) {
@@ -743,8 +743,8 @@ public class VisualizeAction implements Action {
 			}
 		}).sorted().collect(Collectors.toList());
 		List<String> groups = tableData.stream().map(e -> e.get(groupColumn)).distinct().collect(Collectors.toList());
-		double min = values.get(0);
-		double max = values.get(values.size() - 1);
+		double min = Math.floor(values.get(0));
+		double max = Math.ceil(values.get(values.size() - 1));
 		double binVal;
 		double intervalBegin;
 		Map<String, Double> groupEntries = new HashMap<>();
@@ -770,7 +770,7 @@ public class VisualizeAction implements Action {
 			String valueString = entry.get(xAxisColumn);
 			if (TextUtil.isDoubleString(valueString)) {
 				binVal = Double.parseDouble(valueString);
-				intervalBegin = binVal - (binVal % binSize);
+				intervalBegin = binVal - (binVal % binSize) + (min % binSize);
 				xValue = intervalBegin + " - " + (intervalBegin + binSize - 1);
 				updateGraphItemList(entry.get(groupColumn), entry.get(yAxisColumn), yAxisColumnType, groupedLabelCounts.get(xValue), groupedGraphItems.get(xValue));
 			} else if (valueString.equalsIgnoreCase(IDAConst.NULL_VALUE_IDENTIFIER)) {
