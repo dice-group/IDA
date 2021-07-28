@@ -119,9 +119,8 @@ export default class IDAGroupedBarGraph extends Component {
         var xval = 0;
         var yval = 0;
         group._groups[0].forEach((g) => {
-            var barcount = Math.max(g.childNodes.length) - 1;
             xval = g.childNodes[0].attributes[0].value;
-            yval = +g.childNodes[`${barcount}`].attributes[0].value + +15;
+            yval = parseInt(xval) + (x1.bandwidth() * g.childNodes.length) + (g.childNodes.length * 0.1);
         });
 
         group
