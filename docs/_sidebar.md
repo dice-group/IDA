@@ -10,5 +10,6 @@
     - [RESTAPI](api.md)
     - [FUSEKI](fuseki.md)
 
-
+- **Workflow**
+  - [IDA Workflow](workflow.md)
 
