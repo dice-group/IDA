@@ -135,7 +135,7 @@ def get_dataset(path):
 						for i in range(len(columns)):
 							try:
 								row_data[columns[i]] = line[i]
-							except:
+							except IndexError:
 								row_data[columns[i]] = ""
 						file_data.append(row_data)
 				data.append({
