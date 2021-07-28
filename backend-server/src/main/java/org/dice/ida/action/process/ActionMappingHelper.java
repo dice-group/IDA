@@ -32,11 +32,12 @@ public class ActionMappingHelper {
 			case GREETING:
 			case UNKNOWN:
 			case NEXT_STEPS:
+			case INTRODUCTION:
 			case HELP:
 				action = appContext.getBean(SimpleTextAction.class);
 				break;
 			case UPLOAD_DATASET:
-				 action = appContext.getBean(UploadDatasetAction.class);
+				action = appContext.getBean(UploadDatasetAction.class);
 				break;
 			case LOAD_DATASET:
 				action = appContext.getBean(LoadDataSetAction.class);

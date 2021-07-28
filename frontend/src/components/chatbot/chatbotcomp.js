@@ -22,14 +22,7 @@ export default class ChatApp extends React.Component {
 			iterator: -1,
 			hideProgress: true,
 			hideBot: false,
-			messages: [{
-				sender: "them",
-				type: "text",
-				key: 1,
-				message: "Hello, Welcome to IDA. How may I help you?",
-				timestamp: Date.now()
-
-			}],
+			messages: [],
 			changeCSS: {},
 			selectClick: [],
 			pyld: [],
@@ -53,6 +46,14 @@ export default class ChatApp extends React.Component {
 			}]
 		});
 		this.chatbotMessage = text;
+	}
+
+	componentDidMount() {
+		this.getIntroMessages("Introduction of IDA").then(() => {
+			this.getIntroMessages("list all datasets").then(() => {
+				this.showMessage("How may I help you?", Date.now());
+			});
+		});
 	}
 
 	componentDidUpdate(_prevProps, _prevState) {
@@ -142,6 +143,22 @@ export default class ChatApp extends React.Component {
 				});
 			});
 	}
+
+	getIntroMessages = (message) => {
+		return new Promise((resolve) => {
+			axios.post(IDA_CONSTANTS.API_BASE + "/chatmessage", {
+				message
+			}, {
+				withCredentials: true
+			}).then((response) => {
+				this.showMessage(response.data.message, response.data.timestamp);
+				resolve();
+			}).catch(() => {
+				console.error("Error from server");
+				resolve();
+			});
+		});
+	};
 
 	idaElementParser(msg) {
 		var textArr = msg.trim().split(/(?=<ida.*?>)/);
