@@ -120,7 +120,7 @@ export default class IDAGroupedBarGraph extends Component {
         var yval = 0;
         group._groups[0].forEach((g) => {
             xval = g.childNodes[0].attributes[0].value;
-            yval = parseInt(xval) + (x1.bandwidth() * g.childNodes.length) + (g.childNodes.length * 0.1);
+            yval = parseInt(xval, 10) + (x1.bandwidth() * g.childNodes.length) + (g.childNodes.length * 0.1);
         });
 
         group
