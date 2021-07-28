@@ -65,6 +65,7 @@ public class ClusterAction implements Action {
 	private String paramValue = "";
 	private int numCluster;
 	private Map<String, String> multiParmaValue;
+	private List<String> columnlst;
 	@Autowired
 	private SessionUtil sessionUtil;
 	private List<String> columnNames;
@@ -154,6 +155,7 @@ public class ClusterAction implements Action {
 	 */
 	private void loadScatterPlotMatrixParams() throws Exception {
 		Map<String, Map<String, Double>> statProps = suggestionUtil.getStatProps(datasetName, tableName);
+		List<String> columnList = this.columnlst;
 		payload.put("scatterPlotMatrixParams", new HashMap<>() {{
 			put(IDAConst.PARAM_INTENT_DETECTION_CONFIDENCE, "1.0");
 			put(IDAConst.INTENT_NAME, "scatter_plot_matrix");
@@ -161,7 +163,7 @@ public class ClusterAction implements Action {
 			put(IDAConst.PARAM_TEXT_MSG, "Scatter plot matrix for the clustered data has been rendered");
 			put("isGrouped", "false");
 			put("Reference_Values_choice", "true");
-			put("Column_List", ((Value) paramMap.get("column_List")).getListValue().getValuesList().stream().map(Value::getStringValue));
+			put("Column_List", columnList);
 			put("Reference_Column", "Cluster");
 			put("ScatterPlotMatrix_Label", Collections.min(statProps.get(IDAConst.COLUMN_SD_ALL).entrySet(), Map.Entry.comparingByValue()).getKey());    // Choose the column with least standard deviation for label values
 			put("Reference_Column_Choice", "true");
@@ -236,6 +238,7 @@ public class ClusterAction implements Action {
 							columnExist = false;
 						}
 					}
+					this.columnlst = columnList;
 				}
 			}
 			if (columnExist) {
