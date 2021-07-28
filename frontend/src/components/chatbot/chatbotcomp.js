@@ -154,7 +154,6 @@ export default class ChatApp extends React.Component {
 				this.showMessage(response.data.message, response.data.timestamp);
 				resolve();
 			}).catch(() => {
-				console.error("Error from server");
 				resolve();
 			});
 		});
