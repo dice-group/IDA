@@ -291,7 +291,9 @@ export default class ChatApp extends React.Component {
 															<div
 																className="time">{new Date(val.timestamp).toLocaleTimeString()}</div>
 														</div>
-														<div className="agent-pic" key={Math.random()} />
+														{/* <div className="agent-pic" key={Math.random()}> */}
+														<img src="/ida_logo.png" height={35} width={35} key={i} />
+														{/* </div> */}
 													</div>
 												</div>
 											);

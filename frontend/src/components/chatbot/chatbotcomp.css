@@ -89,8 +89,10 @@
 .chatbox-chat-area .chat-area-msgs .agent .agent-pic {
   width: 35px;
   height: 35px;
-  border: solid 6px #4e8cff;
+  padding-top: 2px;
   border-radius: 50%;
+  background: #4e8cff;
+  text-align: center;
 }
 
 .chatbox-chat-area .chat-area-msgs .user {
