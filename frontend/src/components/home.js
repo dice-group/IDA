@@ -100,6 +100,7 @@ export default function Home(props) {
 			<CssBaseline />
 			<AppBar>
 				<Toolbar>
+					<img src="/ida_logo_oh_inv.svg" height={45} width={45} />
 					<Hidden mdUp>
 						<MenuIcon onClick={toggleNavWindow} />
 					</Hidden>

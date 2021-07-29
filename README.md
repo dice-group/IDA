@@ -23,3 +23,6 @@ To get everything up and running follow these steps:
 <br/>
 
 ### [Documentation](https://dice-group.github.io/IDA)
+<br/><br/>
+
+Credits to [Lixi](https://github.com/TortugaAttack/) for creating the awesome logo for IDA.
