@@ -62,6 +62,10 @@
   right: 24px;
 }
 
+.ida-logo {
+  position: absolute;;
+}
+
 /**
 * Style for larger devices only
 */
