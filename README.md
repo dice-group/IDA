@@ -1,7 +1,9 @@
-# IDA
-Software Campus project repository for [Intelligent Data Science Chatbot](https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/)
+<p align="center"><img src="/docs/_media/ida_logo_oh.svg"></img></p>
 
-Documentation available: https://dice-group.github.io/IDA
+# IDA
+[Software Campus](https://softwarecampus.de/en/) project repository for [Intelligent Data Science Chatbot](https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/)
+
+<b>Documentation & Guides</b>: https://dice-group.github.io/IDA
 
 ## Development guide
 
