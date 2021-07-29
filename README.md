@@ -1,5 +1,7 @@
 # IDA
-Software Campus project repository for Intelligent Data Science Chatbot
+Software Campus project repository for [Intelligent Data Science Chatbot](https://softwarecampus.de/en/project/ida-intelligent-data-science-chatbot/)
+
+Documentation available: https://dice-group.github.io/IDA
 
 ## Development guide
 
@@ -22,7 +24,4 @@ To get everything up and running follow these steps:
 
 <br/>
 
-### [Documentation](https://dice-group.github.io/IDA)
-<br/><br/>
-
-Credits to [Lixi](https://github.com/TortugaAttack/) for creating the awesome logo for IDA.
+❤️ Credits to [Lixi](https://github.com/TortugaAttack/) for creating the awesome logo for IDA 🙏
