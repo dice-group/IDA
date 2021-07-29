@@ -18,7 +18,7 @@ services:
   pydsmx:
     image: $REGISTRY/ida/pydsmx:$VERSION
     volumes:
-      - "/home/ida_mngr/ida-datasets/:/app/datasets"
+      - "/home/ida_mngr/ida-qa-datasets/:/app/datasets"
     environment:
       - API_URL=http://ida-backend:8080/ida-ws
     networks:
