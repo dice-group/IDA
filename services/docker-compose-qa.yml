@@ -18,7 +18,7 @@ services:
   pydsmx:
     image: $REGISTRY/ida/pydsmx:$VERSION
     volumes:
-      - "/home/ida_mngr/ida-datasets/:/app/datasets"
+      - "/home/ida_mngr/ida-qa-datasets/:/app/datasets"
     environment:
       - API_URL=http://ida-backend:8080/ida-ws
     networks:
@@ -27,7 +27,7 @@ services:
     image: $REGISTRY/ida/backend-server:$VERSION
     volumes:
       - "/home/ida_mngr/ida-qa-logs:/usr/local/tomcat/logs"
-      - "/home/ida_mngr/ida-datasets/:/usr/local/tomcat/datasets"
+      - "/home/ida_mngr/ida-qa-datasets/:/usr/local/tomcat/datasets"
     environment:
       - FUSEKI_URL=http://fuseki:3030/
       - FUSEKI_USER=admin
